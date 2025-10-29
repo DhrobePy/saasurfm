@@ -1,0 +1,27 @@
+[22-Oct-2025 18:18:19 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$unit in /home/ujjalfmc/public_html/saas.ujjalfm.com/product/manage_variants.php on line 312
+[22-Oct-2025 18:47:40 Asia/Dhaka] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.inventory' doesn't exist in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Database.php:49
+Stack trace:
+#0 /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Database.php(49): PDOStatement->execute()
+#1 /home/ujjalfmc/public_html/saas.ujjalfm.com/product/products.php(61): Database->query()
+#2 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Database.php on line 49
+[22-Oct-2025 18:48:56 Asia/Dhaka] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.inventory' doesn't exist in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Database.php:49
+Stack trace:
+#0 /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Database.php(49): PDOStatement->execute()
+#1 /home/ujjalfmc/public_html/saas.ujjalfm.com/product/products.php(61): Database->query()
+#2 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Database.php on line 49
+[22-Oct-2025 19:03:13 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined method PDF::AddPage() in /home/ujjalfmc/public_html/saas.ujjalfm.com/product/products.php:99
+Stack trace:
+#0 /home/ujjalfmc/public_html/saas.ujjalfm.com/product/products.php(139): generate_pdf()
+#1 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/product/products.php on line 99
+[22-Oct-2025 19:05:44 Asia/Dhaka] PHP Fatal error:  Cannot redeclare function fetch_export_data() (previously declared in /home/ujjalfmc/public_html/saas.ujjalfm.com/product/products.php:19) in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/PDF.php on line 13
+[22-Oct-2025 19:05:49 Asia/Dhaka] PHP Fatal error:  Cannot redeclare function fetch_export_data() (previously declared in /home/ujjalfmc/public_html/saas.ujjalfm.com/product/products.php:19) in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/PDF.php on line 13
+[22-Oct-2025 13:06:31 UTC] PHP Parse error:  Unmatched '}' in /home/ujjalfmc/public_html/saas.ujjalfm.com/product/products.php on line 39
+[22-Oct-2025 19:07:01 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined function fetch_export_data() in /home/ujjalfmc/public_html/saas.ujjalfm.com/product/products.php:114
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/product/products.php on line 114
+[22-Oct-2025 19:10:53 Asia/Dhaka] PHP Parse error:  syntax error, unexpected token "public", expecting end of file in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/PDF.php on line 11
+[22-Oct-2025 19:14:31 Asia/Dhaka] PHP Parse error:  syntax error, unexpected identifier "D" in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/PDF.php on line 63

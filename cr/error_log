@@ -1,0 +1,1710 @@
+[27-Oct-2025 21:28:57 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'p.has_variants' in 'SELECT' in query: SELECT p.*, 
+     CASE WHEN p.has_variants = 1 THEN 
+         (SELECT GROUP_CONCAT(CONCAT(v.id, ':', v.variant_name, ':', v.price) SEPARATOR '|')
+          FROM product_variants v WHERE v.product_id = p.id AND v.status = 'active')
+     ELSE NULL END as variants_data
+     FROM products p
+     WHERE p.status = 'active'
+     ORDER BY p.name ASC | Params: Array
+(
+)
+
+[27-Oct-2025 21:38:13 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'p.has_variants' in 'SELECT' in query: SELECT p.*, 
+     CASE WHEN p.has_variants = 1 THEN 
+         (SELECT GROUP_CONCAT(CONCAT(v.id, ':', v.variant_name, ':', v.price) SEPARATOR '|')
+          FROM product_variants v WHERE v.product_id = p.id AND v.status = 'active')
+     ELSE NULL END as variants_data
+     FROM products p
+     WHERE p.status = 'active'
+     ORDER BY p.name ASC | Params: Array
+(
+)
+
+[27-Oct-2025 21:49:11 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'p.has_variants' in 'SELECT' in query: SELECT p.*, 
+     CASE WHEN p.has_variants = 1 THEN 
+         (SELECT GROUP_CONCAT(CONCAT(v.id, ':', v.variant_name, ':', v.price) SEPARATOR '|')
+          FROM product_variants v WHERE v.product_id = p.id AND v.status = 'active')
+     ELSE NULL END as variants_data
+     FROM products p
+     WHERE p.status = 'active'
+     ORDER BY p.name ASC | Params: Array
+(
+)
+
+[27-Oct-2025 21:49:42 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'p.has_variants' in 'SELECT' in query: SELECT p.*, 
+     CASE WHEN p.has_variants = 1 THEN 
+         (SELECT GROUP_CONCAT(CONCAT(v.id, ':', v.variant_name, ':', v.price) SEPARATOR '|')
+          FROM product_variants v WHERE v.product_id = p.id AND v.status = 'active')
+     ELSE NULL END as variants_data
+     FROM products p
+     WHERE p.status = 'active'
+     ORDER BY p.name ASC | Params: Array
+(
+)
+
+[27-Oct-2025 21:49:53 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'p.has_variants' in 'SELECT' in query: SELECT p.*, 
+     CASE WHEN p.has_variants = 1 THEN 
+         (SELECT GROUP_CONCAT(CONCAT(v.id, ':', v.variant_name, ':', v.price) SEPARATOR '|')
+          FROM product_variants v WHERE v.product_id = p.id AND v.status = 'active')
+     ELSE NULL END as variants_data
+     FROM products p
+     WHERE p.status = 'active'
+     ORDER BY p.name ASC | Params: Array
+(
+)
+
+[27-Oct-2025 21:49:54 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'p.has_variants' in 'SELECT' in query: SELECT p.*, 
+     CASE WHEN p.has_variants = 1 THEN 
+         (SELECT GROUP_CONCAT(CONCAT(v.id, ':', v.variant_name, ':', v.price) SEPARATOR '|')
+          FROM product_variants v WHERE v.product_id = p.id AND v.status = 'active')
+     ELSE NULL END as variants_data
+     FROM products p
+     WHERE p.status = 'active'
+     ORDER BY p.name ASC | Params: Array
+(
+)
+
+[27-Oct-2025 21:49:59 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c.phone' in 'SELECT' in query: SELECT co.*, 
+            c.name as customer_name, 
+            c.phone as customer_phone,
+            c.address as customer_address,
+            ccl.credit_limit, 
+            ccl.available_credit,
+            ccl.used_credit,
+            u.display_name as created_by_name,
+            ROUND((co.balance_due / NULLIF(ccl.available_credit, 0)) * 100, 2) as credit_usage_percent
+     FROM credit_orders co
+     JOIN customers c ON co.customer_id = c.id
+     LEFT JOIN customer_credit_limits ccl ON co.customer_id = ccl.customer_id
+     JOIN users u ON co.created_by_user_id = u.id
+     WHERE co.status = ?
+     ORDER BY co.created_at ASC | Params: Array
+(
+    [0] => pending_approval
+)
+
+[27-Oct-2025 21:50:09 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'phone' in 'SELECT' in query: SELECT id, name, phone 
+     FROM customers 
+     WHERE status = 'active' 
+     ORDER BY name ASC | Params: Array
+(
+)
+
+[27-Oct-2025 21:50:20 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'phone' in 'SELECT' in query: SELECT id, name, phone 
+     FROM customers 
+     WHERE status = 'active' 
+     ORDER BY name ASC | Params: Array
+(
+)
+
+[27-Oct-2025 21:50:45 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'phone' in 'SELECT' in query: SELECT id, name, phone 
+     FROM customers 
+     WHERE status = 'active' 
+     ORDER BY name ASC | Params: Array
+(
+)
+
+[27-Oct-2025 21:50:47 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'phone' in 'SELECT' in query: SELECT id, name, phone 
+     FROM customers 
+     WHERE status = 'active' 
+     ORDER BY name ASC | Params: Array
+(
+)
+
+[27-Oct-2025 21:50:51 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$phone in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_credit_management.php on line 167
+[27-Oct-2025 21:50:51 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$phone in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_credit_management.php on line 167
+[27-Oct-2025 21:50:51 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$phone in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_credit_management.php on line 167
+[27-Oct-2025 21:51:13 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'phone' in 'SELECT' in query: SELECT id, name, phone 
+     FROM customers 
+     WHERE status = 'active' 
+     ORDER BY name ASC | Params: Array
+(
+)
+
+[27-Oct-2025 21:51:13 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$phone in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_ledger.php on line 152
+[27-Oct-2025 21:51:39 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'phone' in 'SELECT' in query: SELECT id, name, phone 
+     FROM customers 
+     WHERE status = 'active' 
+     ORDER BY name ASC | Params: Array
+(
+)
+
+[27-Oct-2025 21:51:39 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$phone in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_ledger.php on line 152
+[27-Oct-2025 21:51:48 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'phone' in 'SELECT' in query: SELECT id, name, phone 
+     FROM customers 
+     WHERE status = 'active' 
+     ORDER BY name ASC | Params: Array
+(
+)
+
+[27-Oct-2025 21:51:48 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$phone in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_ledger.php on line 152
+[27-Oct-2025 21:52:11 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'phone' in 'SELECT' in query: SELECT id, name, phone 
+     FROM customers 
+     WHERE status = 'active' 
+     ORDER BY name ASC | Params: Array
+(
+)
+
+[27-Oct-2025 21:52:11 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$phone in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_ledger.php on line 152
+[27-Oct-2025 21:52:16 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c.phone' in 'SELECT' in query: SELECT co.*, 
+            c.name as customer_name, 
+            c.phone as customer_phone,
+            c.address as customer_address,
+            ccl.credit_limit, 
+            ccl.available_credit,
+            ccl.used_credit,
+            u.display_name as created_by_name,
+            ROUND((co.balance_due / NULLIF(ccl.available_credit, 0)) * 100, 2) as credit_usage_percent
+     FROM credit_orders co
+     JOIN customers c ON co.customer_id = c.id
+     LEFT JOIN customer_credit_limits ccl ON co.customer_id = ccl.customer_id
+     JOIN users u ON co.created_by_user_id = u.id
+     WHERE co.status = ?
+     ORDER BY co.created_at ASC | Params: Array
+(
+    [0] => pending_approval
+)
+
+[27-Oct-2025 21:52:23 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c.phone' in 'SELECT' in query: SELECT co.*, 
+            c.name as customer_name, 
+            c.phone as customer_phone,
+            c.address as customer_address,
+            ccl.credit_limit, 
+            ccl.available_credit,
+            ccl.used_credit,
+            u.display_name as created_by_name,
+            ROUND((co.balance_due / NULLIF(ccl.available_credit, 0)) * 100, 2) as credit_usage_percent
+     FROM credit_orders co
+     JOIN customers c ON co.customer_id = c.id
+     LEFT JOIN customer_credit_limits ccl ON co.customer_id = ccl.customer_id
+     JOIN users u ON co.created_by_user_id = u.id
+     WHERE co.status = ?
+     ORDER BY co.created_at ASC | Params: Array
+(
+    [0] => pending_approval
+)
+
+[27-Oct-2025 21:54:02 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'p.has_variants' in 'SELECT' in query: SELECT p.*, 
+     CASE WHEN p.has_variants = 1 THEN 
+         (SELECT GROUP_CONCAT(CONCAT(v.id, ':', v.variant_name, ':', v.price) SEPARATOR '|')
+          FROM product_variants v WHERE v.product_id = p.id AND v.status = 'active')
+     ELSE NULL END as variants_data
+     FROM products p
+     WHERE p.status = 'active'
+     ORDER BY p.name ASC | Params: Array
+(
+)
+
+[27-Oct-2025 21:54:05 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c.phone' in 'SELECT' in query: SELECT co.*, 
+            c.name as customer_name, 
+            c.phone as customer_phone,
+            c.address as customer_address,
+            ccl.credit_limit, 
+            ccl.available_credit,
+            ccl.used_credit,
+            u.display_name as created_by_name,
+            ROUND((co.balance_due / NULLIF(ccl.available_credit, 0)) * 100, 2) as credit_usage_percent
+     FROM credit_orders co
+     JOIN customers c ON co.customer_id = c.id
+     LEFT JOIN customer_credit_limits ccl ON co.customer_id = ccl.customer_id
+     JOIN users u ON co.created_by_user_id = u.id
+     WHERE co.status = ?
+     ORDER BY co.created_at ASC | Params: Array
+(
+    [0] => pending_approval
+)
+
+[27-Oct-2025 21:54:09 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'phone' in 'SELECT' in query: SELECT id, name, phone 
+     FROM customers 
+     WHERE status = 'active' 
+     ORDER BY name ASC | Params: Array
+(
+)
+
+[27-Oct-2025 21:55:38 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c.phone' in 'SELECT' in query: SELECT co.*, 
+            c.name as customer_name,
+            c.phone as customer_phone,
+            b.name as branch_name,
+            ps.priority_order,
+            ps.scheduled_date,
+            ps.production_started_at,
+            ps.status as prod_status,
+            ps.id as schedule_id
+     FROM credit_orders co
+     JOIN customers c ON co.customer_id = c.id
+     LEFT JOIN branches b ON co.assigned_branch_id = b.id
+     LEFT JOIN production_schedule ps ON co.id = ps.order_id
+     WHERE co.status IN ('approved', 'in_production', 'produced') AND co.assigned_branch_id = ?
+     ORDER BY COALESCE(ps.priority_order, 999) ASC, co.required_date ASC | Params: Array
+(
+    [0] => 4
+)
+
+[27-Oct-2025 21:55:38 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'approved' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 4
+)
+
+[27-Oct-2025 21:55:38 Asia/Dhaka] PHP Warning:  Attempt to read property "c" on null in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/credit_production.php on line 147
+[27-Oct-2025 21:55:38 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'in_production' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 4
+)
+
+[27-Oct-2025 21:55:38 Asia/Dhaka] PHP Warning:  Attempt to read property "c" on null in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/credit_production.php on line 148
+[27-Oct-2025 21:55:38 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'produced' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 4
+)
+
+[27-Oct-2025 21:55:38 Asia/Dhaka] PHP Warning:  Attempt to read property "c" on null in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/credit_production.php on line 149
+[27-Oct-2025 21:55:38 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 4
+)
+
+[27-Oct-2025 21:55:38 Asia/Dhaka] PHP Warning:  Attempt to read property "c" on null in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/credit_production.php on line 150
+[27-Oct-2025 21:56:16 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c.phone' in 'SELECT' in query: SELECT co.*, 
+            c.name as customer_name,
+            c.phone as customer_phone,
+            b.name as branch_name,
+            ps.priority_order,
+            ps.scheduled_date,
+            ps.production_started_at,
+            ps.status as prod_status,
+            ps.id as schedule_id
+     FROM credit_orders co
+     JOIN customers c ON co.customer_id = c.id
+     LEFT JOIN branches b ON co.assigned_branch_id = b.id
+     LEFT JOIN production_schedule ps ON co.id = ps.order_id
+     WHERE co.status IN ('approved', 'in_production', 'produced') AND co.assigned_branch_id = ?
+     ORDER BY COALESCE(ps.priority_order, 999) ASC, co.required_date ASC | Params: Array
+(
+    [0] => 4
+)
+
+[27-Oct-2025 21:56:16 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'approved' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 4
+)
+
+[27-Oct-2025 21:56:16 Asia/Dhaka] PHP Warning:  Attempt to read property "c" on null in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/credit_production.php on line 147
+[27-Oct-2025 21:56:16 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'in_production' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 4
+)
+
+[27-Oct-2025 21:56:16 Asia/Dhaka] PHP Warning:  Attempt to read property "c" on null in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/credit_production.php on line 148
+[27-Oct-2025 21:56:16 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'produced' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 4
+)
+
+[27-Oct-2025 21:56:16 Asia/Dhaka] PHP Warning:  Attempt to read property "c" on null in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/credit_production.php on line 149
+[27-Oct-2025 21:56:16 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 4
+)
+
+[27-Oct-2025 21:56:16 Asia/Dhaka] PHP Warning:  Attempt to read property "c" on null in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/credit_production.php on line 150
+[27-Oct-2025 21:56:52 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c.phone' in 'SELECT' in query: SELECT co.*, 
+            c.name as customer_name,
+            c.phone as customer_phone,
+            c.address as customer_address,
+            b.name as branch_name,
+            cos.truck_number,
+            cos.driver_name,
+            cos.driver_contact,
+            cos.shipped_date,
+            cos.delivered_date
+     FROM credit_orders co
+     JOIN customers c ON co.customer_id = c.id
+     LEFT JOIN branches b ON co.assigned_branch_id = b.id
+     LEFT JOIN credit_order_shipping cos ON co.id = cos.order_id
+     WHERE co.status IN ('ready_to_ship', 'shipped', 'delivered') AND co.assigned_branch_id = ?
+     ORDER BY 
+        CASE co.status 
+            WHEN 'ready_to_ship' THEN 1
+            WHEN 'shipped' THEN 2
+            WHEN 'delivered' THEN 3
+        END,
+        co.required_date ASC | Params: Array
+(
+    [0] => 4
+)
+
+[27-Oct-2025 21:56:52 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 4
+)
+
+[27-Oct-2025 21:56:52 Asia/Dhaka] PHP Warning:  Attempt to read property "c" on null in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/credit_dispatch.php on line 225
+[27-Oct-2025 21:56:52 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'shipped' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 4
+)
+
+[27-Oct-2025 21:56:52 Asia/Dhaka] PHP Warning:  Attempt to read property "c" on null in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/credit_dispatch.php on line 226
+[27-Oct-2025 21:56:52 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'delivered' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 4
+)
+
+[27-Oct-2025 21:56:52 Asia/Dhaka] PHP Warning:  Attempt to read property "c" on null in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/credit_dispatch.php on line 227
+[27-Oct-2025 22:10:53 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'p.has_variants' in 'SELECT' in query: SELECT p.*, 
+     CASE WHEN p.has_variants = 1 THEN 
+         (SELECT GROUP_CONCAT(CONCAT(v.id, ':', v.variant_name, ':', v.price) SEPARATOR '|')
+          FROM product_variants v WHERE v.product_id = p.id AND v.status = 'active')
+     ELSE NULL END as variants_data
+     FROM products p
+     WHERE p.status = 'active'
+     ORDER BY p.name ASC | Params: Array
+(
+)
+
+[27-Oct-2025 22:18:09 Asia/Dhaka] PHP Warning:  Undefined variable $products in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/create_order.php on line 317
+[27-Oct-2025 22:25:50 Asia/Dhaka] PHP Warning:  Undefined variable $products in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/create_order.php on line 317
+[27-Oct-2025 22:30:17 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'p.has_variants' in 'SELECT' in query: SELECT p.*, 
+     CASE WHEN p.has_variants = 1 THEN 
+         (SELECT GROUP_CONCAT(CONCAT(v.id, ':', v.variant_name, ':', v.price) SEPARATOR '|')
+          FROM product_variants v WHERE v.product_id = p.id AND v.status = 'active')
+     ELSE NULL END as variants_data
+     FROM products p
+     WHERE p.status = 'active'
+     ORDER BY p.name ASC | Params: Array
+(
+)
+
+[27-Oct-2025 22:34:15 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'p.has_variants' in 'SELECT' in query: SELECT p.*, 
+     CASE WHEN p.has_variants = 1 THEN 
+         (SELECT GROUP_CONCAT(CONCAT(v.id, ':', v.variant_name, ':', v.price) SEPARATOR '|')
+          FROM product_variants v WHERE v.product_id = p.id AND v.status = 'active')
+     ELSE NULL END as variants_data
+     FROM products p
+     WHERE p.status = 'active'
+     ORDER BY p.name ASC | Params: Array
+(
+)
+
+[27-Oct-2025 22:48:44 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'p.has_variants' in 'SELECT' in query: SELECT p.*, 
+     CASE WHEN p.has_variants = 1 THEN 
+         (SELECT GROUP_CONCAT(CONCAT(v.id, ':', v.variant_name, ':', v.price) SEPARATOR '|')
+          FROM product_variants v WHERE v.product_id = p.id AND v.status = 'active')
+     ELSE NULL END as variants_data
+     FROM products p
+     WHERE p.status = 'active'
+     ORDER BY p.name ASC | Params: Array
+(
+)
+
+[27-Oct-2025 22:57:15 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'p.has_variants' in 'SELECT' in query: SELECT p.*, 
+     CASE WHEN p.has_variants = 1 THEN 
+         (SELECT GROUP_CONCAT(CONCAT(v.id, ':', v.variant_name, ':', v.price) SEPARATOR '|')
+          FROM product_variants v WHERE v.product_id = p.id AND v.status = 'active')
+     ELSE NULL END as variants_data
+     FROM products p
+     WHERE p.status = 'active'
+     ORDER BY p.name ASC | Params: Array
+(
+)
+
+[27-Oct-2025 23:09:09 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$has_variants in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/create_order.php on line 256
+[27-Oct-2025 23:09:09 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$price in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/create_order.php on line 257
+[27-Oct-2025 23:09:09 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$name in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/create_order.php on line 259
+[28-Oct-2025 00:02:45 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'p.name' in 'SELECT' in query: SELECT coi.*, p.name as product_name, pv.variant_name
+         FROM credit_order_items coi
+         JOIN products p ON coi.product_id = p.id
+         LEFT JOIN product_variants pv ON coi.variant_id = pv.id
+         WHERE coi.order_id = ? | Params: Array
+(
+    [0] => 1
+)
+
+[28-Oct-2025 00:02:45 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$available_credit in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/credit_order_approval.php on line 278
+[28-Oct-2025 07:27:20 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'p.name' in 'SELECT' in query: SELECT coi.*, p.name as product_name, pv.variant_name
+         FROM credit_order_items coi
+         JOIN products p ON coi.product_id = p.id
+         LEFT JOIN product_variants pv ON coi.variant_id = pv.id
+         WHERE coi.order_id = ? | Params: Array
+(
+    [0] => 1
+)
+
+[28-Oct-2025 07:29:21 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'p.name' in 'SELECT' in query: SELECT coi.*, p.name as product_name, pv.variant_name
+         FROM credit_order_items coi
+         JOIN products p ON coi.product_id = p.id
+         LEFT JOIN product_variants pv ON coi.variant_id = pv.id
+         WHERE coi.order_id = ? | Params: Array
+(
+    [0] => 1
+)
+
+[28-Oct-2025 07:36:39 Asia/Dhaka] SQL Error [01000]: SQLSTATE[01000]: Warning: 1265 Data truncated for column 'action' at row 1 in query: INSERT INTO `credit_order_workflow` (`order_id`, `from_status`, `to_status`, `action`, `performed_by_user_id`, `comments`) VALUES (?, ?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 1
+    [1] => pending_approval
+    [2] => approved
+    [3] => approved
+    [4] => 2
+    [5] => Assigned to Demra Branch for production and probable delivery schedule
+)
+
+[28-Oct-2025 07:36:39 Asia/Dhaka] Database insert failed for table 'credit_order_workflow'.
+[28-Oct-2025 07:37:01 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c.phone' in 'SELECT' in query: SELECT co.*, 
+            c.name as customer_name,
+            c.phone as customer_phone,
+            b.name as branch_name,
+            ps.priority_order,
+            ps.scheduled_date,
+            ps.production_started_at,
+            ps.status as prod_status,
+            ps.id as schedule_id
+     FROM credit_orders co
+     JOIN customers c ON co.customer_id = c.id
+     LEFT JOIN branches b ON co.assigned_branch_id = b.id
+     LEFT JOIN production_schedule ps ON co.id = ps.order_id
+     WHERE co.status IN ('approved', 'in_production', 'produced') AND co.assigned_branch_id = ?
+     ORDER BY COALESCE(ps.priority_order, 999) ASC, co.required_date ASC | Params: Array
+(
+    [0] => 4
+)
+
+[28-Oct-2025 07:37:01 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'approved' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 4
+)
+
+[28-Oct-2025 07:37:01 Asia/Dhaka] PHP Warning:  Attempt to read property "c" on null in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/credit_production.php on line 147
+[28-Oct-2025 07:37:01 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'in_production' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 4
+)
+
+[28-Oct-2025 07:37:01 Asia/Dhaka] PHP Warning:  Attempt to read property "c" on null in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/credit_production.php on line 148
+[28-Oct-2025 07:37:01 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'produced' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 4
+)
+
+[28-Oct-2025 07:37:01 Asia/Dhaka] PHP Warning:  Attempt to read property "c" on null in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/credit_production.php on line 149
+[28-Oct-2025 07:37:01 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 4
+)
+
+[28-Oct-2025 07:37:01 Asia/Dhaka] PHP Warning:  Attempt to read property "c" on null in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/credit_production.php on line 150
+[28-Oct-2025 07:43:29 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c.phone' in 'SELECT' in query: SELECT co.*, 
+            c.name as customer_name,
+            c.phone as customer_phone,
+            b.name as branch_name,
+            ps.priority_order,
+            ps.scheduled_date,
+            ps.production_started_at,
+            ps.status as prod_status,
+            ps.id as schedule_id
+     FROM credit_orders co
+     JOIN customers c ON co.customer_id = c.id
+     LEFT JOIN branches b ON co.assigned_branch_id = b.id
+     LEFT JOIN production_schedule ps ON co.id = ps.order_id
+     WHERE co.status IN ('approved', 'in_production', 'produced') AND co.assigned_branch_id = ?
+     ORDER BY COALESCE(ps.priority_order, 999) ASC, co.required_date ASC | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 07:43:29 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'approved' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 07:43:29 Asia/Dhaka] PHP Warning:  Attempt to read property "c" on null in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/credit_production.php on line 147
+[28-Oct-2025 07:43:29 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'in_production' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 07:43:29 Asia/Dhaka] PHP Warning:  Attempt to read property "c" on null in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/credit_production.php on line 148
+[28-Oct-2025 07:43:29 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'produced' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 07:43:29 Asia/Dhaka] PHP Warning:  Attempt to read property "c" on null in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/credit_production.php on line 149
+[28-Oct-2025 07:43:29 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 07:43:29 Asia/Dhaka] PHP Warning:  Attempt to read property "c" on null in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/credit_production.php on line 150
+[28-Oct-2025 07:47:31 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c.phone' in 'SELECT' in query: SELECT co.*, 
+            c.name as customer_name,
+            c.phone as customer_phone,
+            b.name as branch_name,
+            ps.priority_order,
+            ps.scheduled_date,
+            ps.production_started_at,
+            ps.status as prod_status,
+            ps.id as schedule_id
+     FROM credit_orders co
+     JOIN customers c ON co.customer_id = c.id
+     LEFT JOIN branches b ON co.assigned_branch_id = b.id
+     LEFT JOIN production_schedule ps ON co.id = ps.order_id
+     WHERE co.status IN ('approved', 'in_production', 'produced') AND co.assigned_branch_id = ?
+     ORDER BY COALESCE(ps.priority_order, 999) ASC, co.required_date ASC | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 07:47:31 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'approved' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 07:47:31 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'in_production' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 07:47:31 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'produced' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 07:47:31 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 07:58:56 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c.phone' in 'SELECT' in query: SELECT co.*, 
+            c.name as customer_name,
+            c.phone as customer_phone,
+            b.name as branch_name,
+            ps.priority_order,
+            ps.scheduled_date,
+            ps.production_started_at,
+            ps.status as prod_status,
+            ps.id as schedule_id
+     FROM credit_orders co
+     JOIN customers c ON co.customer_id = c.id
+     LEFT JOIN branches b ON co.assigned_branch_id = b.id
+     LEFT JOIN production_schedule ps ON co.id = ps.order_id
+     WHERE co.status IN ('approved', 'in_production', 'produced') AND co.assigned_branch_id = ?
+     ORDER BY COALESCE(ps.priority_order, 999) ASC, co.required_date ASC | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 07:58:56 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'approved' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 07:58:56 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'in_production' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 07:58:56 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'produced' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 07:58:56 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 08:00:08 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'approved' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 08:00:08 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'in_production' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 08:00:08 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'produced' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 08:00:08 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 08:00:08 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$scheduled_date in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/credit_production.php on line 233
+[28-Oct-2025 08:00:08 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$production_started_at in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/credit_production.php on line 239
+[28-Oct-2025 08:03:32 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'ps.scheduled_date' in 'SELECT' in query: SELECT co.*, 
+            c.name as customer_name,
+            c.phone_number as customer_phone,
+            b.name as branch_name,
+            u.display_name as created_by_name,
+            ps.scheduled_date,
+            ps.production_started_at,
+            ps.production_completed_at
+     FROM credit_orders co
+     JOIN customers c ON co.customer_id = c.id
+     LEFT JOIN branches b ON co.assigned_branch_id = b.id
+     LEFT JOIN users u ON co.created_by_user_id = u.id
+     WHERE co.status IN ('approved', 'in_production', 'produced', 'ready_to_ship') 
+     AND co.assigned_branch_id IS NOT NULL
+     AND co.assigned_branch_id = ?
+     ORDER BY 
+        CASE co.status 
+            WHEN 'approved' THEN 1
+            WHEN 'in_production' THEN 2
+            WHEN 'produced' THEN 3
+            WHEN 'ready_to_ship' THEN 4
+        END,
+        co.required_date ASC | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 08:03:32 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'approved' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 08:03:32 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'in_production' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 08:03:32 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'produced' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 08:03:32 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 08:04:24 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'approved' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 08:04:24 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'in_production' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 08:04:24 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'produced' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 08:04:24 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 08:04:35 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'approved' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 08:04:35 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'in_production' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 08:04:35 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'produced' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 08:04:35 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 13:19:12 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'approved' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 13:19:12 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'in_production' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 13:19:12 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'produced' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 13:19:12 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 13:19:23 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'approved' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 13:19:23 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'in_production' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 13:19:23 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'produced' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 13:19:23 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 13:49:09 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'approved' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 13:49:09 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'in_production' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 13:49:09 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'produced' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 13:49:09 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 14:01:40 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'approved' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 14:01:40 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'in_production' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 14:01:40 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'produced' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 14:01:40 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 14:01:47 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'approved' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 14:01:47 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'in_production' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 14:01:47 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'produced' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 14:01:47 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 14:35:49 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'ps.assigned_to_user_id' in 'SELECT' in query: SELECT co.*, 
+            c.name as customer_name,
+            c.phone_number as customer_phone,
+            b.name as branch_name,
+            u.display_name as created_by_name,
+            ps.scheduled_date,
+            ps.production_started_at,
+            ps.production_completed_at,
+            ps.assigned_to_user_id
+     FROM credit_orders co
+     JOIN customers c ON co.customer_id = c.id
+     LEFT JOIN branches b ON co.assigned_branch_id = b.id
+     LEFT JOIN users u ON co.created_by_user_id = u.id
+     LEFT JOIN production_schedule ps ON co.id = ps.order_id
+     WHERE co.status IN ('approved', 'in_production', 'produced', 'ready_to_ship') 
+     AND co.assigned_branch_id IS NOT NULL
+     AND co.assigned_branch_id = ?
+     ORDER BY 
+        CASE co.status 
+            WHEN 'approved' THEN 1
+            WHEN 'in_production' THEN 2
+            WHEN 'produced' THEN 3
+            WHEN 'ready_to_ship' THEN 4
+        END,
+        co.required_date ASC | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 14:35:49 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'approved' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 14:35:49 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'in_production' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 14:35:49 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'produced' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 14:35:49 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 14:35:50 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'ps.assigned_to_user_id' in 'SELECT' in query: SELECT co.*, 
+            c.name as customer_name,
+            c.phone_number as customer_phone,
+            b.name as branch_name,
+            u.display_name as created_by_name,
+            ps.scheduled_date,
+            ps.production_started_at,
+            ps.production_completed_at,
+            ps.assigned_to_user_id
+     FROM credit_orders co
+     JOIN customers c ON co.customer_id = c.id
+     LEFT JOIN branches b ON co.assigned_branch_id = b.id
+     LEFT JOIN users u ON co.created_by_user_id = u.id
+     LEFT JOIN production_schedule ps ON co.id = ps.order_id
+     WHERE co.status IN ('approved', 'in_production', 'produced', 'ready_to_ship') 
+     AND co.assigned_branch_id IS NOT NULL
+     AND co.assigned_branch_id = ?
+     ORDER BY 
+        CASE co.status 
+            WHEN 'approved' THEN 1
+            WHEN 'in_production' THEN 2
+            WHEN 'produced' THEN 3
+            WHEN 'ready_to_ship' THEN 4
+        END,
+        co.required_date ASC | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 14:35:50 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'approved' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 14:35:50 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'in_production' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 14:35:50 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'produced' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 14:35:50 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 14:36:14 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'approved' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 14:36:14 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'in_production' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 14:36:14 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'produced' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 14:36:14 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 14:38:21 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cow.created_at' in 'ORDER BY' in query: SELECT cow.*, u.display_name as performed_by_name
+     FROM credit_order_workflow cow
+     LEFT JOIN users u ON cow.performed_by_user_id = u.id
+     WHERE cow.order_id = ?
+     ORDER BY cow.created_at DESC | Params: Array
+(
+    [0] => 1
+)
+
+[28-Oct-2025 14:41:31 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'ps.assigned_to_user_id' in 'SELECT' in query: SELECT co.*, 
+            c.name as customer_name,
+            c.phone_number as customer_phone,
+            b.name as branch_name,
+            u.display_name as created_by_name,
+            ps.scheduled_date,
+            ps.production_started_at,
+            ps.production_completed_at,
+            ps.assigned_to_user_id,
+            ps.priority_order
+     FROM credit_orders co
+     JOIN customers c ON co.customer_id = c.id
+     LEFT JOIN branches b ON co.assigned_branch_id = b.id
+     LEFT JOIN users u ON co.created_by_user_id = u.id
+     LEFT JOIN production_schedule ps ON co.id = ps.order_id
+     WHERE co.status IN ('approved', 'in_production', 'produced', 'ready_to_ship') 
+     AND co.assigned_branch_id IS NOT NULL
+     AND co.assigned_branch_id = ?
+     ORDER BY 
+        CASE co.status 
+            WHEN 'approved' THEN 1
+            WHEN 'in_production' THEN 2
+            WHEN 'produced' THEN 3
+            WHEN 'ready_to_ship' THEN 4
+        END,
+        co.required_date ASC | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 14:41:31 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'approved' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 14:41:31 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'in_production' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 14:41:31 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'produced' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 14:41:31 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 14:41:41 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'approved' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 14:41:41 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'in_production' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 14:41:41 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'produced' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 14:41:41 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 14:42:52 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'approved' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 14:42:52 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'in_production' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 14:42:52 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'produced' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 14:42:52 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 14:43:01 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'approved' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 14:43:01 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'in_production' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 14:43:01 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'produced' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 14:43:01 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 15:00:32 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c.phone' in 'SELECT' in query: SELECT co.*, 
+            c.name as customer_name,
+            c.phone as customer_phone,
+            c.address as customer_address,
+            b.name as branch_name,
+            cos.truck_number,
+            cos.driver_name,
+            cos.driver_contact,
+            cos.shipped_date,
+            cos.delivered_date
+     FROM credit_orders co
+     JOIN customers c ON co.customer_id = c.id
+     LEFT JOIN branches b ON co.assigned_branch_id = b.id
+     LEFT JOIN credit_order_shipping cos ON co.id = cos.order_id
+     WHERE co.status IN ('ready_to_ship', 'shipped', 'delivered') AND co.assigned_branch_id = ?
+     ORDER BY 
+        CASE co.status 
+            WHEN 'ready_to_ship' THEN 1
+            WHEN 'shipped' THEN 2
+            WHEN 'delivered' THEN 3
+        END,
+        co.required_date ASC | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 15:00:32 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 15:00:32 Asia/Dhaka] PHP Warning:  Attempt to read property "c" on null in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/credit_dispatch.php on line 225
+[28-Oct-2025 15:00:32 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'shipped' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 15:00:32 Asia/Dhaka] PHP Warning:  Attempt to read property "c" on null in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/credit_dispatch.php on line 226
+[28-Oct-2025 15:00:32 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'delivered' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 15:00:32 Asia/Dhaka] PHP Warning:  Attempt to read property "c" on null in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/credit_dispatch.php on line 227
+[28-Oct-2025 15:45:51 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c.phone' in 'SELECT' in query: SELECT co.*, 
+            c.name as customer_name,
+            c.phone as customer_phone,
+            c.address as customer_address,
+            b.name as branch_name,
+            cos.truck_number,
+            cos.driver_name,
+            cos.driver_contact,
+            cos.shipped_date,
+            cos.delivered_date
+     FROM credit_orders co
+     JOIN customers c ON co.customer_id = c.id
+     LEFT JOIN branches b ON co.assigned_branch_id = b.id
+     LEFT JOIN credit_order_shipping cos ON co.id = cos.order_id
+     WHERE co.status IN ('ready_to_ship', 'shipped', 'delivered') AND co.assigned_branch_id = ?
+     ORDER BY 
+        CASE co.status 
+            WHEN 'ready_to_ship' THEN 1
+            WHEN 'shipped' THEN 2
+            WHEN 'delivered' THEN 3
+        END,
+        co.required_date ASC | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 15:46:11 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c.phone' in 'SELECT' in query: SELECT co.*, 
+            c.name as customer_name,
+            c.phone as customer_phone,
+            c.address as customer_address,
+            b.name as branch_name,
+            cos.truck_number,
+            cos.driver_name,
+            cos.driver_contact,
+            cos.shipped_date,
+            cos.delivered_date
+     FROM credit_orders co
+     JOIN customers c ON co.customer_id = c.id
+     LEFT JOIN branches b ON co.assigned_branch_id = b.id
+     LEFT JOIN credit_order_shipping cos ON co.id = cos.order_id
+     WHERE co.status IN ('ready_to_ship', 'shipped', 'delivered') AND co.assigned_branch_id = ?
+     ORDER BY 
+        CASE co.status 
+            WHEN 'ready_to_ship' THEN 1
+            WHEN 'shipped' THEN 2
+            WHEN 'delivered' THEN 3
+        END,
+        co.required_date ASC | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 15:46:33 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c.phone' in 'SELECT' in query: SELECT co.*, 
+            c.name as customer_name,
+            c.phone as customer_phone,
+            c.address as customer_address,
+            b.name as branch_name,
+            cos.truck_number,
+            cos.driver_name,
+            cos.driver_contact,
+            cos.shipped_date,
+            cos.delivered_date
+     FROM credit_orders co
+     JOIN customers c ON co.customer_id = c.id
+     LEFT JOIN branches b ON co.assigned_branch_id = b.id
+     LEFT JOIN credit_order_shipping cos ON co.id = cos.order_id
+     WHERE co.status IN ('ready_to_ship', 'shipped', 'delivered') AND co.assigned_branch_id = ?
+     ORDER BY 
+        CASE co.status 
+            WHEN 'ready_to_ship' THEN 1
+            WHEN 'shipped' THEN 2
+            WHEN 'delivered' THEN 3
+        END,
+        co.required_date ASC | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 15:46:33 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 15:46:33 Asia/Dhaka] PHP Warning:  Attempt to read property "c" on null in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/credit_dispatch.php on line 228
+[28-Oct-2025 15:46:33 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'shipped' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 15:46:33 Asia/Dhaka] PHP Warning:  Attempt to read property "c" on null in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/credit_dispatch.php on line 229
+[28-Oct-2025 15:46:33 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'delivered' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 15:46:33 Asia/Dhaka] PHP Warning:  Attempt to read property "c" on null in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/credit_dispatch.php on line 230
+[28-Oct-2025 15:48:08 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c.phone' in 'SELECT' in query: SELECT co.*, 
+            c.name as customer_name,
+            c.phone as customer_phone,
+            c.address as customer_address,
+            b.name as branch_name,
+            cos.truck_number,
+            cos.driver_name,
+            cos.driver_contact,
+            cos.shipped_date,
+            cos.delivered_date
+     FROM credit_orders co
+     JOIN customers c ON co.customer_id = c.id
+     LEFT JOIN branches b ON co.assigned_branch_id = b.id
+     LEFT JOIN credit_order_shipping cos ON co.id = cos.order_id
+     WHERE co.status IN ('ready_to_ship', 'shipped', 'delivered') AND co.assigned_branch_id = ?
+     ORDER BY 
+        CASE co.status 
+            WHEN 'ready_to_ship' THEN 1
+            WHEN 'shipped' THEN 2
+            WHEN 'delivered' THEN 3
+        END,
+        co.required_date ASC | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 15:48:08 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 15:48:08 Asia/Dhaka] PHP Warning:  Attempt to read property "c" on null in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/credit_dispatch.php on line 228
+[28-Oct-2025 15:48:08 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'shipped' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 15:48:08 Asia/Dhaka] PHP Warning:  Attempt to read property "c" on null in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/credit_dispatch.php on line 229
+[28-Oct-2025 15:48:08 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'delivered' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 15:48:08 Asia/Dhaka] PHP Warning:  Attempt to read property "c" on null in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/credit_dispatch.php on line 230
+[28-Oct-2025 16:20:18 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 16:20:18 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'shipped' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 16:20:18 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'delivered' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 16:20:57 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 16:20:57 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'shipped' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 16:20:57 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'delivered' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 16:24:31 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c.address' in 'SELECT' in query: SELECT co.*, 
+            c.name as customer_name,
+            c.phone_number as customer_phone,
+            c.email as customer_email,
+            c.address as customer_address,
+            b.name as branch_name,
+            b.address as branch_address,
+            b.phone as branch_phone,
+            cos.truck_number,
+            cos.driver_name,
+            cos.driver_contact,
+            cos.shipped_date,
+            u.display_name as created_by_name
+     FROM credit_orders co
+     JOIN customers c ON co.customer_id = c.id
+     LEFT JOIN branches b ON co.assigned_branch_id = b.id
+     LEFT JOIN credit_order_shipping cos ON co.id = cos.order_id
+     LEFT JOIN users u ON co.created_by_user_id = u.id
+     WHERE co.id = ? | Params: Array
+(
+    [0] => 1
+)
+
+[28-Oct-2025 16:24:37 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c.address' in 'SELECT' in query: SELECT co.*, 
+            c.name as customer_name,
+            c.phone_number as customer_phone,
+            c.email as customer_email,
+            c.address as customer_address,
+            b.name as branch_name,
+            b.address as branch_address,
+            b.phone as branch_phone,
+            cos.truck_number,
+            cos.driver_name,
+            cos.driver_contact,
+            cos.shipped_date,
+            u.display_name as created_by_name
+     FROM credit_orders co
+     JOIN customers c ON co.customer_id = c.id
+     LEFT JOIN branches b ON co.assigned_branch_id = b.id
+     LEFT JOIN credit_order_shipping cos ON co.id = cos.order_id
+     LEFT JOIN users u ON co.created_by_user_id = u.id
+     WHERE co.id = ? | Params: Array
+(
+    [0] => 1
+)
+
+[28-Oct-2025 16:27:28 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c.address' in 'SELECT' in query: SELECT co.*, 
+            c.name as customer_name,
+            c.phone_number as customer_phone,
+            c.email as customer_email,
+            c.address as customer_address,
+            b.name as branch_name,
+            b.address as branch_address,
+            b.phone as branch_phone,
+            cos.truck_number,
+            cos.driver_name,
+            cos.driver_contact,
+            cos.shipped_date,
+            cos.delivered_date,
+            u.display_name as created_by_name
+     FROM credit_orders co
+     JOIN customers c ON co.customer_id = c.id
+     LEFT JOIN branches b ON co.assigned_branch_id = b.id
+     LEFT JOIN credit_order_shipping cos ON co.id = cos.order_id
+     LEFT JOIN users u ON co.created_by_user_id = u.id
+     WHERE co.id = ? | Params: Array
+(
+    [0] => 1
+)
+
+[28-Oct-2025 16:46:45 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 16:46:45 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'shipped' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 16:46:45 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'delivered' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 16:46:45 Asia/Dhaka] PHP Warning:  Undefined variable $order_id in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/credit_dispatch.php on line 450
+[28-Oct-2025 16:46:45 Asia/Dhaka] PHP Warning:  Attempt to read property "id" on null in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/credit_dispatch.php on line 450
+[28-Oct-2025 16:47:08 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c.address' in 'SELECT' in query: SELECT co.*, 
+            c.name as customer_name,
+            c.phone_number as customer_phone,
+            c.email as customer_email,
+            c.address as customer_address,
+            b.name as branch_name,
+            b.address as branch_address,
+            b.phone as branch_phone,
+            cos.truck_number,
+            cos.driver_name,
+            cos.driver_contact,
+            cos.shipped_date,
+            cos.delivered_date,
+            u.display_name as created_by_name
+     FROM credit_orders co
+     JOIN customers c ON co.customer_id = c.id
+     LEFT JOIN branches b ON co.assigned_branch_id = b.id
+     LEFT JOIN credit_order_shipping cos ON co.id = cos.order_id
+     LEFT JOIN users u ON co.created_by_user_id = u.id
+     WHERE co.id = ? | Params: Array
+(
+    [0] => 1
+)
+
+[28-Oct-2025 17:14:35 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 17:14:35 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'shipped' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 17:14:35 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'delivered' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 17:14:42 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 17:14:42 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'shipped' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 17:14:42 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'delivered' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 17:15:13 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 17:15:13 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'shipped' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 17:15:13 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'delivered' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 17:16:57 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cow.created_at' in 'ORDER BY' in query: SELECT cow.*, u.display_name as performed_by_name
+     FROM credit_order_workflow cow
+     LEFT JOIN users u ON cow.performed_by_user_id = u.id
+     WHERE cow.order_id = ?
+     ORDER BY cow.created_at DESC | Params: Array
+(
+    [0] => 1
+)
+
+[28-Oct-2025 17:17:02 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'phone' in 'SELECT' in query: SELECT id, name, phone 
+     FROM customers 
+     WHERE status = 'active' 
+     ORDER BY name ASC | Params: Array
+(
+)
+
+[28-Oct-2025 17:17:02 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$phone in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_ledger.php on line 147
+[28-Oct-2025 17:18:00 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'phone' in 'SELECT' in query: SELECT id, name, phone 
+     FROM customers 
+     WHERE status = 'active' 
+     ORDER BY name ASC | Params: Array
+(
+)
+
+[28-Oct-2025 17:18:09 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.customer_credit_limits' doesn't exist in query: SELECT c.*, 
+            c.credit_limit,
+            (c.credit_limit - c.current_balance) as available_credit,
+            c.current_balance as used_credit,
+            ccl.payment_terms_days,
+            ccl.status as credit_status,
+            ccl.notes as credit_notes,
+            ccl.last_updated,
+            COALESCE(
+                (SELECT MAX(balance_after) FROM customer_ledger WHERE customer_id = c.id),
+                0
+            ) as outstanding_balance,
+            (SELECT COUNT(*) FROM credit_orders WHERE customer_id = c.id AND status IN ('pending_approval', 'approved', 'in_production', 'shipped')) as pending_orders
+     FROM customers c
+     LEFT JOIN customer_credit_limits ccl ON c.id = ccl.customer_id
+     WHERE c.status = 'active'
+     ORDER BY c.name ASC | Params: Array
+(
+)
+
+[28-Oct-2025 17:18:15 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c.status' in 'WHERE' in query: SELECT id, name, phone_number, credit_limit, current_balance as outstanding_balance, status
+     FROM customers
+     WHERE c.status = 'active'
+     ORDER BY c.name ASC | Params: Array
+(
+)
+
+[28-Oct-2025 17:18:26 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c.status' in 'WHERE' in query: SELECT id, name, phone_number, credit_limit, current_balance as outstanding_balance, status
+     FROM customers
+     WHERE c.status = 'active'
+     ORDER BY c.name ASC | Params: Array
+(
+)
+
+[28-Oct-2025 17:18:33 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c.status' in 'WHERE' in query: SELECT id, name, phone_number, credit_limit, current_balance as outstanding_balance, status
+     FROM customers
+     WHERE c.status = 'active'
+     ORDER BY c.name ASC | Params: Array
+(
+)
+
+[28-Oct-2025 17:22:49 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cow.created_at' in 'ORDER BY' in query: SELECT cow.*, u.display_name as performed_by_name
+     FROM credit_order_workflow cow
+     LEFT JOIN users u ON cow.performed_by_user_id = u.id
+     WHERE cow.order_id = ?
+     ORDER BY cow.created_at DESC | Params: Array
+(
+    [0] => 1
+)
+
+[28-Oct-2025 17:23:12 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'phone' in 'SELECT' in query: SELECT id, name, phone 
+     FROM customers 
+     WHERE status = 'active' 
+     ORDER BY name ASC | Params: Array
+(
+)
+
+[28-Oct-2025 17:23:12 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$phone in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_ledger.php on line 147
+[28-Oct-2025 17:33:12 Asia/Dhaka] SQL Error [01000]: SQLSTATE[01000]: Warning: 1265 Data truncated for column 'action' at row 1 in query: INSERT INTO `credit_order_workflow` (`order_id`, `from_status`, `to_status`, `action`, `performed_by_user_id`, `comments`) VALUES (?, ?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 2
+    [1] => pending_approval
+    [2] => approved
+    [3] => approved
+    [4] => 2
+    [5] => Deliver as soon as possible
+)
+
+[28-Oct-2025 17:33:12 Asia/Dhaka] Database insert failed for table 'credit_order_workflow'.
+[28-Oct-2025 17:33:31 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'approved' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 17:33:31 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'in_production' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 17:33:31 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'produced' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 17:33:31 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 17:33:35 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cow.created_at' in 'ORDER BY' in query: SELECT cow.*, u.display_name as performed_by_name
+     FROM credit_order_workflow cow
+     LEFT JOIN users u ON cow.performed_by_user_id = u.id
+     WHERE cow.order_id = ?
+     ORDER BY cow.created_at DESC | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 17:34:10 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cow.created_at' in 'ORDER BY' in query: SELECT cow.*, u.display_name as performed_by_name
+     FROM credit_order_workflow cow
+     LEFT JOIN users u ON cow.performed_by_user_id = u.id
+     WHERE cow.order_id = ?
+     ORDER BY cow.created_at DESC | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 17:34:13 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'approved' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 17:34:13 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'in_production' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 17:34:13 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'produced' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 17:34:13 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 17:34:15 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'approved' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 17:34:15 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'in_production' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 17:34:15 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'produced' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 17:34:15 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 17:34:17 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'approved' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 17:34:17 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'in_production' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 17:34:17 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'produced' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 17:34:17 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 17:34:21 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'approved' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 17:34:21 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'in_production' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 17:34:21 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'produced' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 17:34:21 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 17:42:39 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 17:42:39 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'shipped' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 17:42:39 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'delivered' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[28-Oct-2025 17:47:41 Asia/Dhaka] SQL Error [01000]: SQLSTATE[01000]: Warning: 1265 Data truncated for column 'action' at row 1 in query: INSERT INTO `credit_order_workflow` (`order_id`, `from_status`, `to_status`, `action`, `performed_by_user_id`, `comments`) VALUES (?, ?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 3
+    [1] => pending_approval
+    [2] => approved
+    [3] => approved
+    [4] => 1
+    [5] => goooo with it
+)
+
+[28-Oct-2025 17:47:41 Asia/Dhaka] Database insert failed for table 'credit_order_workflow'.
+[28-Oct-2025 17:47:49 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.customer_credit_limits' doesn't exist in query: SELECT c.*, 
+            c.credit_limit,
+            (c.credit_limit - c.current_balance) as available_credit,
+            c.current_balance as used_credit,
+            ccl.payment_terms_days,
+            ccl.status as credit_status,
+            ccl.notes as credit_notes,
+            ccl.last_updated,
+            COALESCE(
+                (SELECT MAX(balance_after) FROM customer_ledger WHERE customer_id = c.id),
+                0
+            ) as outstanding_balance,
+            (SELECT COUNT(*) FROM credit_orders WHERE customer_id = c.id AND status IN ('pending_approval', 'approved', 'in_production', 'shipped')) as pending_orders
+     FROM customers c
+     LEFT JOIN customer_credit_limits ccl ON c.id = ccl.customer_id
+     WHERE c.status = 'active'
+     ORDER BY c.name ASC | Params: Array
+(
+)
+
+[29-Oct-2025 21:48:23 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'phone' in 'SELECT' in query: SELECT id, name, phone 
+     FROM customers 
+     WHERE status = 'active' 
+     ORDER BY name ASC | Params: Array
+(
+)
+
+[29-Oct-2025 21:48:49 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c.status' in 'WHERE' in query: SELECT id, name, phone_number, credit_limit, current_balance as outstanding_balance, status
+     FROM customers
+     WHERE c.status = 'active'
+     ORDER BY c.name ASC | Params: Array
+(
+)
+
+[29-Oct-2025 21:48:55 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'phone' in 'SELECT' in query: SELECT id, name, phone 
+     FROM customers 
+     WHERE status = 'active' 
+     ORDER BY name ASC | Params: Array
+(
+)
+

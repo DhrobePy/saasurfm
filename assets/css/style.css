@@ -1,0 +1,238 @@
+/* Custom styles for HRM System */
+/* Sidebar styling */
+#sidebar-wrapper {
+    min-height: 100vh;
+    margin-left: -15rem;
+    transition: margin 0.25s ease-out;
+}
+#sidebar-wrapper .sidebar-heading {
+    padding: 0.875rem 1.25rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+    background-color: #007bff;
+    color: white;
+}
+#wrapper.toggled #sidebar-wrapper {
+    margin-left: 0;
+}
+#page-content-wrapper {
+    min-width: 0;
+    width: 100%;
+}
+/* Dashboard cards */
+.huge {
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+/* Form enhancements */
+.form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+/* Table styling */
+.table th {
+    background-color: #f8f9fa;
+    border-top: none;
+}
+/* Modal enhancements */
+.modal-header {
+    background-color: #007bff;
+    color: white;
+}
+.modal-header .btn-close {
+    filter: invert(1);
+}
+/* Certificate styling */
+#certificate {
+    background-color: #fff;
+    font-family: 'Times New Roman', serif;
+    line-height: 1.6;
+}
+/* Responsive sidebar */
+@media (min-width: 768px) {
+    #sidebar-wrapper {
+        margin-left: 0;
+    }
+    #page-content-wrapper {
+        min-width: 0;
+        width: 100%;
+    }
+    #wrapper.toggled #sidebar-wrapper {
+        margin-left: -15rem;
+    }
+}
+/* Loading animation */
+.loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255,255,255,.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s ease-in-out infinite;
+}
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+/* Status badges */
+.badge {
+    font-size: 0.75em;
+}
+/* Print styles */
+@media print {
+    .no-print {
+        display: none !important;
+    }
+    
+    #certificate {
+        border: 2px solid #000 !important;
+        padding: 20px !important;
+    }
+}
+/* Employee Search Styles */
+.employee-search-wrapper {
+    position: relative;
+}
+.employee-search-input {
+    position: relative;
+    z-index: 1000;
+}
+.employee-search-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #ddd;
+    border-top: none;
+    border-radius: 0 0 0.375rem 0.375rem;
+    max-height: 250px;
+    overflow-y: auto;
+    z-index: 1001;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.employee-search-item {
+    padding: 10px 15px;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background-color 0.2s ease;
+}
+.employee-search-item:hover,
+.employee-search-item.highlighted {
+    background-color: #f8f9fa;
+}
+.employee-search-item:last-child {
+    border-bottom: none;
+}
+.employee-search-item.text-muted {
+    cursor: default;
+    font-style: italic;
+}
+.employee-search-item.text-muted:hover {
+    background-color: transparent;
+}
+.body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+.main {
+    flex-grow: 1;
+}
+.animate-on-scroll {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+}
+.animate-on-scroll.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ===========================
+   PARALLAX EFFECT STYLES
+   =========================== */
+
+/* Parallax container setup */
+.parallax-container {
+    position: relative;
+    overflow: visible;
+}
+
+/* Parallax layer base styling */
+.parallax-layer {
+    position: relative;
+    will-change: transform;
+    transition: transform 0.1s ease-out;
+}
+
+/* Smooth scrolling for the entire page */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Optimize performance for parallax elements */
+.parallax-layer * {
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
+    -ms-backface-visibility: hidden;
+}
+
+/* Add depth perception with subtle shadows */
+.parallax-layer[data-speed="0.5"] {
+    z-index: 5;
+}
+
+.parallax-layer[data-speed="0.4"] {
+    z-index: 4;
+}
+
+.parallax-layer[data-speed="0.35"] {
+    z-index: 3;
+}
+
+.parallax-layer[data-speed="0.3"] {
+    z-index: 2;
+}
+
+.parallax-layer[data-speed="0.25"] {
+    z-index: 2;
+}
+
+.parallax-layer[data-speed="0.2"] {
+    z-index: 1;
+}
+
+/* Enhanced hover effects for parallax cards */
+.parallax-layer .bg-gradient-to-br {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.parallax-layer .bg-gradient-to-br:hover {
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+    .parallax-layer {
+        transform: none !important;
+        transition: none !important;
+    }
+    
+    html {
+        scroll-behavior: auto;
+    }
+}
+
+/* Mobile optimization - reduce parallax on smaller screens */
+@media (max-width: 768px) {
+    .parallax-layer[data-speed] {
+        transform: none !important;
+    }
+    
+    /* Keep hover effects but disable parallax */
+    .parallax-container {
+        overflow: visible;
+    }
+}

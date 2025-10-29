@@ -1,0 +1,212 @@
+[11-Oct-2025 19:20:30 UTC] PHP Warning:  Undefined variable $pdo in /home/ujjalfmc/public_html/hrm.ujjalfm.com/auth/login_handler.php on line 8
+[11-Oct-2025 19:20:30 UTC] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in /home/ujjalfmc/public_html/hrm.ujjalfm.com/core/classes/User.php:11
+Stack trace:
+#0 /home/ujjalfmc/public_html/hrm.ujjalfm.com/auth/login_handler.php(10): User->login()
+#1 {main}
+  thrown in /home/ujjalfmc/public_html/hrm.ujjalfm.com/core/classes/User.php on line 11
+[11-Oct-2025 19:22:07 UTC] PHP Warning:  Undefined variable $pdo in /home/ujjalfmc/public_html/hrm.ujjalfm.com/auth/login_handler.php on line 8
+[11-Oct-2025 19:22:07 UTC] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in /home/ujjalfmc/public_html/hrm.ujjalfm.com/core/classes/User.php:11
+Stack trace:
+#0 /home/ujjalfmc/public_html/hrm.ujjalfm.com/auth/login_handler.php(10): User->login()
+#1 {main}
+  thrown in /home/ujjalfmc/public_html/hrm.ujjalfm.com/core/classes/User.php on line 11
+[11-Oct-2025 19:23:16 UTC] PHP Warning:  Undefined variable $pdo in /home/ujjalfmc/public_html/hrm.ujjalfm.com/auth/login_handler.php on line 8
+[11-Oct-2025 19:23:16 UTC] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in /home/ujjalfmc/public_html/hrm.ujjalfm.com/core/classes/User.php:11
+Stack trace:
+#0 /home/ujjalfmc/public_html/hrm.ujjalfm.com/auth/login_handler.php(10): User->login()
+#1 {main}
+  thrown in /home/ujjalfmc/public_html/hrm.ujjalfm.com/core/classes/User.php on line 11
+[11-Oct-2025 19:51:06 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function is_admin_logged_in() in /home/ujjalfmc/public_html/hrm.ujjalfm.com/auth/login.php:5
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/hrm.ujjalfm.com/auth/login.php on line 5
+[11-Oct-2025 19:53:01 UTC] PHP Warning:  Undefined array key "email" in /home/ujjalfmc/public_html/hrm.ujjalfm.com/auth/login_handler.php on line 8
+[11-Oct-2025 19:53:01 UTC] PHP Fatal error:  Uncaught ArgumentCountError: Too few arguments to function User::__construct(), 0 passed in /home/ujjalfmc/public_html/hrm.ujjalfm.com/auth/login_handler.php on line 11 and exactly 1 expected in /home/ujjalfmc/public_html/hrm.ujjalfm.com/core/classes/User.php:5
+Stack trace:
+#0 /home/ujjalfmc/public_html/hrm.ujjalfm.com/auth/login_handler.php(11): User->__construct()
+#1 {main}
+  thrown in /home/ujjalfmc/public_html/hrm.ujjalfm.com/core/classes/User.php on line 5
+[11-Oct-2025 19:54:17 UTC] PHP Fatal error:  Uncaught Error: Call to undefined method Database::prepare() in /home/ujjalfmc/public_html/hrm.ujjalfm.com/core/classes/User.php:11
+Stack trace:
+#0 /home/ujjalfmc/public_html/hrm.ujjalfm.com/auth/login_handler.php(16): User->login()
+#1 {main}
+  thrown in /home/ujjalfmc/public_html/hrm.ujjalfm.com/core/classes/User.php on line 11
+[11-Oct-2025 19:55:15 UTC] PHP Fatal error:  Uncaught Error: Call to undefined method Database::query() in /home/ujjalfmc/public_html/hrm.ujjalfm.com/core/classes/User.php:17
+Stack trace:
+#0 /home/ujjalfmc/public_html/hrm.ujjalfm.com/auth/login_handler.php(16): User->login()
+#1 {main}
+  thrown in /home/ujjalfmc/public_html/hrm.ujjalfm.com/core/classes/User.php on line 17
+[11-Oct-2025 19:57:00 UTC] PHP Fatal error:  Uncaught Error: Undefined constant "DB_PASSWORD" in /home/ujjalfmc/public_html/hrm.ujjalfm.com/core/classes/Database.php:16
+Stack trace:
+#0 /home/ujjalfmc/public_html/hrm.ujjalfm.com/core/classes/Database.php(25): Database->__construct()
+#1 /home/ujjalfmc/public_html/hrm.ujjalfm.com/auth/login_handler.php(11): Database::getInstance()
+#2 {main}
+  thrown in /home/ujjalfmc/public_html/hrm.ujjalfm.com/core/classes/Database.php on line 16
+[11-Oct-2025 19:58:46 UTC] PHP Fatal error:  Uncaught Error: Undefined constant "DB_PASSWORD" in /home/ujjalfmc/public_html/hrm.ujjalfm.com/core/classes/Database.php:16
+Stack trace:
+#0 /home/ujjalfmc/public_html/hrm.ujjalfm.com/core/classes/Database.php(25): Database->__construct()
+#1 /home/ujjalfmc/public_html/hrm.ujjalfm.com/auth/login_handler.php(11): Database::getInstance()
+#2 {main}
+  thrown in /home/ujjalfmc/public_html/hrm.ujjalfm.com/core/classes/Database.php on line 16
+[11-Oct-2025 20:04:08 UTC] PHP Fatal error:  Uncaught Error: Class "Database" not found in /home/ujjalfmc/public_html/hrm.ujjalfm.com/core/init.php:27
+Stack trace:
+#0 /home/ujjalfmc/public_html/hrm.ujjalfm.com/auth/login_handler.php(4): require_once()
+#1 {main}
+  thrown in /home/ujjalfmc/public_html/hrm.ujjalfm.com/core/init.php on line 27
+[11-Oct-2025 20:05:08 UTC] PHP Fatal error:  Uncaught Error: Undefined constant "DB_PASSWORD" in /home/ujjalfmc/public_html/hrm.ujjalfm.com/core/classes/Database.php:16
+Stack trace:
+#0 /home/ujjalfmc/public_html/hrm.ujjalfm.com/core/classes/Database.php(25): Database->__construct()
+#1 /home/ujjalfmc/public_html/hrm.ujjalfm.com/core/init.php(27): Database::getInstance()
+#2 /home/ujjalfmc/public_html/hrm.ujjalfm.com/auth/login_handler.php(4): require_once('/home/ujjalfmc/...')
+#3 {main}
+  thrown in /home/ujjalfmc/public_html/hrm.ujjalfm.com/core/classes/Database.php on line 16
+[11-Oct-2025 20:11:59 UTC] PHP Warning:  require_once(core/init.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/hrm.ujjalfm.com/auth/login.php on line 11
+[11-Oct-2025 20:11:59 UTC] PHP Fatal error:  Uncaught Error: Failed opening required 'core/init.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/hrm.ujjalfm.com/auth/login.php:11
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/hrm.ujjalfm.com/auth/login.php on line 11
+[11-Oct-2025 20:12:57 UTC] PHP Warning:  require_once(core/init.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/hrm.ujjalfm.com/auth/login.php on line 11
+[11-Oct-2025 20:12:57 UTC] PHP Fatal error:  Uncaught Error: Failed opening required 'core/init.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/hrm.ujjalfm.com/auth/login.php:11
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/hrm.ujjalfm.com/auth/login.php on line 11
+[11-Oct-2025 20:12:59 UTC] PHP Warning:  require_once(core/init.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/hrm.ujjalfm.com/auth/login.php on line 11
+[11-Oct-2025 20:12:59 UTC] PHP Fatal error:  Uncaught Error: Failed opening required 'core/init.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/hrm.ujjalfm.com/auth/login.php:11
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/hrm.ujjalfm.com/auth/login.php on line 11
+[11-Oct-2025 20:13:10 UTC] PHP Warning:  require_once(core/init.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/hrm.ujjalfm.com/auth/login.php on line 11
+[11-Oct-2025 20:13:10 UTC] PHP Fatal error:  Uncaught Error: Failed opening required 'core/init.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/hrm.ujjalfm.com/auth/login.php:11
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/hrm.ujjalfm.com/auth/login.php on line 11
+[11-Oct-2025 20:13:12 UTC] PHP Warning:  require_once(core/init.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/hrm.ujjalfm.com/auth/login.php on line 11
+[11-Oct-2025 20:13:12 UTC] PHP Fatal error:  Uncaught Error: Failed opening required 'core/init.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/hrm.ujjalfm.com/auth/login.php:11
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/hrm.ujjalfm.com/auth/login.php on line 11
+[13-Oct-2025 10:11:09 Asia/Dhaka] PHP Warning:  Undefined variable $pdo in /home/ujjalfmc/public_html/hrm.ujjalfm.com/auth/logout.php on line 4
+[13-Oct-2025 10:11:09 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined method User::logout() in /home/ujjalfmc/public_html/hrm.ujjalfm.com/auth/logout.php:5
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/hrm.ujjalfm.com/auth/logout.php on line 5
+[13-Oct-2025 10:11:19 Asia/Dhaka] PHP Warning:  Undefined variable $pdo in /home/ujjalfmc/public_html/hrm.ujjalfm.com/auth/logout.php on line 4
+[13-Oct-2025 10:11:19 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined method User::logout() in /home/ujjalfmc/public_html/hrm.ujjalfm.com/auth/logout.php:5
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/hrm.ujjalfm.com/auth/logout.php on line 5
+[13-Oct-2025 10:11:24 Asia/Dhaka] PHP Warning:  Undefined variable $pdo in /home/ujjalfmc/public_html/hrm.ujjalfm.com/auth/logout.php on line 4
+[13-Oct-2025 10:11:24 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined method User::logout() in /home/ujjalfmc/public_html/hrm.ujjalfm.com/auth/logout.php:5
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/hrm.ujjalfm.com/auth/logout.php on line 5
+[13-Oct-2025 10:12:05 Asia/Dhaka] PHP Warning:  Undefined variable $pdo in /home/ujjalfmc/public_html/hrm.ujjalfm.com/auth/logout.php on line 4
+[13-Oct-2025 10:12:05 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined method User::logout() in /home/ujjalfmc/public_html/hrm.ujjalfm.com/auth/logout.php:5
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/hrm.ujjalfm.com/auth/logout.php on line 5
+[17-Oct-2025 15:41:36 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$role in /home/ujjalfmc/public_html/hrm.ujjalfm.com/core/classes/User.php on line 25
+[17-Oct-2025 17:38:43 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$role in /home/ujjalfmc/public_html/hrm.ujjalfm.com/core/classes/User.php on line 25
+[17-Oct-2025 17:44:41 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$role in /home/ujjalfmc/public_html/hrm.ujjalfm.com/core/classes/User.php on line 25
+[17-Oct-2025 17:48:07 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$role in /home/ujjalfmc/public_html/hrm.ujjalfm.com/core/classes/User.php on line 25
+[17-Oct-2025 17:48:40 Asia/Dhaka] PHP Warning:  Undefined variable $pdo in /home/ujjalfmc/public_html/hrm.ujjalfm.com/auth/logout.php on line 4
+[17-Oct-2025 17:48:40 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined method User::logout() in /home/ujjalfmc/public_html/hrm.ujjalfm.com/auth/logout.php:5
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/hrm.ujjalfm.com/auth/logout.php on line 5
+[17-Oct-2025 17:49:08 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$role in /home/ujjalfmc/public_html/hrm.ujjalfm.com/core/classes/User.php on line 25
+[17-Oct-2025 17:59:11 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$role in /home/ujjalfmc/public_html/hrm.ujjalfm.com/core/classes/User.php on line 25
+[17-Oct-2025 17:59:48 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$role in /home/ujjalfmc/public_html/hrm.ujjalfm.com/core/classes/User.php on line 25
+[17-Oct-2025 18:01:44 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$role in /home/ujjalfmc/public_html/hrm.ujjalfm.com/core/classes/User.php on line 25
+[17-Oct-2025 18:04:30 Asia/Dhaka] PHP Warning:  Undefined variable $pdo in /home/ujjalfmc/public_html/hrm.ujjalfm.com/auth/logout.php on line 4
+[17-Oct-2025 18:04:30 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined method User::logout() in /home/ujjalfmc/public_html/hrm.ujjalfm.com/auth/logout.php:5
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/hrm.ujjalfm.com/auth/logout.php on line 5
+[17-Oct-2025 18:04:36 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$role in /home/ujjalfmc/public_html/hrm.ujjalfm.com/core/classes/User.php on line 25
+[17-Oct-2025 18:05:00 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$role in /home/ujjalfmc/public_html/hrm.ujjalfm.com/core/classes/User.php on line 25
+[17-Oct-2025 19:05:50 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$role in /home/ujjalfmc/public_html/hrm.ujjalfm.com/core/classes/User.php on line 25
+[17-Oct-2025 21:32:02 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$role in /home/ujjalfmc/public_html/hrm.ujjalfm.com/core/classes/User.php on line 25
+[18-Oct-2025 10:44:31 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$role in /home/ujjalfmc/public_html/hrm.ujjalfm.com/core/classes/User.php on line 25
+[18-Oct-2025 10:59:02 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$role in /home/ujjalfmc/public_html/hrm.ujjalfm.com/core/classes/User.php on line 25
+[18-Oct-2025 12:02:42 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$role in /home/ujjalfmc/public_html/hrm.ujjalfm.com/core/classes/User.php on line 25
+[18-Oct-2025 13:49:35 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$role in /home/ujjalfmc/public_html/hrm.ujjalfm.com/core/classes/User.php on line 25
+[18-Oct-2025 13:58:14 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$role in /home/ujjalfmc/public_html/hrm.ujjalfm.com/core/classes/User.php on line 25
+[18-Oct-2025 14:32:35 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$role in /home/ujjalfmc/public_html/hrm.ujjalfm.com/core/classes/User.php on line 25
+[18-Oct-2025 15:15:06 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$role in /home/ujjalfmc/public_html/hrm.ujjalfm.com/core/classes/User.php on line 25
+[18-Oct-2025 15:35:05 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$role in /home/ujjalfmc/public_html/hrm.ujjalfm.com/core/classes/User.php on line 25
+[18-Oct-2025 16:25:09 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$role in /home/ujjalfmc/public_html/hrm.ujjalfm.com/core/classes/User.php on line 25
+[18-Oct-2025 16:42:38 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$role in /home/ujjalfmc/public_html/hrm.ujjalfm.com/core/classes/User.php on line 25
+[18-Oct-2025 17:04:49 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$role in /home/ujjalfmc/public_html/hrm.ujjalfm.com/core/classes/User.php on line 25
+[18-Oct-2025 18:21:12 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$role in /home/ujjalfmc/public_html/hrm.ujjalfm.com/core/classes/User.php on line 25
+[18-Oct-2025 18:26:29 Asia/Dhaka] PHP Warning:  Undefined variable $pdo in /home/ujjalfmc/public_html/hrm.ujjalfm.com/auth/logout.php on line 4
+[18-Oct-2025 18:26:29 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined method User::logout() in /home/ujjalfmc/public_html/hrm.ujjalfm.com/auth/logout.php:5
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/hrm.ujjalfm.com/auth/logout.php on line 5
+[18-Oct-2025 18:26:35 Asia/Dhaka] PHP Warning:  Undefined variable $pdo in /home/ujjalfmc/public_html/hrm.ujjalfm.com/auth/logout.php on line 4
+[18-Oct-2025 18:26:35 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined method User::logout() in /home/ujjalfmc/public_html/hrm.ujjalfm.com/auth/logout.php:5
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/hrm.ujjalfm.com/auth/logout.php on line 5
+[18-Oct-2025 18:27:05 Asia/Dhaka] PHP Warning:  Undefined variable $pdo in /home/ujjalfmc/public_html/hrm.ujjalfm.com/auth/logout.php on line 4
+[18-Oct-2025 18:27:05 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined method User::logout() in /home/ujjalfmc/public_html/hrm.ujjalfm.com/auth/logout.php:5
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/hrm.ujjalfm.com/auth/logout.php on line 5
+[18-Oct-2025 18:27:51 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$role in /home/ujjalfmc/public_html/hrm.ujjalfm.com/core/classes/User.php on line 25
+[18-Oct-2025 20:37:15 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$role in /home/ujjalfmc/public_html/hrm.ujjalfm.com/core/classes/User.php on line 25
+[18-Oct-2025 21:45:58 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$role in /home/ujjalfmc/public_html/hrm.ujjalfm.com/core/classes/User.php on line 25
+[22-Oct-2025 14:32:11 Asia/Dhaka] PHP Warning:  Undefined variable $pdo in /home/ujjalfmc/public_html/saas.ujjalfm.com/auth/logout.php on line 4
+[22-Oct-2025 14:32:11 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined method User::logout() in /home/ujjalfmc/public_html/saas.ujjalfm.com/auth/logout.php:5
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/auth/logout.php on line 5
+[22-Oct-2025 14:32:17 Asia/Dhaka] PHP Warning:  Undefined variable $pdo in /home/ujjalfmc/public_html/saas.ujjalfm.com/auth/logout.php on line 4
+[22-Oct-2025 14:32:17 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined method User::logout() in /home/ujjalfmc/public_html/saas.ujjalfm.com/auth/logout.php:5
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/auth/logout.php on line 5
+[22-Oct-2025 14:32:53 Asia/Dhaka] PHP Warning:  Undefined variable $pdo in /home/ujjalfmc/public_html/saas.ujjalfm.com/auth/logout.php on line 4
+[22-Oct-2025 14:32:53 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined method User::logout() in /home/ujjalfmc/public_html/saas.ujjalfm.com/auth/logout.php:5
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/auth/logout.php on line 5
+[22-Oct-2025 14:37:03 Asia/Dhaka] PHP Fatal error:  Uncaught ArgumentCountError: Too few arguments to function User::__construct(), 0 passed in /home/ujjalfmc/public_html/saas.ujjalfm.com/auth/logout.php on line 7 and exactly 1 expected in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/User.php:9
+Stack trace:
+#0 /home/ujjalfmc/public_html/saas.ujjalfm.com/auth/logout.php(7): User->__construct()
+#1 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/User.php on line 9
+[22-Oct-2025 14:37:16 Asia/Dhaka] PHP Fatal error:  Uncaught ArgumentCountError: Too few arguments to function User::__construct(), 0 passed in /home/ujjalfmc/public_html/saas.ujjalfm.com/auth/logout.php on line 7 and exactly 1 expected in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/User.php:9
+Stack trace:
+#0 /home/ujjalfmc/public_html/saas.ujjalfm.com/auth/logout.php(7): User->__construct()
+#1 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/User.php on line 9
+[22-Oct-2025 14:38:56 Asia/Dhaka] PHP Warning:  Undefined array key "username" in /home/ujjalfmc/public_html/saas.ujjalfm.com/auth/login_handler.php on line 8
+[22-Oct-2025 14:38:56 Asia/Dhaka] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'username' in 'WHERE' in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Database.php:49
+Stack trace:
+#0 /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Database.php(49): PDOStatement->execute()
+#1 /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/User.php(17): Database->query()
+#2 /home/ujjalfmc/public_html/saas.ujjalfm.com/auth/login_handler.php(13): User->login()
+#3 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Database.php on line 49
+[22-Oct-2025 14:41:13 Asia/Dhaka] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'username' in 'WHERE' in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Database.php:49
+Stack trace:
+#0 /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Database.php(49): PDOStatement->execute()
+#1 /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/User.php(17): Database->query()
+#2 /home/ujjalfmc/public_html/saas.ujjalfm.com/auth/login_handler.php(17): User->login()
+#3 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Database.php on line 49
+[22-Oct-2025 14:42:58 Asia/Dhaka] Login error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'name' in 'SELECT'
+[22-Oct-2025 14:43:22 Asia/Dhaka] Login error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'name' in 'SELECT'
+[22-Oct-2025 14:44:03 Asia/Dhaka] Login error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'name' in 'SELECT'
+[22-Oct-2025 14:46:41 Asia/Dhaka] Login error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'name' in 'SELECT'
+[22-Oct-2025 16:37:04 Asia/Dhaka] Login error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'name' in 'SELECT'
+[24-Oct-2025 08:52:13 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined function is_admin_logged_in() in /home/ujjalfmc/public_html/saas.ujjalfm.com/auth/login.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/auth/login.php on line 8
+[24-Oct-2025 08:52:20 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined function is_admin_logged_in() in /home/ujjalfmc/public_html/saas.ujjalfm.com/auth/login.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/auth/login.php on line 8

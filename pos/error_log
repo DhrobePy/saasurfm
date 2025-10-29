@@ -1,0 +1,746 @@
+[24-Oct-2025 01:58:41 Asia/Dhaka] PHP Warning:  Undefined array key "user_display_name" in /home/ujjalfmc/public_html/saas.ujjalfm.com/pos/index.php on line 157
+[24-Oct-2025 04:14:22 Asia/Dhaka] POS Data Loading Error: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined
+Stack trace: #0 /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Database.php(49): PDOStatement->execute()
+#1 /home/ujjalfmc/public_html/saas.ujjalfm.com/pos/index.php(117): Database->query()
+#2 {main}
+[24-Oct-2025 04:15:46 Asia/Dhaka] POS Access - User ID: 1
+[24-Oct-2025 04:15:46 Asia/Dhaka] POS Access - User Role: Superadmin
+[24-Oct-2025 04:15:46 Asia/Dhaka] Employee check for user_id 1: 1
+[24-Oct-2025 04:15:46 Asia/Dhaka] Branch identified: ID=4, Name=Head Office
+[24-Oct-2025 04:15:46 Asia/Dhaka] Executing product query with branch_id: 4
+[24-Oct-2025 04:15:46 Asia/Dhaka] POS Data Loading Error: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined
+Stack: #0 /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Database.php(49): PDOStatement->execute()
+#1 /home/ujjalfmc/public_html/saas.ujjalfm.com/pos/index.php(140): Database->query()
+#2 {main}
+[24-Oct-2025 04:16:33 Asia/Dhaka] POS Access - User ID: 3
+[24-Oct-2025 04:16:33 Asia/Dhaka] POS Access - User Role: accountspos-srg
+[24-Oct-2025 04:16:33 Asia/Dhaka] Employee check for user_id 3: 1
+[24-Oct-2025 04:16:33 Asia/Dhaka] Branch identified: ID=1, Name=Sirajgonj
+[24-Oct-2025 04:16:33 Asia/Dhaka] Executing product query with branch_id: 1
+[24-Oct-2025 04:16:33 Asia/Dhaka] POS Data Loading Error: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined
+Stack: #0 /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Database.php(49): PDOStatement->execute()
+#1 /home/ujjalfmc/public_html/saas.ujjalfm.com/pos/index.php(140): Database->query()
+#2 {main}
+[24-Oct-2025 04:18:31 Asia/Dhaka] POS Access - User ID: 3
+[24-Oct-2025 04:18:31 Asia/Dhaka] POS Access - User Role: accountspos-srg
+[24-Oct-2025 04:18:31 Asia/Dhaka] Employee check for user_id 3: 1
+[24-Oct-2025 04:18:31 Asia/Dhaka] Branch identified: ID=1, Name=Sirajgonj
+[24-Oct-2025 04:18:31 Asia/Dhaka] Executing product query with branch_id: 1
+[24-Oct-2025 04:18:31 Asia/Dhaka] POS Data Loading Error: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined
+Stack: #0 /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Database.php(49): PDOStatement->execute()
+#1 /home/ujjalfmc/public_html/saas.ujjalfm.com/pos/index.php(140): Database->query()
+#2 {main}
+[24-Oct-2025 04:26:12 Asia/Dhaka] POS Access - User ID: 3
+[24-Oct-2025 04:26:12 Asia/Dhaka] POS Access - User Role: accountspos-srg
+[24-Oct-2025 04:26:12 Asia/Dhaka] Employee check for user_id 3: 1
+[24-Oct-2025 04:26:12 Asia/Dhaka] Branch identified: ID=1, Name=Sirajgonj
+[24-Oct-2025 04:26:12 Asia/Dhaka] Executing product query with branch_id: 1
+[24-Oct-2025 04:26:12 Asia/Dhaka] Raw products found: 1
+[24-Oct-2025 04:26:12 Asia/Dhaka] Products with valid pricing: 1
+[24-Oct-2025 04:26:12 Asia/Dhaka] Active prices in database: 1
+[24-Oct-2025 04:26:12 Asia/Dhaka] POS Customers found: 2
+[24-Oct-2025 04:31:36 Asia/Dhaka] POS Access - User ID: 3
+[24-Oct-2025 04:31:36 Asia/Dhaka] POS Access - User Role: accountspos-srg
+[24-Oct-2025 04:31:36 Asia/Dhaka] Employee check for user_id 3: 1
+[24-Oct-2025 04:31:36 Asia/Dhaka] Branch identified: ID=1, Name=Sirajgonj
+[24-Oct-2025 04:31:36 Asia/Dhaka] Executing product query with branch_id: 1
+[24-Oct-2025 04:31:36 Asia/Dhaka] Raw products found: 1
+[24-Oct-2025 04:31:36 Asia/Dhaka] Products with valid pricing: 1
+[24-Oct-2025 04:31:36 Asia/Dhaka] POS Customers found: 2
+[24-Oct-2025 04:35:50 Asia/Dhaka] POS Access - User ID: 3
+[24-Oct-2025 04:35:50 Asia/Dhaka] POS Access - User Role: accountspos-srg
+[24-Oct-2025 04:35:50 Asia/Dhaka] Employee check for user_id 3: 1
+[24-Oct-2025 04:35:50 Asia/Dhaka] Branch identified: ID=1, Name=Sirajgonj
+[24-Oct-2025 04:35:50 Asia/Dhaka] Executing product query with branch_id: 1
+[24-Oct-2025 04:35:50 Asia/Dhaka] Raw products found: 1
+[24-Oct-2025 04:35:50 Asia/Dhaka] Products with valid pricing: 1
+[24-Oct-2025 04:35:50 Asia/Dhaka] POS Customers found: 2
+[24-Oct-2025 04:36:02 Asia/Dhaka] POS Access - User ID: 3
+[24-Oct-2025 04:36:02 Asia/Dhaka] POS Access - User Role: accountspos-srg
+[24-Oct-2025 04:36:02 Asia/Dhaka] Employee check for user_id 3: 1
+[24-Oct-2025 04:36:02 Asia/Dhaka] Branch identified: ID=1, Name=Sirajgonj
+[24-Oct-2025 04:36:02 Asia/Dhaka] Executing product query with branch_id: 1
+[24-Oct-2025 04:36:02 Asia/Dhaka] Raw products found: 1
+[24-Oct-2025 04:36:02 Asia/Dhaka] Products with valid pricing: 1
+[24-Oct-2025 04:36:02 Asia/Dhaka] POS Customers found: 2
+[24-Oct-2025 04:40:10 Asia/Dhaka] POS Access - User ID: 3
+[24-Oct-2025 04:40:10 Asia/Dhaka] POS Access - User Role: accountspos-srg
+[24-Oct-2025 04:40:10 Asia/Dhaka] Employee check for user_id 3: 1
+[24-Oct-2025 04:40:10 Asia/Dhaka] Branch identified: ID=1, Name=Sirajgonj
+[24-Oct-2025 04:40:10 Asia/Dhaka] Executing product query with branch_id: 1
+[24-Oct-2025 04:40:10 Asia/Dhaka] Raw products found: 1
+[24-Oct-2025 04:40:10 Asia/Dhaka] Products with valid pricing: 1
+[24-Oct-2025 04:40:10 Asia/Dhaka] POS Customers found: 2
+[24-Oct-2025 04:41:21 Asia/Dhaka] POS Access - User ID: 1
+[24-Oct-2025 04:41:21 Asia/Dhaka] POS Access - User Role: Superadmin
+[24-Oct-2025 04:41:21 Asia/Dhaka] Employee check for user_id 1: 1
+[24-Oct-2025 04:41:21 Asia/Dhaka] Branch identified: ID=4, Name=Head Office
+[24-Oct-2025 04:41:21 Asia/Dhaka] Executing product query with branch_id: 4
+[24-Oct-2025 04:41:21 Asia/Dhaka] Raw products found: 1
+[24-Oct-2025 04:41:21 Asia/Dhaka] Products with valid pricing: 1
+[24-Oct-2025 04:41:21 Asia/Dhaka] POS Customers found: 2
+[24-Oct-2025 04:47:33 Asia/Dhaka] POS Access - User ID: 1
+[24-Oct-2025 04:47:33 Asia/Dhaka] POS Access - User Role: Superadmin
+[24-Oct-2025 04:47:33 Asia/Dhaka] Employee check for user_id 1: 1
+[24-Oct-2025 04:47:33 Asia/Dhaka] Branch identified: ID=4, Name=Head Office
+[24-Oct-2025 04:47:33 Asia/Dhaka] Executing product query with branch_id: 4 Params: Array
+(
+    [branch_id_inv] => 4
+)
+
+[24-Oct-2025 04:47:33 Asia/Dhaka] Raw products found: 1
+[24-Oct-2025 04:47:33 Asia/Dhaka] Products with valid pricing (passed to JS): 1
+[24-Oct-2025 04:47:33 Asia/Dhaka] POS Customers found: 2
+[24-Oct-2025 04:58:28 Asia/Dhaka] POS AJAX Error: Unauthorized access
+[24-Oct-2025 04:58:41 Asia/Dhaka] POS AJAX Error: Invalid action specified
+[24-Oct-2025 05:01:45 Asia/Dhaka] POS AJAX Error: Invalid action specified
+[24-Oct-2025 05:01:57 Asia/Dhaka] POS AJAX Error: Invalid action specified
+[24-Oct-2025 05:04:16 Asia/Dhaka] POS Access - User ID: 1 Role: Superadmin
+[24-Oct-2025 05:04:16 Asia/Dhaka] Branch identified: ID=4, Name=Head Office
+[24-Oct-2025 05:04:16 Asia/Dhaka] Executing GLOBAL product query. Inv Branch: 4
+[24-Oct-2025 05:04:16 Asia/Dhaka] Raw products found: 1
+[24-Oct-2025 05:04:16 Asia/Dhaka] Valid products passed to JS: 1
+[24-Oct-2025 05:04:16 Asia/Dhaka] POS Customers found: 2
+[24-Oct-2025 05:04:48 Asia/Dhaka] POS Access - User ID: 3 Role: accountspos-srg
+[24-Oct-2025 05:04:48 Asia/Dhaka] Branch identified: ID=1, Name=Sirajgonj
+[24-Oct-2025 05:04:48 Asia/Dhaka] Executing GLOBAL product query. Inv Branch: 1
+[24-Oct-2025 05:04:48 Asia/Dhaka] Raw products found: 1
+[24-Oct-2025 05:04:48 Asia/Dhaka] Valid products passed to JS: 1
+[24-Oct-2025 05:04:48 Asia/Dhaka] POS Customers found: 2
+[24-Oct-2025 05:08:36 Asia/Dhaka] POS Access - User ID: 3 Role: accountspos-srg
+[24-Oct-2025 05:08:36 Asia/Dhaka] Branch identified: ID=1, Name=Sirajgonj
+[24-Oct-2025 05:08:36 Asia/Dhaka] Executing GLOBAL product query. Inv Branch: 1
+[24-Oct-2025 05:08:36 Asia/Dhaka] Raw products found: 1
+[24-Oct-2025 05:08:36 Asia/Dhaka] Valid products passed to JS: 1
+[24-Oct-2025 05:08:36 Asia/Dhaka] POS Customers found: 2
+[24-Oct-2025 05:13:32 Asia/Dhaka] POS Access - User ID: 3 Role: accountspos-srg
+[24-Oct-2025 05:13:32 Asia/Dhaka] Branch identified: ID=1, Name=Sirajgonj
+[24-Oct-2025 05:13:32 Asia/Dhaka] Executing GLOBAL product query. Inv Branch: 1
+[24-Oct-2025 05:13:32 Asia/Dhaka] Raw products found: 1
+[24-Oct-2025 05:13:32 Asia/Dhaka] Valid products passed to JS: 1
+[24-Oct-2025 05:13:32 Asia/Dhaka] POS Customers found: 2
+[24-Oct-2025 05:14:36 Asia/Dhaka] POS Access - User ID: 3 Role: accountspos-srg
+[24-Oct-2025 05:14:36 Asia/Dhaka] Branch identified: ID=1, Name=Sirajgonj
+[24-Oct-2025 05:14:36 Asia/Dhaka] Executing GLOBAL product query. Inv Branch: 1
+[24-Oct-2025 05:14:36 Asia/Dhaka] Raw products found: 1
+[24-Oct-2025 05:14:36 Asia/Dhaka] Valid products passed to JS: 1
+[24-Oct-2025 05:14:36 Asia/Dhaka] POS Customers found: 2
+[24-Oct-2025 05:15:06 Asia/Dhaka] POS Access - User ID: 3 Role: accountspos-srg
+[24-Oct-2025 05:15:06 Asia/Dhaka] Branch identified: ID=1, Name=Sirajgonj
+[24-Oct-2025 05:15:06 Asia/Dhaka] Executing GLOBAL product query. Inv Branch: 1
+[24-Oct-2025 05:15:06 Asia/Dhaka] Raw products found: 1
+[24-Oct-2025 05:15:06 Asia/Dhaka] Valid products passed to JS: 1
+[24-Oct-2025 05:15:06 Asia/Dhaka] POS Customers found: 2
+[24-Oct-2025 05:15:15 Asia/Dhaka] POS Access - User ID: 3 Role: accountspos-srg
+[24-Oct-2025 05:15:15 Asia/Dhaka] Branch identified: ID=1, Name=Sirajgonj
+[24-Oct-2025 05:15:15 Asia/Dhaka] Executing GLOBAL product query. Inv Branch: 1
+[24-Oct-2025 05:15:15 Asia/Dhaka] Raw products found: 1
+[24-Oct-2025 05:15:15 Asia/Dhaka] Valid products passed to JS: 1
+[24-Oct-2025 05:15:15 Asia/Dhaka] POS Customers found: 2
+[24-Oct-2025 05:16:36 Asia/Dhaka] POS Access - User ID: 3 Role: accountspos-srg
+[24-Oct-2025 05:16:36 Asia/Dhaka] Branch identified: ID=1, Name=Sirajgonj
+[24-Oct-2025 05:16:36 Asia/Dhaka] Executing GLOBAL product query. Inv Branch: 1
+[24-Oct-2025 05:16:36 Asia/Dhaka] Raw products found: 1
+[24-Oct-2025 05:16:36 Asia/Dhaka] Valid products passed to JS: 1
+[24-Oct-2025 05:16:36 Asia/Dhaka] POS Customers found: 2
+[24-Oct-2025 05:16:50 Asia/Dhaka] POS Access - User ID: 1 Role: Superadmin
+[24-Oct-2025 05:16:50 Asia/Dhaka] Branch identified: ID=4, Name=Head Office
+[24-Oct-2025 05:16:50 Asia/Dhaka] Executing GLOBAL product query. Inv Branch: 4
+[24-Oct-2025 05:16:50 Asia/Dhaka] Raw products found: 1
+[24-Oct-2025 05:16:50 Asia/Dhaka] Valid products passed to JS: 1
+[24-Oct-2025 05:16:50 Asia/Dhaka] POS Customers found: 2
+[24-Oct-2025 05:17:02 Asia/Dhaka] [DEBUG PAGE] Branch ID determined: 4
+[24-Oct-2025 05:17:02 Asia/Dhaka] [DEBUG PAGE] Raw products found: 1
+[24-Oct-2025 05:17:02 Asia/Dhaka] [DEBUG PAGE] Valid products count: 1
+[24-Oct-2025 09:09:09 Asia/Dhaka] POS Access - User ID: 1
+[24-Oct-2025 09:09:09 Asia/Dhaka] POS Access - User Role: Superadmin
+[24-Oct-2025 09:09:09 Asia/Dhaka] Branch identified: ID=4, Name=Head Office
+[24-Oct-2025 09:09:09 Asia/Dhaka] Executing product query with branch_id: 4
+[24-Oct-2025 09:09:09 Asia/Dhaka] Raw products found: 1
+[24-Oct-2025 09:09:09 Asia/Dhaka] Products with valid pricing: 1
+[24-Oct-2025 09:09:09 Asia/Dhaka] POS Customers found: 2
+[24-Oct-2025 09:09:31 Asia/Dhaka] POS Access - User ID: 1
+[24-Oct-2025 09:09:31 Asia/Dhaka] POS Access - User Role: Superadmin
+[24-Oct-2025 09:09:31 Asia/Dhaka] Branch identified: ID=4, Name=Head Office
+[24-Oct-2025 09:09:31 Asia/Dhaka] Executing product query with branch_id: 4
+[24-Oct-2025 09:09:31 Asia/Dhaka] Raw products found: 1
+[24-Oct-2025 09:09:31 Asia/Dhaka] Products with valid pricing: 1
+[24-Oct-2025 09:09:31 Asia/Dhaka] POS Customers found: 2
+[24-Oct-2025 09:10:08 Asia/Dhaka] POS Access - User ID: 1
+[24-Oct-2025 09:10:08 Asia/Dhaka] POS Access - User Role: Superadmin
+[24-Oct-2025 09:10:08 Asia/Dhaka] Branch identified: ID=4, Name=Head Office
+[24-Oct-2025 09:10:08 Asia/Dhaka] Executing product query with branch_id: 4
+[24-Oct-2025 09:10:08 Asia/Dhaka] Raw products found: 1
+[24-Oct-2025 09:10:08 Asia/Dhaka] Products with valid pricing: 1
+[24-Oct-2025 09:10:08 Asia/Dhaka] POS Customers found: 2
+[24-Oct-2025 09:11:25 Asia/Dhaka] POS Access - User ID: 1
+[24-Oct-2025 09:11:25 Asia/Dhaka] POS Access - User Role: Superadmin
+[24-Oct-2025 09:11:25 Asia/Dhaka] Branch identified: ID=4, Name=Head Office
+[24-Oct-2025 09:11:25 Asia/Dhaka] Executing product query with branch_id: 4
+[24-Oct-2025 09:11:25 Asia/Dhaka] Raw products found: 1
+[24-Oct-2025 09:11:25 Asia/Dhaka] Products with valid pricing: 1
+[24-Oct-2025 09:11:25 Asia/Dhaka] POS Customers found: 2
+[24-Oct-2025 09:11:25 Asia/Dhaka] PHP Warning:  Undefined variable $pos_allowed_roles in /home/ujjalfmc/public_html/saas.ujjalfm.com/templates/header.php on line 210
+[24-Oct-2025 09:11:25 Asia/Dhaka] PHP Fatal error:  Uncaught TypeError: in_array(): Argument #2 ($haystack) must be of type array, null given in /home/ujjalfmc/public_html/saas.ujjalfm.com/templates/header.php:210
+Stack trace:
+#0 /home/ujjalfmc/public_html/saas.ujjalfm.com/pos/index.php(200): require_once()
+#1 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/templates/header.php on line 210
+[24-Oct-2025 09:11:28 Asia/Dhaka] POS Access - User ID: 1
+[24-Oct-2025 09:11:28 Asia/Dhaka] POS Access - User Role: Superadmin
+[24-Oct-2025 09:11:28 Asia/Dhaka] Branch identified: ID=4, Name=Head Office
+[24-Oct-2025 09:11:28 Asia/Dhaka] Executing product query with branch_id: 4
+[24-Oct-2025 09:11:28 Asia/Dhaka] Raw products found: 1
+[24-Oct-2025 09:11:28 Asia/Dhaka] Products with valid pricing: 1
+[24-Oct-2025 09:11:28 Asia/Dhaka] POS Customers found: 2
+[24-Oct-2025 09:11:28 Asia/Dhaka] PHP Warning:  Undefined variable $pos_allowed_roles in /home/ujjalfmc/public_html/saas.ujjalfm.com/templates/header.php on line 210
+[24-Oct-2025 09:11:28 Asia/Dhaka] PHP Fatal error:  Uncaught TypeError: in_array(): Argument #2 ($haystack) must be of type array, null given in /home/ujjalfmc/public_html/saas.ujjalfm.com/templates/header.php:210
+Stack trace:
+#0 /home/ujjalfmc/public_html/saas.ujjalfm.com/pos/index.php(200): require_once()
+#1 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/templates/header.php on line 210
+[24-Oct-2025 09:13:10 Asia/Dhaka] POS Access - User ID: 1
+[24-Oct-2025 09:13:10 Asia/Dhaka] POS Access - User Role: Superadmin
+[24-Oct-2025 09:13:10 Asia/Dhaka] Branch identified: ID=4, Name=Head Office
+[24-Oct-2025 09:13:10 Asia/Dhaka] Executing product query with branch_id: 4
+[24-Oct-2025 09:13:10 Asia/Dhaka] Raw products found: 1
+[24-Oct-2025 09:13:10 Asia/Dhaka] Products with valid pricing: 1
+[24-Oct-2025 09:13:10 Asia/Dhaka] POS Customers found: 2
+[24-Oct-2025 09:13:10 Asia/Dhaka] PHP Warning:  Undefined variable $pos_allowed_roles in /home/ujjalfmc/public_html/saas.ujjalfm.com/templates/header.php on line 210
+[24-Oct-2025 09:13:10 Asia/Dhaka] PHP Fatal error:  Uncaught TypeError: in_array(): Argument #2 ($haystack) must be of type array, null given in /home/ujjalfmc/public_html/saas.ujjalfm.com/templates/header.php:210
+Stack trace:
+#0 /home/ujjalfmc/public_html/saas.ujjalfm.com/pos/index.php(200): require_once()
+#1 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/templates/header.php on line 210
+[24-Oct-2025 09:13:20 Asia/Dhaka] POS Access - User ID: 1
+[24-Oct-2025 09:13:20 Asia/Dhaka] POS Access - User Role: Superadmin
+[24-Oct-2025 09:13:20 Asia/Dhaka] Branch identified: ID=4, Name=Head Office
+[24-Oct-2025 09:13:20 Asia/Dhaka] Executing product query with branch_id: 4
+[24-Oct-2025 09:13:20 Asia/Dhaka] Raw products found: 1
+[24-Oct-2025 09:13:20 Asia/Dhaka] Products with valid pricing: 1
+[24-Oct-2025 09:13:20 Asia/Dhaka] POS Customers found: 2
+[24-Oct-2025 09:30:15 Asia/Dhaka] POS Access - User ID: 1
+[24-Oct-2025 09:30:15 Asia/Dhaka] POS Access - User Role: Superadmin
+[24-Oct-2025 09:30:15 Asia/Dhaka] POS Access - Display Name: User
+[24-Oct-2025 09:30:15 Asia/Dhaka] Branch identified: ID=4, Name=Head Office
+[24-Oct-2025 09:30:15 Asia/Dhaka] Executing product query with branch_id: 4
+[24-Oct-2025 09:30:15 Asia/Dhaka] Raw products found: 1
+[24-Oct-2025 09:30:15 Asia/Dhaka] Products with valid pricing: 1
+[24-Oct-2025 09:30:15 Asia/Dhaka] POS Customers found: 2
+[24-Oct-2025 09:30:29 Asia/Dhaka] POS Access - User ID: 1
+[24-Oct-2025 09:30:29 Asia/Dhaka] POS Access - User Role: Superadmin
+[24-Oct-2025 09:30:29 Asia/Dhaka] POS Access - Display Name: User
+[24-Oct-2025 09:30:29 Asia/Dhaka] Branch identified: ID=4, Name=Head Office
+[24-Oct-2025 09:30:29 Asia/Dhaka] Executing product query with branch_id: 4
+[24-Oct-2025 09:30:29 Asia/Dhaka] Raw products found: 1
+[24-Oct-2025 09:30:29 Asia/Dhaka] Products with valid pricing: 1
+[24-Oct-2025 09:30:29 Asia/Dhaka] POS Customers found: 2
+[24-Oct-2025 09:34:00 Asia/Dhaka] POS Access - User ID: 1
+[24-Oct-2025 09:34:00 Asia/Dhaka] POS Access - User Role: Superadmin
+[24-Oct-2025 09:34:00 Asia/Dhaka] POS Access - Display Name: User
+[24-Oct-2025 09:34:00 Asia/Dhaka] Branch identified: ID=4, Name=Head Office
+[24-Oct-2025 09:34:00 Asia/Dhaka] Executing product query with branch_id: 4
+[24-Oct-2025 09:34:00 Asia/Dhaka] Raw products found: 1
+[24-Oct-2025 09:34:00 Asia/Dhaka] Products with valid pricing: 1
+[24-Oct-2025 09:34:00 Asia/Dhaka] POS Customers found: 2
+[24-Oct-2025 09:41:37 Asia/Dhaka] POS Access - User ID: 1
+[24-Oct-2025 09:41:37 Asia/Dhaka] POS Access - User Role: Superadmin
+[24-Oct-2025 09:41:37 Asia/Dhaka] POS Access - Display Name: User
+[24-Oct-2025 09:41:37 Asia/Dhaka] Branch identified: ID=4, Name=Head Office
+[24-Oct-2025 09:41:37 Asia/Dhaka] Executing product query with branch_id: 4
+[24-Oct-2025 09:41:37 Asia/Dhaka] Raw products found: 1
+[24-Oct-2025 09:41:37 Asia/Dhaka] Products with valid pricing: 1
+[24-Oct-2025 09:41:37 Asia/Dhaka] POS Customers found: 2
+[24-Oct-2025 09:44:03 Asia/Dhaka] POS Access - User ID: 1
+[24-Oct-2025 09:44:03 Asia/Dhaka] POS Access - User Role: Superadmin
+[24-Oct-2025 09:44:03 Asia/Dhaka] POS Access - Display Name: User
+[24-Oct-2025 09:44:03 Asia/Dhaka] Branch identified: ID=4, Name=Head Office
+[24-Oct-2025 09:44:03 Asia/Dhaka] Executing product query with branch_id: 4
+[24-Oct-2025 09:44:03 Asia/Dhaka] Raw products found: 1
+[24-Oct-2025 09:44:03 Asia/Dhaka] Products with valid pricing: 1
+[24-Oct-2025 09:44:03 Asia/Dhaka] POS Customers found: 2
+[24-Oct-2025 09:44:48 Asia/Dhaka] POS Access - User ID: 1
+[24-Oct-2025 09:44:48 Asia/Dhaka] POS Access - User Role: Superadmin
+[24-Oct-2025 09:44:48 Asia/Dhaka] POS Access - Display Name: User
+[24-Oct-2025 09:44:48 Asia/Dhaka] Branch identified: ID=4, Name=Head Office
+[24-Oct-2025 09:44:48 Asia/Dhaka] Executing product query with branch_id: 4
+[24-Oct-2025 09:44:48 Asia/Dhaka] Raw products found: 1
+[24-Oct-2025 09:44:48 Asia/Dhaka] Products with valid pricing: 1
+[24-Oct-2025 09:44:48 Asia/Dhaka] POS Customers found: 2
+[24-Oct-2025 09:45:16 Asia/Dhaka] POS Access - User ID: 1
+[24-Oct-2025 09:45:16 Asia/Dhaka] POS Access - User Role: Superadmin
+[24-Oct-2025 09:45:16 Asia/Dhaka] POS Access - Display Name: User
+[24-Oct-2025 09:45:16 Asia/Dhaka] Branch identified: ID=4, Name=Head Office
+[24-Oct-2025 09:45:16 Asia/Dhaka] Executing product query with branch_id: 4
+[24-Oct-2025 09:45:16 Asia/Dhaka] Raw products found: 1
+[24-Oct-2025 09:45:16 Asia/Dhaka] Products with valid pricing: 1
+[24-Oct-2025 09:45:16 Asia/Dhaka] POS Customers found: 2
+[24-Oct-2025 09:45:55 Asia/Dhaka] POS Access - User ID: 1
+[24-Oct-2025 09:45:55 Asia/Dhaka] POS Access - User Role: Superadmin
+[24-Oct-2025 09:45:55 Asia/Dhaka] POS Access - Display Name: User
+[24-Oct-2025 09:45:55 Asia/Dhaka] Branch identified: ID=4, Name=Head Office
+[24-Oct-2025 09:45:55 Asia/Dhaka] Executing product query with branch_id: 4
+[24-Oct-2025 09:45:55 Asia/Dhaka] Raw products found: 1
+[24-Oct-2025 09:45:55 Asia/Dhaka] Products with valid pricing: 1
+[24-Oct-2025 09:45:55 Asia/Dhaka] POS Customers found: 2
+[24-Oct-2025 09:46:33 Asia/Dhaka] POS Access - User ID: 1
+[24-Oct-2025 09:46:33 Asia/Dhaka] POS Access - User Role: Superadmin
+[24-Oct-2025 09:46:33 Asia/Dhaka] POS Access - Display Name: User
+[24-Oct-2025 09:46:33 Asia/Dhaka] Branch identified: ID=4, Name=Head Office
+[24-Oct-2025 09:46:33 Asia/Dhaka] Executing product query with branch_id: 4
+[24-Oct-2025 09:46:33 Asia/Dhaka] Raw products found: 1
+[24-Oct-2025 09:46:33 Asia/Dhaka] Products with valid pricing: 1
+[24-Oct-2025 09:46:33 Asia/Dhaka] POS Customers found: 2
+[24-Oct-2025 09:46:46 Asia/Dhaka] POS Access - User ID: 1
+[24-Oct-2025 09:46:46 Asia/Dhaka] POS Access - User Role: Superadmin
+[24-Oct-2025 09:46:46 Asia/Dhaka] POS Access - Display Name: User
+[24-Oct-2025 09:46:46 Asia/Dhaka] Branch identified: ID=4, Name=Head Office
+[24-Oct-2025 09:46:46 Asia/Dhaka] Executing product query with branch_id: 4
+[24-Oct-2025 09:46:46 Asia/Dhaka] Raw products found: 1
+[24-Oct-2025 09:46:46 Asia/Dhaka] Products with valid pricing: 1
+[24-Oct-2025 09:46:46 Asia/Dhaka] POS Customers found: 2
+[24-Oct-2025 09:58:53 Asia/Dhaka] POS Access - User ID: 1
+[24-Oct-2025 09:58:53 Asia/Dhaka] POS Access - User Role: Superadmin
+[24-Oct-2025 09:58:53 Asia/Dhaka] POS Access - Display Name: User
+[24-Oct-2025 09:58:53 Asia/Dhaka] Branch identified: ID=4, Name=Head Office
+[24-Oct-2025 09:58:53 Asia/Dhaka] Executing product query with branch_id: 4
+[24-Oct-2025 09:58:53 Asia/Dhaka] Raw products found: 1
+[24-Oct-2025 09:58:53 Asia/Dhaka] Products with valid pricing: 1
+[24-Oct-2025 09:58:53 Asia/Dhaka] POS Customers found: 2
+[24-Oct-2025 10:00:50 Asia/Dhaka] POS Access - User ID: 1
+[24-Oct-2025 10:00:50 Asia/Dhaka] POS Access - User Role: Superadmin
+[24-Oct-2025 10:00:50 Asia/Dhaka] POS Access - Display Name: User
+[24-Oct-2025 10:00:50 Asia/Dhaka] Branch identified: ID=4, Name=Head Office
+[24-Oct-2025 10:00:50 Asia/Dhaka] Executing product query with branch_id: 4
+[24-Oct-2025 10:00:50 Asia/Dhaka] Raw products found: 1
+[24-Oct-2025 10:00:50 Asia/Dhaka] Products with valid pricing: 1
+[24-Oct-2025 10:00:50 Asia/Dhaka] POS Customers found: 2
+[24-Oct-2025 10:04:56 Asia/Dhaka] POS Access - User ID: 1
+[24-Oct-2025 10:04:56 Asia/Dhaka] POS Access - User Role: Superadmin
+[24-Oct-2025 10:04:56 Asia/Dhaka] POS Access - Display Name: User
+[24-Oct-2025 10:04:56 Asia/Dhaka] Branch identified: ID=4, Name=Head Office
+[24-Oct-2025 10:04:56 Asia/Dhaka] Executing product query with branch_id: 4
+[24-Oct-2025 10:04:56 Asia/Dhaka] Raw products found: 1
+[24-Oct-2025 10:04:56 Asia/Dhaka] Products with valid pricing: 1
+[24-Oct-2025 10:04:56 Asia/Dhaka] POS Customers found: 2
+[24-Oct-2025 10:05:48 Asia/Dhaka] POS Access - User ID: 1
+[24-Oct-2025 10:05:48 Asia/Dhaka] POS Access - User Role: Superadmin
+[24-Oct-2025 10:05:48 Asia/Dhaka] POS Access - Display Name: User
+[24-Oct-2025 10:05:48 Asia/Dhaka] Branch identified: ID=4, Name=Head Office
+[24-Oct-2025 10:05:48 Asia/Dhaka] Executing product query with branch_id: 4
+[24-Oct-2025 10:05:48 Asia/Dhaka] Raw products found: 1
+[24-Oct-2025 10:05:48 Asia/Dhaka] Products with valid pricing: 1
+[24-Oct-2025 10:05:48 Asia/Dhaka] POS Customers found: 2
+[24-Oct-2025 11:02:02 Asia/Dhaka] POS Access - User ID: 1
+[24-Oct-2025 11:02:02 Asia/Dhaka] POS Access - User Role: Superadmin
+[24-Oct-2025 11:02:02 Asia/Dhaka] POS Access - Display Name: User
+[24-Oct-2025 11:02:02 Asia/Dhaka] Branch identified: ID=4, Name=Head Office
+[24-Oct-2025 11:02:02 Asia/Dhaka] Executing product query with branch_id: 4
+[24-Oct-2025 11:02:02 Asia/Dhaka] Raw products found: 1
+[24-Oct-2025 11:02:02 Asia/Dhaka] Products with valid pricing: 1
+[24-Oct-2025 11:02:02 Asia/Dhaka] POS Customers found: 2
+[24-Oct-2025 11:06:02 Asia/Dhaka] POS Access - User ID: 1
+[24-Oct-2025 11:06:02 Asia/Dhaka] POS Access - User Role: Superadmin
+[24-Oct-2025 11:06:02 Asia/Dhaka] POS Access - Display Name: User
+[24-Oct-2025 11:06:02 Asia/Dhaka] Branch identified: ID=4, Name=Head Office
+[24-Oct-2025 11:06:02 Asia/Dhaka] Executing product query with branch_id: 4
+[24-Oct-2025 11:06:02 Asia/Dhaka] Raw products found: 1
+[24-Oct-2025 11:06:02 Asia/Dhaka] === FINAL PRODUCTS FOR POS ===
+[24-Oct-2025 11:06:02 Asia/Dhaka] Total valid products: 1
+[24-Oct-2025 11:06:02 Asia/Dhaka] Product: Jora Kabutor | SKU: JORAKOBUTOR-34-1 | Price: 3410 | Stock: 0
+[24-Oct-2025 11:06:02 Asia/Dhaka] JSON to send: [{"variant_id":"2","sku":"JORAKOBUTOR-34-1","weight_variant":"34","grade":"1","unit_of_measure":"kg","base_name":"Jora Kabutor","unit_price":3410,"stock_quantity":0}]
+[24-Oct-2025 11:06:02 Asia/Dhaka] ================================
+[24-Oct-2025 11:06:02 Asia/Dhaka] Products with valid pricing: 1
+[24-Oct-2025 11:06:02 Asia/Dhaka] POS Customers found: 2
+[24-Oct-2025 11:07:59 Asia/Dhaka] POS Access - User ID: 3
+[24-Oct-2025 11:07:59 Asia/Dhaka] POS Access - User Role: accountspos-srg
+[24-Oct-2025 11:07:59 Asia/Dhaka] POS Access - Display Name: User
+[24-Oct-2025 11:07:59 Asia/Dhaka] Branch identified: ID=1, Name=Sirajgonj
+[24-Oct-2025 11:07:59 Asia/Dhaka] Executing product query with branch_id: 1
+[24-Oct-2025 11:07:59 Asia/Dhaka] Raw products found: 1
+[24-Oct-2025 11:07:59 Asia/Dhaka] === FINAL PRODUCTS FOR POS ===
+[24-Oct-2025 11:07:59 Asia/Dhaka] Total valid products: 1
+[24-Oct-2025 11:07:59 Asia/Dhaka] Product: Jora Kabutor | SKU: JORAKOBUTOR-34-1 | Price: 3410 | Stock: 2500
+[24-Oct-2025 11:07:59 Asia/Dhaka] JSON to send: [{"variant_id":"2","sku":"JORAKOBUTOR-34-1","weight_variant":"34","grade":"1","unit_of_measure":"kg","base_name":"Jora Kabutor","unit_price":3410,"stock_quantity":2500}]
+[24-Oct-2025 11:07:59 Asia/Dhaka] ================================
+[24-Oct-2025 11:07:59 Asia/Dhaka] Products with valid pricing: 1
+[24-Oct-2025 11:07:59 Asia/Dhaka] POS Customers found: 2
+[24-Oct-2025 11:08:26 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined method Database::lastInsertId() in /home/ujjalfmc/public_html/saas.ujjalfm.com/pos/ajax_handler.php:173
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/pos/ajax_handler.php on line 173
+[24-Oct-2025 11:12:14 Asia/Dhaka] POS Access - User ID: 3
+[24-Oct-2025 11:12:14 Asia/Dhaka] POS Access - User Role: accountspos-srg
+[24-Oct-2025 11:12:14 Asia/Dhaka] POS Access - Display Name: User
+[24-Oct-2025 11:12:14 Asia/Dhaka] Branch identified: ID=1, Name=Sirajgonj
+[24-Oct-2025 11:12:14 Asia/Dhaka] Executing product query with branch_id: 1
+[24-Oct-2025 11:12:14 Asia/Dhaka] Raw products found: 1
+[24-Oct-2025 11:12:14 Asia/Dhaka] === FINAL PRODUCTS FOR POS ===
+[24-Oct-2025 11:12:14 Asia/Dhaka] Total valid products: 1
+[24-Oct-2025 11:12:14 Asia/Dhaka] Product: Jora Kabutor | SKU: JORAKOBUTOR-34-1 | Price: 3410 | Stock: 2500
+[24-Oct-2025 11:12:14 Asia/Dhaka] JSON to send: [{"variant_id":"2","sku":"JORAKOBUTOR-34-1","weight_variant":"34","grade":"1","unit_of_measure":"kg","base_name":"Jora Kabutor","unit_price":3410,"stock_quantity":2500}]
+[24-Oct-2025 11:12:14 Asia/Dhaka] ================================
+[24-Oct-2025 11:12:14 Asia/Dhaka] Products with valid pricing: 1
+[24-Oct-2025 11:12:14 Asia/Dhaka] POS Customers found: 2
+[24-Oct-2025 11:13:16 Asia/Dhaka] POS Access - User ID: 3
+[24-Oct-2025 11:13:16 Asia/Dhaka] POS Access - User Role: accountspos-srg
+[24-Oct-2025 11:13:16 Asia/Dhaka] POS Access - Display Name: User
+[24-Oct-2025 11:13:16 Asia/Dhaka] Branch identified: ID=1, Name=Sirajgonj
+[24-Oct-2025 11:13:16 Asia/Dhaka] Executing product query with branch_id: 1
+[24-Oct-2025 11:13:16 Asia/Dhaka] Raw products found: 1
+[24-Oct-2025 11:13:16 Asia/Dhaka] === FINAL PRODUCTS FOR POS ===
+[24-Oct-2025 11:13:16 Asia/Dhaka] Total valid products: 1
+[24-Oct-2025 11:13:16 Asia/Dhaka] Product: Jora Kabutor | SKU: JORAKOBUTOR-34-1 | Price: 3410 | Stock: 2500
+[24-Oct-2025 11:13:16 Asia/Dhaka] JSON to send: [{"variant_id":"2","sku":"JORAKOBUTOR-34-1","weight_variant":"34","grade":"1","unit_of_measure":"kg","base_name":"Jora Kabutor","unit_price":3410,"stock_quantity":2500}]
+[24-Oct-2025 11:13:16 Asia/Dhaka] ================================
+[24-Oct-2025 11:13:16 Asia/Dhaka] Products with valid pricing: 1
+[24-Oct-2025 11:13:16 Asia/Dhaka] POS Customers found: 2
+[24-Oct-2025 12:25:57 Asia/Dhaka] POS Access - User ID: 3
+[24-Oct-2025 12:25:57 Asia/Dhaka] POS Access - User Role: accountspos-srg
+[24-Oct-2025 12:25:57 Asia/Dhaka] POS Access - Display Name: User
+[24-Oct-2025 12:25:57 Asia/Dhaka] Branch identified: ID=1, Name=Sirajgonj
+[24-Oct-2025 12:25:57 Asia/Dhaka] Executing product query with branch_id: 1
+[24-Oct-2025 12:25:57 Asia/Dhaka] Raw products found: 1
+[24-Oct-2025 12:25:57 Asia/Dhaka] === FINAL PRODUCTS FOR POS ===
+[24-Oct-2025 12:25:57 Asia/Dhaka] Total valid products: 1
+[24-Oct-2025 12:25:57 Asia/Dhaka] Product: Jora Kabutor | SKU: JORAKOBUTOR-34-1 | Price: 3410 | Stock: 2500
+[24-Oct-2025 12:25:57 Asia/Dhaka] JSON to send: [{"variant_id":"2","sku":"JORAKOBUTOR-34-1","weight_variant":"34","grade":"1","unit_of_measure":"kg","base_name":"Jora Kabutor","unit_price":3410,"stock_quantity":2500}]
+[24-Oct-2025 12:25:57 Asia/Dhaka] ================================
+[24-Oct-2025 12:25:57 Asia/Dhaka] Products with valid pricing: 1
+[24-Oct-2025 12:25:57 Asia/Dhaka] POS Customers found: 2
+[24-Oct-2025 12:26:05 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined method Database::lastInsertId() in /home/ujjalfmc/public_html/saas.ujjalfm.com/pos/ajax_handler.php:173
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/pos/ajax_handler.php on line 173
+[24-Oct-2025 14:39:10 Asia/Dhaka] POS Access - User ID: 3
+[24-Oct-2025 14:39:10 Asia/Dhaka] POS Access - User Role: accountspos-srg
+[24-Oct-2025 14:39:10 Asia/Dhaka] POS Access - Display Name: User
+[24-Oct-2025 14:39:10 Asia/Dhaka] Branch identified: ID=1, Name=Sirajgonj
+[24-Oct-2025 14:39:10 Asia/Dhaka] Executing product query with branch_id: 1
+[24-Oct-2025 14:39:10 Asia/Dhaka] Raw products found: 1
+[24-Oct-2025 14:39:10 Asia/Dhaka] === FINAL PRODUCTS FOR POS ===
+[24-Oct-2025 14:39:10 Asia/Dhaka] Total valid products: 1
+[24-Oct-2025 14:39:10 Asia/Dhaka] Product: Jora Kabutor | SKU: JORAKOBUTOR-34-1 | Price: 3410 | Stock: 2500
+[24-Oct-2025 14:39:10 Asia/Dhaka] JSON to send: [{"variant_id":"2","sku":"JORAKOBUTOR-34-1","weight_variant":"34","grade":"1","unit_of_measure":"kg","base_name":"Jora Kabutor","unit_price":3410,"stock_quantity":2500}]
+[24-Oct-2025 14:39:10 Asia/Dhaka] ================================
+[24-Oct-2025 14:39:10 Asia/Dhaka] Products with valid pricing: 1
+[24-Oct-2025 14:39:10 Asia/Dhaka] POS Customers found: 2
+[24-Oct-2025 14:39:26 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined method Database::lastInsertId() in /home/ujjalfmc/public_html/saas.ujjalfm.com/pos/ajax_handler.php:173
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/pos/ajax_handler.php on line 173
+[24-Oct-2025 14:43:15 Asia/Dhaka] POS Access - User ID: 3
+[24-Oct-2025 14:43:15 Asia/Dhaka] POS Access - User Role: accountspos-srg
+[24-Oct-2025 14:43:15 Asia/Dhaka] POS Access - Display Name: User
+[24-Oct-2025 14:43:15 Asia/Dhaka] Branch identified: ID=1, Name=Sirajgonj
+[24-Oct-2025 14:43:15 Asia/Dhaka] Executing product query with branch_id: 1
+[24-Oct-2025 14:43:15 Asia/Dhaka] Raw products found: 1
+[24-Oct-2025 14:43:15 Asia/Dhaka] === FINAL PRODUCTS FOR POS ===
+[24-Oct-2025 14:43:15 Asia/Dhaka] Total valid products: 1
+[24-Oct-2025 14:43:15 Asia/Dhaka] Product: Jora Kabutor | SKU: JORAKOBUTOR-34-1 | Price: 3410 | Stock: 2500
+[24-Oct-2025 14:43:15 Asia/Dhaka] JSON to send: [{"variant_id":"2","sku":"JORAKOBUTOR-34-1","weight_variant":"34","grade":"1","unit_of_measure":"kg","base_name":"Jora Kabutor","unit_price":3410,"stock_quantity":2500}]
+[24-Oct-2025 14:43:15 Asia/Dhaka] ================================
+[24-Oct-2025 14:43:15 Asia/Dhaka] Products with valid pricing: 1
+[24-Oct-2025 14:43:15 Asia/Dhaka] POS Customers found: 2
+[24-Oct-2025 14:43:24 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined method Database::lastInsertId() in /home/ujjalfmc/public_html/saas.ujjalfm.com/pos/ajax_handler.php:173
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/pos/ajax_handler.php on line 173
+[24-Oct-2025 14:44:40 Asia/Dhaka] POS Access - User ID: 3
+[24-Oct-2025 14:44:40 Asia/Dhaka] POS Access - User Role: accountspos-srg
+[24-Oct-2025 14:44:40 Asia/Dhaka] POS Access - Display Name: User
+[24-Oct-2025 14:44:40 Asia/Dhaka] Branch identified: ID=1, Name=Sirajgonj
+[24-Oct-2025 14:44:40 Asia/Dhaka] Executing product query with branch_id: 1
+[24-Oct-2025 14:44:40 Asia/Dhaka] Raw products found: 1
+[24-Oct-2025 14:44:40 Asia/Dhaka] === FINAL PRODUCTS FOR POS ===
+[24-Oct-2025 14:44:40 Asia/Dhaka] Total valid products: 1
+[24-Oct-2025 14:44:40 Asia/Dhaka] Product: Jora Kabutor | SKU: JORAKOBUTOR-34-1 | Price: 3410 | Stock: 2500
+[24-Oct-2025 14:44:40 Asia/Dhaka] JSON to send: [{"variant_id":"2","sku":"JORAKOBUTOR-34-1","weight_variant":"34","grade":"1","unit_of_measure":"kg","base_name":"Jora Kabutor","unit_price":3410,"stock_quantity":2500}]
+[24-Oct-2025 14:44:40 Asia/Dhaka] ================================
+[24-Oct-2025 14:44:40 Asia/Dhaka] Products with valid pricing: 1
+[24-Oct-2025 14:44:40 Asia/Dhaka] POS Customers found: 2
+[24-Oct-2025 14:44:49 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined method Database::insert_id() in /home/ujjalfmc/public_html/saas.ujjalfm.com/pos/ajax_handler.php:173
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/pos/ajax_handler.php on line 173
+[24-Oct-2025 19:48:06 Asia/Dhaka] POS Access - User ID: 3
+[24-Oct-2025 19:48:06 Asia/Dhaka] POS Access - User Role: accountspos-srg
+[24-Oct-2025 19:48:06 Asia/Dhaka] POS Access - Display Name: User
+[24-Oct-2025 19:48:06 Asia/Dhaka] Branch identified: ID=1, Name=Sirajgonj
+[24-Oct-2025 19:48:06 Asia/Dhaka] Executing product query with branch_id: 1
+[24-Oct-2025 19:48:06 Asia/Dhaka] Raw products found: 1
+[24-Oct-2025 19:48:06 Asia/Dhaka] === FINAL PRODUCTS FOR POS ===
+[24-Oct-2025 19:48:06 Asia/Dhaka] Total valid products: 1
+[24-Oct-2025 19:48:06 Asia/Dhaka] Product: Jora Kabutor | SKU: JORAKOBUTOR-34-1 | Price: 3410 | Stock: 2500
+[24-Oct-2025 19:48:06 Asia/Dhaka] JSON to send: [{"variant_id":"2","sku":"JORAKOBUTOR-34-1","weight_variant":"34","grade":"1","unit_of_measure":"kg","base_name":"Jora Kabutor","unit_price":3410,"stock_quantity":2500}]
+[24-Oct-2025 19:48:06 Asia/Dhaka] ================================
+[24-Oct-2025 19:48:06 Asia/Dhaka] Products with valid pricing: 1
+[24-Oct-2025 19:48:06 Asia/Dhaka] POS Customers found: 2
+[24-Oct-2025 19:48:17 Asia/Dhaka] PHP Warning:  Undefined property: Database::$connection in /home/ujjalfmc/public_html/saas.ujjalfm.com/pos/ajax_handler.php on line 173
+[24-Oct-2025 19:48:17 Asia/Dhaka] PHP Warning:  Attempt to read property "insert_id" on null in /home/ujjalfmc/public_html/saas.ujjalfm.com/pos/ajax_handler.php on line 173
+[24-Oct-2025 19:48:17 Asia/Dhaka] PHP Warning:  Undefined variable $order_id in /home/ujjalfmc/public_html/saas.ujjalfm.com/pos/ajax_handler.php on line 210
+[24-Oct-2025 19:48:17 Asia/Dhaka] SQL Error [23000]: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'order_id' cannot be null in query: INSERT INTO order_items (
+                        order_id,
+                        variant_id,
+                        quantity,
+                        unit_price,
+                        subtotal,
+                        discount_amount,
+                        tax_amount,
+                        total_amount
+                    ) VALUES (?, ?, ?, ?, ?, 0, 0, ?) | Params: Array
+(
+    [0] => 
+    [1] => 2
+    [2] => 3
+    [3] => 3410
+    [4] => 10230
+    [5] => 10230
+)
+
+[24-Oct-2025 19:48:17 Asia/Dhaka] PHP Warning:  Undefined variable $order_id in /home/ujjalfmc/public_html/saas.ujjalfm.com/pos/ajax_handler.php on line 317
+[24-Oct-2025 19:50:00 Asia/Dhaka] POS Access - User ID: 3
+[24-Oct-2025 19:50:00 Asia/Dhaka] POS Access - User Role: accountspos-srg
+[24-Oct-2025 19:50:00 Asia/Dhaka] POS Access - Display Name: User
+[24-Oct-2025 19:50:00 Asia/Dhaka] Branch identified: ID=1, Name=Sirajgonj
+[24-Oct-2025 19:50:00 Asia/Dhaka] Executing product query with branch_id: 1
+[24-Oct-2025 19:50:00 Asia/Dhaka] Raw products found: 1
+[24-Oct-2025 19:50:00 Asia/Dhaka] === FINAL PRODUCTS FOR POS ===
+[24-Oct-2025 19:50:00 Asia/Dhaka] Total valid products: 1
+[24-Oct-2025 19:50:00 Asia/Dhaka] Product: Jora Kabutor | SKU: JORAKOBUTOR-34-1 | Price: 3410 | Stock: 2497
+[24-Oct-2025 19:50:00 Asia/Dhaka] JSON to send: [{"variant_id":"2","sku":"JORAKOBUTOR-34-1","weight_variant":"34","grade":"1","unit_of_measure":"kg","base_name":"Jora Kabutor","unit_price":3410,"stock_quantity":2497}]
+[24-Oct-2025 19:50:00 Asia/Dhaka] ================================
+[24-Oct-2025 19:50:00 Asia/Dhaka] Products with valid pricing: 1
+[24-Oct-2025 19:50:00 Asia/Dhaka] POS Customers found: 2
+[24-Oct-2025 19:50:11 Asia/Dhaka] PHP Warning:  Undefined property: Database::$connection in /home/ujjalfmc/public_html/saas.ujjalfm.com/pos/ajax_handler.php on line 173
+[24-Oct-2025 19:50:11 Asia/Dhaka] PHP Warning:  Attempt to read property "insert_id" on null in /home/ujjalfmc/public_html/saas.ujjalfm.com/pos/ajax_handler.php on line 173
+[24-Oct-2025 19:50:11 Asia/Dhaka] PHP Warning:  Undefined variable $order_id in /home/ujjalfmc/public_html/saas.ujjalfm.com/pos/ajax_handler.php on line 210
+[24-Oct-2025 19:50:11 Asia/Dhaka] SQL Error [23000]: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'order_id' cannot be null in query: INSERT INTO order_items (
+                        order_id,
+                        variant_id,
+                        quantity,
+                        unit_price,
+                        subtotal,
+                        discount_amount,
+                        tax_amount,
+                        total_amount
+                    ) VALUES (?, ?, ?, ?, ?, 0, 0, ?) | Params: Array
+(
+    [0] => 
+    [1] => 2
+    [2] => 2
+    [3] => 3410
+    [4] => 6820
+    [5] => 6820
+)
+
+[24-Oct-2025 19:50:11 Asia/Dhaka] PHP Warning:  Undefined variable $order_id in /home/ujjalfmc/public_html/saas.ujjalfm.com/pos/ajax_handler.php on line 317
+[24-Oct-2025 19:59:11 Asia/Dhaka] PHP Warning:  Undefined property: Database::$connection in /home/ujjalfmc/public_html/saas.ujjalfm.com/pos/ajax_handler.php on line 195
+[24-Oct-2025 19:59:11 Asia/Dhaka] PHP Warning:  Attempt to read property "insert_id" on null in /home/ujjalfmc/public_html/saas.ujjalfm.com/pos/ajax_handler.php on line 195
+[24-Oct-2025 19:59:11 Asia/Dhaka] POS AJAX Error: Failed to create order record
+[24-Oct-2025 19:59:25 Asia/Dhaka] POS Access - User ID: 3
+[24-Oct-2025 19:59:25 Asia/Dhaka] POS Access - User Role: accountspos-srg
+[24-Oct-2025 19:59:25 Asia/Dhaka] POS Access - Display Name: User
+[24-Oct-2025 19:59:25 Asia/Dhaka] Branch identified: ID=1, Name=Sirajgonj
+[24-Oct-2025 19:59:25 Asia/Dhaka] Executing product query with branch_id: 1
+[24-Oct-2025 19:59:25 Asia/Dhaka] Raw products found: 1
+[24-Oct-2025 19:59:25 Asia/Dhaka] === FINAL PRODUCTS FOR POS ===
+[24-Oct-2025 19:59:25 Asia/Dhaka] Total valid products: 1
+[24-Oct-2025 19:59:25 Asia/Dhaka] Product: Jora Kabutor | SKU: JORAKOBUTOR-34-1 | Price: 3410 | Stock: 2495
+[24-Oct-2025 19:59:25 Asia/Dhaka] JSON to send: [{"variant_id":"2","sku":"JORAKOBUTOR-34-1","weight_variant":"34","grade":"1","unit_of_measure":"kg","base_name":"Jora Kabutor","unit_price":3410,"stock_quantity":2495}]
+[24-Oct-2025 19:59:25 Asia/Dhaka] ================================
+[24-Oct-2025 19:59:25 Asia/Dhaka] Products with valid pricing: 1
+[24-Oct-2025 19:59:25 Asia/Dhaka] POS Customers found: 2
+[24-Oct-2025 19:59:39 Asia/Dhaka] PHP Warning:  Undefined property: Database::$connection in /home/ujjalfmc/public_html/saas.ujjalfm.com/pos/ajax_handler.php on line 195
+[24-Oct-2025 19:59:39 Asia/Dhaka] PHP Warning:  Attempt to read property "insert_id" on null in /home/ujjalfmc/public_html/saas.ujjalfm.com/pos/ajax_handler.php on line 195
+[24-Oct-2025 19:59:39 Asia/Dhaka] POS AJAX Error: Failed to create order record
+[24-Oct-2025 19:59:50 Asia/Dhaka] POS Access - User ID: 3
+[24-Oct-2025 19:59:50 Asia/Dhaka] POS Access - User Role: accountspos-srg
+[24-Oct-2025 19:59:50 Asia/Dhaka] POS Access - Display Name: User
+[24-Oct-2025 19:59:50 Asia/Dhaka] Branch identified: ID=1, Name=Sirajgonj
+[24-Oct-2025 19:59:50 Asia/Dhaka] Executing product query with branch_id: 1
+[24-Oct-2025 19:59:50 Asia/Dhaka] Raw products found: 1
+[24-Oct-2025 19:59:50 Asia/Dhaka] === FINAL PRODUCTS FOR POS ===
+[24-Oct-2025 19:59:50 Asia/Dhaka] Total valid products: 1
+[24-Oct-2025 19:59:50 Asia/Dhaka] Product: Jora Kabutor | SKU: JORAKOBUTOR-34-1 | Price: 3410 | Stock: 2495
+[24-Oct-2025 19:59:50 Asia/Dhaka] JSON to send: [{"variant_id":"2","sku":"JORAKOBUTOR-34-1","weight_variant":"34","grade":"1","unit_of_measure":"kg","base_name":"Jora Kabutor","unit_price":3410,"stock_quantity":2495}]
+[24-Oct-2025 19:59:50 Asia/Dhaka] ================================
+[24-Oct-2025 19:59:50 Asia/Dhaka] Products with valid pricing: 1
+[24-Oct-2025 19:59:50 Asia/Dhaka] POS Customers found: 2
+[24-Oct-2025 21:02:12 Asia/Dhaka] POS Access - User ID: 3
+[24-Oct-2025 21:02:12 Asia/Dhaka] POS Access - User Role: accountspos-srg
+[24-Oct-2025 21:02:12 Asia/Dhaka] POS Access - Display Name: User
+[24-Oct-2025 21:02:12 Asia/Dhaka] Branch identified: ID=1, Name=Sirajgonj
+[24-Oct-2025 21:02:12 Asia/Dhaka] Executing product query with branch_id: 1
+[24-Oct-2025 21:02:12 Asia/Dhaka] Raw products found: 1
+[24-Oct-2025 21:02:12 Asia/Dhaka] === FINAL PRODUCTS FOR POS ===
+[24-Oct-2025 21:02:12 Asia/Dhaka] Total valid products: 1
+[24-Oct-2025 21:02:12 Asia/Dhaka] Product: Jora Kabutor | SKU: JORAKOBUTOR-34-1 | Price: 3410 | Stock: 2495
+[24-Oct-2025 21:02:12 Asia/Dhaka] JSON to send: [{"variant_id":"2","sku":"JORAKOBUTOR-34-1","weight_variant":"34","grade":"1","unit_of_measure":"kg","base_name":"Jora Kabutor","unit_price":3410,"stock_quantity":2495}]
+[24-Oct-2025 21:02:12 Asia/Dhaka] ================================
+[24-Oct-2025 21:02:12 Asia/Dhaka] Products with valid pricing: 1
+[24-Oct-2025 21:02:12 Asia/Dhaka] POS Customers found: 2
+[24-Oct-2025 21:02:21 Asia/Dhaka] PHP Warning:  Undefined property: Database::$connection in /home/ujjalfmc/public_html/saas.ujjalfm.com/pos/ajax_handler.php on line 195
+[24-Oct-2025 21:02:21 Asia/Dhaka] PHP Warning:  Attempt to read property "insert_id" on null in /home/ujjalfmc/public_html/saas.ujjalfm.com/pos/ajax_handler.php on line 195
+[24-Oct-2025 21:02:21 Asia/Dhaka] POS AJAX Error: Failed to create order record
+[24-Oct-2025 21:42:54 Asia/Dhaka] POS Access - User ID: 3
+[24-Oct-2025 21:42:54 Asia/Dhaka] POS Access - User Role: accountspos-srg
+[24-Oct-2025 21:42:54 Asia/Dhaka] POS Access - Display Name: User
+[24-Oct-2025 21:42:54 Asia/Dhaka] Branch identified: ID=1, Name=Sirajgonj
+[24-Oct-2025 21:42:54 Asia/Dhaka] Executing product query with branch_id: 1
+[24-Oct-2025 21:42:54 Asia/Dhaka] Raw products found: 1
+[24-Oct-2025 21:42:54 Asia/Dhaka] === FINAL PRODUCTS FOR POS ===
+[24-Oct-2025 21:42:54 Asia/Dhaka] Total valid products: 1
+[24-Oct-2025 21:42:54 Asia/Dhaka] Product: Jora Kabutor | SKU: JORAKOBUTOR-34-1 | Price: 3410 | Stock: 2495
+[24-Oct-2025 21:42:54 Asia/Dhaka] JSON to send: [{"variant_id":"2","sku":"JORAKOBUTOR-34-1","weight_variant":"34","grade":"1","unit_of_measure":"kg","base_name":"Jora Kabutor","unit_price":3410,"stock_quantity":2495}]
+[24-Oct-2025 21:42:54 Asia/Dhaka] ================================
+[24-Oct-2025 21:42:54 Asia/Dhaka] Products with valid pricing: 1
+[24-Oct-2025 21:42:54 Asia/Dhaka] POS Customers found: 2
+[24-Oct-2025 21:43:02 Asia/Dhaka] POS Order ORD-20251024-0003: No accounting integration - missing POS accounts for branch SRG
+[24-Oct-2025 21:43:02 Asia/Dhaka] POS Order ORD-20251024-0003 created successfully by user 3
+[24-Oct-2025 22:48:01 Asia/Dhaka] POS Order ORD-20251024-0004: No accounting integration - missing POS accounts for branch SRG
+[24-Oct-2025 22:48:01 Asia/Dhaka] POS Order ORD-20251024-0004 created successfully by user 3
+[25-Oct-2025 05:04:12 Asia/Dhaka] POS Order ORD-20251025-0001: No accounting integration - missing POS accounts for branch SRG
+[25-Oct-2025 05:04:12 Asia/Dhaka] POS Order ORD-20251025-0001 created successfully by user 3. Total: ৳6820, Discount: ৳0, Payment: Cash
+[25-Oct-2025 05:04:20 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'b.phone_number' in 'SELECT' in query: SELECT o.*, b.name as branch_name, b.address as branch_address, b.phone_number as branch_phone,
+                c.name as customer_name, c.phone_number as customer_phone
+         FROM orders o
+         JOIN branches b ON o.branch_id = b.id
+         LEFT JOIN customers c ON o.customer_id = c.id
+         WHERE o.order_number = ? | Params: Array
+(
+    [0] => ORD-20251025-0001
+)
+
+[25-Oct-2025 05:04:20 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'b.phone_number' in 'SELECT' in query: SELECT o.*, b.name as branch_name, b.address as branch_address, b.phone_number as branch_phone,
+                c.name as customer_name, c.phone_number as customer_phone
+         FROM orders o
+         JOIN branches b ON o.branch_id = b.id
+         LEFT JOIN customers c ON o.customer_id = c.id
+         WHERE o.order_number = ? | Params: Array
+(
+    [0] => ORD-20251025-0001
+)
+
+[25-Oct-2025 05:04:20 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'b.phone_number' in 'SELECT' in query: SELECT o.*, b.name as branch_name, b.address as branch_address, b.phone_number as branch_phone,
+                c.name as customer_name, c.phone_number as customer_phone
+         FROM orders o
+         JOIN branches b ON o.branch_id = b.id
+         LEFT JOIN customers c ON o.customer_id = c.id
+         WHERE o.order_number = ? | Params: Array
+(
+    [0] => ORD-20251025-0001
+)
+
+[25-Oct-2025 05:09:05 Asia/Dhaka] Print Receipt - Searching for order: ORD-20251025-0001
+[25-Oct-2025 05:09:05 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'b.phone_number' in 'SELECT' in query: SELECT o.*, b.name as branch_name, b.address as branch_address, b.phone_number as branch_phone,
+                c.name as customer_name, c.phone_number as customer_phone
+         FROM orders o
+         JOIN branches b ON o.branch_id = b.id
+         LEFT JOIN customers c ON o.customer_id = c.id
+         WHERE o.order_number = ? | Params: Array
+(
+    [0] => ORD-20251025-0001
+)
+
+[25-Oct-2025 05:09:05 Asia/Dhaka] Print Receipt - Order not found: ORD-20251025-0001
+[25-Oct-2025 05:09:05 Asia/Dhaka] Print Receipt - Similar orders found: 1
+[25-Oct-2025 05:09:05 Asia/Dhaka] Print Receipt - Found: ID=13, Number=ORD-20251025-0001
+[25-Oct-2025 05:09:05 Asia/Dhaka] Print Receipt - Exact match: YES (ID=13)
+[25-Oct-2025 05:20:36 Asia/Dhaka] Print Receipt - Searching for order: ORD-20251025-0001
+[25-Oct-2025 05:20:36 Asia/Dhaka] Print Receipt - Order found: ID=13
+[25-Oct-2025 21:32:10 Asia/Dhaka] POS Accounting: Using fallback account for: Sales Discount
+[25-Oct-2025 21:32:10 Asia/Dhaka] POS Accounting: Branch-specific account not found: POS Cash for SRG
+[25-Oct-2025 21:32:10 Asia/Dhaka] POS Accounting: Using fallback account for: POS Cash
+[25-Oct-2025 21:32:10 Asia/Dhaka] POS Accounting SUCCESS: Journal #6 created for Order #ORD-20251025-0002. Debits: ৳6820, Credits: ৳6820
+[25-Oct-2025 21:32:10 Asia/Dhaka] POS Order ORD-20251025-0002 completed successfully. Total: ৳6820, Discount: ৳0, Payment: Cash, Journal: JE-6
+[26-Oct-2025 19:48:59 Asia/Dhaka] POS Accounting: Using fallback account for: Sales Discount
+[26-Oct-2025 19:48:59 Asia/Dhaka] POS Accounting: Branch-specific account not found: POS Cash for SRG
+[26-Oct-2025 19:48:59 Asia/Dhaka] POS Accounting: Using fallback account for: POS Cash
+[26-Oct-2025 19:48:59 Asia/Dhaka] POS Accounting SUCCESS: Journal #7 created for Order #ORD-20251026-0001. Debits: ৳6820, Credits: ৳6820
+[26-Oct-2025 19:48:59 Asia/Dhaka] POS Order ORD-20251026-0001 completed successfully. Total: ৳6810, Discount: ৳10, Payment: Cash, Journal: JE-7
+[27-Oct-2025 00:16:34 Asia/Dhaka] POS Accounting: Using fallback account for: Sales Discount
+[27-Oct-2025 00:16:34 Asia/Dhaka] POS Accounting: Branch-specific account not found: POS Cash for SRG
+[27-Oct-2025 00:16:34 Asia/Dhaka] POS Accounting: Using fallback account for: POS Cash
+[27-Oct-2025 00:16:34 Asia/Dhaka] POS Accounting SUCCESS: Journal #8 created for Order #ORD-20251027-0001. Debits: ৳6800, Credits: ৳6800
+[27-Oct-2025 00:16:34 Asia/Dhaka] POS Order ORD-20251027-0001 completed successfully. Total: ৳6800, Discount: ৳0, Payment: Cash, Journal: JE-8
+[27-Oct-2025 00:17:43 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'oi.total_price' in 'SELECT' in query: SELECT oi.order_id, oi.quantity, oi.unit_price, oi.discount_amount as item_discount, oi.total_price as item_total,
+                         p.base_name, pv.weight_variant, pv.unit_of_measure, pv.grade, pv.sku
+                        FROM order_items oi
+                        JOIN product_variants pv ON oi.variant_id = pv.id
+                        JOIN products p ON pv.product_id = p.id
+                        WHERE oi.order_id IN (?)
+                        ORDER BY oi.order_id, oi.id | Params: Array
+(
+    [0] => 16
+)
+
+[27-Oct-2025 00:18:10 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'oi.total_price' in 'SELECT' in query: SELECT oi.order_id, oi.quantity, oi.unit_price, oi.discount_amount as item_discount, oi.total_price as item_total,
+                         p.base_name, pv.weight_variant, pv.unit_of_measure, pv.grade, pv.sku
+                        FROM order_items oi
+                        JOIN product_variants pv ON oi.variant_id = pv.id
+                        JOIN products p ON pv.product_id = p.id
+                        WHERE oi.order_id IN (?)
+                        ORDER BY oi.order_id, oi.id | Params: Array
+(
+    [0] => 16
+)
+
+[27-Oct-2025 00:18:41 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'oi.total_price' in 'SELECT' in query: SELECT oi.order_id, oi.quantity, oi.unit_price, oi.discount_amount as item_discount, oi.total_price as item_total,
+                         p.base_name, pv.weight_variant, pv.unit_of_measure, pv.grade, pv.sku
+                        FROM order_items oi
+                        JOIN product_variants pv ON oi.variant_id = pv.id
+                        JOIN products p ON pv.product_id = p.id
+                        WHERE oi.order_id IN (?)
+                        ORDER BY oi.order_id, oi.id | Params: Array
+(
+    [0] => 16
+)
+
+[27-Oct-2025 00:28:44 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'oi.total_price' in 'SELECT' in query: SELECT 
+                            oi.order_id,
+                            oi.quantity,
+                            oi.unit_price,
+                            oi.discount_amount as item_discount,
+                            oi.total_price as item_total,
+                            oi.product_name,
+                            oi.variant_description,
+                            COALESCE(p.base_name, oi.product_name) as base_name,
+                            COALESCE(pv.weight_variant, oi.variant_description, '') as weight_variant,
+                            COALESCE(pv.unit_of_measure, '') as unit_of_measure,
+                            COALESCE(pv.grade, '') as grade,
+                            COALESCE(pv.sku, '') as sku
+                        FROM order_items oi
+                        LEFT JOIN product_variants pv ON oi.variant_id = pv.id
+                        LEFT JOIN products p ON pv.product_id = p.id
+                        WHERE oi.order_id IN (?)
+                        ORDER BY oi.order_id, oi.id | Params: Array
+(
+    [0] => 16
+)
+
+[27-Oct-2025 01:02:26 Asia/Dhaka] PHP Warning:  Undefined variable $prev_eod in /home/ujjalfmc/public_html/saas.ujjalfm.com/pos/eod.php on line 131
+[27-Oct-2025 01:16:19 Asia/Dhaka] EOD Debug - Current User: {"id":"1","display_name":"User","role":"Superadmin","email":"superadmin@ujjalfm.com"}
+[27-Oct-2025 01:16:19 Asia/Dhaka] EOD Debug - User ID from getCurrentUser: 1
+[27-Oct-2025 01:16:19 Asia/Dhaka] EOD Debug - User ID: 1
+[27-Oct-2025 01:16:19 Asia/Dhaka] EOD Debug - Employee Info: {"branch_id":"4"}
+[27-Oct-2025 01:16:19 Asia/Dhaka] EOD Debug - Branch ID: 4
+[27-Oct-2025 01:16:19 Asia/Dhaka] EOD Debug - Branch Name: Head Office
+[27-Oct-2025 01:16:52 Asia/Dhaka] EOD Debug - Current User: {"id":"3","display_name":"User","role":"accountspos-srg","email":"possrg@ujjalfm.com"}
+[27-Oct-2025 01:16:52 Asia/Dhaka] EOD Debug - User ID from getCurrentUser: 3
+[27-Oct-2025 01:16:52 Asia/Dhaka] EOD Debug - User ID: 3
+[27-Oct-2025 01:16:52 Asia/Dhaka] EOD Debug - Employee Info: {"branch_id":"1"}
+[27-Oct-2025 01:16:52 Asia/Dhaka] EOD Debug - Branch ID: 1
+[27-Oct-2025 01:16:52 Asia/Dhaka] EOD Debug - Branch Name: Sirajgonj
+[27-Oct-2025 01:36:01 Asia/Dhaka] EOD Reopened - ID: 1, Branch: 1, Date: 2025-10-27, By: 1, Reason: requested by that possrg
+[27-Oct-2025 01:36:46 Asia/Dhaka] EOD Reopened - ID: 2, Branch: 1, Date: 2025-10-27, By: 1, Reason: Trying by different users
+[27-Oct-2025 01:59:26 Asia/Dhaka] POS Accounting: Using fallback account for: Sales Discount
+[27-Oct-2025 01:59:26 Asia/Dhaka] POS Accounting: Branch-specific account not found: POS Cash for SRG
+[27-Oct-2025 01:59:26 Asia/Dhaka] POS Accounting: Using fallback account for: POS Cash
+[27-Oct-2025 01:59:26 Asia/Dhaka] POS Accounting SUCCESS: Journal #9 created for Order #ORD-20251027-0002. Debits: ৳6790, Credits: ৳6790
+[27-Oct-2025 01:59:26 Asia/Dhaka] POS Order ORD-20251027-0002 completed successfully. Total: ৳6790, Discount: ৳0, Payment: Cash, Journal: JE-9
+[27-Oct-2025 12:45:52 Asia/Dhaka] POS Accounting: Using fallback account for: Sales Discount
+[27-Oct-2025 12:45:52 Asia/Dhaka] POS Accounting: Branch-specific account not found: POS Cash for SRG
+[27-Oct-2025 12:45:52 Asia/Dhaka] POS Accounting: Using fallback account for: POS Cash
+[27-Oct-2025 12:45:52 Asia/Dhaka] POS Accounting SUCCESS: Journal #10 created for Order #ORD-20251027-0003. Debits: ৳3360, Credits: ৳3360
+[27-Oct-2025 12:45:52 Asia/Dhaka] POS Order ORD-20251027-0003 completed successfully. Total: ৳3360, Discount: ৳0, Payment: Cash, Journal: JE-10

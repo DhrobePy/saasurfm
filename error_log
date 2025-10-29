@@ -1,0 +1,16 @@
+[22-Oct-2025 16:49:24 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Undefined constant "is_admin_logged" in /home/ujjalfmc/public_html/saas.ujjalfm.com/index.php:9
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/index.php on line 9
+[24-Oct-2025 06:01:15 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined function is_admin_logged_in() in /home/ujjalfmc/public_html/saas.ujjalfm.com/index.php:9
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/index.php on line 9
+[24-Oct-2025 06:56:03 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined function is_admin_logged_in() in /home/ujjalfmc/public_html/saas.ujjalfm.com/index.php:9
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/index.php on line 9
+[24-Oct-2025 07:03:31 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined function is_admin_logged_in() in /home/ujjalfmc/public_html/saas.ujjalfm.com/index.php:9
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/index.php on line 9
