@@ -13,18 +13,16 @@ if (!isset($_SESSION['user_id'])) {
 }
 $user_id = $_SESSION['user_id'];
 
-// CSRF Token validation for POST/GET
-$csrf_token = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
-if (empty($csrf_token) || !hash_equals($_SESSION['csrf_token'] ?? '', $csrf_token)) {
-    // Allow token in GET for search, but check POST body for submission
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $data_check = json_decode(file_get_contents('php://input'), true);
-        $csrf_token = $data_check['csrf_token'] ?? $csrf_token; // Check JSON body
-    }
-     if (empty($csrf_token) || !hash_equals($_SESSION['csrf_token'] ?? '', $csrf_token)) {
-        ob_end_clean(); http_response_code(403); echo json_encode(['success' => false, 'error' => 'Invalid CSRF token']); exit;
-     }
-}
+
+// ==========================================================
+// ===== START: REVISED CSRF TOKEN VALIDATION BLOCK =====
+// ==========================================================
+$session_token = $_SESSION['csrf_token'] ?? '';
+$received_token = '';
+
+// 1. Check the 'X-CSRF-TOKEN' header first (this is the best practice for AJAX)
+$token_from_header = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? null;
+
 
 
 global $db;
@@ -34,8 +32,14 @@ $data = []; // Initialize
 try {
     // Get data
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $data = json_decode(file_get_contents('php://input'), true);
-        if (json_last_error() !== JSON_ERROR_NONE) { throw new Exception('Invalid JSON'); }
+        // We already read php://input once for the token, so let's use that data
+        // If $data_check is not set (e.g., was a GET), then read it now.
+        if (!isset($data_check)) {
+             $data = json_decode(file_get_contents('php://input'), true);
+             if (json_last_error() !== JSON_ERROR_NONE) { throw new Exception('Invalid JSON'); }
+        } else {
+             $data = $data_check;
+        }
     } else {
         $data = $_GET; // For GET requests
     }
@@ -155,7 +159,7 @@ try {
 
                 // Insert into 'order_items'
                 foreach ($cart as $item) {
-                     // Server-side stock check (optional but recommended)
+                    // Server-side stock check (optional but recommended)
                     $stock = $db->query("SELECT quantity FROM inventory WHERE variant_id = ? AND branch_id = ? FOR UPDATE", [$item['variant_id'], $fulfillment_branch_id])->first();
                     if (!$stock || $stock->quantity < $item['quantity']) {
                         throw new Exception("Insufficient stock for item {$item['sku']}. Available: " . ($stock->quantity ?? 0));
@@ -177,8 +181,8 @@ try {
                 // If advance payment, record it
                 if ($payment_type === 'Advance Paid' && $total_amount > 0) {
                      // Update customer balance (credit)
-                      $db->query("UPDATE customers SET current_balance = current_balance - ? WHERE id = ?", [$total_amount, $customer_id]);
-                     // TODO: Create a journal entry for this advance payment (Debit Cash, Credit Customer/Unearned Revenue)
+                       $db->query("UPDATE customers SET current_balance = current_balance - ? WHERE id = ?", [$total_amount, $customer_id]);
+                       // TODO: Create a journal entry for this advance payment (Debit Cash, Credit Customer/Unearned Revenue)
                 }
 
                 $pdo->commit();
@@ -189,13 +193,168 @@ try {
                 throw $e; // Re-throw to be caught by main handler
             }
             break;
+        
+       case 'get_outstanding_orders':
+            if (!isset($data['customer_id'])) {
+                throw new Exception('Customer ID is required.');
+            }
+            $customer_id = (int)$data['customer_id'];
+
+            // Fetches delivered orders that still have a balance due
+            //
+            $orders = $db->query(
+                "SELECT id, order_number, order_date, total_amount, balance_due
+                 FROM credit_orders
+                 WHERE customer_id = ? AND status = 'delivered' AND balance_due > 0.01
+                 ORDER BY order_date ASC",
+                [$customer_id]
+            )->results();
+            
+            $result = ['success' => true, 'orders' => $orders];
+            break;
+
+        // ==========================================================
+        // ===== START: CODE FOR CUSTOMER VIEW MODAL =====
+        // ==========================================================
+        case 'get_transaction_details':
+            // Note: Security/Auth is already handled above
+            if (!isset($data['ref_id']) || !isset($data['ref_type'])) {
+                throw new Exception('Missing reference ID or type.');
+            }
+            
+            $ref_id = (int)$data['ref_id'];
+            $ref_type = $data['ref_type'];
+            $html = '';
+            
+            // Start output buffering to capture HTML
+            ob_start();
+
+            // --- Handle Credit Orders ---
+            if ($ref_type == 'credit_orders') {
+                $order = $db->query("SELECT * FROM credit_orders WHERE id = ?", [$ref_id])->first();
+                $items = $db->query(
+                    "SELECT ci.*, p.base_name, pv.grade, pv.weight_variant
+                     FROM credit_order_items ci
+                     JOIN product_variants pv ON ci.variant_id = pv.id
+                     JOIN products p ON pv.product_id = p.id
+                     WHERE ci.order_id = ?",
+                    [$ref_id]
+                )->results();
+                
+                if ($order) {
+                    $status_color = 'blue';
+                    if ($order->status == 'delivered') $status_color = 'green';
+                    if ($order->status == 'cancelled' || $order->status == 'rejected') $status_color = 'red';
+                    
+                    $status_html = '<span class="px-2 py-1 text-xs font-semibold rounded-full bg-'.$status_color.'-100 text-'.$status_color.'-800">' . htmlspecialchars(ucwords(str_replace('_', ' ', $order->status))) . '</span>';
+                    
+                    ?>
+                    <div class="space-y-4">
+                        <div class="grid grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-500">Status</label>
+                                <?php echo $status_html; ?>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-500">Order Date</label>
+                                <p class="text-md font-semibold text-gray-900">
+                                    <?php echo date('d-M-Y', strtotime($order->order_date)); ?>
+                                </p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-500">Order Total</label>
+                                <p class="text-xl font-bold text-gray-900">
+                                    <?php echo number_format($order->total_amount, 2); ?> BDT
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <h4 class="text-lg font-medium text-gray-800 border-t pt-4">Order Items</h4>
+                        <table class="min-w-full divide-y divide-gray-200 mt-2">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Product</th>
+                                    <th class="px-3 py-2 text-right text-xs font-medium text-gray-500 uppercase">Qty</th>
+                                    <th class="px-3 py-2 text-right text-xs font-medium text-gray-500 uppercase">Unit Price</th>
+                                    <th class="px-3 py-2 text-right text-xs font-medium text-gray-500 uppercase">Line Total</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <?php foreach ($items as $item): 
+                                    $product_name = htmlspecialchars($item->base_name . ' (' . $item->weight_variant . 'kg - ' . $item->grade . ')');
+                                ?>
+                                <tr>
+                                    <td class="px-3 py-3 text-sm text-gray-800"><?php echo $product_name; ?></td>
+                                    <td class="px-3 py-3 text-sm text-gray-700 text-right"><?php echo $item->quantity; ?></td>
+                                    <td class="px-3 py-3 text-sm text-gray-700 text-right"><?php echo number_format($item->unit_price, 2); ?></td>
+                                    <td class="px-3 py-3 text-sm text-gray-900 text-right font-medium"><?php echo number_format($item->line_total, 2); ?></td>
+                                </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                    <?php
+                } else {
+                    echo '<p class="text-red-500 text-center p-4">Error: Order not found.</p>';
+                }
+            } 
+            
+            // --- Handle Customer Payments ---
+            elseif ($ref_type == 'customer_payments') {
+                $payment = $db->query("SELECT * FROM customer_payments WHERE id = ?", [$ref_id])->first();
+                if ($payment) {
+                    ?>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-500">Payment Date</label>
+                            <p class="text-md font-semibold text-gray-900"><?php echo date('d-M-Y', strtotime($payment->payment_date)); ?></p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-500">Payment Amount</label>
+                            <p class="text-2xl font-bold text-green-600"><?php echo number_format($payment->payment_amount, 2); ?> BDT</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-500">Payment Method</label>
+                            <p class="text-md font-semibold text-gray-900">
+                                <span class="px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800"><?php echo htmlspecialchars($payment->payment_method); ?></span>
+                            </p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-500">Reference / Cheque No.</label>
+                            <p class="text-md font-semibold text-gray-900"><?php echo htmlspecialchars($payment->reference_number ?? 'N/A'); ?></p>
+                        </div>
+                        <div class="border-t pt-4">
+                            <label class="block text-sm font-medium text-gray-500">Notes</label>
+                            <p class="text-md text-gray-800"><?php echo nl2br(htmlspecialchars($payment->notes ?? 'No notes provided.')); ?></p>
+                        </div>
+                    </div>
+                    <?php
+                } else {
+                    echo '<p class="text-red-500 text-center p-4">Error: Payment not found.</p>';
+                }
+            } 
+            
+            // --- Handle Unknown Types ---
+            else {
+                 echo '<p class="text-red-500 text-center p-4">Error: Unknown reference type provided.</p>';
+            }
+
+            // Get the buffered HTML
+            $html = ob_get_clean();
+            // Set the result to be JSON-encoded
+            $result = ['success' => true, 'html' => $html];
+            break;
+        // ==========================================================
+        // ===== END: CODE FOR CUSTOMER VIEW MODAL =====
+        // ==========================================================
+
 
         default:
             throw new Exception('Invalid sales action');
     }
     
-    // Clean buffer and send response
-    ob_end_clean();
+    // Clean buffer (which now contains the HTML for the modal) and send response
+    // ** We removed the ob_end_clean() from here in the previous step **
     echo json_encode($result);
     exit;
 
@@ -206,5 +365,5 @@ try {
     echo json_encode(['success' => false, 'error' => $e->getMessage()]);
     exit;
 }
-?>
 
+?>

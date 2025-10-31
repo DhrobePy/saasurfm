@@ -1,0 +1,24 @@
+[30-Oct-2025 15:01:39 Asia/Dhaka] Total accounts retrieved: 21
+[30-Oct-2025 15:01:39 Asia/Dhaka] Added to income: Credit sales Sirajgonh (Type: Revenue)
+[30-Oct-2025 15:01:39 Asia/Dhaka] Added to income: Credit Sales Sirajgonj (Type: Revenue)
+[30-Oct-2025 15:01:39 Asia/Dhaka] Added to assets: Petty Cash Demra Mill (Type: Petty Cash)
+[30-Oct-2025 15:01:39 Asia/Dhaka] Added to assets: Petty Cash HO (Type: Petty Cash)
+[30-Oct-2025 15:01:39 Asia/Dhaka] Added to assets: POS Cash - Demra (Type: Petty Cash)
+[30-Oct-2025 15:01:39 Asia/Dhaka] Added to assets: POS Cash - Head Office (Type: Petty Cash)
+[30-Oct-2025 15:01:39 Asia/Dhaka] Added to assets: POS Rampura (Type: Petty Cash)
+[30-Oct-2025 15:01:39 Asia/Dhaka] Added to income: POS Sales Collection Rampura (Type: Revenue)
+[30-Oct-2025 15:01:39 Asia/Dhaka] Added to income: POS sales Collection Sirajgonj (Type: Revenue)
+[30-Oct-2025 15:01:39 Asia/Dhaka] Added to income: POS Sales Revenue - Demra (Type: Revenue)
+[30-Oct-2025 15:01:39 Asia/Dhaka] Added to income: POS Sales Revenue - Head Office (Type: Revenue)
+[30-Oct-2025 15:01:39 Asia/Dhaka] Added to income: POS Sales Revenue SRG (Type: Revenue)
+[30-Oct-2025 15:01:39 Asia/Dhaka] Added to assets: POS Sales Sirajgonj (Type: Petty Cash)
+[30-Oct-2025 15:01:39 Asia/Dhaka] Added to expenses: Salary Expense Demra (Type: Expense)
+[30-Oct-2025 15:01:39 Asia/Dhaka] Added to expenses: Salary Expense Sirajgonj (Type: Expense)
+[30-Oct-2025 15:01:39 Asia/Dhaka] Added to expenses: Sales Discounts (Type: Expense)
+[30-Oct-2025 15:01:39 Asia/Dhaka] Added to assets: ucbl - ujjal flour mills (1662301000000228) (Type: Bank)
+[30-Oct-2025 15:01:39 Asia/Dhaka] Added to assets: UCBL - Ujjal Flour Mills (2122101000000123) (Type: Bank)
+[30-Oct-2025 15:01:39 Asia/Dhaka] Added to assets: Undeposited Funds (Type: Other Current Asset)
+[30-Oct-2025 15:01:39 Asia/Dhaka] Asset accounts: 9
+[30-Oct-2025 15:01:39 Asia/Dhaka] Income accounts: 7
+[30-Oct-2025 15:01:39 Asia/Dhaka] Expense accounts: 3
+[31-Oct-2025 23:37:23 Asia/Dhaka] PHP Warning:  Undefined array key "02" in /home/ujjalfmc/public_html/saas.ujjalfm.com/accounts/debit_voucher_print.php on line 76

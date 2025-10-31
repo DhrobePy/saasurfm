@@ -1708,3 +1708,2240 @@
 (
 )
 
+[29-Oct-2025 22:51:40 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'phone' in 'SELECT' in query: SELECT id, name, phone 
+     FROM customers 
+     WHERE status = 'active' 
+     ORDER BY name ASC | Params: Array
+(
+)
+
+[29-Oct-2025 22:51:40 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$phone in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_ledger.php on line 147
+[29-Oct-2025 23:56:49 Asia/Dhaka] SQL Error [42000]: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '1=1 ORDER BY co.created_at DESC LIMIT 25' at line 4 in query: SELECT co.*, c.name as customer_name, u.display_name as created_by_name, b.name as branch_name FROM credit_orders co
+               JOIN customers c ON co.customer_id = c.id
+               JOIN users u ON co.created_by_user_id = u.id
+               LEFT JOIN branches b ON co.assigned_branch_id = b.idWHERE 1=1 ORDER BY co.created_at DESC LIMIT 25 | Params: Array
+(
+)
+
+[29-Oct-2025 23:59:14 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c.status' in 'WHERE' in query: SELECT id, name, phone_number, credit_limit, current_balance as outstanding_balance, status
+     FROM customers
+     WHERE c.status = 'active'
+     ORDER BY c.name ASC | Params: Array
+(
+)
+
+[30-Oct-2025 00:02:04 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c.status' in 'WHERE' in query: SELECT id, name, phone_number, credit_limit, current_balance as outstanding_balance, status
+     FROM customers
+     WHERE c.status = 'active'
+     ORDER BY c.name ASC | Params: Array
+(
+)
+
+[29-Oct-2025 18:12:52 UTC] PHP Fatal error:  Uncaught Error: Undefined constant "APP_NAME" in /home/ujjalfmc/public_html/saas.ujjalfm.com/templates/header.php:10
+Stack trace:
+#0 /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/index.php(1): require_once()
+#1 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/templates/header.php on line 10
+[30-Oct-2025 00:34:26 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$amount in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/index.php on line 338
+[30-Oct-2025 00:34:26 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$amount in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/index.php on line 338
+[30-Oct-2025 00:34:26 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$amount in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/index.php on line 338
+[30-Oct-2025 15:34:57 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c.status' in 'WHERE' in query: SELECT id, name, phone_number, credit_limit, current_balance as outstanding_balance, status
+     FROM customers
+     WHERE c.status = 'active'
+     ORDER BY c.name ASC | Params: Array
+(
+)
+
+[30-Oct-2025 15:36:04 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined function generate_csrf_token() in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php:217
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 217
+[30-Oct-2025 15:36:08 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined function generate_csrf_token() in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php:217
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 217
+[30-Oct-2025 15:37:28 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined function generate_csrf_token() in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php:217
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 217
+[30-Oct-2025 15:37:43 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined function generate_csrf_token() in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php:217
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 217
+[30-Oct-2025 15:53:11 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c.status' in 'WHERE' in query: SELECT id, name, phone_number, credit_limit, current_balance as outstanding_balance, status
+     FROM customers
+     WHERE c.status = 'active'
+     ORDER BY c.name ASC | Params: Array
+(
+)
+
+[30-Oct-2025 16:12:16 Asia/Dhaka] PHP Warning:  Undefined variable $ar_account_id in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 158
+[30-Oct-2025 16:12:16 Asia/Dhaka] PHP Warning:  Attempt to read property "id" on null in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 158
+[30-Oct-2025 16:12:16 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined method Accounting::createJournalEntry() in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php:165
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 165
+[30-Oct-2025 17:00:11 Asia/Dhaka] PHP Warning:  Undefined variable $customers in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 223
+[30-Oct-2025 17:00:11 Asia/Dhaka] PHP Warning:  foreach() argument must be of type array|object, null given in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 223
+[30-Oct-2025 17:00:11 Asia/Dhaka] PHP Warning:  Undefined variable $bank_accounts in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 282
+[30-Oct-2025 17:00:11 Asia/Dhaka] PHP Warning:  foreach() argument must be of type array|object, null given in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 282
+[30-Oct-2025 18:59:38 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'phone' in 'SELECT' in query: SELECT id, name, phone 
+     FROM customers 
+     WHERE status = 'active' 
+     ORDER BY name ASC | Params: Array
+(
+)
+
+[30-Oct-2025 14:59:36 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user 'root'@'localhost' (using password: NO) in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php:4
+Stack trace:
+#0 /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php(4): mysqli->__construct()
+#1 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 4
+[30-Oct-2025 22:31:59 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'approved' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 22:31:59 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'in_production' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 22:31:59 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'produced' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 22:31:59 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 22:32:10 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'approved' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 22:32:10 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'in_production' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 22:32:10 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'produced' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 22:32:10 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 22:32:13 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'approved' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 22:32:13 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'in_production' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 22:32:13 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'produced' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 22:32:13 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 22:32:16 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'approved' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 22:32:16 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'in_production' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 22:32:16 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'produced' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 22:32:16 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 22:32:36 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 22:32:36 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'shipped' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 22:32:36 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'delivered' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 22:32:54 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 22:32:54 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'shipped' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 22:32:54 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'delivered' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 22:33:15 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 22:33:15 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'shipped' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 22:33:15 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'delivered' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 22:38:05 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cow.created_at' in 'ORDER BY' in query: SELECT cow.*, u.display_name as performed_by_name
+     FROM credit_order_workflow cow
+     LEFT JOIN users u ON cow.performed_by_user_id = u.id
+     WHERE cow.order_id = ?
+     ORDER BY cow.created_at DESC | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 22:38:17 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'phone' in 'SELECT' in query: SELECT id, name, phone 
+     FROM customers 
+     WHERE status = 'active' 
+     ORDER BY name ASC | Params: Array
+(
+)
+
+[30-Oct-2025 22:38:17 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$phone in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_ledger.php on line 147
+[30-Oct-2025 22:58:47 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 22:58:47 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'shipped' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 22:58:47 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'delivered' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 22:59:02 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 22:59:02 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'shipped' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 22:59:02 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'delivered' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 23:11:12 Asia/Dhaka] SQL Error [01000]: SQLSTATE[01000]: Warning: 1265 Data truncated for column 'action' at row 1 in query: INSERT INTO `credit_order_workflow` (`order_id`, `from_status`, `to_status`, `action`, `performed_by_user_id`, `comments`) VALUES (?, ?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 4
+    [1] => pending_approval
+    [2] => approved
+    [3] => approved
+    [4] => 2
+    [5] => ok
+)
+
+[30-Oct-2025 23:11:12 Asia/Dhaka] Database insert failed for table 'credit_order_workflow'.
+[30-Oct-2025 23:12:02 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'approved' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 23:12:02 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'in_production' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 23:12:02 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'produced' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 23:12:02 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 23:12:05 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'approved' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 23:12:05 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'in_production' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 23:12:05 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'produced' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 23:12:05 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 23:12:07 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'approved' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 23:12:07 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'in_production' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 23:12:07 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'produced' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 23:12:07 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 23:12:10 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'approved' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 23:12:10 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'in_production' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 23:12:10 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'produced' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 23:12:10 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 23:12:33 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 23:12:33 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'shipped' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 23:12:33 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'delivered' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 23:12:47 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 23:12:47 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'shipped' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 23:12:47 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'delivered' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 23:34:31 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 23:34:31 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'shipped' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 23:34:31 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'delivered' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 23:34:44 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 23:34:44 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'shipped' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 23:34:44 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'delivered' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 23:35:03 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 23:35:03 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'shipped' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[30-Oct-2025 23:35:03 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'delivered' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[31-Oct-2025 09:31:37 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.amount_paid' in 'SELECT' in query: SELECT co.*, 
+                    b.name as branch_name,
+                    (co.balance_due - co.amount_paid) as outstanding
+             FROM credit_orders co
+             LEFT JOIN branches b ON co.assigned_branch_id = b.id
+             WHERE co.customer_id = ? 
+             AND co.status IN ('shipped', 'delivered')
+             AND co.balance_due > co.amount_paid
+             ORDER BY co.order_date ASC | Params: Array
+(
+    [0] => 1
+)
+
+[31-Oct-2025 09:31:37 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 1
+)
+
+[31-Oct-2025 09:31:37 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$address in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/credit_payment_collect.php on line 305
+[31-Oct-2025 09:32:01 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.amount_paid' in 'SELECT' in query: SELECT co.*, 
+                    b.name as branch_name,
+                    (co.balance_due - co.amount_paid) as outstanding
+             FROM credit_orders co
+             LEFT JOIN branches b ON co.assigned_branch_id = b.id
+             WHERE co.customer_id = ? 
+             AND co.status IN ('shipped', 'delivered')
+             AND co.balance_due > co.amount_paid
+             ORDER BY co.order_date ASC | Params: Array
+(
+    [0] => 4
+)
+
+[31-Oct-2025 09:32:01 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 4
+)
+
+[31-Oct-2025 09:32:01 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$address in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/credit_payment_collect.php on line 305
+[31-Oct-2025 09:34:15 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 4
+)
+
+[31-Oct-2025 09:34:15 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$address in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/credit_payment_collect.php on line 305
+[31-Oct-2025 09:34:22 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 1
+)
+
+[31-Oct-2025 09:34:22 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$address in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/credit_payment_collect.php on line 305
+[31-Oct-2025 09:35:15 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'amount' in 'INSERT INTO' in query: INSERT INTO `customer_payments` (`customer_id`, `payment_date`, `amount`, `payment_method`, `reference_number`, `receipt_number`, `notes`, `collected_by_user_id`, `branch_id`, `created_at`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 1
+    [1] => 2025-10-31
+    [2] => 515000
+    [3] => cash
+    [4] => 
+    [5] => RCP-20251031-8004
+    [6] => 
+    [7] => 1
+    [8] => 
+    [9] => 2025-10-31 09:35:15
+)
+
+[31-Oct-2025 09:35:15 Asia/Dhaka] Database insert failed for table 'customer_payments'.
+[31-Oct-2025 09:35:15 Asia/Dhaka] SQL Error [22007]: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect integer value: '' for column `ujjalfmc_saas`.`customer_ledger`.`reference_id` at row 1 in query: INSERT INTO `customer_ledger` (`customer_id`, `transaction_date`, `transaction_type`, `reference_type`, `reference_id`, `invoice_number`, `description`, `debit_amount`, `credit_amount`, `balance_after`, `created_by_user_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 1
+    [1] => 2025-10-31
+    [2] => payment
+    [3] => customer_payments
+    [4] => 
+    [5] => RCP-20251031-8004
+    [6] => Payment received - Receipt #RCP-20251031-8004
+    [7] => 0
+    [8] => 515000
+    [9] => 1719114.75
+    [10] => 1
+)
+
+[31-Oct-2025 09:35:15 Asia/Dhaka] Database insert failed for table 'customer_ledger'.
+[31-Oct-2025 09:35:15 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'INSERT INTO' in query: INSERT INTO `payment_allocations` (`payment_id`, `order_id`, `allocated_amount`, `created_at`) VALUES (?, ?, ?, ?) | Params: Array
+(
+    [0] => 
+    [1] => 1
+    [2] => 5000
+    [3] => 2025-10-31 09:35:15
+)
+
+[31-Oct-2025 09:35:15 Asia/Dhaka] Database insert failed for table 'payment_allocations'.
+[31-Oct-2025 09:35:15 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'INSERT INTO' in query: INSERT INTO `payment_allocations` (`payment_id`, `order_id`, `allocated_amount`, `created_at`) VALUES (?, ?, ?, ?) | Params: Array
+(
+    [0] => 
+    [1] => 2
+    [2] => 10000
+    [3] => 2025-10-31 09:35:15
+)
+
+[31-Oct-2025 09:35:15 Asia/Dhaka] Database insert failed for table 'payment_allocations'.
+[31-Oct-2025 09:35:15 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'INSERT INTO' in query: INSERT INTO `payment_allocations` (`payment_id`, `order_id`, `allocated_amount`, `created_at`) VALUES (?, ?, ?, ?) | Params: Array
+(
+    [0] => 
+    [1] => 3
+    [2] => 500000
+    [3] => 2025-10-31 09:35:15
+)
+
+[31-Oct-2025 09:35:15 Asia/Dhaka] Database insert failed for table 'payment_allocations'.
+[31-Oct-2025 09:35:15 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'allocation_status' in 'SET' in query: UPDATE customer_payments 
+                     SET allocation_status = 'allocated', allocated_amount = ?
+                     WHERE id = ? | Params: Array
+(
+    [0] => 515000
+    [1] => 
+)
+
+[31-Oct-2025 09:35:15 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c.address' in 'SELECT' in query: SELECT cp.*, 
+                c.name as customer_name,
+                c.phone_number as customer_phone,
+                c.address as customer_address,
+                u.display_name as collected_by_name,
+                b.name as branch_name
+         FROM customer_payments cp
+         JOIN customers c ON cp.customer_id = c.id
+         LEFT JOIN users u ON cp.collected_by_user_id = u.id
+         LEFT JOIN branches b ON cp.branch_id = b.id
+         WHERE cp.id = ? | Params: Array
+(
+    [0] => 0
+)
+
+[31-Oct-2025 09:36:04 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 1
+)
+
+[31-Oct-2025 09:36:04 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$address in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/credit_payment_collect.php on line 305
+[31-Oct-2025 10:00:32 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c.address' in 'SELECT' in query: SELECT c.*, COALESCE(c.address, c.shipping_address, '') as customer_address 
+         FROM customers c 
+         WHERE c.id = ? | Params: Array
+(
+    [0] => 1
+)
+
+[31-Oct-2025 10:00:32 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'name' in 'SELECT' in query: SELECT id, name, employee_id FROM employees WHERE status = 'active' ORDER BY name ASC | Params: Array
+(
+)
+
+[31-Oct-2025 10:00:32 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'account_code' in 'SELECT' in query: SELECT id, account_code, account_name, current_balance 
+     FROM chart_of_accounts 
+     WHERE account_type = 'Asset' 
+     AND (account_name LIKE '%Cash%' OR account_code LIKE '11%')
+     AND status = 'active'
+     ORDER BY account_code ASC | Params: Array
+(
+)
+
+[31-Oct-2025 10:00:32 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'account_code' in 'SELECT' in query: SELECT id, account_code, account_name, current_balance 
+     FROM chart_of_accounts 
+     WHERE account_type = 'Asset' 
+     AND (account_name LIKE '%Bank%' OR account_code LIKE '12%')
+     AND status = 'active'
+     ORDER BY account_code ASC | Params: Array
+(
+)
+
+[31-Oct-2025 10:00:36 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c.address' in 'SELECT' in query: SELECT c.*, COALESCE(c.address, c.shipping_address, '') as customer_address 
+         FROM customers c 
+         WHERE c.id = ? | Params: Array
+(
+    [0] => 1
+)
+
+[31-Oct-2025 10:00:36 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'name' in 'SELECT' in query: SELECT id, name, employee_id FROM employees WHERE status = 'active' ORDER BY name ASC | Params: Array
+(
+)
+
+[31-Oct-2025 10:00:36 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'account_code' in 'SELECT' in query: SELECT id, account_code, account_name, current_balance 
+     FROM chart_of_accounts 
+     WHERE account_type = 'Asset' 
+     AND (account_name LIKE '%Cash%' OR account_code LIKE '11%')
+     AND status = 'active'
+     ORDER BY account_code ASC | Params: Array
+(
+)
+
+[31-Oct-2025 10:00:36 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'account_code' in 'SELECT' in query: SELECT id, account_code, account_name, current_balance 
+     FROM chart_of_accounts 
+     WHERE account_type = 'Asset' 
+     AND (account_name LIKE '%Bank%' OR account_code LIKE '12%')
+     AND status = 'active'
+     ORDER BY account_code ASC | Params: Array
+(
+)
+
+[31-Oct-2025 10:00:40 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c.address' in 'SELECT' in query: SELECT c.*, COALESCE(c.address, c.shipping_address, '') as customer_address 
+         FROM customers c 
+         WHERE c.id = ? | Params: Array
+(
+    [0] => 4
+)
+
+[31-Oct-2025 10:00:40 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'name' in 'SELECT' in query: SELECT id, name, employee_id FROM employees WHERE status = 'active' ORDER BY name ASC | Params: Array
+(
+)
+
+[31-Oct-2025 10:00:40 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'account_code' in 'SELECT' in query: SELECT id, account_code, account_name, current_balance 
+     FROM chart_of_accounts 
+     WHERE account_type = 'Asset' 
+     AND (account_name LIKE '%Cash%' OR account_code LIKE '11%')
+     AND status = 'active'
+     ORDER BY account_code ASC | Params: Array
+(
+)
+
+[31-Oct-2025 10:00:40 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'account_code' in 'SELECT' in query: SELECT id, account_code, account_name, current_balance 
+     FROM chart_of_accounts 
+     WHERE account_type = 'Asset' 
+     AND (account_name LIKE '%Bank%' OR account_code LIKE '12%')
+     AND status = 'active'
+     ORDER BY account_code ASC | Params: Array
+(
+)
+
+[31-Oct-2025 10:03:12 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c.address' in 'SELECT' in query: SELECT c.*, COALESCE(c.address, c.shipping_address, '') as customer_address 
+         FROM customers c 
+         WHERE c.id = ? | Params: Array
+(
+    [0] => 4
+)
+
+[31-Oct-2025 10:03:12 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'name' in 'SELECT' in query: SELECT id, name, employee_id FROM employees WHERE status = 'active' ORDER BY name ASC | Params: Array
+(
+)
+
+[31-Oct-2025 10:03:12 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'account_code' in 'SELECT' in query: SELECT id, account_code, account_name, current_balance 
+     FROM chart_of_accounts 
+     WHERE account_type = 'Asset' 
+     AND (account_name LIKE '%Cash%' OR account_code LIKE '11%')
+     AND status = 'active'
+     ORDER BY account_code ASC | Params: Array
+(
+)
+
+[31-Oct-2025 10:03:12 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'account_code' in 'SELECT' in query: SELECT id, account_code, account_name, current_balance 
+     FROM chart_of_accounts 
+     WHERE account_type = 'Asset' 
+     AND (account_name LIKE '%Bank%' OR account_code LIKE '12%')
+     AND status = 'active'
+     ORDER BY account_code ASC | Params: Array
+(
+)
+
+[31-Oct-2025 10:16:12 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c.address' in 'SELECT' in query: SELECT c.*, COALESCE(c.address, c.shipping_address, '') as customer_address 
+         FROM customers c 
+         WHERE c.id = ? | Params: Array
+(
+    [0] => 4
+)
+
+[31-Oct-2025 10:16:12 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'name' in 'SELECT' in query: SELECT id, name, employee_id FROM employees WHERE status = 'active' ORDER BY name ASC | Params: Array
+(
+)
+
+[31-Oct-2025 10:16:12 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'account_code' in 'SELECT' in query: SELECT id, account_code, account_name, current_balance 
+     FROM chart_of_accounts 
+     WHERE account_type = 'Asset' 
+     AND (account_name LIKE '%Cash%' OR account_code LIKE '11%')
+     AND status = 'active'
+     ORDER BY account_code ASC | Params: Array
+(
+)
+
+[31-Oct-2025 10:16:12 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'account_code' in 'SELECT' in query: SELECT id, account_code, account_name, current_balance 
+     FROM chart_of_accounts 
+     WHERE account_type = 'Asset' 
+     AND (account_name LIKE '%Bank%' OR account_code LIKE '12%')
+     AND status = 'active'
+     ORDER BY account_code ASC | Params: Array
+(
+)
+
+[31-Oct-2025 10:16:19 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c.address' in 'SELECT' in query: SELECT c.*, COALESCE(c.address, c.shipping_address, '') as customer_address 
+         FROM customers c 
+         WHERE c.id = ? | Params: Array
+(
+    [0] => 1
+)
+
+[31-Oct-2025 10:16:19 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'name' in 'SELECT' in query: SELECT id, name, employee_id FROM employees WHERE status = 'active' ORDER BY name ASC | Params: Array
+(
+)
+
+[31-Oct-2025 10:16:19 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'account_code' in 'SELECT' in query: SELECT id, account_code, account_name, current_balance 
+     FROM chart_of_accounts 
+     WHERE account_type = 'Asset' 
+     AND (account_name LIKE '%Cash%' OR account_code LIKE '11%')
+     AND status = 'active'
+     ORDER BY account_code ASC | Params: Array
+(
+)
+
+[31-Oct-2025 10:16:19 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'account_code' in 'SELECT' in query: SELECT id, account_code, account_name, current_balance 
+     FROM chart_of_accounts 
+     WHERE account_type = 'Asset' 
+     AND (account_name LIKE '%Bank%' OR account_code LIKE '12%')
+     AND status = 'active'
+     ORDER BY account_code ASC | Params: Array
+(
+)
+
+[31-Oct-2025 10:20:37 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c.address' in 'SELECT' in query: SELECT c.*, COALESCE(c.address, c.shipping_address, '') as customer_address 
+         FROM customers c 
+         WHERE c.id = ? | Params: Array
+(
+    [0] => 1
+)
+
+[31-Oct-2025 10:20:37 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'name' in 'SELECT' in query: SELECT id, name, employee_id FROM employees WHERE status = 'active' ORDER BY name ASC | Params: Array
+(
+)
+
+[31-Oct-2025 10:20:37 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'account_code' in 'SELECT' in query: SELECT id, account_code, account_name, current_balance 
+     FROM chart_of_accounts 
+     WHERE account_type = 'Asset' 
+     AND (account_name LIKE '%Cash%' OR account_code LIKE '11%')
+     AND status = 'active'
+     ORDER BY account_code ASC | Params: Array
+(
+)
+
+[31-Oct-2025 10:20:37 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'account_code' in 'SELECT' in query: SELECT id, account_code, account_name, current_balance 
+     FROM chart_of_accounts 
+     WHERE account_type = 'Asset' 
+     AND (account_name LIKE '%Bank%' OR account_code LIKE '12%')
+     AND status = 'active'
+     ORDER BY account_code ASC | Params: Array
+(
+)
+
+[31-Oct-2025 10:20:40 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c.address' in 'SELECT' in query: SELECT c.*, COALESCE(c.address, c.shipping_address, '') as customer_address 
+         FROM customers c 
+         WHERE c.id = ? | Params: Array
+(
+    [0] => 1
+)
+
+[31-Oct-2025 10:20:40 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'name' in 'SELECT' in query: SELECT id, name, employee_id FROM employees WHERE status = 'active' ORDER BY name ASC | Params: Array
+(
+)
+
+[31-Oct-2025 10:20:40 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'account_code' in 'SELECT' in query: SELECT id, account_code, account_name, current_balance 
+     FROM chart_of_accounts 
+     WHERE account_type = 'Asset' 
+     AND (account_name LIKE '%Cash%' OR account_code LIKE '11%')
+     AND status = 'active'
+     ORDER BY account_code ASC | Params: Array
+(
+)
+
+[31-Oct-2025 10:20:40 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'account_code' in 'SELECT' in query: SELECT id, account_code, account_name, current_balance 
+     FROM chart_of_accounts 
+     WHERE account_type = 'Asset' 
+     AND (account_name LIKE '%Bank%' OR account_code LIKE '12%')
+     AND status = 'active'
+     ORDER BY account_code ASC | Params: Array
+(
+)
+
+[31-Oct-2025 10:32:21 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c.address' in 'SELECT' in query: SELECT c.*, COALESCE(c.address, c.shipping_address, '') as customer_address 
+         FROM customers c 
+         WHERE c.id = ? | Params: Array
+(
+    [0] => 1
+)
+
+[31-Oct-2025 10:32:21 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'name' in 'SELECT' in query: SELECT id, name, employee_id FROM employees WHERE status = 'active' ORDER BY name ASC | Params: Array
+(
+)
+
+[31-Oct-2025 10:32:21 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'account_code' in 'SELECT' in query: SELECT id, account_code, account_name, current_balance 
+     FROM chart_of_accounts 
+     WHERE account_type = 'Asset' 
+     AND (account_name LIKE '%Cash%' OR account_code LIKE '11%')
+     AND status = 'active'
+     ORDER BY account_code ASC | Params: Array
+(
+)
+
+[31-Oct-2025 10:32:21 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'account_code' in 'SELECT' in query: SELECT id, account_code, account_name, current_balance 
+     FROM chart_of_accounts 
+     WHERE account_type = 'Asset' 
+     AND (account_name LIKE '%Bank%' OR account_code LIKE '12%')
+     AND status = 'active'
+     ORDER BY account_code ASC | Params: Array
+(
+)
+
+[31-Oct-2025 10:32:25 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c.address' in 'SELECT' in query: SELECT c.*, COALESCE(c.address, c.shipping_address, '') as customer_address 
+         FROM customers c 
+         WHERE c.id = ? | Params: Array
+(
+    [0] => 1
+)
+
+[31-Oct-2025 10:32:25 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'name' in 'SELECT' in query: SELECT id, name, employee_id FROM employees WHERE status = 'active' ORDER BY name ASC | Params: Array
+(
+)
+
+[31-Oct-2025 10:32:25 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'account_code' in 'SELECT' in query: SELECT id, account_code, account_name, current_balance 
+     FROM chart_of_accounts 
+     WHERE account_type = 'Asset' 
+     AND (account_name LIKE '%Cash%' OR account_code LIKE '11%')
+     AND status = 'active'
+     ORDER BY account_code ASC | Params: Array
+(
+)
+
+[31-Oct-2025 10:32:25 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'account_code' in 'SELECT' in query: SELECT id, account_code, account_name, current_balance 
+     FROM chart_of_accounts 
+     WHERE account_type = 'Asset' 
+     AND (account_name LIKE '%Bank%' OR account_code LIKE '12%')
+     AND status = 'active'
+     ORDER BY account_code ASC | Params: Array
+(
+)
+
+[31-Oct-2025 10:32:40 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c.address' in 'SELECT' in query: SELECT c.*, COALESCE(c.address, c.shipping_address, '') as customer_address 
+         FROM customers c 
+         WHERE c.id = ? | Params: Array
+(
+    [0] => 1
+)
+
+[31-Oct-2025 10:32:40 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'name' in 'SELECT' in query: SELECT id, name, employee_id FROM employees WHERE status = 'active' ORDER BY name ASC | Params: Array
+(
+)
+
+[31-Oct-2025 10:32:40 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'account_code' in 'SELECT' in query: SELECT id, account_code, account_name, current_balance 
+     FROM chart_of_accounts 
+     WHERE account_type = 'Asset' 
+     AND (account_name LIKE '%Cash%' OR account_code LIKE '11%')
+     AND status = 'active'
+     ORDER BY account_code ASC | Params: Array
+(
+)
+
+[31-Oct-2025 10:32:40 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'account_code' in 'SELECT' in query: SELECT id, account_code, account_name, current_balance 
+     FROM chart_of_accounts 
+     WHERE account_type = 'Asset' 
+     AND (account_name LIKE '%Bank%' OR account_code LIKE '12%')
+     AND status = 'active'
+     ORDER BY account_code ASC | Params: Array
+(
+)
+
+[31-Oct-2025 10:32:48 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c.address' in 'SELECT' in query: SELECT c.*, COALESCE(c.address, c.shipping_address, '') as customer_address 
+         FROM customers c 
+         WHERE c.id = ? | Params: Array
+(
+    [0] => 1
+)
+
+[31-Oct-2025 10:32:48 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'name' in 'SELECT' in query: SELECT id, name, employee_id FROM employees WHERE status = 'active' ORDER BY name ASC | Params: Array
+(
+)
+
+[31-Oct-2025 10:32:48 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'account_code' in 'SELECT' in query: SELECT id, account_code, account_name, current_balance 
+     FROM chart_of_accounts 
+     WHERE account_type = 'Asset' 
+     AND (account_name LIKE '%Cash%' OR account_code LIKE '11%')
+     AND status = 'active'
+     ORDER BY account_code ASC | Params: Array
+(
+)
+
+[31-Oct-2025 10:32:48 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'account_code' in 'SELECT' in query: SELECT id, account_code, account_name, current_balance 
+     FROM chart_of_accounts 
+     WHERE account_type = 'Asset' 
+     AND (account_name LIKE '%Bank%' OR account_code LIKE '12%')
+     AND status = 'active'
+     ORDER BY account_code ASC | Params: Array
+(
+)
+
+[31-Oct-2025 10:34:01 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c.address' in 'SELECT' in query: SELECT c.*, COALESCE(c.address, c.shipping_address, '') as customer_address 
+         FROM customers c 
+         WHERE c.id = ? | Params: Array
+(
+    [0] => 1
+)
+
+[31-Oct-2025 10:34:01 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'name' in 'SELECT' in query: SELECT id, name, employee_id FROM employees WHERE status = 'active' ORDER BY name ASC | Params: Array
+(
+)
+
+[31-Oct-2025 10:34:01 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'account_code' in 'SELECT' in query: SELECT id, account_code, account_name, current_balance 
+     FROM chart_of_accounts 
+     WHERE account_type = 'Asset' 
+     AND (account_name LIKE '%Cash%' OR account_code LIKE '11%')
+     AND status = 'active'
+     ORDER BY account_code ASC | Params: Array
+(
+)
+
+[31-Oct-2025 10:34:01 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'account_code' in 'SELECT' in query: SELECT id, account_code, account_name, current_balance 
+     FROM chart_of_accounts 
+     WHERE account_type = 'Asset' 
+     AND (account_name LIKE '%Bank%' OR account_code LIKE '12%')
+     AND status = 'active'
+     ORDER BY account_code ASC | Params: Array
+(
+)
+
+[31-Oct-2025 10:34:04 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c.address' in 'SELECT' in query: SELECT c.*, COALESCE(c.address, c.shipping_address, '') as customer_address 
+         FROM customers c 
+         WHERE c.id = ? | Params: Array
+(
+    [0] => 1
+)
+
+[31-Oct-2025 10:34:04 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'name' in 'SELECT' in query: SELECT id, name, employee_id FROM employees WHERE status = 'active' ORDER BY name ASC | Params: Array
+(
+)
+
+[31-Oct-2025 10:34:04 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'account_code' in 'SELECT' in query: SELECT id, account_code, account_name, current_balance 
+     FROM chart_of_accounts 
+     WHERE account_type = 'Asset' 
+     AND (account_name LIKE '%Cash%' OR account_code LIKE '11%')
+     AND status = 'active'
+     ORDER BY account_code ASC | Params: Array
+(
+)
+
+[31-Oct-2025 10:34:04 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'account_code' in 'SELECT' in query: SELECT id, account_code, account_name, current_balance 
+     FROM chart_of_accounts 
+     WHERE account_type = 'Asset' 
+     AND (account_name LIKE '%Bank%' OR account_code LIKE '12%')
+     AND status = 'active'
+     ORDER BY account_code ASC | Params: Array
+(
+)
+
+[31-Oct-2025 10:42:26 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 1
+)
+
+[31-Oct-2025 10:42:26 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$address in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/credit_payment_collect.php on line 305
+[31-Oct-2025 10:43:16 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 4
+)
+
+[31-Oct-2025 10:43:16 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$address in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/credit_payment_collect.php on line 305
+[31-Oct-2025 10:51:12 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.name' in 'SELECT' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    e.name as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 4
+)
+
+[31-Oct-2025 10:51:12 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'name' in 'SELECT' in query: SELECT id, name, employee_id FROM employees WHERE status = 'active' ORDER BY name ASC | Params: Array
+(
+)
+
+[31-Oct-2025 10:51:12 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'current_balance' in 'SELECT' in query: SELECT id, account_number, name, current_balance 
+     FROM chart_of_accounts 
+     WHERE account_type IN ('Cash', 'Petty Cash')
+     AND status = 'active'
+     ORDER BY account_number ASC | Params: Array
+(
+)
+
+[31-Oct-2025 10:51:12 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'current_balance' in 'SELECT' in query: SELECT id, account_number, name, current_balance 
+     FROM chart_of_accounts 
+     WHERE account_type = 'Bank'
+     AND status = 'active'
+     ORDER BY account_number ASC | Params: Array
+(
+)
+
+[31-Oct-2025 10:59:03 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 4
+)
+
+[31-Oct-2025 11:00:01 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'collected_by_user_id' in 'INSERT INTO' in query: INSERT INTO `customer_payments` (`customer_id`, `payment_date`, `amount`, `payment_method`, `reference_number`, `receipt_number`, `notes`, `collected_by_user_id`, `collected_by_employee_id`, `branch_id`, `cash_account_id`, `bank_account_id`, `cheque_number`, `cheque_date`, `bank_transaction_type`, `created_at`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 4
+    [1] => 2025-10-31
+    [2] => 10000
+    [3] => Cash
+    [4] => skdjfhdsfk
+    [5] => RCP-20251031-0254
+    [6] => fgjfhd
+    [7] => 1
+    [8] => 1
+    [9] => 
+    [10] => 22
+    [11] => 0
+    [12] => 
+    [13] => 
+    [14] => 
+    [15] => 2025-10-31 11:00:01
+)
+
+[31-Oct-2025 11:00:01 Asia/Dhaka] Database insert failed for table 'customer_payments'.
+[31-Oct-2025 11:00:01 Asia/Dhaka] SQL Error [22007]: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect integer value: '' for column `ujjalfmc_saas`.`customer_ledger`.`reference_id` at row 1 in query: INSERT INTO `customer_ledger` (`customer_id`, `transaction_date`, `transaction_type`, `reference_type`, `reference_id`, `invoice_number`, `description`, `debit_amount`, `credit_amount`, `balance_after`, `created_by_user_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 4
+    [1] => 2025-10-31
+    [2] => payment
+    [3] => customer_payments
+    [4] => 
+    [5] => RCP-20251031-0254
+    [6] => Payment received - Receipt #RCP-20251031-0254
+    [7] => 0
+    [8] => 10000
+    [9] => 1176080
+    [10] => 1
+)
+
+[31-Oct-2025 11:00:01 Asia/Dhaka] Database insert failed for table 'customer_ledger'.
+[31-Oct-2025 11:00:01 Asia/Dhaka] SQL Error [22007]: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect integer value: '' for column `ujjalfmc_saas`.`journal_entries`.`related_document_id` at row 1 in query: INSERT INTO `journal_entries` (`transaction_date`, `description`, `related_document_id`, `related_document_type`, `created_by_user_id`) VALUES (?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 2025-10-31
+    [1] => Payment received from Trial Credit  - Receipt #RCP-20251031-0254
+    [2] => 
+    [3] => customer_payments
+    [4] => 1
+)
+
+[31-Oct-2025 11:00:01 Asia/Dhaka] Database insert failed for table 'journal_entries'.
+[31-Oct-2025 11:00:01 Asia/Dhaka] SQL Error [22007]: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect integer value: '' for column `ujjalfmc_saas`.`transaction_lines`.`journal_entry_id` at row 1 in query: INSERT INTO `transaction_lines` (`journal_entry_id`, `account_id`, `debit_amount`, `credit_amount`, `description`) VALUES (?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 
+    [1] => 22
+    [2] => 10000
+    [3] => 0
+    [4] => Payment received - Receipt #RCP-20251031-0254
+)
+
+[31-Oct-2025 11:00:01 Asia/Dhaka] Database insert failed for table 'transaction_lines'.
+[31-Oct-2025 11:00:01 Asia/Dhaka] SQL Error [22007]: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect integer value: '' for column `ujjalfmc_saas`.`transaction_lines`.`journal_entry_id` at row 1 in query: INSERT INTO `transaction_lines` (`journal_entry_id`, `account_id`, `debit_amount`, `credit_amount`, `description`) VALUES (?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 
+    [1] => 23
+    [2] => 0
+    [3] => 10000
+    [4] => Payment from Trial Credit  - Receipt #RCP-20251031-0254
+)
+
+[31-Oct-2025 11:00:01 Asia/Dhaka] Database insert failed for table 'transaction_lines'.
+[31-Oct-2025 11:00:01 Asia/Dhaka] SQL Error [22007]: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect integer value: '' for column `ujjalfmc_saas`.`payment_allocations`.`payment_id` at row 1 in query: INSERT INTO `payment_allocations` (`payment_id`, `order_id`, `allocated_amount`, `created_at`) VALUES (?, ?, ?, ?) | Params: Array
+(
+    [0] => 
+    [1] => 4
+    [2] => 10000
+    [3] => 2025-10-31 11:00:01
+)
+
+[31-Oct-2025 11:00:01 Asia/Dhaka] Database insert failed for table 'payment_allocations'.
+[31-Oct-2025 11:00:23 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 4
+)
+
+[31-Oct-2025 11:04:19 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 4
+)
+
+[31-Oct-2025 11:04:43 Asia/Dhaka] SQL Error [22007]: SQLSTATE[22007]: Invalid datetime format: 1292 Incorrect date value: '' for column `ujjalfmc_saas`.`customer_payments`.`cheque_date` at row 1 in query: INSERT INTO `customer_payments` (`payment_number`, `receipt_number`, `customer_id`, `payment_date`, `amount`, `payment_method`, `payment_type`, `reference_number`, `notes`, `created_by_user_id`, `collected_by_employee_id`, `branch_id`, `cash_account_id`, `bank_account_id`, `cheque_number`, `cheque_date`, `bank_transaction_type`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => PAY-20251031-2214
+    [1] => RCP-20251031-0619
+    [2] => 4
+    [3] => 2025-10-31
+    [4] => 10001
+    [5] => Cash
+    [6] => invoice_payment
+    [7] => efg
+    [8] => efg
+    [9] => 1
+    [10] => 3
+    [11] => 
+    [12] => 22
+    [13] => 0
+    [14] => 
+    [15] => 
+    [16] => 
+)
+
+[31-Oct-2025 11:04:43 Asia/Dhaka] Database insert failed for table 'customer_payments'.
+[31-Oct-2025 11:04:43 Asia/Dhaka] SQL Error [22007]: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect integer value: '' for column `ujjalfmc_saas`.`customer_ledger`.`reference_id` at row 1 in query: INSERT INTO `customer_ledger` (`customer_id`, `transaction_date`, `transaction_type`, `reference_type`, `reference_id`, `invoice_number`, `description`, `debit_amount`, `credit_amount`, `balance_after`, `created_by_user_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 4
+    [1] => 2025-10-31
+    [2] => payment
+    [3] => customer_payments
+    [4] => 
+    [5] => RCP-20251031-0619
+    [6] => Payment received - Receipt #RCP-20251031-0619
+    [7] => 0
+    [8] => 10001
+    [9] => 1176079
+    [10] => 1
+)
+
+[31-Oct-2025 11:04:43 Asia/Dhaka] Database insert failed for table 'customer_ledger'.
+[31-Oct-2025 11:04:43 Asia/Dhaka] SQL Error [22007]: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect integer value: '' for column `ujjalfmc_saas`.`journal_entries`.`related_document_id` at row 1 in query: INSERT INTO `journal_entries` (`transaction_date`, `description`, `related_document_id`, `related_document_type`, `created_by_user_id`) VALUES (?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 2025-10-31
+    [1] => Payment received from Trial Credit  - Receipt #RCP-20251031-0619
+    [2] => 
+    [3] => customer_payments
+    [4] => 1
+)
+
+[31-Oct-2025 11:04:43 Asia/Dhaka] Database insert failed for table 'journal_entries'.
+[31-Oct-2025 11:04:43 Asia/Dhaka] SQL Error [22007]: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect integer value: '' for column `ujjalfmc_saas`.`transaction_lines`.`journal_entry_id` at row 1 in query: INSERT INTO `transaction_lines` (`journal_entry_id`, `account_id`, `debit_amount`, `credit_amount`, `description`) VALUES (?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 
+    [1] => 22
+    [2] => 10001
+    [3] => 0
+    [4] => Payment received - Receipt #RCP-20251031-0619
+)
+
+[31-Oct-2025 11:04:43 Asia/Dhaka] Database insert failed for table 'transaction_lines'.
+[31-Oct-2025 11:04:43 Asia/Dhaka] SQL Error [22007]: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect integer value: '' for column `ujjalfmc_saas`.`transaction_lines`.`journal_entry_id` at row 1 in query: INSERT INTO `transaction_lines` (`journal_entry_id`, `account_id`, `debit_amount`, `credit_amount`, `description`) VALUES (?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 
+    [1] => 23
+    [2] => 0
+    [3] => 10001
+    [4] => Payment from Trial Credit  - Receipt #RCP-20251031-0619
+)
+
+[31-Oct-2025 11:04:43 Asia/Dhaka] Database insert failed for table 'transaction_lines'.
+[31-Oct-2025 11:04:43 Asia/Dhaka] SQL Error [22007]: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect integer value: '' for column `ujjalfmc_saas`.`payment_allocations`.`payment_id` at row 1 in query: INSERT INTO `payment_allocations` (`payment_id`, `order_id`, `allocated_amount`, `created_at`) VALUES (?, ?, ?, ?) | Params: Array
+(
+    [0] => 
+    [1] => 4
+    [2] => 10001
+    [3] => 2025-10-31 11:04:43
+)
+
+[31-Oct-2025 11:04:43 Asia/Dhaka] Database insert failed for table 'payment_allocations'.
+[31-Oct-2025 11:37:17 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 1
+)
+
+[31-Oct-2025 11:37:33 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 4
+)
+
+[31-Oct-2025 11:39:08 Asia/Dhaka] SQL Error [22007]: SQLSTATE[22007]: Invalid datetime format: 1292 Incorrect date value: '' for column `ujjalfmc_saas`.`customer_payments`.`cheque_date` at row 1 in query: INSERT INTO `customer_payments` (`payment_number`, `receipt_number`, `customer_id`, `payment_date`, `amount`, `payment_method`, `payment_type`, `reference_number`, `notes`, `created_by_user_id`, `collected_by_employee_id`, `branch_id`, `cash_account_id`, `bank_account_id`, `cheque_number`, `cheque_date`, `bank_transaction_type`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => PAY-20251031-8366
+    [1] => RCP-20251031-3794
+    [2] => 4
+    [3] => 2025-10-31
+    [4] => 100002
+    [5] => Cash
+    [6] => invoice_payment
+    [7] => Dgh
+    [8] => Trial
+    [9] => 1
+    [10] => 2
+    [11] => 
+    [12] => 22
+    [13] => 0
+    [14] => 
+    [15] => 
+    [16] => 
+)
+
+[31-Oct-2025 11:39:08 Asia/Dhaka] Database insert failed for table 'customer_payments'.
+[31-Oct-2025 11:39:08 Asia/Dhaka] SQL Error [22007]: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect integer value: '' for column `ujjalfmc_saas`.`customer_ledger`.`reference_id` at row 1 in query: INSERT INTO `customer_ledger` (`customer_id`, `transaction_date`, `transaction_type`, `reference_type`, `reference_id`, `invoice_number`, `description`, `debit_amount`, `credit_amount`, `balance_after`, `created_by_user_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 4
+    [1] => 2025-10-31
+    [2] => payment
+    [3] => customer_payments
+    [4] => 
+    [5] => RCP-20251031-3794
+    [6] => Payment received - Receipt #RCP-20251031-3794
+    [7] => 0
+    [8] => 100002
+    [9] => 1086078
+    [10] => 1
+)
+
+[31-Oct-2025 11:39:08 Asia/Dhaka] Database insert failed for table 'customer_ledger'.
+[31-Oct-2025 11:39:08 Asia/Dhaka] SQL Error [22007]: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect integer value: '' for column `ujjalfmc_saas`.`journal_entries`.`related_document_id` at row 1 in query: INSERT INTO `journal_entries` (`transaction_date`, `description`, `related_document_id`, `related_document_type`, `created_by_user_id`) VALUES (?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 2025-10-31
+    [1] => Payment received from Trial Credit  - Receipt #RCP-20251031-3794
+    [2] => 
+    [3] => customer_payments
+    [4] => 1
+)
+
+[31-Oct-2025 11:39:08 Asia/Dhaka] Database insert failed for table 'journal_entries'.
+[31-Oct-2025 11:39:08 Asia/Dhaka] SQL Error [22007]: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect integer value: '' for column `ujjalfmc_saas`.`transaction_lines`.`journal_entry_id` at row 1 in query: INSERT INTO `transaction_lines` (`journal_entry_id`, `account_id`, `debit_amount`, `credit_amount`, `description`) VALUES (?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 
+    [1] => 22
+    [2] => 100002
+    [3] => 0
+    [4] => Payment received - Receipt #RCP-20251031-3794
+)
+
+[31-Oct-2025 11:39:08 Asia/Dhaka] Database insert failed for table 'transaction_lines'.
+[31-Oct-2025 11:39:08 Asia/Dhaka] SQL Error [22007]: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect integer value: '' for column `ujjalfmc_saas`.`transaction_lines`.`journal_entry_id` at row 1 in query: INSERT INTO `transaction_lines` (`journal_entry_id`, `account_id`, `debit_amount`, `credit_amount`, `description`) VALUES (?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 
+    [1] => 23
+    [2] => 0
+    [3] => 100002
+    [4] => Payment from Trial Credit  - Receipt #RCP-20251031-3794
+)
+
+[31-Oct-2025 11:39:08 Asia/Dhaka] Database insert failed for table 'transaction_lines'.
+[31-Oct-2025 11:39:08 Asia/Dhaka] SQL Error [22007]: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect integer value: '' for column `ujjalfmc_saas`.`payment_allocations`.`payment_id` at row 1 in query: INSERT INTO `payment_allocations` (`payment_id`, `order_id`, `allocated_amount`, `created_at`) VALUES (?, ?, ?, ?) | Params: Array
+(
+    [0] => 
+    [1] => 4
+    [2] => 100002
+    [3] => 2025-10-31 11:39:08
+)
+
+[31-Oct-2025 11:39:08 Asia/Dhaka] Database insert failed for table 'payment_allocations'.
+[31-Oct-2025 11:39:21 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 4
+)
+
+[31-Oct-2025 12:05:05 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 4
+)
+
+[31-Oct-2025 12:05:37 Asia/Dhaka] SQL Error [22007]: SQLSTATE[22007]: Invalid datetime format: 1292 Incorrect date value: '' for column `ujjalfmc_saas`.`customer_payments`.`cheque_date` at row 1 in query: INSERT INTO `customer_payments` (`payment_number`, `receipt_number`, `customer_id`, `payment_date`, `amount`, `payment_method`, `payment_type`, `reference_number`, `notes`, `created_by_user_id`, `collected_by_employee_id`, `branch_id`, `cash_account_id`, `bank_account_id`, `cheque_number`, `cheque_date`, `bank_transaction_type`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => PAY-20251031-9004
+    [1] => RCP-20251031-4408
+    [2] => 4
+    [3] => 2025-10-31
+    [4] => 25000
+    [5] => Cash
+    [6] => invoice_payment
+    [7] => Demra cash collected
+    [8] => Demra by dhrobe
+    [9] => 1
+    [10] => 3
+    [11] => 
+    [12] => 22
+    [13] => 0
+    [14] => 
+    [15] => 
+    [16] => 
+)
+
+[31-Oct-2025 12:05:37 Asia/Dhaka] Database insert failed for table 'customer_payments'.
+[31-Oct-2025 12:05:37 Asia/Dhaka] SQL Error [22007]: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect integer value: '' for column `ujjalfmc_saas`.`customer_ledger`.`reference_id` at row 1 in query: INSERT INTO `customer_ledger` (`customer_id`, `transaction_date`, `transaction_type`, `reference_type`, `reference_id`, `invoice_number`, `description`, `debit_amount`, `credit_amount`, `balance_after`, `created_by_user_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 4
+    [1] => 2025-10-31
+    [2] => payment
+    [3] => customer_payments
+    [4] => 
+    [5] => RCP-20251031-4408
+    [6] => Payment received - Receipt #RCP-20251031-4408
+    [7] => 0
+    [8] => 25000
+    [9] => 1161080
+    [10] => 1
+)
+
+[31-Oct-2025 12:05:37 Asia/Dhaka] Database insert failed for table 'customer_ledger'.
+[31-Oct-2025 12:05:37 Asia/Dhaka] SQL Error [22007]: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect integer value: '' for column `ujjalfmc_saas`.`journal_entries`.`related_document_id` at row 1 in query: INSERT INTO `journal_entries` (`transaction_date`, `description`, `related_document_id`, `related_document_type`, `created_by_user_id`) VALUES (?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 2025-10-31
+    [1] => Payment received from Trial Credit  - Receipt #RCP-20251031-4408
+    [2] => 
+    [3] => customer_payments
+    [4] => 1
+)
+
+[31-Oct-2025 12:05:37 Asia/Dhaka] Database insert failed for table 'journal_entries'.
+[31-Oct-2025 12:05:37 Asia/Dhaka] SQL Error [22007]: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect integer value: '' for column `ujjalfmc_saas`.`transaction_lines`.`journal_entry_id` at row 1 in query: INSERT INTO `transaction_lines` (`journal_entry_id`, `account_id`, `debit_amount`, `credit_amount`, `description`) VALUES (?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 
+    [1] => 22
+    [2] => 25000
+    [3] => 0
+    [4] => Payment received - Receipt #RCP-20251031-4408
+)
+
+[31-Oct-2025 12:05:37 Asia/Dhaka] Database insert failed for table 'transaction_lines'.
+[31-Oct-2025 12:05:37 Asia/Dhaka] SQL Error [22007]: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect integer value: '' for column `ujjalfmc_saas`.`transaction_lines`.`journal_entry_id` at row 1 in query: INSERT INTO `transaction_lines` (`journal_entry_id`, `account_id`, `debit_amount`, `credit_amount`, `description`) VALUES (?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 
+    [1] => 23
+    [2] => 0
+    [3] => 25000
+    [4] => Payment from Trial Credit  - Receipt #RCP-20251031-4408
+)
+
+[31-Oct-2025 12:05:37 Asia/Dhaka] Database insert failed for table 'transaction_lines'.
+[31-Oct-2025 12:05:37 Asia/Dhaka] SQL Error [22007]: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect integer value: '' for column `ujjalfmc_saas`.`payment_allocations`.`payment_id` at row 1 in query: INSERT INTO `payment_allocations` (`payment_id`, `order_id`, `allocated_amount`, `created_at`) VALUES (?, ?, ?, ?) | Params: Array
+(
+    [0] => 
+    [1] => 4
+    [2] => 25000
+    [3] => 2025-10-31 12:05:37
+)
+
+[31-Oct-2025 12:05:37 Asia/Dhaka] Database insert failed for table 'payment_allocations'.
+[31-Oct-2025 12:05:48 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 4
+)
+
+[31-Oct-2025 14:10:46 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 4
+)
+
+[31-Oct-2025 14:11:13 Asia/Dhaka] SQL Error [22007]: SQLSTATE[22007]: Invalid datetime format: 1292 Incorrect date value: '' for column `ujjalfmc_saas`.`customer_payments`.`cheque_date` at row 1 in query: INSERT INTO `customer_payments` (`payment_number`, `receipt_number`, `customer_id`, `payment_date`, `amount`, `payment_method`, `payment_type`, `reference_number`, `notes`, `created_by_user_id`, `collected_by_employee_id`, `branch_id`, `cash_account_id`, `bank_account_id`, `cheque_number`, `cheque_date`, `bank_transaction_type`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => PAY-20251031-6054
+    [1] => RCP-20251031-8362
+    [2] => 4
+    [3] => 2025-10-31
+    [4] => 5000
+    [5] => Cash
+    [6] => invoice_payment
+    [7] => sfg
+    [8] => fghfg
+    [9] => 1
+    [10] => 4
+    [11] => 
+    [12] => 22
+    [13] => 0
+    [14] => 
+    [15] => 
+    [16] => 
+)
+
+[31-Oct-2025 14:11:13 Asia/Dhaka] Database insert failed for table 'customer_payments'.
+[31-Oct-2025 14:11:13 Asia/Dhaka] SQL Error [22007]: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect integer value: '' for column `ujjalfmc_saas`.`customer_ledger`.`reference_id` at row 1 in query: INSERT INTO `customer_ledger` (`customer_id`, `transaction_date`, `transaction_type`, `reference_type`, `reference_id`, `invoice_number`, `description`, `debit_amount`, `credit_amount`, `balance_after`, `created_by_user_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 4
+    [1] => 2025-10-31
+    [2] => payment
+    [3] => customer_payments
+    [4] => 
+    [5] => RCP-20251031-8362
+    [6] => Payment received - Receipt #RCP-20251031-8362
+    [7] => 0
+    [8] => 5000
+    [9] => 1181080
+    [10] => 1
+)
+
+[31-Oct-2025 14:11:13 Asia/Dhaka] Database insert failed for table 'customer_ledger'.
+[31-Oct-2025 14:11:13 Asia/Dhaka] SQL Error [22007]: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect integer value: '' for column `ujjalfmc_saas`.`journal_entries`.`related_document_id` at row 1 in query: INSERT INTO `journal_entries` (`transaction_date`, `description`, `related_document_id`, `related_document_type`, `created_by_user_id`) VALUES (?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 2025-10-31
+    [1] => Payment received from Trial Credit  - Receipt #RCP-20251031-8362
+    [2] => 
+    [3] => customer_payments
+    [4] => 1
+)
+
+[31-Oct-2025 14:11:13 Asia/Dhaka] Database insert failed for table 'journal_entries'.
+[31-Oct-2025 14:11:13 Asia/Dhaka] SQL Error [22007]: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect integer value: '' for column `ujjalfmc_saas`.`transaction_lines`.`journal_entry_id` at row 1 in query: INSERT INTO `transaction_lines` (`journal_entry_id`, `account_id`, `debit_amount`, `credit_amount`, `description`) VALUES (?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 
+    [1] => 22
+    [2] => 5000
+    [3] => 0
+    [4] => Payment received - Receipt #RCP-20251031-8362
+)
+
+[31-Oct-2025 14:11:13 Asia/Dhaka] Database insert failed for table 'transaction_lines'.
+[31-Oct-2025 14:11:13 Asia/Dhaka] SQL Error [22007]: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect integer value: '' for column `ujjalfmc_saas`.`transaction_lines`.`journal_entry_id` at row 1 in query: INSERT INTO `transaction_lines` (`journal_entry_id`, `account_id`, `debit_amount`, `credit_amount`, `description`) VALUES (?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 
+    [1] => 23
+    [2] => 0
+    [3] => 5000
+    [4] => Payment from Trial Credit  - Receipt #RCP-20251031-8362
+)
+
+[31-Oct-2025 14:11:13 Asia/Dhaka] Database insert failed for table 'transaction_lines'.
+[31-Oct-2025 14:11:13 Asia/Dhaka] SQL Error [22007]: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect integer value: '' for column `ujjalfmc_saas`.`payment_allocations`.`payment_id` at row 1 in query: INSERT INTO `payment_allocations` (`payment_id`, `order_id`, `allocated_amount`, `created_at`) VALUES (?, ?, ?, ?) | Params: Array
+(
+    [0] => 
+    [1] => 4
+    [2] => 5000
+    [3] => 2025-10-31 14:11:13
+)
+
+[31-Oct-2025 14:11:13 Asia/Dhaka] Database insert failed for table 'payment_allocations'.
+[31-Oct-2025 14:17:58 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$payment_amount in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 457
+[31-Oct-2025 14:31:25 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 4
+)
+
+[31-Oct-2025 14:31:47 Asia/Dhaka] === PAYMENT SUBMISSION START ===
+[31-Oct-2025 14:31:47 Asia/Dhaka] POST data: Array
+(
+    [action] => collect_payment
+    [customer_id] => 4
+    [payment_date] => 2025-10-31
+    [payment_amount] => 12000.00
+    [payment_method] => Cash
+    [collected_by_employee_id] => 6
+    [cash_account_id] => 22
+    [bank_account_id] => 
+    [cheque_number] => 
+    [cheque_date] => 
+    [bank_transaction_type] => 
+    [reference_number] => fdtrd
+    [notes] => uhf
+    [invoice_allocation] => Array
+        (
+            [4] => 12000
+        )
+
+)
+
+[31-Oct-2025 14:31:47 Asia/Dhaka] Attempting payment insert with data: Array
+(
+    [payment_number] => PAY-20251031-7839
+    [receipt_number] => RCP-20251031-5458
+    [customer_id] => 4
+    [amount] => 12000
+)
+
+[31-Oct-2025 14:31:47 Asia/Dhaka] SQL Error [22007]: SQLSTATE[22007]: Invalid datetime format: 1292 Incorrect date value: '' for column `ujjalfmc_saas`.`customer_payments`.`cheque_date` at row 1 in query: INSERT INTO `customer_payments` (`payment_number`, `receipt_number`, `customer_id`, `payment_date`, `amount`, `payment_method`, `payment_type`, `reference_number`, `notes`, `created_by_user_id`, `collected_by_employee_id`, `branch_id`, `cash_account_id`, `bank_account_id`, `cheque_number`, `cheque_date`, `bank_transaction_type`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => PAY-20251031-7839
+    [1] => RCP-20251031-5458
+    [2] => 4
+    [3] => 2025-10-31
+    [4] => 12000
+    [5] => Cash
+    [6] => invoice_payment
+    [7] => fdtrd
+    [8] => uhf
+    [9] => 1
+    [10] => 6
+    [11] => 
+    [12] => 22
+    [13] => 0
+    [14] => 
+    [15] => 
+    [16] => 
+)
+
+[31-Oct-2025 14:31:47 Asia/Dhaka] Database insert failed for table 'customer_payments'.
+[31-Oct-2025 14:31:47 Asia/Dhaka] ✓✓✓ Payment inserted successfully! ID: 
+[31-Oct-2025 14:31:47 Asia/Dhaka] SQL Error [22007]: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect integer value: '' for column `ujjalfmc_saas`.`customer_ledger`.`reference_id` at row 1 in query: INSERT INTO `customer_ledger` (`customer_id`, `transaction_date`, `transaction_type`, `reference_type`, `reference_id`, `invoice_number`, `description`, `debit_amount`, `credit_amount`, `balance_after`, `created_by_user_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 4
+    [1] => 2025-10-31
+    [2] => payment
+    [3] => customer_payments
+    [4] => 
+    [5] => RCP-20251031-5458
+    [6] => Payment received - Receipt #RCP-20251031-5458
+    [7] => 0
+    [8] => 12000
+    [9] => 1174080
+    [10] => 1
+)
+
+[31-Oct-2025 14:31:47 Asia/Dhaka] Database insert failed for table 'customer_ledger'.
+[31-Oct-2025 14:31:47 Asia/Dhaka] SQL Error [22007]: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect integer value: '' for column `ujjalfmc_saas`.`journal_entries`.`related_document_id` at row 1 in query: INSERT INTO `journal_entries` (`transaction_date`, `description`, `related_document_id`, `related_document_type`, `created_by_user_id`) VALUES (?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 2025-10-31
+    [1] => Payment received from Trial Credit  - Receipt #RCP-20251031-5458
+    [2] => 
+    [3] => customer_payments
+    [4] => 1
+)
+
+[31-Oct-2025 14:31:47 Asia/Dhaka] Database insert failed for table 'journal_entries'.
+[31-Oct-2025 14:31:47 Asia/Dhaka] SQL Error [22007]: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect integer value: '' for column `ujjalfmc_saas`.`transaction_lines`.`journal_entry_id` at row 1 in query: INSERT INTO `transaction_lines` (`journal_entry_id`, `account_id`, `debit_amount`, `credit_amount`, `description`) VALUES (?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 
+    [1] => 22
+    [2] => 12000
+    [3] => 0
+    [4] => Payment received - Receipt #RCP-20251031-5458
+)
+
+[31-Oct-2025 14:31:47 Asia/Dhaka] Database insert failed for table 'transaction_lines'.
+[31-Oct-2025 14:31:47 Asia/Dhaka] SQL Error [22007]: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect integer value: '' for column `ujjalfmc_saas`.`transaction_lines`.`journal_entry_id` at row 1 in query: INSERT INTO `transaction_lines` (`journal_entry_id`, `account_id`, `debit_amount`, `credit_amount`, `description`) VALUES (?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 
+    [1] => 23
+    [2] => 0
+    [3] => 12000
+    [4] => Payment from Trial Credit  - Receipt #RCP-20251031-5458
+)
+
+[31-Oct-2025 14:31:47 Asia/Dhaka] Database insert failed for table 'transaction_lines'.
+[31-Oct-2025 14:31:47 Asia/Dhaka] SQL Error [22007]: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect integer value: '' for column `ujjalfmc_saas`.`payment_allocations`.`payment_id` at row 1 in query: INSERT INTO `payment_allocations` (`payment_id`, `order_id`, `allocated_amount`, `created_at`) VALUES (?, ?, ?, ?) | Params: Array
+(
+    [0] => 
+    [1] => 4
+    [2] => 12000
+    [3] => 2025-10-31 14:31:47
+)
+
+[31-Oct-2025 14:31:47 Asia/Dhaka] Database insert failed for table 'payment_allocations'.
+[31-Oct-2025 14:31:47 Asia/Dhaka] ✓ Transaction committed successfully
+[31-Oct-2025 14:31:47 Asia/Dhaka] Payment ID: , Receipt: RCP-20251031-5458
+[31-Oct-2025 16:48:16 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 4
+)
+
+[31-Oct-2025 16:48:43 Asia/Dhaka] === PAYMENT SUBMISSION START ===
+[31-Oct-2025 16:48:43 Asia/Dhaka] POST data: Array
+(
+    [action] => collect_payment
+    [customer_id] => 4
+    [payment_date] => 2025-10-31
+    [payment_amount] => 12000.00
+    [payment_method] => Cash
+    [collected_by_employee_id] => 5
+    [cash_account_id] => 22
+    [bank_account_id] => 
+    [cheque_number] => 
+    [cheque_date] => 
+    [bank_transaction_type] => 
+    [reference_number] => Jdhd
+    [notes] => Jdhh
+    [invoice_allocation] => Array
+        (
+            [4] => 12000
+        )
+
+)
+
+[31-Oct-2025 16:48:43 Asia/Dhaka] Attempting payment insert with data: Array
+(
+    [payment_number] => PAY-20251031-1796
+    [receipt_number] => RCP-20251031-7113
+    [customer_id] => 4
+    [amount] => 12000
+)
+
+[31-Oct-2025 16:48:43 Asia/Dhaka] ✓✓✓ Payment inserted successfully! ID: 4
+[31-Oct-2025 16:48:43 Asia/Dhaka] ✓ Transaction committed successfully
+[31-Oct-2025 16:48:43 Asia/Dhaka] Payment ID: 4, Receipt: RCP-20251031-7113
+[31-Oct-2025 16:48:46 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c.address' in 'SELECT' in query: SELECT cp.*, 
+            c.name as customer_name,
+            c.phone_number as customer_phone,
+            c.email as customer_email,
+            c.address as customer_address,
+            c.shipping_address as customer_shipping_address,
+            u.display_name as collected_by_name,
+            CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+            b.name as branch_name,
+            b.address as branch_address,
+            ca_cash.name as cash_account_name,
+            ca_bank.name as bank_account_name
+     FROM customer_payments cp
+     JOIN customers c ON cp.customer_id = c.id
+     LEFT JOIN users u ON cp.collected_by_user_id = u.id
+     LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+     LEFT JOIN branches b ON cp.branch_id = b.id
+     LEFT JOIN chart_of_accounts ca_cash ON cp.cash_account_id = ca_cash.id
+     LEFT JOIN chart_of_accounts ca_bank ON cp.bank_account_id = ca_bank.id
+     WHERE cp.id = ? | Params: Array
+(
+    [0] => 4
+)
+
+[31-Oct-2025 16:53:44 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 4
+)
+
+[31-Oct-2025 16:54:14 Asia/Dhaka] === PAYMENT SUBMISSION START ===
+[31-Oct-2025 16:54:14 Asia/Dhaka] POST data: Array
+(
+    [action] => collect_payment
+    [customer_id] => 4
+    [payment_date] => 2025-10-31
+    [payment_amount] => 5000.00
+    [payment_method] => Bank Transfer
+    [collected_by_employee_id] => 
+    [cash_account_id] => 
+    [bank_account_id] => 12
+    [cheque_number] => 
+    [cheque_date] => 
+    [bank_transaction_type] => Deposit
+    [reference_number] => Dgg
+    [notes] => Cvh
+    [invoice_allocation] => Array
+        (
+            [4] => 5000
+        )
+
+)
+
+[31-Oct-2025 16:54:14 Asia/Dhaka] Attempting payment insert with data: Array
+(
+    [payment_number] => PAY-20251031-7953
+    [receipt_number] => RCP-20251031-6778
+    [customer_id] => 4
+    [amount] => 5000
+)
+
+[31-Oct-2025 16:54:14 Asia/Dhaka] ✓✓✓ Payment inserted successfully! ID: 5
+[31-Oct-2025 16:54:14 Asia/Dhaka] ✓ Transaction committed successfully
+[31-Oct-2025 16:54:14 Asia/Dhaka] Payment ID: 5, Receipt: RCP-20251031-6778
+[31-Oct-2025 16:54:17 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c.address' in 'SELECT' in query: SELECT cp.*, 
+            c.name as customer_name,
+            c.phone_number as customer_phone,
+            c.email as customer_email,
+            c.address as customer_address,
+            c.shipping_address as customer_shipping_address,
+            u.display_name as collected_by_name,
+            CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+            b.name as branch_name,
+            b.address as branch_address,
+            ca_cash.name as cash_account_name,
+            ca_bank.name as bank_account_name
+     FROM customer_payments cp
+     JOIN customers c ON cp.customer_id = c.id
+     LEFT JOIN users u ON cp.collected_by_user_id = u.id
+     LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+     LEFT JOIN branches b ON cp.branch_id = b.id
+     LEFT JOIN chart_of_accounts ca_cash ON cp.cash_account_id = ca_cash.id
+     LEFT JOIN chart_of_accounts ca_bank ON cp.bank_account_id = ca_bank.id
+     WHERE cp.id = ? | Params: Array
+(
+    [0] => 5
+)
+
+[31-Oct-2025 17:07:04 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c.address' in 'SELECT' in query: SELECT cp.*, 
+            c.name as customer_name,
+            c.phone_number as customer_phone,
+            c.email as customer_email,
+            c.address as customer_address,
+            c.shipping_address as customer_shipping_address,
+            u.display_name as collected_by_name,
+            CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+            b.name as branch_name,
+            b.address as branch_address,
+            ca_cash.name as cash_account_name,
+            ca_bank.name as bank_account_name
+     FROM customer_payments cp
+     LEFT JOIN customers c ON cp.customer_id = c.id
+     LEFT JOIN users u ON cp.created_by_user_id = u.id
+     LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+     LEFT JOIN branches b ON cp.branch_id = b.id
+     LEFT JOIN chart_of_accounts ca_cash ON cp.cash_account_id = ca_cash.id
+     LEFT JOIN chart_of_accounts ca_bank ON cp.bank_account_id = ca_bank.id
+     WHERE cp.id = ? | Params: Array
+(
+    [0] => 5
+)
+
+[31-Oct-2025 17:11:23 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c.address' in 'SELECT' in query: SELECT cp.*, 
+            c.name as customer_name,
+            c.phone_number as customer_phone,
+            c.email as customer_email,
+            c.address as customer_address,
+            c.shipping_address as customer_shipping_address,
+            u.display_name as collected_by_name,
+            CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+            b.name as branch_name,
+            b.address as branch_address,
+            ca_cash.name as cash_account_name,
+            ca_bank.name as bank_account_name
+     FROM customer_payments cp
+     LEFT JOIN customers c ON cp.customer_id = c.id
+     LEFT JOIN users u ON cp.created_by_user_id = u.id
+     LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+     LEFT JOIN branches b ON cp.branch_id = b.id
+     LEFT JOIN chart_of_accounts ca_cash ON cp.cash_account_id = ca_cash.id
+     LEFT JOIN chart_of_accounts ca_bank ON cp.bank_account_id = ca_bank.id
+     WHERE cp.id = ? | Params: Array
+(
+    [0] => 5
+)
+
+[31-Oct-2025 17:11:28 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c.address' in 'SELECT' in query: SELECT cp.*, 
+            c.name as customer_name,
+            c.phone_number as customer_phone,
+            c.email as customer_email,
+            c.address as customer_address,
+            c.shipping_address as customer_shipping_address,
+            u.display_name as collected_by_name,
+            CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+            b.name as branch_name,
+            b.address as branch_address,
+            ca_cash.name as cash_account_name,
+            ca_bank.name as bank_account_name
+     FROM customer_payments cp
+     LEFT JOIN customers c ON cp.customer_id = c.id
+     LEFT JOIN users u ON cp.created_by_user_id = u.id
+     LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+     LEFT JOIN branches b ON cp.branch_id = b.id
+     LEFT JOIN chart_of_accounts ca_cash ON cp.cash_account_id = ca_cash.id
+     LEFT JOIN chart_of_accounts ca_bank ON cp.bank_account_id = ca_bank.id
+     WHERE cp.id = ? | Params: Array
+(
+    [0] => 5
+)
+
+[31-Oct-2025 17:11:42 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 4
+)
+
+[31-Oct-2025 17:12:09 Asia/Dhaka] === PAYMENT SUBMISSION START ===
+[31-Oct-2025 17:12:09 Asia/Dhaka] POST data: Array
+(
+    [action] => collect_payment
+    [customer_id] => 4
+    [payment_date] => 2025-10-31
+    [payment_amount] => 4400.00
+    [payment_method] => Cash
+    [collected_by_employee_id] => 2
+    [cash_account_id] => 22
+    [bank_account_id] => 
+    [cheque_number] => 
+    [cheque_date] => 
+    [bank_transaction_type] => 
+    [reference_number] => Mdnnf
+    [notes] => Jdhd
+    [invoice_allocation] => Array
+        (
+            [4] => 4400
+        )
+
+)
+
+[31-Oct-2025 17:12:09 Asia/Dhaka] Attempting payment insert with data: Array
+(
+    [payment_number] => PAY-20251031-3463
+    [receipt_number] => RCP-20251031-2830
+    [customer_id] => 4
+    [amount] => 4400
+)
+
+[31-Oct-2025 17:12:09 Asia/Dhaka] ✓✓✓ Payment inserted successfully! ID: 6
+[31-Oct-2025 17:12:09 Asia/Dhaka] ✓ Transaction committed successfully
+[31-Oct-2025 17:12:09 Asia/Dhaka] Payment ID: 6, Receipt: RCP-20251031-2830
+[31-Oct-2025 17:12:11 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c.address' in 'SELECT' in query: SELECT cp.*, 
+            c.name as customer_name,
+            c.phone_number as customer_phone,
+            c.email as customer_email,
+            c.address as customer_address,
+            c.shipping_address as customer_shipping_address,
+            u.display_name as collected_by_name,
+            CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+            b.name as branch_name,
+            b.address as branch_address,
+            ca_cash.name as cash_account_name,
+            ca_bank.name as bank_account_name
+     FROM customer_payments cp
+     LEFT JOIN customers c ON cp.customer_id = c.id
+     LEFT JOIN users u ON cp.created_by_user_id = u.id
+     LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+     LEFT JOIN branches b ON cp.branch_id = b.id
+     LEFT JOIN chart_of_accounts ca_cash ON cp.cash_account_id = ca_cash.id
+     LEFT JOIN chart_of_accounts ca_bank ON cp.bank_account_id = ca_bank.id
+     WHERE cp.id = ? | Params: Array
+(
+    [0] => 6
+)
+
+[31-Oct-2025 19:27:01 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 4
+)
+
+[31-Oct-2025 19:27:25 Asia/Dhaka] === PAYMENT SUBMISSION START ===
+[31-Oct-2025 19:27:25 Asia/Dhaka] POST data: Array
+(
+    [action] => collect_payment
+    [customer_id] => 4
+    [payment_date] => 2025-10-31
+    [payment_amount] => 1000.00
+    [payment_method] => Cash
+    [collected_by_employee_id] => 1
+    [cash_account_id] => 22
+    [bank_account_id] => 
+    [cheque_number] => 
+    [cheque_date] => 
+    [bank_transaction_type] => 
+    [reference_number] => wrggh
+    [notes] => dgfg
+    [invoice_allocation] => Array
+        (
+            [4] => 1000
+        )
+
+)
+
+[31-Oct-2025 19:27:25 Asia/Dhaka] Attempting payment insert with data: Array
+(
+    [payment_number] => PAY-20251031-2342
+    [receipt_number] => RCP-20251031-9036
+    [customer_id] => 4
+    [amount] => 1000
+)
+
+[31-Oct-2025 19:27:25 Asia/Dhaka] ✓✓✓ Payment inserted successfully! ID: 7
+[31-Oct-2025 19:27:25 Asia/Dhaka] ✓ Transaction committed successfully
+[31-Oct-2025 19:27:25 Asia/Dhaka] Payment ID: 7, Receipt: RCP-20251031-9036
+[31-Oct-2025 19:27:28 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c.address' in 'SELECT' in query: SELECT cp.*, 
+            c.name as customer_name,
+            c.phone_number as customer_phone,
+            c.email as customer_email,
+            c.address as customer_address,
+            c.shipping_address as customer_shipping_address,
+            u.display_name as collected_by_name,
+            CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+            b.name as branch_name,
+            b.address as branch_address,
+            ca_cash.name as cash_account_name,
+            ca_bank.name as bank_account_name
+     FROM customer_payments cp
+     LEFT JOIN customers c ON cp.customer_id = c.id
+     LEFT JOIN users u ON cp.created_by_user_id = u.id
+     LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+     LEFT JOIN branches b ON cp.branch_id = b.id
+     LEFT JOIN chart_of_accounts ca_cash ON cp.cash_account_id = ca_cash.id
+     LEFT JOIN chart_of_accounts ca_bank ON cp.bank_account_id = ca_bank.id
+     WHERE cp.id = ? | Params: Array
+(
+    [0] => 7
+)
+
+[31-Oct-2025 19:27:36 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c.address' in 'SELECT' in query: SELECT cp.*, 
+            c.name as customer_name,
+            c.phone_number as customer_phone,
+            c.email as customer_email,
+            c.address as customer_address,
+            c.shipping_address as customer_shipping_address,
+            u.display_name as collected_by_name,
+            CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+            b.name as branch_name,
+            b.address as branch_address,
+            ca_cash.name as cash_account_name,
+            ca_bank.name as bank_account_name
+     FROM customer_payments cp
+     LEFT JOIN customers c ON cp.customer_id = c.id
+     LEFT JOIN users u ON cp.created_by_user_id = u.id
+     LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+     LEFT JOIN branches b ON cp.branch_id = b.id
+     LEFT JOIN chart_of_accounts ca_cash ON cp.cash_account_id = ca_cash.id
+     LEFT JOIN chart_of_accounts ca_bank ON cp.bank_account_id = ca_bank.id
+     WHERE cp.id = ? | Params: Array
+(
+    [0] => 5
+)
+
+[31-Oct-2025 19:34:46 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 4
+)
+
+[31-Oct-2025 19:35:14 Asia/Dhaka] === PAYMENT SUBMISSION START ===
+[31-Oct-2025 19:35:14 Asia/Dhaka] POST data: Array
+(
+    [action] => collect_payment
+    [customer_id] => 4
+    [payment_date] => 2025-10-31
+    [payment_amount] => 1001.00
+    [payment_method] => Cash
+    [collected_by_employee_id] => 6
+    [cash_account_id] => 22
+    [bank_account_id] => 
+    [cheque_number] => 
+    [cheque_date] => 
+    [bank_transaction_type] => 
+    [reference_number] => fdg
+    [notes] => big
+    [invoice_allocation] => Array
+        (
+            [4] => 1001
+        )
+
+)
+
+[31-Oct-2025 19:35:14 Asia/Dhaka] Attempting payment insert with data: Array
+(
+    [payment_number] => PAY-20251031-5528
+    [receipt_number] => RCP-20251031-3437
+    [customer_id] => 4
+    [amount] => 1001
+)
+
+[31-Oct-2025 19:35:14 Asia/Dhaka] ✓✓✓ Payment inserted successfully! ID: 8
+[31-Oct-2025 19:35:14 Asia/Dhaka] ✓ Transaction committed successfully
+[31-Oct-2025 19:35:14 Asia/Dhaka] Payment ID: 8, Receipt: RCP-20251031-3437
+[31-Oct-2025 19:35:16 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c.address' in 'SELECT' in query: SELECT cp.*, 
+            c.name as customer_name,
+            c.phone_number as customer_phone,
+            c.email as customer_email,
+            c.address as customer_address,
+            c.shipping_address as customer_shipping_address,
+            u.display_name as collected_by_name,
+            CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+            b.name as branch_name,
+            b.address as branch_address,
+            ca_cash.name as cash_account_name,
+            ca_bank.name as bank_account_name
+     FROM customer_payments cp
+     LEFT JOIN customers c ON cp.customer_id = c.id
+     LEFT JOIN users u ON cp.created_by_user_id = u.id
+     LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+     LEFT JOIN branches b ON cp.branch_id = b.id
+     LEFT JOIN chart_of_accounts ca_cash ON cp.cash_account_id = ca_cash.id
+     LEFT JOIN chart_of_accounts ca_bank ON cp.bank_account_id = ca_bank.id
+     WHERE cp.id = ? | Params: Array
+(
+    [0] => 8
+)
+
+[31-Oct-2025 19:47:43 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 1
+)
+
+[31-Oct-2025 19:48:18 Asia/Dhaka] === PAYMENT SUBMISSION START ===
+[31-Oct-2025 19:48:18 Asia/Dhaka] POST data: Array
+(
+    [action] => collect_payment
+    [customer_id] => 1
+    [payment_date] => 2025-10-31
+    [payment_amount] => 1000000.00
+    [payment_method] => Bank Transfer
+    [collected_by_employee_id] => 
+    [cash_account_id] => 
+    [bank_account_id] => 12
+    [cheque_number] => 
+    [cheque_date] => 
+    [bank_transaction_type] => Deposit
+    [reference_number] => Slip voucher
+    [notes] => Number sig
+    [invoice_allocation] => Array
+        (
+            [3] => 1000000
+        )
+
+)
+
+[31-Oct-2025 19:48:18 Asia/Dhaka] Attempting payment insert with data: Array
+(
+    [payment_number] => PAY-20251031-9836
+    [receipt_number] => RCP-20251031-7315
+    [customer_id] => 1
+    [amount] => 1000000
+)
+
+[31-Oct-2025 19:48:18 Asia/Dhaka] ✓✓✓ Payment inserted successfully! ID: 9
+[31-Oct-2025 19:48:18 Asia/Dhaka] ✓ Transaction committed successfully
+[31-Oct-2025 19:48:18 Asia/Dhaka] Payment ID: 9, Receipt: RCP-20251031-7315
+[31-Oct-2025 19:53:44 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'phone' in 'SELECT' in query: SELECT id, name, phone 
+     FROM customers 
+     WHERE status = 'active' 
+     ORDER BY name ASC | Params: Array
+(
+)
+
+[31-Oct-2025 19:53:44 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$phone in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_ledger.php on line 147

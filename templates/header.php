@@ -15,6 +15,22 @@
     <!-- *** RECTIFIED: Added defer attribute *** -->
     <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<meta name="csrf-token" content="<?php echo $_SESSION['csrf_token'] ?? ''; ?>">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title><?php echo $pageTitle ?? APP_NAME; ?></title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+<link rel="stylesheet" href="<?php echo asset('css/style.css'); ?>">
+<script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+
     <script>
         tailwind.config = {
             theme: {
@@ -83,7 +99,7 @@
                                             
                                             <a href="<?php echo url('cr/customer_credit_management.php'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-primary-600"> <i class="fas fa-receipt w-4 mr-2 text-gray-400"></i>Credit Limits</a>
                                             
-                                            <a href="<?php echo url('cr/customer_payment.php'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-primary-600"> <i class="fas fa-receipt w-4 mr-2 text-gray-400"></i>Collect Payment</a>
+                                            <a href="<?php echo url('cr/credit_payment_collect.php'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-primary-600"> <i class="fas fa-receipt w-4 mr-2 text-gray-400"></i>Collect Payment</a>
                                             
                                             <a href="<?php echo url('cr/cr_invoice.php'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-primary-600"> <i class="fas fa-receipt w-4 mr-2 text-gray-400"></i>Create Invoice </a>
                                             
@@ -325,4 +341,3 @@
     <main class="py-6 lg:py-8 flex-grow <?php echo ($is_pos_interface ?? false) ? 'pos-main-content' : ''; ?>"> <!-- Add class for POS styling if needed -->
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <?php // Flash messages are now displayed by header/display_message() ?>
-

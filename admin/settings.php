@@ -1,236 +1,218 @@
 <?php
 require_once '../core/init.php';
 
-// --- SECURITY & CONTEXT ---
 $allowed_roles = ['Superadmin', 'admin'];
 restrict_access($allowed_roles);
 
 global $db;
 $currentUser = getCurrentUser();
-$user_id = $currentUser['id'];
-$pageTitle = "Customize Dashboard";
-$error = null;
+$user_id = $currentUser['id'] ?? null;
+$pageTitle = 'Dashboard Settings';
 $success = null;
+$error = null;
 
-// --- MASTER MODULE LIST ---
-// This is the master list of all available dashboard widgets.
-// 'key' is the file name (e.g., 'welcome.php') and must be unique.
-$master_modules = [
-    'core' => [
-        ['key' => 'welcome', 'name' => 'Welcome Summary', 'description' => 'A quick overview and welcome message.'],
-        ['key' => 'quick_links', 'name' => 'Quick Links', 'description' => 'Buttons for common actions like "New Order" or "New Transaction".']
-    ],
-    'pos' => [
-        ['key' => 'pos_sales_summary', 'name' => 'POS Sales Summary', 'description' => "Today's total sales, orders, and average from the POS."],
-        ['key' => 'pos_top_products', 'name' => 'Top Selling Products (POS)', 'description' => 'A list of today\'s best-selling products.']
-    ],
-    'sales' => [
-        ['key' => 'pending_approvals', 'name' => 'Pending Credit Orders', 'description' => 'A list of credit orders awaiting approval.'],
-        ['key' => 'sales_team_performance', 'name' => 'Sales Team Performance', 'description' => 'Chart showing sales by sales representative. (Coming Soon)']
-    ],
-    'accounting' => [
-        ['key' => 'key_account_balances', 'name' => 'Key Account Balances', 'description' => 'Live balances for your main Bank and Cash accounts.'],
-        ['key' => 'receivables_summary', 'name' => 'A/R Receivables Summary', 'description' => 'Total amount owed by credit customers.']
-    ]
-];
-
-// --- Get User's Current Preferences ---
-try {
-    $user_data = $db->query("SELECT dashboard_preferences FROM users WHERE id = ?", [$user_id])->first();
-    $current_prefs_json = $user_data->dashboard_preferences;
-    
-    if ($current_prefs_json) {
-        $current_prefs = json_decode($current_prefs_json, true);
-    } else {
-        // Default layout for new users
-        $current_prefs = ['welcome', 'quick_links', 'pos_sales_summary', 'pending_approvals'];
+// Handle form submission
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'save_preferences') {
+    try {
+        $db->getPdo()->beginTransaction();
+        
+        $selected_widgets = $_POST['widgets'] ?? [];
+        
+        // Delete all existing preferences for this user
+        $db->query("DELETE FROM user_dashboard_preferences WHERE user_id = ?", [$user_id]);
+        
+        // Insert new preferences
+        $position = 0;
+        foreach ($selected_widgets as $widget_id) {
+            $widget_id = (int)$widget_id;
+            $size = $_POST['size_' . $widget_id] ?? 'medium';
+            
+            $db->insert('user_dashboard_preferences', [
+                'user_id' => $user_id,
+                'widget_id' => $widget_id,
+                'is_enabled' => 1,
+                'position' => $position,
+                'size' => $size
+            ]);
+            
+            $position++;
+        }
+        
+        $db->getPdo()->commit();
+        $success = "Dashboard preferences saved successfully!";
+        
+    } catch (Exception $e) {
+        if ($db->getPdo()->inTransaction()) {
+            $db->getPdo()->rollBack();
+        }
+        $error = "Failed to save preferences: " . $e->getMessage();
     }
-} catch (Exception $e) {
-    $error = "Error loading preferences: " . $e->getMessage();
-    $current_prefs = [];
+}
+
+// Get all available widgets
+$all_widgets = $db->query(
+    "SELECT * FROM dashboard_widgets 
+     WHERE is_active = 1 
+     ORDER BY widget_category, sort_order"
+)->results();
+
+// Get user's current preferences
+$user_preferences = $db->query(
+    "SELECT widget_id, size, position 
+     FROM user_dashboard_preferences 
+     WHERE user_id = ? AND is_enabled = 1",
+    [$user_id]
+)->results();
+
+// Create lookup array for user preferences
+$user_widget_ids = [];
+$user_widget_sizes = [];
+foreach ($user_preferences as $pref) {
+    $user_widget_ids[] = $pref->widget_id;
+    $user_widget_sizes[$pref->widget_id] = $pref->size;
+}
+
+// Group widgets by category
+$widgets_by_category = [];
+foreach ($all_widgets as $widget) {
+    $widgets_by_category[$widget->widget_category][] = $widget;
 }
 
 require_once '../templates/header.php';
 ?>
 
-<!-- Include Alpine.js Sortable plugin -->
-<script src="https://cdn.jsdelivr.net/npm/@alpinejs/sort@3.x.x/dist/cdn.min.js"></script>
+<div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
 
-<!-- ======================================== -->
-<!-- Page Header -->
-<!-- ======================================== -->
 <div class="mb-6">
-    <h1 class="text-3xl font-bold text-gray-900"><?php echo $pageTitle; ?></h1>
-    <p class="text-lg text-gray-600 mt-1">
-        Select and reorder the widgets you want to see on your main dashboard.
-    </p>
+    <div class="flex justify-between items-center">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-900"><?php echo $pageTitle; ?></h1>
+            <p class="text-lg text-gray-600 mt-1">Customize your dashboard by selecting widgets to display</p>
+        </div>
+        <a href="../index.php" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700">
+            <i class="fas fa-arrow-left mr-2"></i>Back to Dashboard
+        </a>
+    </div>
 </div>
 
-<?php if ($error): ?>
-    <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6" role="alert">
-        <p class="font-bold">Error</p>
-        <p><?php echo htmlspecialchars($error); ?></p>
-    </div>
+<?php if ($success): ?>
+<div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6 rounded-r-lg">
+    <p class="font-bold">Success!</p>
+    <p><?php echo htmlspecialchars($success); ?></p>
+    <a href="../index.php" class="text-green-800 underline mt-2 inline-block">View Dashboard</a>
+</div>
 <?php endif; ?>
 
-<!-- ======================================== -->
-<!-- Settings Interface -->
-<!-- ======================================== -->
-<div x-data="dashboardSettings(<?php echo htmlspecialchars(json_encode($master_modules), ENT_QUOTES); ?>, <?php echo htmlspecialchars(json_encode($current_prefs), ENT_QUOTES); ?>)">
-    
-    <!-- Save Status -->
-    <div x-show="saveStatus" x-cloak x-transition
-         class="mb-4 p-4 rounded-lg"
-         :class="{ 'bg-green-100 border-green-500 text-green-700': saveStatus === 'success', 'bg-red-100 border-red-500 text-red-700': saveStatus === 'error' }">
-        <p class="font-bold" x-text="saveMessage"></p>
-    </div>
+<?php if ($error): ?>
+<div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded-r-lg">
+    <p class="font-bold">Error</p>
+    <p><?php echo htmlspecialchars($error); ?></p>
+</div>
+<?php endif; ?>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<form method="POST" class="space-y-6">
+    <input type="hidden" name="action" value="save_preferences">
+    
+    <?php
+    $category_labels = [
+        'sales' => ['title' => 'Sales & Orders', 'icon' => 'fa-shopping-cart', 'color' => 'blue'],
+        'finance' => ['title' => 'Finance & Payments', 'icon' => 'fa-coins', 'color' => 'green'],
+        'inventory' => ['title' => 'Inventory', 'icon' => 'fa-boxes', 'color' => 'purple'],
+        'hr' => ['title' => 'Human Resources', 'icon' => 'fa-users', 'color' => 'indigo'],
+        'quick_links' => ['title' => 'Quick Actions', 'icon' => 'fa-bolt', 'color' => 'yellow'],
+        'reports' => ['title' => 'Reports', 'icon' => 'fa-chart-bar', 'color' => 'red']
+    ];
+    
+    foreach ($category_labels as $category => $cat_info):
+        if (empty($widgets_by_category[$category])) continue;
+    ?>
+    
+    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+        <div class="p-4 bg-<?php echo $cat_info['color']; ?>-50 border-b border-<?php echo $cat_info['color']; ?>-200">
+            <h2 class="text-xl font-bold text-gray-900">
+                <i class="fas <?php echo $cat_info['icon']; ?> text-<?php echo $cat_info['color']; ?>-600 mr-2"></i>
+                <?php echo $cat_info['title']; ?>
+            </h2>
+        </div>
         
-        <!-- Left Column: Available Modules -->
-        <div class="lg:col-span-1 bg-white p-6 rounded-xl shadow-md border border-gray-200">
-            <h2 class="text-xl font-bold text-gray-800 mb-4 pb-2 border-b">Available Modules</h2>
-            <div class="space-y-4">
-                <?php foreach ($master_modules as $category => $modules): ?>
-                    <div>
-                        <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2"><?php echo htmlspecialchars($category); ?></h3>
-                        <div class="space-y-2">
-                            <?php foreach ($modules as $module): ?>
-                                <div class="p-3 border rounded-lg bg-gray-50 hover:bg-gray-100"
-                                     x-show="!isSelected('<?php echo $module['key']; ?>')">
-                                    <h4 class="font-semibold text-gray-900"><?php echo htmlspecialchars($module['name']); ?></h4>
-                                    <p class="text-xs text-gray-600 mb-2"><?php echo htmlspecialchars($module['description']); ?></p>
-                                    <button @click="addModule('<?php echo $module['key']; ?>')"
-                                            class="text-sm font-medium text-primary-600 hover:text-primary-800">
-                                        + Add to Dashboard
-                                    </button>
+        <div class="p-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <?php foreach ($widgets_by_category[$category] as $widget): 
+                    $is_checked = in_array($widget->id, $user_widget_ids);
+                    $current_size = $user_widget_sizes[$widget->id] ?? 'medium';
+                ?>
+                
+                <div class="border rounded-lg p-4 hover:bg-gray-50 <?php echo $is_checked ? 'border-blue-500 bg-blue-50' : 'border-gray-200'; ?>">
+                    <div class="flex items-start">
+                        <input type="checkbox" 
+                               name="widgets[]" 
+                               value="<?php echo $widget->id; ?>"
+                               id="widget_<?php echo $widget->id; ?>"
+                               class="mt-1 h-5 w-5 text-blue-600"
+                               <?php echo $is_checked ? 'checked' : ''; ?>>
+                        
+                        <div class="ml-3 flex-1">
+                            <label for="widget_<?php echo $widget->id; ?>" class="cursor-pointer">
+                                <div class="flex items-center">
+                                    <i class="fas <?php echo $widget->icon; ?> text-<?php echo $widget->color; ?>-600 mr-2"></i>
+                                    <span class="font-bold text-gray-900"><?php echo htmlspecialchars($widget->widget_name); ?></span>
                                 </div>
-                            <?php endforeach; ?>
+                                
+                                <?php if ($widget->widget_description): ?>
+                                <p class="text-sm text-gray-600 mt-1"><?php echo htmlspecialchars($widget->widget_description); ?></p>
+                                <?php endif; ?>
+                                
+                                <span class="inline-block mt-2 px-2 py-1 text-xs rounded bg-gray-100 text-gray-700">
+                                    <?php echo ucfirst($widget->widget_type); ?>
+                                </span>
+                            </label>
+                            
+                            <?php if ($widget->widget_type === 'stat_card' || $widget->widget_type === 'chart'): ?>
+                            <div class="mt-3">
+                                <label class="text-xs text-gray-600">Widget Size:</label>
+                                <select name="size_<?php echo $widget->id; ?>" 
+                                        class="mt-1 text-sm px-2 py-1 border rounded">
+                                    <option value="small" <?php echo $current_size === 'small' ? 'selected' : ''; ?>>Small</option>
+                                    <option value="medium" <?php echo $current_size === 'medium' ? 'selected' : ''; ?>>Medium</option>
+                                    <option value="large" <?php echo $current_size === 'large' ? 'selected' : ''; ?>>Large</option>
+                                    <option value="full" <?php echo $current_size === 'full' ? 'selected' : ''; ?>>Full Width</option>
+                                </select>
+                            </div>
+                            <?php endif; ?>
                         </div>
                     </div>
+                </div>
+                
                 <?php endforeach; ?>
             </div>
         </div>
-
-        <!-- Right Column: Active Dashboard Layout -->
-        <div class="lg:col-span-2">
-            <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200">
-                <div class="flex justify-between items-center mb-4 pb-2 border-b">
-                    <h2 class="text-xl font-bold text-gray-800">Your Dashboard Layout</h2>
-                    <button @click="saveSettings" :disabled="isSaving"
-                            class="px-5 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50">
-                        <i class="fas fa-save mr-2" x-show="!isSaving"></i>
-                        <i class="fas fa-spinner fa-spin mr-2" x-show="isSaving" x-cloak></i>
-                        <span x-text="isSaving ? 'Saving...' : 'Save Settings'"></span>
-                    </button>
-                </div>
-                
-                <p class="text-sm text-gray-500 mb-4">Drag and drop the handles <i class="fas fa-grip-vertical"></i> to reorder your dashboard.</p>
-
-                <!-- Sortable List -->
-                <div x-ref="sortableList" class="space-y-3">
-                    <template x-for="moduleKey in activeModules" :key="moduleKey">
-                        <div class="flex items-center p-4 border rounded-lg bg-white shadow-sm">
-                            <i class="fas fa-grip-vertical text-gray-400 mr-4 cursor-grab" x-sortable-handle></i>
-                            <div class="flex-grow">
-                                <h4 class="font-semibold text-gray-900" x-text="getModuleName(moduleKey)"></h4>
-                                <p class="text-xs text-gray-600" x-text="getModuleDescription(moduleKey)"></p>
-                            </div>
-                            <button @click="removeModule(moduleKey)"
-                                    class="text-red-500 hover:text-red-700 ml-4" title="Remove">
-                                <i class="fas fa-trash-alt"></i>
-                            </button>
-                        </div>
-                    </template>
-                </div>
-                
-                <template x-if="activeModules.length === 0">
-                    <div class="text-center py-10 border border-dashed rounded-lg">
-                        <p class="text-gray-500">Your dashboard is empty.</p>
-                        <p class="text-sm text-gray-400 mt-1">Add modules from the "Available Modules" list.</p>
-                    </div>
-                </template>
+    </div>
+    
+    <?php endforeach; ?>
+    
+    <!-- Save Button -->
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <div class="flex justify-between items-center">
+            <div>
+                <p class="text-sm text-gray-600">
+                    <i class="fas fa-info-circle text-blue-600 mr-2"></i>
+                    Selected widgets will appear on your dashboard in the order shown above.
+                </p>
+            </div>
+            <div class="flex gap-3">
+                <a href="../index.php" 
+                   class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
+                    Cancel
+                </a>
+                <button type="submit" 
+                        class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-bold">
+                    <i class="fas fa-save mr-2"></i>Save Dashboard Settings
+                </button>
             </div>
         </div>
     </div>
+</form>
+
 </div>
 
-<script>
-document.addEventListener('alpine:init', () => {
-    Alpine.data('dashboardSettings', (masterModules, currentPrefs) => ({
-        masterModules: masterModules,
-        activeModules: currentPrefs,
-        isSaving: false,
-        saveStatus: '', // 'success' or 'error'
-        saveMessage: '',
-        
-        init() {
-            // Initialize Alpine.js Sortable
-             Alpine.plugin(Sortable).init(this.$refs.sortableList, this.activeModules);
-        },
-
-        getModuleName(key) {
-            for (const category in this.masterModules) {
-                const found = this.masterModules[category].find(m => m.key === key);
-                if (found) return found.name;
-            }
-            return 'Unknown Module';
-        },
-        getModuleDescription(key) {
-            for (const category in this.masterModules) {
-                const found = this.masterModules[category].find(m => m.key === key);
-                if (found) return found.description;
-            }
-            return '';
-        },
-        isSelected(key) {
-            return this.activeModules.includes(key);
-        },
-        addModule(key) {
-            if (!this.isSelected(key)) {
-                this.activeModules.push(key);
-            }
-        },
-        removeModule(key) {
-            this.activeModules = this.activeModules.filter(m => m !== key);
-        },
-        async saveSettings() {
-            this.isSaving = true;
-            this.saveStatus = '';
-            this.saveMessage = '';
-
-            try {
-                const response = await fetch('ajax_handler.php', { // Assumes ajax_handler.php is in same /admin/ folder
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                        'X-CSRF-Token': '<?php echo $_SESSION['csrf_token']; ?>' // Add CSRF
-                    },
-                    body: JSON.stringify({
-                        action: 'save_dashboard_settings',
-                        preferences: this.activeModules
-                    })
-                });
-
-                const result = await response.json();
-
-                if (!response.ok || !result.success) {
-                    throw new Error(result.error || 'Failed to save settings.');
-                }
-
-                this.saveStatus = 'success';
-                this.saveMessage = 'Dashboard settings saved successfully!';
-
-            } catch (error) {
-                console.error('Save Settings Error:', error);
-                this.saveStatus = 'error';
-                this.saveMessage = error.message;
-            } finally {
-                this.isSaving = false;
-                setTimeout(() => this.saveStatus = '', 3000); // Hide message after 3s
-            }
-        }
-    }));
-});
-</script>
+<?php require_once '../templates/footer.php'; ?>

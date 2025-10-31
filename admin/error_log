@@ -12548,3 +12548,625 @@ Stack trace:
 [28-Oct-2025 18:06:02 Asia/Dhaka] PHP Warning:  Undefined array key "csrf_token" in /home/ujjalfmc/public_html/saas.ujjalfm.com/admin/settings.php on line 208
 [28-Oct-2025 18:41:26 Asia/Dhaka] PHP Warning:  Undefined array key "csrf_token" in /home/ujjalfmc/public_html/saas.ujjalfm.com/admin/settings.php on line 208
 [29-Oct-2025 21:49:06 Asia/Dhaka] PHP Warning:  Undefined array key "csrf_token" in /home/ujjalfmc/public_html/saas.ujjalfm.com/admin/settings.php on line 208
+[01-Nov-2025 00:06:39 Asia/Dhaka] PHP Warning:  Undefined array key "csrf_token" in /home/ujjalfmc/public_html/saas.ujjalfm.com/admin/settings.php on line 208
+[01-Nov-2025 00:25:59 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 12
+    [1] => 2025-11-01
+)
+
+[01-Nov-2025 00:25:59 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 13
+    [1] => 2025-11-01
+)
+
+[01-Nov-2025 00:25:59 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 22
+    [1] => 2025-11-01
+)
+
+[01-Nov-2025 00:25:59 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 21
+    [1] => 2025-11-01
+)
+
+[01-Nov-2025 00:25:59 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 26
+    [1] => 2025-11-01
+)
+
+[01-Nov-2025 00:25:59 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 28
+    [1] => 2025-11-01
+)
+
+[01-Nov-2025 00:25:59 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 15
+    [1] => 2025-11-01
+)
+
+[01-Nov-2025 00:25:59 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 14
+    [1] => 2025-11-01
+)
+
+[01-Nov-2025 00:25:59 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 23
+    [1] => 2025-11-01
+)
+
+[01-Nov-2025 00:25:59 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 30
+    [1] => 2025-11-01
+)
+
+[01-Nov-2025 00:25:59 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 2
+    [1] => 2025-11-01
+)
+
+[01-Nov-2025 00:25:59 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 17
+    [1] => 2025-11-01
+)
+
+[01-Nov-2025 00:25:59 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 16
+    [1] => 2025-11-01
+)
+
+[01-Nov-2025 00:25:59 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 24
+    [1] => 2025-11-01
+)
+
+[01-Nov-2025 00:25:59 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 1
+    [1] => 2025-11-01
+)
+
+[01-Nov-2025 00:25:59 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 18
+    [1] => 2025-11-01
+)
+
+[01-Nov-2025 00:25:59 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 20
+    [1] => 2025-11-01
+)
+
+[01-Nov-2025 00:25:59 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 19
+    [1] => 2025-11-01
+)
+
+[01-Nov-2025 00:25:59 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 27
+    [1] => 2025-11-01
+)
+
+[01-Nov-2025 00:25:59 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 29
+    [1] => 2025-11-01
+)
+
+[01-Nov-2025 00:25:59 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 25
+    [1] => 2025-11-01
+)
+
+[01-Nov-2025 00:25:59 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(jel.credit_amount - jel.debit_amount), 0) as total
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         JOIN chart_of_accounts coa ON jel.account_id = coa.id
+         WHERE je.entry_date <= ? AND je.status = 'Posted' AND coa.account_type_group = 'Revenue' | Params: Array
+(
+    [0] => 2025-11-01
+)
+
+[01-Nov-2025 00:25:59 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(jel.debit_amount - jel.credit_amount), 0) as total
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         JOIN chart_of_accounts coa ON jel.account_id = coa.id
+         WHERE je.entry_date <= ? AND je.status = 'Posted' AND coa.account_type_group = 'Expense' | Params: Array
+(
+    [0] => 2025-11-01
+)
+
+[01-Nov-2025 00:26:17 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 12
+    [1] => 2025-10-31
+)
+
+[01-Nov-2025 00:26:17 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 13
+    [1] => 2025-10-31
+)
+
+[01-Nov-2025 00:26:17 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 22
+    [1] => 2025-10-31
+)
+
+[01-Nov-2025 00:26:17 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 21
+    [1] => 2025-10-31
+)
+
+[01-Nov-2025 00:26:17 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 26
+    [1] => 2025-10-31
+)
+
+[01-Nov-2025 00:26:17 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 28
+    [1] => 2025-10-31
+)
+
+[01-Nov-2025 00:26:17 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 15
+    [1] => 2025-10-31
+)
+
+[01-Nov-2025 00:26:17 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 14
+    [1] => 2025-10-31
+)
+
+[01-Nov-2025 00:26:17 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 23
+    [1] => 2025-10-31
+)
+
+[01-Nov-2025 00:26:17 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 30
+    [1] => 2025-10-31
+)
+
+[01-Nov-2025 00:26:17 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 2
+    [1] => 2025-10-31
+)
+
+[01-Nov-2025 00:26:17 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 17
+    [1] => 2025-10-31
+)
+
+[01-Nov-2025 00:26:17 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 16
+    [1] => 2025-10-31
+)
+
+[01-Nov-2025 00:26:17 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 24
+    [1] => 2025-10-31
+)
+
+[01-Nov-2025 00:26:17 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 1
+    [1] => 2025-10-31
+)
+
+[01-Nov-2025 00:26:17 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 18
+    [1] => 2025-10-31
+)
+
+[01-Nov-2025 00:26:17 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 20
+    [1] => 2025-10-31
+)
+
+[01-Nov-2025 00:26:17 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 19
+    [1] => 2025-10-31
+)
+
+[01-Nov-2025 00:26:17 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 27
+    [1] => 2025-10-31
+)
+
+[01-Nov-2025 00:26:17 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 29
+    [1] => 2025-10-31
+)
+
+[01-Nov-2025 00:26:17 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 25
+    [1] => 2025-10-31
+)
+
+[01-Nov-2025 00:26:17 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(jel.credit_amount - jel.debit_amount), 0) as total
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         JOIN chart_of_accounts coa ON jel.account_id = coa.id
+         WHERE je.entry_date <= ? AND je.status = 'Posted' AND coa.account_type_group = 'Revenue' | Params: Array
+(
+    [0] => 2025-10-31
+)
+
+[01-Nov-2025 00:26:17 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(jel.debit_amount - jel.credit_amount), 0) as total
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         JOIN chart_of_accounts coa ON jel.account_id = coa.id
+         WHERE je.entry_date <= ? AND je.status = 'Posted' AND coa.account_type_group = 'Expense' | Params: Array
+(
+    [0] => 2025-10-31
+)
+
+[01-Nov-2025 00:26:28 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 12
+    [1] => 2025-10-30
+)
+
+[01-Nov-2025 00:26:28 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 13
+    [1] => 2025-10-30
+)
+
+[01-Nov-2025 00:26:28 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 22
+    [1] => 2025-10-30
+)
+
+[01-Nov-2025 00:26:28 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 21
+    [1] => 2025-10-30
+)
+
+[01-Nov-2025 00:26:28 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 26
+    [1] => 2025-10-30
+)
+
+[01-Nov-2025 00:26:28 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 28
+    [1] => 2025-10-30
+)
+
+[01-Nov-2025 00:26:28 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 15
+    [1] => 2025-10-30
+)
+
+[01-Nov-2025 00:26:28 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 14
+    [1] => 2025-10-30
+)
+
+[01-Nov-2025 00:26:28 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 23
+    [1] => 2025-10-30
+)
+
+[01-Nov-2025 00:26:28 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 30
+    [1] => 2025-10-30
+)
+
+[01-Nov-2025 00:26:28 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 2
+    [1] => 2025-10-30
+)
+
+[01-Nov-2025 00:26:28 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 17
+    [1] => 2025-10-30
+)
+
+[01-Nov-2025 00:26:28 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 16
+    [1] => 2025-10-30
+)
+
+[01-Nov-2025 00:26:28 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 24
+    [1] => 2025-10-30
+)
+
+[01-Nov-2025 00:26:28 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 1
+    [1] => 2025-10-30
+)
+
+[01-Nov-2025 00:26:28 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 18
+    [1] => 2025-10-30
+)
+
+[01-Nov-2025 00:26:28 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 20
+    [1] => 2025-10-30
+)
+
+[01-Nov-2025 00:26:28 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 19
+    [1] => 2025-10-30
+)
+
+[01-Nov-2025 00:26:28 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 27
+    [1] => 2025-10-30
+)
+
+[01-Nov-2025 00:26:28 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 29
+    [1] => 2025-10-30
+)
+
+[01-Nov-2025 00:26:28 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 25
+    [1] => 2025-10-30
+)
+
+[01-Nov-2025 00:26:28 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(jel.credit_amount - jel.debit_amount), 0) as total
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         JOIN chart_of_accounts coa ON jel.account_id = coa.id
+         WHERE je.entry_date <= ? AND je.status = 'Posted' AND coa.account_type_group = 'Revenue' | Params: Array
+(
+    [0] => 2025-10-30
+)
+
+[01-Nov-2025 00:26:28 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(jel.debit_amount - jel.credit_amount), 0) as total
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         JOIN chart_of_accounts coa ON jel.account_id = coa.id
+         WHERE je.entry_date <= ? AND je.status = 'Posted' AND coa.account_type_group = 'Expense' | Params: Array
+(
+    [0] => 2025-10-30
+)
+

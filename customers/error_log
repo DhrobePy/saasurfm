@@ -1,0 +1,8 @@
+[30-Oct-2025 23:13:10 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined function get_initials() in /home/ujjalfmc/public_html/saas.ujjalfm.com/customers/view.php:180
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/customers/view.php on line 180
+[30-Oct-2025 23:13:29 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined function get_initials() in /home/ujjalfmc/public_html/saas.ujjalfm.com/customers/view.php:180
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/customers/view.php on line 180
