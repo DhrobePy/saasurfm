@@ -211,7 +211,14 @@
                                     <span>Accounts</span> <i class="fas fa-chevron-down text-xs ml-1"></i>
                                 </button>
                                 <div x-show="open" @click.away="open = false" x-transition class="origin-top-left absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
-                                    <div class="py-1"> <a href="<?php echo url('accounts/chart_of_accounts.php'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-primary-600">Chart of Accounts</a> <a href="<?php echo url('accounts/internal_transfer.php'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-primary-600">Internal Transfer</a> <a href="<?php echo url('accounts/new_transaction.php'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-primary-600">New Transaction</a> <a href="<?php echo url('accounts/bank_accounts.php'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-primary-600">Bank Accounts</a> </div>
+                                    <div class="py-1"> 
+                                    <a href="<?php echo url('accounts/chart_of_accounts.php'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-primary-600">Chart of Accounts</a> 
+                                    <a href="<?php echo url('accounts/internal_transfer.php'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-primary-600">Internal Transfer</a>
+                                    <a href="<?php echo url('accounts/new_transaction.php'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-primary-600">New Transaction</a> 
+                                    <a href="<?php echo url('accounts/debit_voucher.php'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-primary-600">Issue Debit Note</a>
+                                    <a href="<?php echo url('accounts/bank_accounts.php'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-primary-600">Bank Accounts</a> 
+                                    <a href="<?php echo url('accounts/all_accounts.php'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-primary-600">Statement of all accounts</a> 
+                                    </div>
                                 </div>
                             </div>
 

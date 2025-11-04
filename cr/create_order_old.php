@@ -125,7 +125,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         
         $db->getPdo()->commit();
         $_SESSION['success_flash'] = "Order $order_number created successfully! Awaiting approval.";
-        header('Location: index.php');
+        header('Location: credit_dashboard.php');
         exit();
         
     } catch (Exception $e) {
@@ -278,14 +278,8 @@ require_once '../templates/header.php';
             </div>
             
             <div class="col-span-1">
-                <label class="block text-sm font-medium text-gray-700 mb-2">Discount</label>
-                <div class="flex gap-1">
-                    <select id="add_discount_type" class="w-16 px-2 py-2 border rounded-l-lg text-xs">
-                        <option value="percent">%</option>
-                        <option value="fixed">৳</option>
-                    </select>
-                    <input type="number" id="add_discount" step="0.01" min="0" class="flex-1 px-2 py-2 border rounded-r-lg" value="0">
-                </div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Disc %</label>
+                <input type="number" id="add_discount" step="0.01" min="0" max="100" class="w-full px-4 py-2 border rounded-lg" value="0">
             </div>
             
             <div class="col-span-1 flex items-end">
@@ -305,14 +299,13 @@ require_once '../templates/header.php';
                         <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">SKU</th>
                         <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">Qty</th>
                         <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">Price</th>
-                        <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">Discount</th>
                         <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">Total</th>
                         <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Action</th>
                     </tr>
                 </thead>
                 <tbody id="itemsBody" class="bg-white divide-y divide-gray-200">
                     <tr>
-                        <td colspan="8" class="px-4 py-8 text-center text-gray-400">
+                        <td colspan="7" class="px-4 py-8 text-center text-gray-400">
                             <i class="fas fa-shopping-cart text-5xl mb-3 opacity-50"></i>
                             <p class="text-lg">Cart is empty - Add products above</p>
                         </td>
@@ -426,8 +419,7 @@ function addItem() {
     const variantSelect = document.getElementById('add_variant');
     const quantity = parseFloat(document.getElementById('add_quantity').value) || 0;
     const price = parseFloat(document.getElementById('add_price').value) || 0;
-    const discountValue = parseFloat(document.getElementById('add_discount').value) || 0;
-    const discountType = document.getElementById('add_discount_type').value;
+    const discount = parseFloat(document.getElementById('add_discount').value) || 0;
     
     if (!productSelect.value) {
         alert('Please select a product');
@@ -450,18 +442,9 @@ function addItem() {
     }
     
     const variantOption = variantSelect.options[variantSelect.selectedIndex];
-    
-    // Calculate discount amount per unit
-    let discountPerUnit = 0;
-    if (discountType === 'percent') {
-        discountPerUnit = (price * discountValue) / 100;
-    } else {
-        discountPerUnit = discountValue;
-    }
-    
-    const totalDiscountAmount = discountPerUnit * quantity;
-    const finalPricePerUnit = price - discountPerUnit;
-    const lineTotal = quantity * finalPricePerUnit;
+    const discountAmount = (price * discount) / 100;
+    const finalPrice = price - discountAmount;
+    const lineTotal = quantity * finalPrice;
     
     let variantDisplay = [];
     if (variantOption.dataset.grade) variantDisplay.push(variantOption.dataset.grade);
@@ -476,10 +459,7 @@ function addItem() {
         unit_of_measure: variantOption.dataset.unit,
         quantity: quantity,
         unit_price: price,
-        discount_type: discountType,
-        discount_value: discountValue,
-        discount_per_unit: discountPerUnit,
-        discount: totalDiscountAmount,
+        discount: discountAmount * quantity,
         tax: 0,
         line_total: lineTotal
     };
@@ -495,7 +475,6 @@ function addItem() {
     document.getElementById('add_quantity').value = '1';
     document.getElementById('add_price').value = '';
     document.getElementById('add_discount').value = '0';
-    document.getElementById('add_discount_type').value = 'percent';
     document.getElementById('add_unit').value = '';
 }
 
@@ -506,7 +485,7 @@ function renderItems() {
     if (orderItems.length === 0) {
         tbody.innerHTML = `
             <tr>
-                <td colspan="8" class="px-4 py-8 text-center text-gray-400">
+                <td colspan="7" class="px-4 py-8 text-center text-gray-400">
                     <i class="fas fa-shopping-cart text-5xl mb-3 opacity-50"></i>
                     <p class="text-lg">Cart is empty - Add products above</p>
                 </td>
@@ -516,10 +495,6 @@ function renderItems() {
     }
     
     orderItems.forEach((item, index) => {
-        const discountDisplay = item.discount_type === 'percent' 
-            ? `${item.discount_value}%` 
-            : `৳${item.discount_value.toFixed(2)}`;
-        
         const row = document.createElement('tr');
         row.innerHTML = `
             <td class="px-4 py-3 text-sm">${item.product_name}</td>
@@ -532,10 +507,6 @@ function renderItems() {
                 <span class="text-xs text-gray-500 ml-1">${item.unit_of_measure}</span>
             </td>
             <td class="px-4 py-3 text-sm text-right">৳${item.unit_price.toFixed(2)}</td>
-            <td class="px-4 py-3 text-sm text-right text-red-600">
-                <span class="text-xs text-gray-500">${discountDisplay}/unit</span><br>
-                ৳${item.discount.toFixed(2)}
-            </td>
             <td class="px-4 py-3 text-sm text-right font-bold text-green-600">৳${item.line_total.toFixed(2)}</td>
             <td class="px-4 py-3 text-center">
                 <button type="button" onclick="removeItem(${index})" class="text-red-600 hover:text-red-900">
@@ -550,8 +521,11 @@ function renderItems() {
 function updateQuantity(index, newQty) {
     const qty = parseFloat(newQty) || 1;
     orderItems[index].quantity = qty;
-    orderItems[index].discount = orderItems[index].discount_per_unit * qty;
-    orderItems[index].line_total = qty * (orderItems[index].unit_price - orderItems[index].discount_per_unit);
+    
+    const discountPerUnit = orderItems[index].discount / (orderItems[index].quantity || 1);
+    orderItems[index].discount = discountPerUnit * qty;
+    const finalPrice = orderItems[index].unit_price - discountPerUnit;
+    orderItems[index].line_total = qty * finalPrice;
     
     renderItems();
     calculateTotals();
@@ -564,8 +538,8 @@ function removeItem(index) {
 }
 
 function calculateTotals() {
-    const subtotal = orderItems.reduce((sum, item) => sum + (item.unit_price * item.quantity), 0);
-    const discount = orderItems.reduce((sum, item) => sum + item.discount, 0);
+    const subtotal = orderItems.reduce((sum, item) => sum + item.line_total, 0);
+    const discount = 0;
     const tax = 0;
     const total = subtotal - discount + tax;
     const advance = parseFloat(document.querySelector('[name="advance_paid"]').value) || 0;

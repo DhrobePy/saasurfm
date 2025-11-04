@@ -6,3 +6,49 @@ Stack trace:
 Stack trace:
 #0 {main}
   thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/customers/view.php on line 180
+[01-Nov-2025 12:59:23 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined function get_initials() in /home/ujjalfmc/public_html/saas.ujjalfm.com/customers/view.php:180
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/customers/view.php on line 180
+[01-Nov-2025 12:59:54 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined function get_initials() in /home/ujjalfmc/public_html/saas.ujjalfm.com/customers/view.php:180
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/customers/view.php on line 180
+[01-Nov-2025 16:49:32 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'payment_status' in 'INSERT INTO' in query: INSERT INTO credit_orders (customer_id, order_type, order_number, order_date, required_date, status, subtotal, discount_amount, tax_amount, total_amount, amount_paid, payment_status, priority, notes, created_by_user_id) VALUES (?, ?, ?, CURDATE(), CURDATE(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 9
+    [1] => previous_due
+    [2] => INV-INITIAL-9-1761994172
+    [3] => approved
+    [4] => 123345
+    [5] => 0
+    [6] => 0
+    [7] => 123345
+    [8] => 0
+    [9] => unpaid
+    [10] => normal
+    [11] => Opening balance - Previous due carried forward
+    [12] => 1
+)
+
+[01-Nov-2025 16:49:38 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined function get_initials() in /home/ujjalfmc/public_html/saas.ujjalfm.com/customers/view.php:180
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/customers/view.php on line 180
+[01-Nov-2025 17:03:45 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'payment_status' in 'INSERT INTO' in query: INSERT INTO credit_orders (customer_id, order_type, order_number, order_date, required_date, status, subtotal, discount_amount, tax_amount, total_amount, amount_paid, payment_status, priority, notes, created_by_user_id, created_at, updated_at) VALUES (?, ?, ?, CURDATE(), CURDATE(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW()) | Params: Array
+(
+    [0] => 10
+    [1] => previous_due
+    [2] => INV-INITIAL-10-1761995025
+    [3] => approved
+    [4] => 123457
+    [5] => 0
+    [6] => 0
+    [7] => 123457
+    [8] => 0
+    [9] => unpaid
+    [10] => normal
+    [11] => Opening balance - Previous due carried forward
+    [12] => 1
+)
+

@@ -259,7 +259,7 @@ $copy_name = $copy_names[$copy_type] ?? 'RECEIPT';
     <div class="receipt">
         <!-- Header -->
         <div class="header">
-            <div class="company-name">UJJAL FM</div>
+            <div class="company-name">উজ্জল ফ্লাওয়ার মিলস </div>
             <div class="branch-info"><?php echo htmlspecialchars($order->branch_name); ?></div>
             <?php if ($order->branch_address): ?>
             <div class="branch-info"><?php echo htmlspecialchars($order->branch_address); ?></div>

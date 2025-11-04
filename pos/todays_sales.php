@@ -282,9 +282,9 @@ function toggleItems(orderId) {
                             <td class="px-6 py-4 whitespace-nowrap"><span class="px-2 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-full <?php echo($order->payment_method=='Cash')?'bg-green-100 text-green-800':'bg-blue-100 text-blue-800';?>"><?php echo htmlspecialchars($order->payment_method); ?></span></td>
                             <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap"><?php echo htmlspecialchars($order->user_name); ?></td>
                             <td class="px-6 py-4 text-right text-sm font-medium space-x-3 no-print whitespace-nowrap">
-                                <a href="../pos/print_receipt.php?order_number=<?php echo urlencode($order->order_number);?>&copy_type=customer" target="_blank" class="text-indigo-600 hover:text-indigo-900" title="Customer Receipt"><i class="fas fa-receipt"></i></a>
-                                <a href="../pos/print_receipt.php?order_number=<?php echo urlencode($order->order_number);?>&copy_type=office" target="_blank" class="text-gray-500 hover:text-gray-900" title="Office Receipt"><i class="fas fa-file-invoice"></i></a>
-                                <a href="../pos/print_receipt.php?order_number=<?php echo urlencode($order->order_number);?>&copy_type=delivery" target="_blank" class="text-green-600 hover:text-green-900" title="Delivery Receipt"><i class="fas fa-truck"></i></a>
+                                <a href="../pos/print_receipt.php?order_number=<?php echo urlencode($order->order_number);?>&amp;copy_type=customer" target="_blank" class="text-indigo-600 hover:text-indigo-900" title="Customer Receipt"><i class="fas fa-receipt"></i></a>
+                                <a href="../pos/print_receipt.php?order_number=<?php echo urlencode($order->order_number);?>&amp;copy_type=office" target="_blank" class="text-gray-500 hover:text-gray-900" title="Office Receipt"><i class="fas fa-file-invoice"></i></a>
+                                <a href="../pos/print_receipt.php?order_number=<?php echo urlencode($order->order_number);?>&amp;copy_type=delivery" target="_blank" class="text-green-600 hover:text-green-900" title="Delivery Receipt"><i class="fas fa-truck"></i></a>
                             </td>
                         </tr>
                         <?php if(isset($order_items[$order->id])&&!empty($order_items[$order->id])):?>

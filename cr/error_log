@@ -3945,3 +3945,2205 @@ Stack trace:
 )
 
 [31-Oct-2025 19:53:44 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$phone in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_ledger.php on line 147
+[01-Nov-2025 01:30:49 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$payment_amount in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 457
+[01-Nov-2025 01:30:49 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$payment_amount in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 457
+[01-Nov-2025 01:30:49 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$payment_amount in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 457
+[01-Nov-2025 01:30:49 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$payment_amount in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 457
+[01-Nov-2025 01:30:49 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$payment_amount in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 457
+[01-Nov-2025 01:30:49 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$payment_amount in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 457
+[01-Nov-2025 01:30:49 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$payment_amount in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 457
+[01-Nov-2025 01:30:49 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$payment_amount in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 457
+[01-Nov-2025 09:05:55 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c.name' in 'WHERE' in query: SELECT 
+        COUNT(*) as total_orders,
+        SUM(total_amount) as total_value,
+        SUM(amount_paid) as total_paid,
+        SUM(total_amount - amount_paid) as total_outstanding,
+        SUM(CASE WHEN status = 'pending_approval' THEN 1 ELSE 0 END) as pending_count,
+        SUM(CASE WHEN status = 'in_production' THEN 1 ELSE 0 END) as production_count,
+        SUM(CASE WHEN status = 'ready_to_ship' THEN 1 ELSE 0 END) as ready_count,
+        SUM(CASE WHEN status = 'delivered' THEN 1 ELSE 0 END) as delivered_count
+    FROM credit_orders co
+    WHERE co.order_date BETWEEN ? AND ? AND (co.order_number LIKE ? OR c.name LIKE ? OR c.phone_number LIKE ?) | Params: Array
+(
+    [0] => 2025-10-27
+    [1] => 2025-11-01
+    [2] => %hazi%
+    [3] => %hazi%
+    [4] => %hazi%
+)
+
+[01-Nov-2025 09:06:06 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c.name' in 'WHERE' in query: SELECT 
+        COUNT(*) as total_orders,
+        SUM(total_amount) as total_value,
+        SUM(amount_paid) as total_paid,
+        SUM(total_amount - amount_paid) as total_outstanding,
+        SUM(CASE WHEN status = 'pending_approval' THEN 1 ELSE 0 END) as pending_count,
+        SUM(CASE WHEN status = 'in_production' THEN 1 ELSE 0 END) as production_count,
+        SUM(CASE WHEN status = 'ready_to_ship' THEN 1 ELSE 0 END) as ready_count,
+        SUM(CASE WHEN status = 'delivered' THEN 1 ELSE 0 END) as delivered_count
+    FROM credit_orders co
+    WHERE co.order_date BETWEEN ? AND ? AND (co.order_number LIKE ? OR c.name LIKE ? OR c.phone_number LIKE ?) | Params: Array
+(
+    [0] => 2025-10-27
+    [1] => 2025-11-01
+    [2] => %tr%
+    [3] => %tr%
+    [4] => %tr%
+)
+
+[01-Nov-2025 09:06:15 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c.name' in 'WHERE' in query: SELECT 
+        COUNT(*) as total_orders,
+        SUM(total_amount) as total_value,
+        SUM(amount_paid) as total_paid,
+        SUM(total_amount - amount_paid) as total_outstanding,
+        SUM(CASE WHEN status = 'pending_approval' THEN 1 ELSE 0 END) as pending_count,
+        SUM(CASE WHEN status = 'in_production' THEN 1 ELSE 0 END) as production_count,
+        SUM(CASE WHEN status = 'ready_to_ship' THEN 1 ELSE 0 END) as ready_count,
+        SUM(CASE WHEN status = 'delivered' THEN 1 ELSE 0 END) as delivered_count
+    FROM credit_orders co
+    WHERE co.order_date BETWEEN ? AND ? AND (co.order_number LIKE ? OR c.name LIKE ? OR c.phone_number LIKE ?) | Params: Array
+(
+    [0] => 2025-10-27
+    [1] => 2025-11-01
+    [2] => %nil%
+    [3] => %nil%
+    [4] => %nil%
+)
+
+[01-Nov-2025 09:47:08 Asia/Dhaka] SQL Error [42000]: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''50' OFFSET '0'' at line 20 in query: SELECT 
+        co.*,
+        c.name as customer_name,
+        c.phone_number as customer_phone,
+        c.current_balance as customer_balance,
+        b.name as branch_name,
+        u.display_name as created_by_name,
+        (SELECT COUNT(*) FROM credit_order_items WHERE order_id = co.id) as item_count,
+        DATEDIFF(co.required_date, CURDATE()) as days_until_due
+    FROM credit_orders co
+    LEFT JOIN customers c ON co.customer_id = c.id
+    LEFT JOIN branches b ON co.assigned_branch_id = b.id
+    LEFT JOIN users u ON co.created_by_user_id = u.id
+    WHERE co.order_date BETWEEN ? AND ? AND (co.order_number LIKE ? OR c.name LIKE ? OR c.phone_number LIKE ?)
+    ORDER BY 
+        co.sort_order ASC,
+        FIELD(co.priority, 'urgent', 'high', 'normal', 'low'),
+        co.order_date DESC,
+        co.created_at DESC
+    LIMIT ? OFFSET ? | Params: Array
+(
+    [0] => 2025-10-27
+    [1] => 2025-11-01
+    [2] => %nil%
+    [3] => %nil%
+    [4] => %nil%
+    [5] => 50
+    [6] => 0
+)
+
+[01-Nov-2025 09:47:08 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c.name' in 'WHERE' in query: SELECT 
+        COUNT(*) as total_orders,
+        SUM(total_amount) as total_value,
+        SUM(amount_paid) as total_paid,
+        SUM(total_amount - amount_paid) as total_outstanding,
+        SUM(CASE WHEN status = 'pending_approval' THEN 1 ELSE 0 END) as pending_count,
+        SUM(CASE WHEN status = 'in_production' THEN 1 ELSE 0 END) as production_count,
+        SUM(CASE WHEN status = 'ready_to_ship' THEN 1 ELSE 0 END) as ready_count,
+        SUM(CASE WHEN status = 'delivered' THEN 1 ELSE 0 END) as delivered_count,
+        SUM(CASE WHEN priority = 'urgent' THEN 1 ELSE 0 END) as urgent_count,
+        SUM(CASE WHEN DATEDIFF(required_date, CURDATE()) < 0 AND status NOT IN ('delivered', 'cancelled') THEN 1 ELSE 0 END) as overdue_count
+    FROM credit_orders co
+    WHERE co.order_date BETWEEN ? AND ? AND (co.order_number LIKE ? OR c.name LIKE ? OR c.phone_number LIKE ?) | Params: Array
+(
+    [0] => 2025-10-27
+    [1] => 2025-11-01
+    [2] => %nil%
+    [3] => %nil%
+    [4] => %nil%
+)
+
+[01-Nov-2025 09:47:08 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_active' in 'WHERE' in query: SELECT id, name FROM branches WHERE is_active = 1 ORDER BY name | Params: Array
+(
+)
+
+[01-Nov-2025 09:47:08 Asia/Dhaka] PHP Warning:  Attempt to read property "urgent_count" on null in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/order_status.php on line 834
+[01-Nov-2025 09:47:08 Asia/Dhaka] PHP Warning:  Attempt to read property "overdue_count" on null in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/order_status.php on line 859
+[01-Nov-2025 09:47:08 Asia/Dhaka] PHP Warning:  Attempt to read property "total_value" on null in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/order_status.php on line 906
+[01-Nov-2025 09:47:08 Asia/Dhaka] PHP Warning:  Attempt to read property "total_orders" on null in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/order_status.php on line 954
+[01-Nov-2025 09:47:15 Asia/Dhaka] SQL Error [42000]: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''50' OFFSET '0'' at line 20 in query: SELECT 
+        co.*,
+        c.name as customer_name,
+        c.phone_number as customer_phone,
+        c.current_balance as customer_balance,
+        b.name as branch_name,
+        u.display_name as created_by_name,
+        (SELECT COUNT(*) FROM credit_order_items WHERE order_id = co.id) as item_count,
+        DATEDIFF(co.required_date, CURDATE()) as days_until_due
+    FROM credit_orders co
+    LEFT JOIN customers c ON co.customer_id = c.id
+    LEFT JOIN branches b ON co.assigned_branch_id = b.id
+    LEFT JOIN users u ON co.created_by_user_id = u.id
+    WHERE co.order_date BETWEEN ? AND ? AND (co.order_number LIKE ? OR c.name LIKE ? OR c.phone_number LIKE ?)
+    ORDER BY 
+        co.sort_order ASC,
+        FIELD(co.priority, 'urgent', 'high', 'normal', 'low'),
+        co.order_date DESC,
+        co.created_at DESC
+    LIMIT ? OFFSET ? | Params: Array
+(
+    [0] => 2025-10-27
+    [1] => 2025-11-01
+    [2] => %nil%
+    [3] => %nil%
+    [4] => %nil%
+    [5] => 50
+    [6] => 0
+)
+
+[01-Nov-2025 09:47:15 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c.name' in 'WHERE' in query: SELECT 
+        COUNT(*) as total_orders,
+        SUM(total_amount) as total_value,
+        SUM(amount_paid) as total_paid,
+        SUM(total_amount - amount_paid) as total_outstanding,
+        SUM(CASE WHEN status = 'pending_approval' THEN 1 ELSE 0 END) as pending_count,
+        SUM(CASE WHEN status = 'in_production' THEN 1 ELSE 0 END) as production_count,
+        SUM(CASE WHEN status = 'ready_to_ship' THEN 1 ELSE 0 END) as ready_count,
+        SUM(CASE WHEN status = 'delivered' THEN 1 ELSE 0 END) as delivered_count,
+        SUM(CASE WHEN priority = 'urgent' THEN 1 ELSE 0 END) as urgent_count,
+        SUM(CASE WHEN DATEDIFF(required_date, CURDATE()) < 0 AND status NOT IN ('delivered', 'cancelled') THEN 1 ELSE 0 END) as overdue_count
+    FROM credit_orders co
+    WHERE co.order_date BETWEEN ? AND ? AND (co.order_number LIKE ? OR c.name LIKE ? OR c.phone_number LIKE ?) | Params: Array
+(
+    [0] => 2025-10-27
+    [1] => 2025-11-01
+    [2] => %nil%
+    [3] => %nil%
+    [4] => %nil%
+)
+
+[01-Nov-2025 09:47:15 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_active' in 'WHERE' in query: SELECT id, name FROM branches WHERE is_active = 1 ORDER BY name | Params: Array
+(
+)
+
+[01-Nov-2025 09:47:15 Asia/Dhaka] PHP Warning:  Attempt to read property "urgent_count" on null in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/order_status.php on line 834
+[01-Nov-2025 09:47:15 Asia/Dhaka] PHP Warning:  Attempt to read property "overdue_count" on null in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/order_status.php on line 859
+[01-Nov-2025 09:47:15 Asia/Dhaka] PHP Warning:  Attempt to read property "total_value" on null in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/order_status.php on line 906
+[01-Nov-2025 09:47:15 Asia/Dhaka] PHP Warning:  Attempt to read property "total_orders" on null in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/order_status.php on line 954
+[01-Nov-2025 09:47:51 Asia/Dhaka] SQL Error [42000]: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''50' OFFSET '0'' at line 20 in query: SELECT 
+        co.*,
+        c.name as customer_name,
+        c.phone_number as customer_phone,
+        c.current_balance as customer_balance,
+        b.name as branch_name,
+        u.display_name as created_by_name,
+        (SELECT COUNT(*) FROM credit_order_items WHERE order_id = co.id) as item_count,
+        DATEDIFF(co.required_date, CURDATE()) as days_until_due
+    FROM credit_orders co
+    LEFT JOIN customers c ON co.customer_id = c.id
+    LEFT JOIN branches b ON co.assigned_branch_id = b.id
+    LEFT JOIN users u ON co.created_by_user_id = u.id
+    WHERE co.order_date BETWEEN ? AND ?
+    ORDER BY 
+        co.sort_order ASC,
+        FIELD(co.priority, 'urgent', 'high', 'normal', 'low'),
+        co.order_date DESC,
+        co.created_at DESC
+    LIMIT ? OFFSET ? | Params: Array
+(
+    [0] => 2025-10-27
+    [1] => 2025-11-01
+    [2] => 50
+    [3] => 0
+)
+
+[01-Nov-2025 09:47:51 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_active' in 'WHERE' in query: SELECT id, name FROM branches WHERE is_active = 1 ORDER BY name | Params: Array
+(
+)
+
+[01-Nov-2025 09:48:08 Asia/Dhaka] SQL Error [42000]: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''50' OFFSET '0'' at line 20 in query: SELECT 
+        co.*,
+        c.name as customer_name,
+        c.phone_number as customer_phone,
+        c.current_balance as customer_balance,
+        b.name as branch_name,
+        u.display_name as created_by_name,
+        (SELECT COUNT(*) FROM credit_order_items WHERE order_id = co.id) as item_count,
+        DATEDIFF(co.required_date, CURDATE()) as days_until_due
+    FROM credit_orders co
+    LEFT JOIN customers c ON co.customer_id = c.id
+    LEFT JOIN branches b ON co.assigned_branch_id = b.id
+    LEFT JOIN users u ON co.created_by_user_id = u.id
+    WHERE co.order_date BETWEEN ? AND ?
+    ORDER BY 
+        co.sort_order ASC,
+        FIELD(co.priority, 'urgent', 'high', 'normal', 'low'),
+        co.order_date DESC,
+        co.created_at DESC
+    LIMIT ? OFFSET ? | Params: Array
+(
+    [0] => 2025-10-27
+    [1] => 2025-11-01
+    [2] => 50
+    [3] => 0
+)
+
+[01-Nov-2025 09:48:08 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_active' in 'WHERE' in query: SELECT id, name FROM branches WHERE is_active = 1 ORDER BY name | Params: Array
+(
+)
+
+[01-Nov-2025 09:48:21 Asia/Dhaka] SQL Error [42000]: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''50' OFFSET '0'' at line 20 in query: SELECT 
+        co.*,
+        c.name as customer_name,
+        c.phone_number as customer_phone,
+        c.current_balance as customer_balance,
+        b.name as branch_name,
+        u.display_name as created_by_name,
+        (SELECT COUNT(*) FROM credit_order_items WHERE order_id = co.id) as item_count,
+        DATEDIFF(co.required_date, CURDATE()) as days_until_due
+    FROM credit_orders co
+    LEFT JOIN customers c ON co.customer_id = c.id
+    LEFT JOIN branches b ON co.assigned_branch_id = b.id
+    LEFT JOIN users u ON co.created_by_user_id = u.id
+    WHERE co.order_date BETWEEN ? AND ?
+    ORDER BY 
+        co.sort_order ASC,
+        FIELD(co.priority, 'urgent', 'high', 'normal', 'low'),
+        co.order_date DESC,
+        co.created_at DESC
+    LIMIT ? OFFSET ? | Params: Array
+(
+    [0] => 2025-10-27
+    [1] => 2025-11-01
+    [2] => 50
+    [3] => 0
+)
+
+[01-Nov-2025 09:48:21 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_active' in 'WHERE' in query: SELECT id, name FROM branches WHERE is_active = 1 ORDER BY name | Params: Array
+(
+)
+
+[01-Nov-2025 09:48:51 Asia/Dhaka] SQL Error [42000]: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''50' OFFSET '0'' at line 20 in query: SELECT 
+        co.*,
+        c.name as customer_name,
+        c.phone_number as customer_phone,
+        c.current_balance as customer_balance,
+        b.name as branch_name,
+        u.display_name as created_by_name,
+        (SELECT COUNT(*) FROM credit_order_items WHERE order_id = co.id) as item_count,
+        DATEDIFF(co.required_date, CURDATE()) as days_until_due
+    FROM credit_orders co
+    LEFT JOIN customers c ON co.customer_id = c.id
+    LEFT JOIN branches b ON co.assigned_branch_id = b.id
+    LEFT JOIN users u ON co.created_by_user_id = u.id
+    WHERE co.order_date BETWEEN ? AND ?
+    ORDER BY 
+        co.sort_order ASC,
+        FIELD(co.priority, 'urgent', 'high', 'normal', 'low'),
+        co.order_date DESC,
+        co.created_at DESC
+    LIMIT ? OFFSET ? | Params: Array
+(
+    [0] => 2025-10-27
+    [1] => 2025-11-01
+    [2] => 50
+    [3] => 0
+)
+
+[01-Nov-2025 09:48:51 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_active' in 'WHERE' in query: SELECT id, name FROM branches WHERE is_active = 1 ORDER BY name | Params: Array
+(
+)
+
+[01-Nov-2025 09:49:04 Asia/Dhaka] SQL Error [42000]: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''50' OFFSET '0'' at line 20 in query: SELECT 
+        co.*,
+        c.name as customer_name,
+        c.phone_number as customer_phone,
+        c.current_balance as customer_balance,
+        b.name as branch_name,
+        u.display_name as created_by_name,
+        (SELECT COUNT(*) FROM credit_order_items WHERE order_id = co.id) as item_count,
+        DATEDIFF(co.required_date, CURDATE()) as days_until_due
+    FROM credit_orders co
+    LEFT JOIN customers c ON co.customer_id = c.id
+    LEFT JOIN branches b ON co.assigned_branch_id = b.id
+    LEFT JOIN users u ON co.created_by_user_id = u.id
+    WHERE co.order_date BETWEEN ? AND ?
+    ORDER BY 
+        co.sort_order ASC,
+        FIELD(co.priority, 'urgent', 'high', 'normal', 'low'),
+        co.order_date DESC,
+        co.created_at DESC
+    LIMIT ? OFFSET ? | Params: Array
+(
+    [0] => 2025-11-01
+    [1] => 2025-11-01
+    [2] => 50
+    [3] => 0
+)
+
+[01-Nov-2025 09:49:04 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_active' in 'WHERE' in query: SELECT id, name FROM branches WHERE is_active = 1 ORDER BY name | Params: Array
+(
+)
+
+[01-Nov-2025 09:49:15 Asia/Dhaka] SQL Error [42000]: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''50' OFFSET '0'' at line 20 in query: SELECT 
+        co.*,
+        c.name as customer_name,
+        c.phone_number as customer_phone,
+        c.current_balance as customer_balance,
+        b.name as branch_name,
+        u.display_name as created_by_name,
+        (SELECT COUNT(*) FROM credit_order_items WHERE order_id = co.id) as item_count,
+        DATEDIFF(co.required_date, CURDATE()) as days_until_due
+    FROM credit_orders co
+    LEFT JOIN customers c ON co.customer_id = c.id
+    LEFT JOIN branches b ON co.assigned_branch_id = b.id
+    LEFT JOIN users u ON co.created_by_user_id = u.id
+    WHERE co.order_date BETWEEN ? AND ?
+    ORDER BY 
+        co.sort_order ASC,
+        FIELD(co.priority, 'urgent', 'high', 'normal', 'low'),
+        co.order_date DESC,
+        co.created_at DESC
+    LIMIT ? OFFSET ? | Params: Array
+(
+    [0] => 2025-08-01
+    [1] => 2025-11-01
+    [2] => 50
+    [3] => 0
+)
+
+[01-Nov-2025 09:49:15 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_active' in 'WHERE' in query: SELECT id, name FROM branches WHERE is_active = 1 ORDER BY name | Params: Array
+(
+)
+
+[01-Nov-2025 09:49:36 Asia/Dhaka] SQL Error [42000]: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''50' OFFSET '0'' at line 20 in query: SELECT 
+        co.*,
+        c.name as customer_name,
+        c.phone_number as customer_phone,
+        c.current_balance as customer_balance,
+        b.name as branch_name,
+        u.display_name as created_by_name,
+        (SELECT COUNT(*) FROM credit_order_items WHERE order_id = co.id) as item_count,
+        DATEDIFF(co.required_date, CURDATE()) as days_until_due
+    FROM credit_orders co
+    LEFT JOIN customers c ON co.customer_id = c.id
+    LEFT JOIN branches b ON co.assigned_branch_id = b.id
+    LEFT JOIN users u ON co.created_by_user_id = u.id
+    WHERE co.order_date BETWEEN ? AND ? AND (co.order_number LIKE ? OR c.name LIKE ? OR c.phone_number LIKE ?)
+    ORDER BY 
+        co.sort_order ASC,
+        FIELD(co.priority, 'urgent', 'high', 'normal', 'low'),
+        co.order_date DESC,
+        co.created_at DESC
+    LIMIT ? OFFSET ? | Params: Array
+(
+    [0] => 2025-08-01
+    [1] => 2025-11-01
+    [2] => %hazi%
+    [3] => %hazi%
+    [4] => %hazi%
+    [5] => 50
+    [6] => 0
+)
+
+[01-Nov-2025 09:49:36 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c.name' in 'WHERE' in query: SELECT 
+        COUNT(*) as total_orders,
+        SUM(total_amount) as total_value,
+        SUM(amount_paid) as total_paid,
+        SUM(total_amount - amount_paid) as total_outstanding,
+        SUM(CASE WHEN status = 'pending_approval' THEN 1 ELSE 0 END) as pending_count,
+        SUM(CASE WHEN status = 'in_production' THEN 1 ELSE 0 END) as production_count,
+        SUM(CASE WHEN status = 'ready_to_ship' THEN 1 ELSE 0 END) as ready_count,
+        SUM(CASE WHEN status = 'delivered' THEN 1 ELSE 0 END) as delivered_count,
+        SUM(CASE WHEN priority = 'urgent' THEN 1 ELSE 0 END) as urgent_count,
+        SUM(CASE WHEN DATEDIFF(required_date, CURDATE()) < 0 AND status NOT IN ('delivered', 'cancelled') THEN 1 ELSE 0 END) as overdue_count
+    FROM credit_orders co
+    WHERE co.order_date BETWEEN ? AND ? AND (co.order_number LIKE ? OR c.name LIKE ? OR c.phone_number LIKE ?) | Params: Array
+(
+    [0] => 2025-08-01
+    [1] => 2025-11-01
+    [2] => %hazi%
+    [3] => %hazi%
+    [4] => %hazi%
+)
+
+[01-Nov-2025 09:49:36 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_active' in 'WHERE' in query: SELECT id, name FROM branches WHERE is_active = 1 ORDER BY name | Params: Array
+(
+)
+
+[01-Nov-2025 09:49:36 Asia/Dhaka] PHP Warning:  Attempt to read property "urgent_count" on null in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/order_status.php on line 834
+[01-Nov-2025 09:49:36 Asia/Dhaka] PHP Warning:  Attempt to read property "overdue_count" on null in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/order_status.php on line 859
+[01-Nov-2025 09:49:36 Asia/Dhaka] PHP Warning:  Attempt to read property "total_value" on null in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/order_status.php on line 906
+[01-Nov-2025 09:49:36 Asia/Dhaka] PHP Warning:  Attempt to read property "total_orders" on null in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/order_status.php on line 954
+[01-Nov-2025 09:49:56 Asia/Dhaka] SQL Error [42000]: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''50' OFFSET '0'' at line 20 in query: SELECT 
+        co.*,
+        c.name as customer_name,
+        c.phone_number as customer_phone,
+        c.current_balance as customer_balance,
+        b.name as branch_name,
+        u.display_name as created_by_name,
+        (SELECT COUNT(*) FROM credit_order_items WHERE order_id = co.id) as item_count,
+        DATEDIFF(co.required_date, CURDATE()) as days_until_due
+    FROM credit_orders co
+    LEFT JOIN customers c ON co.customer_id = c.id
+    LEFT JOIN branches b ON co.assigned_branch_id = b.id
+    LEFT JOIN users u ON co.created_by_user_id = u.id
+    WHERE co.order_date BETWEEN ? AND ?
+    ORDER BY 
+        co.sort_order ASC,
+        FIELD(co.priority, 'urgent', 'high', 'normal', 'low'),
+        co.order_date DESC,
+        co.created_at DESC
+    LIMIT ? OFFSET ? | Params: Array
+(
+    [0] => 2025-11-01
+    [1] => 2025-11-01
+    [2] => 50
+    [3] => 0
+)
+
+[01-Nov-2025 09:49:56 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_active' in 'WHERE' in query: SELECT id, name FROM branches WHERE is_active = 1 ORDER BY name | Params: Array
+(
+)
+
+[01-Nov-2025 09:50:05 Asia/Dhaka] SQL Error [42000]: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''50' OFFSET '0'' at line 20 in query: SELECT 
+        co.*,
+        c.name as customer_name,
+        c.phone_number as customer_phone,
+        c.current_balance as customer_balance,
+        b.name as branch_name,
+        u.display_name as created_by_name,
+        (SELECT COUNT(*) FROM credit_order_items WHERE order_id = co.id) as item_count,
+        DATEDIFF(co.required_date, CURDATE()) as days_until_due
+    FROM credit_orders co
+    LEFT JOIN customers c ON co.customer_id = c.id
+    LEFT JOIN branches b ON co.assigned_branch_id = b.id
+    LEFT JOIN users u ON co.created_by_user_id = u.id
+    WHERE co.order_date BETWEEN ? AND ?
+    ORDER BY 
+        co.sort_order ASC,
+        FIELD(co.priority, 'urgent', 'high', 'normal', 'low'),
+        co.order_date DESC,
+        co.created_at DESC
+    LIMIT ? OFFSET ? | Params: Array
+(
+    [0] => 2025-10-27
+    [1] => 2025-11-01
+    [2] => 50
+    [3] => 0
+)
+
+[01-Nov-2025 09:50:05 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_active' in 'WHERE' in query: SELECT id, name FROM branches WHERE is_active = 1 ORDER BY name | Params: Array
+(
+)
+
+[01-Nov-2025 09:50:32 Asia/Dhaka] SQL Error [42000]: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''50' OFFSET '0'' at line 20 in query: SELECT 
+        co.*,
+        c.name as customer_name,
+        c.phone_number as customer_phone,
+        c.current_balance as customer_balance,
+        b.name as branch_name,
+        u.display_name as created_by_name,
+        (SELECT COUNT(*) FROM credit_order_items WHERE order_id = co.id) as item_count,
+        DATEDIFF(co.required_date, CURDATE()) as days_until_due
+    FROM credit_orders co
+    LEFT JOIN customers c ON co.customer_id = c.id
+    LEFT JOIN branches b ON co.assigned_branch_id = b.id
+    LEFT JOIN users u ON co.created_by_user_id = u.id
+    WHERE co.order_date BETWEEN ? AND ?
+    ORDER BY 
+        co.sort_order ASC,
+        FIELD(co.priority, 'urgent', 'high', 'normal', 'low'),
+        co.order_date DESC,
+        co.created_at DESC
+    LIMIT ? OFFSET ? | Params: Array
+(
+    [0] => 2025-10-27
+    [1] => 2025-11-01
+    [2] => 50
+    [3] => 0
+)
+
+[01-Nov-2025 09:50:32 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_active' in 'WHERE' in query: SELECT id, name FROM branches WHERE is_active = 1 ORDER BY name | Params: Array
+(
+)
+
+[01-Nov-2025 09:54:15 Asia/Dhaka] SQL Error [42000]: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''50' OFFSET '0'' at line 20 in query: SELECT 
+        co.*,
+        c.name as customer_name,
+        c.phone_number as customer_phone,
+        c.current_balance as customer_balance,
+        b.name as branch_name,
+        u.display_name as created_by_name,
+        (SELECT COUNT(*) FROM credit_order_items WHERE order_id = co.id) as item_count,
+        DATEDIFF(co.required_date, CURDATE()) as days_until_due
+    FROM credit_orders co
+    LEFT JOIN customers c ON co.customer_id = c.id
+    LEFT JOIN branches b ON co.assigned_branch_id = b.id
+    LEFT JOIN users u ON co.created_by_user_id = u.id
+    WHERE co.order_date BETWEEN ? AND ?
+    ORDER BY 
+        co.sort_order ASC,
+        FIELD(co.priority, 'urgent', 'high', 'normal', 'low'),
+        co.order_date DESC,
+        co.created_at DESC
+    LIMIT ? OFFSET ? | Params: Array
+(
+    [0] => 2025-10-27
+    [1] => 2025-11-01
+    [2] => 50
+    [3] => 0
+)
+
+[01-Nov-2025 09:54:15 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_active' in 'WHERE' in query: SELECT id, name FROM branches WHERE is_active = 1 ORDER BY name | Params: Array
+(
+)
+
+[01-Nov-2025 09:54:19 Asia/Dhaka] SQL Error [42000]: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''50' OFFSET '0'' at line 20 in query: SELECT 
+        co.*,
+        c.name as customer_name,
+        c.phone_number as customer_phone,
+        c.current_balance as customer_balance,
+        b.name as branch_name,
+        u.display_name as created_by_name,
+        (SELECT COUNT(*) FROM credit_order_items WHERE order_id = co.id) as item_count,
+        DATEDIFF(co.required_date, CURDATE()) as days_until_due
+    FROM credit_orders co
+    LEFT JOIN customers c ON co.customer_id = c.id
+    LEFT JOIN branches b ON co.assigned_branch_id = b.id
+    LEFT JOIN users u ON co.created_by_user_id = u.id
+    WHERE co.order_date BETWEEN ? AND ?
+    ORDER BY 
+        co.sort_order ASC,
+        FIELD(co.priority, 'urgent', 'high', 'normal', 'low'),
+        co.order_date DESC,
+        co.created_at DESC
+    LIMIT ? OFFSET ? | Params: Array
+(
+    [0] => 2025-10-27
+    [1] => 2025-11-01
+    [2] => 50
+    [3] => 0
+)
+
+[01-Nov-2025 09:54:19 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_active' in 'WHERE' in query: SELECT id, name FROM branches WHERE is_active = 1 ORDER BY name | Params: Array
+(
+)
+
+[01-Nov-2025 09:54:27 Asia/Dhaka] SQL Error [42000]: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''50' OFFSET '0'' at line 20 in query: SELECT 
+        co.*,
+        c.name as customer_name,
+        c.phone_number as customer_phone,
+        c.current_balance as customer_balance,
+        b.name as branch_name,
+        u.display_name as created_by_name,
+        (SELECT COUNT(*) FROM credit_order_items WHERE order_id = co.id) as item_count,
+        DATEDIFF(co.required_date, CURDATE()) as days_until_due
+    FROM credit_orders co
+    LEFT JOIN customers c ON co.customer_id = c.id
+    LEFT JOIN branches b ON co.assigned_branch_id = b.id
+    LEFT JOIN users u ON co.created_by_user_id = u.id
+    WHERE co.order_date BETWEEN ? AND ? AND (co.order_number LIKE ? OR c.name LIKE ? OR c.phone_number LIKE ?)
+    ORDER BY 
+        co.sort_order ASC,
+        FIELD(co.priority, 'urgent', 'high', 'normal', 'low'),
+        co.order_date DESC,
+        co.created_at DESC
+    LIMIT ? OFFSET ? | Params: Array
+(
+    [0] => 2025-10-27
+    [1] => 2025-11-01
+    [2] => %hazi%
+    [3] => %hazi%
+    [4] => %hazi%
+    [5] => 50
+    [6] => 0
+)
+
+[01-Nov-2025 09:54:27 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c.name' in 'WHERE' in query: SELECT 
+        COUNT(*) as total_orders,
+        SUM(total_amount) as total_value,
+        SUM(amount_paid) as total_paid,
+        SUM(total_amount - amount_paid) as total_outstanding,
+        SUM(CASE WHEN status = 'pending_approval' THEN 1 ELSE 0 END) as pending_count,
+        SUM(CASE WHEN status = 'in_production' THEN 1 ELSE 0 END) as production_count,
+        SUM(CASE WHEN status = 'ready_to_ship' THEN 1 ELSE 0 END) as ready_count,
+        SUM(CASE WHEN status = 'delivered' THEN 1 ELSE 0 END) as delivered_count,
+        SUM(CASE WHEN priority = 'urgent' THEN 1 ELSE 0 END) as urgent_count,
+        SUM(CASE WHEN DATEDIFF(required_date, CURDATE()) < 0 AND status NOT IN ('delivered', 'cancelled') THEN 1 ELSE 0 END) as overdue_count
+    FROM credit_orders co
+    WHERE co.order_date BETWEEN ? AND ? AND (co.order_number LIKE ? OR c.name LIKE ? OR c.phone_number LIKE ?) | Params: Array
+(
+    [0] => 2025-10-27
+    [1] => 2025-11-01
+    [2] => %hazi%
+    [3] => %hazi%
+    [4] => %hazi%
+)
+
+[01-Nov-2025 09:54:27 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_active' in 'WHERE' in query: SELECT id, name FROM branches WHERE is_active = 1 ORDER BY name | Params: Array
+(
+)
+
+[01-Nov-2025 09:54:27 Asia/Dhaka] PHP Warning:  Attempt to read property "urgent_count" on null in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/order_status.php on line 834
+[01-Nov-2025 09:54:27 Asia/Dhaka] PHP Warning:  Attempt to read property "overdue_count" on null in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/order_status.php on line 859
+[01-Nov-2025 09:54:27 Asia/Dhaka] PHP Warning:  Attempt to read property "total_value" on null in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/order_status.php on line 906
+[01-Nov-2025 09:54:27 Asia/Dhaka] PHP Warning:  Attempt to read property "total_orders" on null in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/order_status.php on line 954
+[01-Nov-2025 09:56:11 Asia/Dhaka] SQL Error [42000]: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''50' OFFSET '0'' at line 23 in query: SELECT 
+        co.*,
+        c.name as customer_name,
+        c.phone_number as customer_phone,
+        c.current_balance as customer_balance,
+        b.name as branch_name,
+        u.display_name as created_by_name,
+        (SELECT COUNT(*) FROM credit_order_items WHERE order_id = co.id) as item_count,
+        DATEDIFF(co.required_date, CURDATE()) as days_until_due
+    FROM credit_orders co
+    LEFT JOIN customers c ON co.customer_id = c.id
+    LEFT JOIN branches b ON co.assigned_branch_id = b.id
+    LEFT JOIN users u ON co.created_by_user_id = u.id
+    WHERE co.order_date BETWEEN ? AND ? AND (co.order_number LIKE ? OR c.name LIKE ? OR c.phone_number LIKE ?)
+    ORDER BY 
+    CASE 
+        WHEN co.sort_order IS NULL OR co.sort_order = 0 THEN 99999
+        ELSE co.sort_order 
+    END ASC,
+    FIELD(co.priority, 'urgent', 'high', 'normal', 'low'),
+    co.order_date DESC,
+    co.created_at DESC
+    LIMIT ? OFFSET ? | Params: Array
+(
+    [0] => 2025-10-27
+    [1] => 2025-11-01
+    [2] => %hazi%
+    [3] => %hazi%
+    [4] => %hazi%
+    [5] => 50
+    [6] => 0
+)
+
+[01-Nov-2025 09:56:11 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'c.name' in 'WHERE' in query: SELECT 
+        COUNT(*) as total_orders,
+        SUM(total_amount) as total_value,
+        SUM(amount_paid) as total_paid,
+        SUM(total_amount - amount_paid) as total_outstanding,
+        SUM(CASE WHEN status = 'pending_approval' THEN 1 ELSE 0 END) as pending_count,
+        SUM(CASE WHEN status = 'in_production' THEN 1 ELSE 0 END) as production_count,
+        SUM(CASE WHEN status = 'ready_to_ship' THEN 1 ELSE 0 END) as ready_count,
+        SUM(CASE WHEN status = 'delivered' THEN 1 ELSE 0 END) as delivered_count,
+        SUM(CASE WHEN priority = 'urgent' THEN 1 ELSE 0 END) as urgent_count,
+        SUM(CASE WHEN DATEDIFF(required_date, CURDATE()) < 0 AND status NOT IN ('delivered', 'cancelled') THEN 1 ELSE 0 END) as overdue_count
+    FROM credit_orders co
+    WHERE co.order_date BETWEEN ? AND ? AND (co.order_number LIKE ? OR c.name LIKE ? OR c.phone_number LIKE ?) | Params: Array
+(
+    [0] => 2025-10-27
+    [1] => 2025-11-01
+    [2] => %hazi%
+    [3] => %hazi%
+    [4] => %hazi%
+)
+
+[01-Nov-2025 09:56:11 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_active' in 'WHERE' in query: SELECT id, name FROM branches WHERE is_active = 1 ORDER BY name | Params: Array
+(
+)
+
+[01-Nov-2025 09:56:11 Asia/Dhaka] PHP Warning:  Attempt to read property "urgent_count" on null in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/order_status.php on line 837
+[01-Nov-2025 09:56:11 Asia/Dhaka] PHP Warning:  Attempt to read property "overdue_count" on null in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/order_status.php on line 862
+[01-Nov-2025 09:56:11 Asia/Dhaka] PHP Warning:  Attempt to read property "total_value" on null in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/order_status.php on line 909
+[01-Nov-2025 09:56:11 Asia/Dhaka] PHP Warning:  Attempt to read property "total_orders" on null in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/order_status.php on line 957
+[01-Nov-2025 09:56:23 Asia/Dhaka] SQL Error [42000]: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''50' OFFSET '0'' at line 23 in query: SELECT 
+        co.*,
+        c.name as customer_name,
+        c.phone_number as customer_phone,
+        c.current_balance as customer_balance,
+        b.name as branch_name,
+        u.display_name as created_by_name,
+        (SELECT COUNT(*) FROM credit_order_items WHERE order_id = co.id) as item_count,
+        DATEDIFF(co.required_date, CURDATE()) as days_until_due
+    FROM credit_orders co
+    LEFT JOIN customers c ON co.customer_id = c.id
+    LEFT JOIN branches b ON co.assigned_branch_id = b.id
+    LEFT JOIN users u ON co.created_by_user_id = u.id
+    WHERE co.order_date BETWEEN ? AND ?
+    ORDER BY 
+    CASE 
+        WHEN co.sort_order IS NULL OR co.sort_order = 0 THEN 99999
+        ELSE co.sort_order 
+    END ASC,
+    FIELD(co.priority, 'urgent', 'high', 'normal', 'low'),
+    co.order_date DESC,
+    co.created_at DESC
+    LIMIT ? OFFSET ? | Params: Array
+(
+    [0] => 2025-11-01
+    [1] => 2025-11-01
+    [2] => 50
+    [3] => 0
+)
+
+[01-Nov-2025 09:56:23 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_active' in 'WHERE' in query: SELECT id, name FROM branches WHERE is_active = 1 ORDER BY name | Params: Array
+(
+)
+
+[01-Nov-2025 09:56:26 Asia/Dhaka] SQL Error [42000]: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''50' OFFSET '0'' at line 23 in query: SELECT 
+        co.*,
+        c.name as customer_name,
+        c.phone_number as customer_phone,
+        c.current_balance as customer_balance,
+        b.name as branch_name,
+        u.display_name as created_by_name,
+        (SELECT COUNT(*) FROM credit_order_items WHERE order_id = co.id) as item_count,
+        DATEDIFF(co.required_date, CURDATE()) as days_until_due
+    FROM credit_orders co
+    LEFT JOIN customers c ON co.customer_id = c.id
+    LEFT JOIN branches b ON co.assigned_branch_id = b.id
+    LEFT JOIN users u ON co.created_by_user_id = u.id
+    WHERE co.order_date BETWEEN ? AND ?
+    ORDER BY 
+    CASE 
+        WHEN co.sort_order IS NULL OR co.sort_order = 0 THEN 99999
+        ELSE co.sort_order 
+    END ASC,
+    FIELD(co.priority, 'urgent', 'high', 'normal', 'low'),
+    co.order_date DESC,
+    co.created_at DESC
+    LIMIT ? OFFSET ? | Params: Array
+(
+    [0] => 2025-10-31
+    [1] => 2025-11-01
+    [2] => 50
+    [3] => 0
+)
+
+[01-Nov-2025 09:56:26 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_active' in 'WHERE' in query: SELECT id, name FROM branches WHERE is_active = 1 ORDER BY name | Params: Array
+(
+)
+
+[01-Nov-2025 09:56:30 Asia/Dhaka] SQL Error [42000]: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''50' OFFSET '0'' at line 23 in query: SELECT 
+        co.*,
+        c.name as customer_name,
+        c.phone_number as customer_phone,
+        c.current_balance as customer_balance,
+        b.name as branch_name,
+        u.display_name as created_by_name,
+        (SELECT COUNT(*) FROM credit_order_items WHERE order_id = co.id) as item_count,
+        DATEDIFF(co.required_date, CURDATE()) as days_until_due
+    FROM credit_orders co
+    LEFT JOIN customers c ON co.customer_id = c.id
+    LEFT JOIN branches b ON co.assigned_branch_id = b.id
+    LEFT JOIN users u ON co.created_by_user_id = u.id
+    WHERE co.order_date BETWEEN ? AND ?
+    ORDER BY 
+    CASE 
+        WHEN co.sort_order IS NULL OR co.sort_order = 0 THEN 99999
+        ELSE co.sort_order 
+    END ASC,
+    FIELD(co.priority, 'urgent', 'high', 'normal', 'low'),
+    co.order_date DESC,
+    co.created_at DESC
+    LIMIT ? OFFSET ? | Params: Array
+(
+    [0] => 2025-10-31
+    [1] => 2025-11-01
+    [2] => 50
+    [3] => 0
+)
+
+[01-Nov-2025 09:56:30 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_active' in 'WHERE' in query: SELECT id, name FROM branches WHERE is_active = 1 ORDER BY name | Params: Array
+(
+)
+
+[01-Nov-2025 09:56:33 Asia/Dhaka] SQL Error [42000]: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''50' OFFSET '0'' at line 23 in query: SELECT 
+        co.*,
+        c.name as customer_name,
+        c.phone_number as customer_phone,
+        c.current_balance as customer_balance,
+        b.name as branch_name,
+        u.display_name as created_by_name,
+        (SELECT COUNT(*) FROM credit_order_items WHERE order_id = co.id) as item_count,
+        DATEDIFF(co.required_date, CURDATE()) as days_until_due
+    FROM credit_orders co
+    LEFT JOIN customers c ON co.customer_id = c.id
+    LEFT JOIN branches b ON co.assigned_branch_id = b.id
+    LEFT JOIN users u ON co.created_by_user_id = u.id
+    WHERE co.order_date BETWEEN ? AND ?
+    ORDER BY 
+    CASE 
+        WHEN co.sort_order IS NULL OR co.sort_order = 0 THEN 99999
+        ELSE co.sort_order 
+    END ASC,
+    FIELD(co.priority, 'urgent', 'high', 'normal', 'low'),
+    co.order_date DESC,
+    co.created_at DESC
+    LIMIT ? OFFSET ? | Params: Array
+(
+    [0] => 2025-10-31
+    [1] => 2025-11-01
+    [2] => 50
+    [3] => 0
+)
+
+[01-Nov-2025 09:56:33 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_active' in 'WHERE' in query: SELECT id, name FROM branches WHERE is_active = 1 ORDER BY name | Params: Array
+(
+)
+
+[01-Nov-2025 09:56:42 Asia/Dhaka] SQL Error [42000]: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''50' OFFSET '0'' at line 23 in query: SELECT 
+        co.*,
+        c.name as customer_name,
+        c.phone_number as customer_phone,
+        c.current_balance as customer_balance,
+        b.name as branch_name,
+        u.display_name as created_by_name,
+        (SELECT COUNT(*) FROM credit_order_items WHERE order_id = co.id) as item_count,
+        DATEDIFF(co.required_date, CURDATE()) as days_until_due
+    FROM credit_orders co
+    LEFT JOIN customers c ON co.customer_id = c.id
+    LEFT JOIN branches b ON co.assigned_branch_id = b.id
+    LEFT JOIN users u ON co.created_by_user_id = u.id
+    WHERE co.order_date BETWEEN ? AND ?
+    ORDER BY 
+    CASE 
+        WHEN co.sort_order IS NULL OR co.sort_order = 0 THEN 99999
+        ELSE co.sort_order 
+    END ASC,
+    FIELD(co.priority, 'urgent', 'high', 'normal', 'low'),
+    co.order_date DESC,
+    co.created_at DESC
+    LIMIT ? OFFSET ? | Params: Array
+(
+    [0] => 2025-10-01
+    [1] => 2025-11-01
+    [2] => 50
+    [3] => 0
+)
+
+[01-Nov-2025 09:56:42 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_active' in 'WHERE' in query: SELECT id, name FROM branches WHERE is_active = 1 ORDER BY name | Params: Array
+(
+)
+
+[01-Nov-2025 09:56:54 Asia/Dhaka] SQL Error [42000]: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''50' OFFSET '0'' at line 23 in query: SELECT 
+        co.*,
+        c.name as customer_name,
+        c.phone_number as customer_phone,
+        c.current_balance as customer_balance,
+        b.name as branch_name,
+        u.display_name as created_by_name,
+        (SELECT COUNT(*) FROM credit_order_items WHERE order_id = co.id) as item_count,
+        DATEDIFF(co.required_date, CURDATE()) as days_until_due
+    FROM credit_orders co
+    LEFT JOIN customers c ON co.customer_id = c.id
+    LEFT JOIN branches b ON co.assigned_branch_id = b.id
+    LEFT JOIN users u ON co.created_by_user_id = u.id
+    WHERE co.order_date BETWEEN ? AND ?
+    ORDER BY 
+    CASE 
+        WHEN co.sort_order IS NULL OR co.sort_order = 0 THEN 99999
+        ELSE co.sort_order 
+    END ASC,
+    FIELD(co.priority, 'urgent', 'high', 'normal', 'low'),
+    co.order_date DESC,
+    co.created_at DESC
+    LIMIT ? OFFSET ? | Params: Array
+(
+    [0] => 2020-01-01
+    [1] => 2025-11-01
+    [2] => 50
+    [3] => 0
+)
+
+[01-Nov-2025 09:56:54 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_active' in 'WHERE' in query: SELECT id, name FROM branches WHERE is_active = 1 ORDER BY name | Params: Array
+(
+)
+
+[01-Nov-2025 10:04:49 Asia/Dhaka] PHP Warning:  Undefined variable $count_params in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/order_status.php on line 453
+[01-Nov-2025 10:04:49 Asia/Dhaka] SQL Error [42000]: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '? AND ?' at line 13 in query: SELECT 
+        COUNT(*) as total_orders,
+        SUM(total_amount) as total_value,
+        SUM(amount_paid) as total_paid,
+        SUM(total_amount - amount_paid) as total_outstanding,
+        SUM(CASE WHEN status = 'pending_approval' THEN 1 ELSE 0 END) as pending_count,
+        SUM(CASE WHEN status = 'in_production' THEN 1 ELSE 0 END) as production_count,
+        SUM(CASE WHEN status = 'ready_to_ship' THEN 1 ELSE 0 END) as ready_count,
+        SUM(CASE WHEN status = 'delivered' THEN 1 ELSE 0 END) as delivered_count,
+        SUM(CASE WHEN priority = 'urgent' THEN 1 ELSE 0 END) as urgent_count,
+        SUM(CASE WHEN DATEDIFF(required_date, CURDATE()) < 0 AND status NOT IN ('delivered', 'cancelled') THEN 1 ELSE 0 END) as overdue_count
+    FROM credit_orders co
+    WHERE co.order_date BETWEEN ? AND ? | Params: 
+[01-Nov-2025 10:04:49 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_active' in 'WHERE' in query: SELECT id, name FROM branches WHERE is_active = 1 ORDER BY name | Params: Array
+(
+)
+
+[01-Nov-2025 10:04:49 Asia/Dhaka] PHP Warning:  Attempt to read property "urgent_count" on null in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/order_status.php on line 833
+[01-Nov-2025 10:04:49 Asia/Dhaka] PHP Warning:  Attempt to read property "overdue_count" on null in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/order_status.php on line 858
+[01-Nov-2025 10:04:49 Asia/Dhaka] PHP Warning:  Attempt to read property "total_value" on null in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/order_status.php on line 905
+[01-Nov-2025 10:04:49 Asia/Dhaka] PHP Warning:  Attempt to read property "total_orders" on null in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/order_status.php on line 953
+[01-Nov-2025 10:06:14 Asia/Dhaka] SQL Error [HY093]: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in query: SELECT 
+        co.*,
+        c.name as customer_name,
+        c.phone_number as customer_phone,
+        c.current_balance as customer_balance,
+        b.name as branch_name,
+        u.display_name as created_by_name,
+        (SELECT COUNT(*) FROM credit_order_items WHERE order_id = co.id) as item_count,
+        DATEDIFF(co.required_date, CURDATE()) as days_until_due
+    FROM credit_orders co
+    LEFT JOIN customers c ON co.customer_id = c.id
+    LEFT JOIN branches b ON co.assigned_branch_id = b.id
+    LEFT JOIN users u ON co.created_by_user_id = u.id
+    WHERE co.order_date BETWEEN ? AND ?
+    ORDER BY 
+        CASE 
+            WHEN co.sort_order IS NULL OR co.sort_order = 0 THEN 99999
+            ELSE co.sort_order 
+        END ASC,
+        FIELD(co.priority, 'urgent', 'high', 'normal', 'low'),
+        co.order_date DESC,
+        co.created_at DESC
+    LIMIT 50 OFFSET 0 | Params: Array
+(
+    [0] => 2020-01-01
+    [1] => 2025-11-01
+    [2] => 50
+    [3] => 0
+)
+
+[01-Nov-2025 10:06:14 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_active' in 'WHERE' in query: SELECT id, name FROM branches WHERE is_active = 1 ORDER BY name | Params: Array
+(
+)
+
+[01-Nov-2025 10:07:32 Asia/Dhaka] SQL Error [HY093]: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in query: SELECT 
+        co.*,
+        c.name as customer_name,
+        c.phone_number as customer_phone,
+        c.current_balance as customer_balance,
+        b.name as branch_name,
+        u.display_name as created_by_name,
+        (SELECT COUNT(*) FROM credit_order_items WHERE order_id = co.id) as item_count,
+        DATEDIFF(co.required_date, CURDATE()) as days_until_due
+    FROM credit_orders co
+    LEFT JOIN customers c ON co.customer_id = c.id
+    LEFT JOIN branches b ON co.assigned_branch_id = b.id
+    LEFT JOIN users u ON co.created_by_user_id = u.id
+    WHERE co.order_date BETWEEN ? AND ?
+    ORDER BY 
+        CASE 
+            WHEN co.sort_order IS NULL OR co.sort_order = 0 THEN 99999
+            ELSE co.sort_order 
+        END ASC,
+        FIELD(co.priority, 'urgent', 'high', 'normal', 'low'),
+        co.order_date DESC,
+        co.created_at DESC
+    LIMIT 50 OFFSET 0 | Params: Array
+(
+    [0] => 2020-01-01
+    [1] => 2025-11-01
+    [2] => 50
+    [3] => 0
+)
+
+[01-Nov-2025 10:07:32 Asia/Dhaka] SQL Error [HY093]: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in query: SELECT 
+    COUNT(*) as total_orders,
+    SUM(co.total_amount) as total_value,
+    SUM(co.amount_paid) as total_paid,
+    SUM(co.total_amount - co.amount_paid) as total_outstanding,
+    SUM(CASE WHEN co.status = 'pending_approval' THEN 1 ELSE 0 END) as pending_count,
+    SUM(CASE WHEN co.status = 'in_production' THEN 1 ELSE 0 END) as production_count,
+    SUM(CASE WHEN co.status = 'ready_to_ship' THEN 1 ELSE 0 END) as ready_count,
+    SUM(CASE WHEN co.status = 'delivered' THEN 1 ELSE 0 END) as delivered_count,
+    SUM(CASE WHEN co.priority = 'urgent' THEN 1 ELSE 0 END) as urgent_count,
+    SUM(CASE WHEN DATEDIFF(co.required_date, CURDATE()) < 0 AND co.status NOT IN ('delivered', 'cancelled') THEN 1 ELSE 0 END) as overdue_count
+FROM credit_orders co WHERE co.order_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2020-01-01
+    [1] => 2025-11-01
+    [2] => 50
+    [3] => 0
+)
+
+[01-Nov-2025 10:07:32 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_active' in 'WHERE' in query: SELECT id, name FROM branches WHERE is_active = 1 ORDER BY name | Params: Array
+(
+)
+
+[01-Nov-2025 10:07:45 Asia/Dhaka] SQL Error [HY093]: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in query: SELECT 
+        co.*,
+        c.name as customer_name,
+        c.phone_number as customer_phone,
+        c.current_balance as customer_balance,
+        b.name as branch_name,
+        u.display_name as created_by_name,
+        (SELECT COUNT(*) FROM credit_order_items WHERE order_id = co.id) as item_count,
+        DATEDIFF(co.required_date, CURDATE()) as days_until_due
+    FROM credit_orders co
+    LEFT JOIN customers c ON co.customer_id = c.id
+    LEFT JOIN branches b ON co.assigned_branch_id = b.id
+    LEFT JOIN users u ON co.created_by_user_id = u.id
+    WHERE co.order_date BETWEEN ? AND ?
+    ORDER BY 
+        CASE 
+            WHEN co.sort_order IS NULL OR co.sort_order = 0 THEN 99999
+            ELSE co.sort_order 
+        END ASC,
+        FIELD(co.priority, 'urgent', 'high', 'normal', 'low'),
+        co.order_date DESC,
+        co.created_at DESC
+    LIMIT 50 OFFSET 0 | Params: Array
+(
+    [0] => 2025-11-01
+    [1] => 2025-11-01
+    [2] => 50
+    [3] => 0
+)
+
+[01-Nov-2025 10:07:45 Asia/Dhaka] SQL Error [HY093]: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in query: SELECT 
+    COUNT(*) as total_orders,
+    SUM(co.total_amount) as total_value,
+    SUM(co.amount_paid) as total_paid,
+    SUM(co.total_amount - co.amount_paid) as total_outstanding,
+    SUM(CASE WHEN co.status = 'pending_approval' THEN 1 ELSE 0 END) as pending_count,
+    SUM(CASE WHEN co.status = 'in_production' THEN 1 ELSE 0 END) as production_count,
+    SUM(CASE WHEN co.status = 'ready_to_ship' THEN 1 ELSE 0 END) as ready_count,
+    SUM(CASE WHEN co.status = 'delivered' THEN 1 ELSE 0 END) as delivered_count,
+    SUM(CASE WHEN co.priority = 'urgent' THEN 1 ELSE 0 END) as urgent_count,
+    SUM(CASE WHEN DATEDIFF(co.required_date, CURDATE()) < 0 AND co.status NOT IN ('delivered', 'cancelled') THEN 1 ELSE 0 END) as overdue_count
+FROM credit_orders co WHERE co.order_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2025-11-01
+    [1] => 2025-11-01
+    [2] => 50
+    [3] => 0
+)
+
+[01-Nov-2025 10:07:45 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_active' in 'WHERE' in query: SELECT id, name FROM branches WHERE is_active = 1 ORDER BY name | Params: Array
+(
+)
+
+[01-Nov-2025 10:08:29 Asia/Dhaka] SQL Error [HY093]: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in query: SELECT 
+        co.*,
+        c.name as customer_name,
+        c.phone_number as customer_phone,
+        c.current_balance as customer_balance,
+        b.name as branch_name,
+        u.display_name as created_by_name,
+        (SELECT COUNT(*) FROM credit_order_items WHERE order_id = co.id) as item_count,
+        DATEDIFF(co.required_date, CURDATE()) as days_until_due
+    FROM credit_orders co
+    LEFT JOIN customers c ON co.customer_id = c.id
+    LEFT JOIN branches b ON co.assigned_branch_id = b.id
+    LEFT JOIN users u ON co.created_by_user_id = u.id
+    WHERE co.order_date BETWEEN ? AND ?
+    ORDER BY 
+        CASE 
+            WHEN co.sort_order IS NULL OR co.sort_order = 0 THEN 99999
+            ELSE co.sort_order 
+        END ASC,
+        FIELD(co.priority, 'urgent', 'high', 'normal', 'low'),
+        co.order_date DESC,
+        co.created_at DESC
+    LIMIT 50 OFFSET 0 | Params: Array
+(
+    [0] => 2025-11-01
+    [1] => 2025-11-01
+    [2] => 50
+    [3] => 0
+)
+
+[01-Nov-2025 10:08:29 Asia/Dhaka] SQL Error [HY093]: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in query: SELECT 
+    COUNT(*) as total_orders,
+    SUM(co.total_amount) as total_value,
+    SUM(co.amount_paid) as total_paid,
+    SUM(co.total_amount - co.amount_paid) as total_outstanding,
+    SUM(CASE WHEN co.status = 'pending_approval' THEN 1 ELSE 0 END) as pending_count,
+    SUM(CASE WHEN co.status = 'in_production' THEN 1 ELSE 0 END) as production_count,
+    SUM(CASE WHEN co.status = 'ready_to_ship' THEN 1 ELSE 0 END) as ready_count,
+    SUM(CASE WHEN co.status = 'delivered' THEN 1 ELSE 0 END) as delivered_count,
+    SUM(CASE WHEN co.priority = 'urgent' THEN 1 ELSE 0 END) as urgent_count,
+    SUM(CASE WHEN DATEDIFF(co.required_date, CURDATE()) < 0 AND co.status NOT IN ('delivered', 'cancelled') THEN 1 ELSE 0 END) as overdue_count
+FROM credit_orders co WHERE co.order_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2025-11-01
+    [1] => 2025-11-01
+    [2] => 50
+    [3] => 0
+)
+
+[01-Nov-2025 10:08:32 Asia/Dhaka] SQL Error [HY093]: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in query: SELECT 
+        co.*,
+        c.name as customer_name,
+        c.phone_number as customer_phone,
+        c.current_balance as customer_balance,
+        b.name as branch_name,
+        u.display_name as created_by_name,
+        (SELECT COUNT(*) FROM credit_order_items WHERE order_id = co.id) as item_count,
+        DATEDIFF(co.required_date, CURDATE()) as days_until_due
+    FROM credit_orders co
+    LEFT JOIN customers c ON co.customer_id = c.id
+    LEFT JOIN branches b ON co.assigned_branch_id = b.id
+    LEFT JOIN users u ON co.created_by_user_id = u.id
+    WHERE co.order_date BETWEEN ? AND ?
+    ORDER BY 
+        CASE 
+            WHEN co.sort_order IS NULL OR co.sort_order = 0 THEN 99999
+            ELSE co.sort_order 
+        END ASC,
+        FIELD(co.priority, 'urgent', 'high', 'normal', 'low'),
+        co.order_date DESC,
+        co.created_at DESC
+    LIMIT 50 OFFSET 0 | Params: Array
+(
+    [0] => 2025-10-31
+    [1] => 2025-10-31
+    [2] => 50
+    [3] => 0
+)
+
+[01-Nov-2025 10:08:32 Asia/Dhaka] SQL Error [HY093]: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in query: SELECT 
+    COUNT(*) as total_orders,
+    SUM(co.total_amount) as total_value,
+    SUM(co.amount_paid) as total_paid,
+    SUM(co.total_amount - co.amount_paid) as total_outstanding,
+    SUM(CASE WHEN co.status = 'pending_approval' THEN 1 ELSE 0 END) as pending_count,
+    SUM(CASE WHEN co.status = 'in_production' THEN 1 ELSE 0 END) as production_count,
+    SUM(CASE WHEN co.status = 'ready_to_ship' THEN 1 ELSE 0 END) as ready_count,
+    SUM(CASE WHEN co.status = 'delivered' THEN 1 ELSE 0 END) as delivered_count,
+    SUM(CASE WHEN co.priority = 'urgent' THEN 1 ELSE 0 END) as urgent_count,
+    SUM(CASE WHEN DATEDIFF(co.required_date, CURDATE()) < 0 AND co.status NOT IN ('delivered', 'cancelled') THEN 1 ELSE 0 END) as overdue_count
+FROM credit_orders co WHERE co.order_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2025-10-31
+    [1] => 2025-10-31
+    [2] => 50
+    [3] => 0
+)
+
+[01-Nov-2025 10:08:34 Asia/Dhaka] SQL Error [HY093]: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in query: SELECT 
+        co.*,
+        c.name as customer_name,
+        c.phone_number as customer_phone,
+        c.current_balance as customer_balance,
+        b.name as branch_name,
+        u.display_name as created_by_name,
+        (SELECT COUNT(*) FROM credit_order_items WHERE order_id = co.id) as item_count,
+        DATEDIFF(co.required_date, CURDATE()) as days_until_due
+    FROM credit_orders co
+    LEFT JOIN customers c ON co.customer_id = c.id
+    LEFT JOIN branches b ON co.assigned_branch_id = b.id
+    LEFT JOIN users u ON co.created_by_user_id = u.id
+    WHERE co.order_date BETWEEN ? AND ?
+    ORDER BY 
+        CASE 
+            WHEN co.sort_order IS NULL OR co.sort_order = 0 THEN 99999
+            ELSE co.sort_order 
+        END ASC,
+        FIELD(co.priority, 'urgent', 'high', 'normal', 'low'),
+        co.order_date DESC,
+        co.created_at DESC
+    LIMIT 50 OFFSET 0 | Params: Array
+(
+    [0] => 2025-10-31
+    [1] => 2025-10-31
+    [2] => 50
+    [3] => 0
+)
+
+[01-Nov-2025 10:08:34 Asia/Dhaka] SQL Error [HY093]: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in query: SELECT 
+    COUNT(*) as total_orders,
+    SUM(co.total_amount) as total_value,
+    SUM(co.amount_paid) as total_paid,
+    SUM(co.total_amount - co.amount_paid) as total_outstanding,
+    SUM(CASE WHEN co.status = 'pending_approval' THEN 1 ELSE 0 END) as pending_count,
+    SUM(CASE WHEN co.status = 'in_production' THEN 1 ELSE 0 END) as production_count,
+    SUM(CASE WHEN co.status = 'ready_to_ship' THEN 1 ELSE 0 END) as ready_count,
+    SUM(CASE WHEN co.status = 'delivered' THEN 1 ELSE 0 END) as delivered_count,
+    SUM(CASE WHEN co.priority = 'urgent' THEN 1 ELSE 0 END) as urgent_count,
+    SUM(CASE WHEN DATEDIFF(co.required_date, CURDATE()) < 0 AND co.status NOT IN ('delivered', 'cancelled') THEN 1 ELSE 0 END) as overdue_count
+FROM credit_orders co WHERE co.order_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2025-10-31
+    [1] => 2025-10-31
+    [2] => 50
+    [3] => 0
+)
+
+[01-Nov-2025 10:16:47 Asia/Dhaka] SQL Error [HY093]: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in query: SELECT 
+        co.*,
+        c.name as customer_name,
+        c.phone_number as customer_phone,
+        c.current_balance as customer_balance,
+        b.name as branch_name,
+        u.display_name as created_by_name,
+        (SELECT COUNT(*) FROM credit_order_items WHERE order_id = co.id) as item_count,
+        DATEDIFF(co.required_date, CURDATE()) as days_until_due
+    FROM credit_orders co
+    LEFT JOIN customers c ON co.customer_id = c.id
+    LEFT JOIN branches b ON co.assigned_branch_id = b.id
+    LEFT JOIN users u ON co.created_by_user_id = u.id
+    WHERE co.order_date BETWEEN ? AND ?
+    ORDER BY 
+        CASE 
+            WHEN co.sort_order IS NULL OR co.sort_order = 0 THEN 99999
+            ELSE co.sort_order 
+        END ASC,
+        FIELD(co.priority, 'urgent', 'high', 'normal', 'low'),
+        co.order_date DESC,
+        co.created_at DESC
+    LIMIT 50 OFFSET 0 | Params: Array
+(
+    [0] => 2025-11-01
+    [1] => 2025-11-01
+    [2] => 50
+    [3] => 0
+)
+
+[01-Nov-2025 10:16:47 Asia/Dhaka] SQL Error [HY093]: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in query: SELECT 
+    COUNT(*) as total_orders,
+    SUM(co.total_amount) as total_value,
+    SUM(co.amount_paid) as total_paid,
+    SUM(co.total_amount - co.amount_paid) as total_outstanding,
+    SUM(CASE WHEN co.status = 'pending_approval' THEN 1 ELSE 0 END) as pending_count,
+    SUM(CASE WHEN co.status = 'in_production' THEN 1 ELSE 0 END) as production_count,
+    SUM(CASE WHEN co.status = 'ready_to_ship' THEN 1 ELSE 0 END) as ready_count,
+    SUM(CASE WHEN co.status = 'delivered' THEN 1 ELSE 0 END) as delivered_count,
+    SUM(CASE WHEN co.priority = 'urgent' THEN 1 ELSE 0 END) as urgent_count,
+    SUM(CASE WHEN DATEDIFF(co.required_date, CURDATE()) < 0 AND co.status NOT IN ('delivered', 'cancelled') THEN 1 ELSE 0 END) as overdue_count
+FROM credit_orders co WHERE co.order_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2025-11-01
+    [1] => 2025-11-01
+    [2] => 50
+    [3] => 0
+)
+
+[01-Nov-2025 10:16:51 Asia/Dhaka] SQL Error [HY093]: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in query: SELECT 
+        co.*,
+        c.name as customer_name,
+        c.phone_number as customer_phone,
+        c.current_balance as customer_balance,
+        b.name as branch_name,
+        u.display_name as created_by_name,
+        (SELECT COUNT(*) FROM credit_order_items WHERE order_id = co.id) as item_count,
+        DATEDIFF(co.required_date, CURDATE()) as days_until_due
+    FROM credit_orders co
+    LEFT JOIN customers c ON co.customer_id = c.id
+    LEFT JOIN branches b ON co.assigned_branch_id = b.id
+    LEFT JOIN users u ON co.created_by_user_id = u.id
+    WHERE co.order_date BETWEEN ? AND ?
+    ORDER BY 
+        CASE 
+            WHEN co.sort_order IS NULL OR co.sort_order = 0 THEN 99999
+            ELSE co.sort_order 
+        END ASC,
+        FIELD(co.priority, 'urgent', 'high', 'normal', 'low'),
+        co.order_date DESC,
+        co.created_at DESC
+    LIMIT 50 OFFSET 0 | Params: Array
+(
+    [0] => 2025-10-31
+    [1] => 2025-10-31
+    [2] => 50
+    [3] => 0
+)
+
+[01-Nov-2025 10:16:51 Asia/Dhaka] SQL Error [HY093]: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in query: SELECT 
+    COUNT(*) as total_orders,
+    SUM(co.total_amount) as total_value,
+    SUM(co.amount_paid) as total_paid,
+    SUM(co.total_amount - co.amount_paid) as total_outstanding,
+    SUM(CASE WHEN co.status = 'pending_approval' THEN 1 ELSE 0 END) as pending_count,
+    SUM(CASE WHEN co.status = 'in_production' THEN 1 ELSE 0 END) as production_count,
+    SUM(CASE WHEN co.status = 'ready_to_ship' THEN 1 ELSE 0 END) as ready_count,
+    SUM(CASE WHEN co.status = 'delivered' THEN 1 ELSE 0 END) as delivered_count,
+    SUM(CASE WHEN co.priority = 'urgent' THEN 1 ELSE 0 END) as urgent_count,
+    SUM(CASE WHEN DATEDIFF(co.required_date, CURDATE()) < 0 AND co.status NOT IN ('delivered', 'cancelled') THEN 1 ELSE 0 END) as overdue_count
+FROM credit_orders co WHERE co.order_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2025-10-31
+    [1] => 2025-10-31
+    [2] => 50
+    [3] => 0
+)
+
+[01-Nov-2025 10:16:55 Asia/Dhaka] SQL Error [HY093]: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in query: SELECT 
+        co.*,
+        c.name as customer_name,
+        c.phone_number as customer_phone,
+        c.current_balance as customer_balance,
+        b.name as branch_name,
+        u.display_name as created_by_name,
+        (SELECT COUNT(*) FROM credit_order_items WHERE order_id = co.id) as item_count,
+        DATEDIFF(co.required_date, CURDATE()) as days_until_due
+    FROM credit_orders co
+    LEFT JOIN customers c ON co.customer_id = c.id
+    LEFT JOIN branches b ON co.assigned_branch_id = b.id
+    LEFT JOIN users u ON co.created_by_user_id = u.id
+    WHERE co.order_date BETWEEN ? AND ?
+    ORDER BY 
+        CASE 
+            WHEN co.sort_order IS NULL OR co.sort_order = 0 THEN 99999
+            ELSE co.sort_order 
+        END ASC,
+        FIELD(co.priority, 'urgent', 'high', 'normal', 'low'),
+        co.order_date DESC,
+        co.created_at DESC
+    LIMIT 50 OFFSET 0 | Params: Array
+(
+    [0] => 2025-10-27
+    [1] => 2025-11-01
+    [2] => 50
+    [3] => 0
+)
+
+[01-Nov-2025 10:16:55 Asia/Dhaka] SQL Error [HY093]: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in query: SELECT 
+    COUNT(*) as total_orders,
+    SUM(co.total_amount) as total_value,
+    SUM(co.amount_paid) as total_paid,
+    SUM(co.total_amount - co.amount_paid) as total_outstanding,
+    SUM(CASE WHEN co.status = 'pending_approval' THEN 1 ELSE 0 END) as pending_count,
+    SUM(CASE WHEN co.status = 'in_production' THEN 1 ELSE 0 END) as production_count,
+    SUM(CASE WHEN co.status = 'ready_to_ship' THEN 1 ELSE 0 END) as ready_count,
+    SUM(CASE WHEN co.status = 'delivered' THEN 1 ELSE 0 END) as delivered_count,
+    SUM(CASE WHEN co.priority = 'urgent' THEN 1 ELSE 0 END) as urgent_count,
+    SUM(CASE WHEN DATEDIFF(co.required_date, CURDATE()) < 0 AND co.status NOT IN ('delivered', 'cancelled') THEN 1 ELSE 0 END) as overdue_count
+FROM credit_orders co WHERE co.order_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2025-10-27
+    [1] => 2025-11-01
+    [2] => 50
+    [3] => 0
+)
+
+[01-Nov-2025 10:16:57 Asia/Dhaka] SQL Error [HY093]: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in query: SELECT 
+        co.*,
+        c.name as customer_name,
+        c.phone_number as customer_phone,
+        c.current_balance as customer_balance,
+        b.name as branch_name,
+        u.display_name as created_by_name,
+        (SELECT COUNT(*) FROM credit_order_items WHERE order_id = co.id) as item_count,
+        DATEDIFF(co.required_date, CURDATE()) as days_until_due
+    FROM credit_orders co
+    LEFT JOIN customers c ON co.customer_id = c.id
+    LEFT JOIN branches b ON co.assigned_branch_id = b.id
+    LEFT JOIN users u ON co.created_by_user_id = u.id
+    WHERE co.order_date BETWEEN ? AND ?
+    ORDER BY 
+        CASE 
+            WHEN co.sort_order IS NULL OR co.sort_order = 0 THEN 99999
+            ELSE co.sort_order 
+        END ASC,
+        FIELD(co.priority, 'urgent', 'high', 'normal', 'low'),
+        co.order_date DESC,
+        co.created_at DESC
+    LIMIT 50 OFFSET 0 | Params: Array
+(
+    [0] => 2025-10-31
+    [1] => 2025-11-01
+    [2] => 50
+    [3] => 0
+)
+
+[01-Nov-2025 10:16:57 Asia/Dhaka] SQL Error [HY093]: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in query: SELECT 
+    COUNT(*) as total_orders,
+    SUM(co.total_amount) as total_value,
+    SUM(co.amount_paid) as total_paid,
+    SUM(co.total_amount - co.amount_paid) as total_outstanding,
+    SUM(CASE WHEN co.status = 'pending_approval' THEN 1 ELSE 0 END) as pending_count,
+    SUM(CASE WHEN co.status = 'in_production' THEN 1 ELSE 0 END) as production_count,
+    SUM(CASE WHEN co.status = 'ready_to_ship' THEN 1 ELSE 0 END) as ready_count,
+    SUM(CASE WHEN co.status = 'delivered' THEN 1 ELSE 0 END) as delivered_count,
+    SUM(CASE WHEN co.priority = 'urgent' THEN 1 ELSE 0 END) as urgent_count,
+    SUM(CASE WHEN DATEDIFF(co.required_date, CURDATE()) < 0 AND co.status NOT IN ('delivered', 'cancelled') THEN 1 ELSE 0 END) as overdue_count
+FROM credit_orders co WHERE co.order_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2025-10-31
+    [1] => 2025-11-01
+    [2] => 50
+    [3] => 0
+)
+
+[01-Nov-2025 10:16:59 Asia/Dhaka] SQL Error [HY093]: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in query: SELECT 
+        co.*,
+        c.name as customer_name,
+        c.phone_number as customer_phone,
+        c.current_balance as customer_balance,
+        b.name as branch_name,
+        u.display_name as created_by_name,
+        (SELECT COUNT(*) FROM credit_order_items WHERE order_id = co.id) as item_count,
+        DATEDIFF(co.required_date, CURDATE()) as days_until_due
+    FROM credit_orders co
+    LEFT JOIN customers c ON co.customer_id = c.id
+    LEFT JOIN branches b ON co.assigned_branch_id = b.id
+    LEFT JOIN users u ON co.created_by_user_id = u.id
+    WHERE co.order_date BETWEEN ? AND ?
+    ORDER BY 
+        CASE 
+            WHEN co.sort_order IS NULL OR co.sort_order = 0 THEN 99999
+            ELSE co.sort_order 
+        END ASC,
+        FIELD(co.priority, 'urgent', 'high', 'normal', 'low'),
+        co.order_date DESC,
+        co.created_at DESC
+    LIMIT 50 OFFSET 0 | Params: Array
+(
+    [0] => 2025-10-31
+    [1] => 2025-11-01
+    [2] => 50
+    [3] => 0
+)
+
+[01-Nov-2025 10:16:59 Asia/Dhaka] SQL Error [HY093]: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in query: SELECT 
+    COUNT(*) as total_orders,
+    SUM(co.total_amount) as total_value,
+    SUM(co.amount_paid) as total_paid,
+    SUM(co.total_amount - co.amount_paid) as total_outstanding,
+    SUM(CASE WHEN co.status = 'pending_approval' THEN 1 ELSE 0 END) as pending_count,
+    SUM(CASE WHEN co.status = 'in_production' THEN 1 ELSE 0 END) as production_count,
+    SUM(CASE WHEN co.status = 'ready_to_ship' THEN 1 ELSE 0 END) as ready_count,
+    SUM(CASE WHEN co.status = 'delivered' THEN 1 ELSE 0 END) as delivered_count,
+    SUM(CASE WHEN co.priority = 'urgent' THEN 1 ELSE 0 END) as urgent_count,
+    SUM(CASE WHEN DATEDIFF(co.required_date, CURDATE()) < 0 AND co.status NOT IN ('delivered', 'cancelled') THEN 1 ELSE 0 END) as overdue_count
+FROM credit_orders co WHERE co.order_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2025-10-31
+    [1] => 2025-11-01
+    [2] => 50
+    [3] => 0
+)
+
+[01-Nov-2025 10:19:40 Asia/Dhaka] PHP Warning:  Array to string conversion in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Database.php on line 64
+[01-Nov-2025 10:19:40 Asia/Dhaka] PHP Warning:  Array to string conversion in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Database.php on line 64
+[01-Nov-2025 10:19:40 Asia/Dhaka] PHP Warning:  Array to string conversion in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Database.php on line 64
+[01-Nov-2025 10:19:40 Asia/Dhaka] PHP Warning:  Array to string conversion in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Database.php on line 64
+[01-Nov-2025 11:05:13 Asia/Dhaka] SQL Error [01000]: SQLSTATE[01000]: Warning: 1265 Data truncated for column 'action' at row 1 in query: INSERT INTO `credit_order_workflow` (`order_id`, `from_status`, `to_status`, `action`, `performed_by_user_id`, `comments`) VALUES (?, ?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 5
+    [1] => pending_approval
+    [2] => approved
+    [3] => approved
+    [4] => 1
+    [5] => Order approved
+)
+
+[01-Nov-2025 11:05:13 Asia/Dhaka] Database insert failed for table 'credit_order_workflow'.
+[01-Nov-2025 11:05:28 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cow.created_at' in 'ORDER BY' in query: SELECT cow.*, u.display_name as performed_by_name
+     FROM credit_order_workflow cow
+     LEFT JOIN users u ON cow.performed_by_user_id = u.id
+     WHERE cow.order_id = ?
+     ORDER BY cow.created_at DESC | Params: Array
+(
+    [0] => 5
+)
+
+[01-Nov-2025 11:05:58 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cow.created_at' in 'ORDER BY' in query: SELECT cow.*, u.display_name as performed_by_name
+     FROM credit_order_workflow cow
+     LEFT JOIN users u ON cow.performed_by_user_id = u.id
+     WHERE cow.order_id = ?
+     ORDER BY cow.created_at DESC | Params: Array
+(
+    [0] => 5
+)
+
+[01-Nov-2025 13:22:45 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 5
+)
+
+[01-Nov-2025 13:22:58 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 4
+)
+
+[01-Nov-2025 13:23:54 Asia/Dhaka] === PAYMENT SUBMISSION START ===
+[01-Nov-2025 13:23:54 Asia/Dhaka] POST data: Array
+(
+    [action] => collect_payment
+    [customer_id] => 4
+    [payment_date] => 2025-11-01
+    [payment_amount] => 5000.00
+    [payment_method] => Bank Transfer
+    [collected_by_employee_id] => 
+    [cash_account_id] => 
+    [bank_account_id] => 13
+    [cheque_number] => 
+    [cheque_date] => 
+    [bank_transaction_type] => Deposit
+    [reference_number] => ddfhgf
+    [notes] => 
+    [invoice_allocation] => Array
+        (
+            [4] => 5000
+        )
+
+)
+
+[01-Nov-2025 13:23:54 Asia/Dhaka] Attempting payment insert with data: Array
+(
+    [payment_number] => PAY-20251101-8954
+    [receipt_number] => RCP-20251101-6618
+    [customer_id] => 4
+    [amount] => 5000
+)
+
+[01-Nov-2025 13:23:54 Asia/Dhaka] ✓✓✓ Payment inserted successfully! ID: 10
+[01-Nov-2025 13:23:54 Asia/Dhaka] ✓ Transaction committed successfully
+[01-Nov-2025 13:23:54 Asia/Dhaka] Payment ID: 10, Receipt: RCP-20251101-6618
+[01-Nov-2025 13:41:53 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cow.created_at' in 'ORDER BY' in query: SELECT cow.*, u.display_name as performed_by_name
+     FROM credit_order_workflow cow
+     LEFT JOIN users u ON cow.performed_by_user_id = u.id
+     WHERE cow.order_id = ?
+     ORDER BY cow.created_at DESC | Params: Array
+(
+    [0] => 8
+)
+
+[01-Nov-2025 14:33:05 Asia/Dhaka] SQL Error [01000]: SQLSTATE[01000]: Warning: 1265 Data truncated for column 'action' at row 1 in query: INSERT INTO `credit_order_workflow` (`order_id`, `from_status`, `to_status`, `action`, `performed_by_user_id`, `comments`) VALUES (?, ?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 6
+    [1] => pending_approval
+    [2] => approved
+    [3] => approved
+    [4] => 1
+    [5] => Order approved
+)
+
+[01-Nov-2025 14:33:05 Asia/Dhaka] Database insert failed for table 'credit_order_workflow'.
+[01-Nov-2025 14:33:13 Asia/Dhaka] SQL Error [01000]: SQLSTATE[01000]: Warning: 1265 Data truncated for column 'action' at row 1 in query: INSERT INTO `credit_order_workflow` (`order_id`, `from_status`, `to_status`, `action`, `performed_by_user_id`, `comments`) VALUES (?, ?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 7
+    [1] => pending_approval
+    [2] => approved
+    [3] => approved
+    [4] => 1
+    [5] => Order approved
+)
+
+[01-Nov-2025 14:33:13 Asia/Dhaka] Database insert failed for table 'credit_order_workflow'.
+[01-Nov-2025 14:33:20 Asia/Dhaka] SQL Error [01000]: SQLSTATE[01000]: Warning: 1265 Data truncated for column 'action' at row 1 in query: INSERT INTO `credit_order_workflow` (`order_id`, `from_status`, `to_status`, `action`, `performed_by_user_id`, `comments`) VALUES (?, ?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 8
+    [1] => pending_approval
+    [2] => approved
+    [3] => approved
+    [4] => 1
+    [5] => Order approved
+)
+
+[01-Nov-2025 14:33:20 Asia/Dhaka] Database insert failed for table 'credit_order_workflow'.
+[01-Nov-2025 14:33:26 Asia/Dhaka] SQL Error [01000]: SQLSTATE[01000]: Warning: 1265 Data truncated for column 'action' at row 1 in query: INSERT INTO `credit_order_workflow` (`order_id`, `from_status`, `to_status`, `action`, `performed_by_user_id`, `comments`) VALUES (?, ?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 9
+    [1] => pending_approval
+    [2] => approved
+    [3] => approved
+    [4] => 1
+    [5] => Order approved
+)
+
+[01-Nov-2025 14:33:26 Asia/Dhaka] Database insert failed for table 'credit_order_workflow'.
+[01-Nov-2025 14:33:37 Asia/Dhaka] SQL Error [01000]: SQLSTATE[01000]: Warning: 1265 Data truncated for column 'action' at row 1 in query: INSERT INTO `credit_order_workflow` (`order_id`, `from_status`, `to_status`, `action`, `performed_by_user_id`, `comments`) VALUES (?, ?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 10
+    [1] => pending_approval
+    [2] => approved
+    [3] => approved
+    [4] => 1
+    [5] => Order approved
+)
+
+[01-Nov-2025 14:33:37 Asia/Dhaka] Database insert failed for table 'credit_order_workflow'.
+[01-Nov-2025 14:34:10 Asia/Dhaka] PHP Warning:  Array to string conversion in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Database.php on line 64
+[01-Nov-2025 14:34:10 Asia/Dhaka] PHP Warning:  Array to string conversion in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Database.php on line 64
+[01-Nov-2025 14:34:10 Asia/Dhaka] PHP Warning:  Array to string conversion in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Database.php on line 64
+[01-Nov-2025 14:34:10 Asia/Dhaka] PHP Warning:  Array to string conversion in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Database.php on line 64
+[01-Nov-2025 14:34:10 Asia/Dhaka] PHP Warning:  Array to string conversion in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Database.php on line 64
+[01-Nov-2025 14:34:10 Asia/Dhaka] PHP Warning:  Array to string conversion in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Database.php on line 64
+[01-Nov-2025 14:38:10 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'approved' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[01-Nov-2025 14:38:10 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'in_production' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[01-Nov-2025 14:38:10 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'produced' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[01-Nov-2025 14:38:10 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[01-Nov-2025 14:38:23 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'approved' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[01-Nov-2025 14:38:23 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'in_production' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[01-Nov-2025 14:38:23 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'produced' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[01-Nov-2025 14:38:23 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[01-Nov-2025 14:38:31 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'approved' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[01-Nov-2025 14:38:31 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'in_production' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[01-Nov-2025 14:38:31 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'produced' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[01-Nov-2025 14:38:31 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[01-Nov-2025 14:38:33 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'approved' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[01-Nov-2025 14:38:33 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'in_production' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[01-Nov-2025 14:38:33 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'produced' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[01-Nov-2025 14:38:33 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[01-Nov-2025 14:39:56 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[01-Nov-2025 14:39:56 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'shipped' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[01-Nov-2025 14:39:56 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'delivered' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[01-Nov-2025 14:40:25 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[01-Nov-2025 14:40:25 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'shipped' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[01-Nov-2025 14:40:25 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'delivered' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[01-Nov-2025 14:41:03 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[01-Nov-2025 14:41:03 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'shipped' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[01-Nov-2025 14:41:03 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'delivered' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[01-Nov-2025 14:48:02 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 1
+)
+
+[01-Nov-2025 15:41:32 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'p.name' in 'SELECT' in query: SELECT 
+        coi.*,
+        p.name as product_name,
+        p.sku as product_sku,
+        p.unit as product_unit,
+        pv.variant_name,
+        pv.sku as variant_sku
+    FROM credit_order_items coi
+    LEFT JOIN products p ON coi.product_id = p.id
+    LEFT JOIN product_variants pv ON coi.variant_id = pv.id
+    WHERE coi.order_id = ?
+    ORDER BY coi.id | Params: Array
+(
+    [0] => 3
+)
+
+[01-Nov-2025 15:41:32 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_active' in 'WHERE' in query: SELECT id, name FROM branches WHERE is_active = 1 ORDER BY name | Params: Array
+(
+)
+
+[01-Nov-2025 15:41:32 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'p.name' in 'SELECT' in query: SELECT 
+        p.id,
+        p.name,
+        p.sku,
+        p.unit,
+        p.sale_price,
+        GROUP_CONCAT(
+            CONCAT(pv.id, '|', pv.variant_name, '|', pv.sku, '|', COALESCE(pv.sale_price, p.sale_price))
+            SEPARATOR '||'
+        ) as variants
+    FROM products p
+    LEFT JOIN product_variants pv ON p.id = pv.product_id AND pv.is_active = 1
+    WHERE p.is_active = 1
+    GROUP BY p.id
+    ORDER BY p.name | Params: Array
+(
+)
+
+[01-Nov-2025 15:51:14 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'p.name' in 'SELECT' in query: SELECT 
+        coi.*,
+        p.name as product_name,
+        p.sku as product_sku,
+        p.unit as product_unit,
+        pv.variant_name,
+        pv.sku as variant_sku
+    FROM credit_order_items coi
+    LEFT JOIN products p ON coi.product_id = p.id
+    LEFT JOIN product_variants pv ON coi.variant_id = pv.id
+    WHERE coi.order_id = ?
+    ORDER BY coi.id | Params: Array
+(
+    [0] => 10
+)
+
+[01-Nov-2025 15:51:14 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_active' in 'WHERE' in query: SELECT id, name FROM branches WHERE is_active = 1 ORDER BY name | Params: Array
+(
+)
+
+[01-Nov-2025 15:51:14 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'p.name' in 'SELECT' in query: SELECT 
+        p.id,
+        p.name,
+        p.sku,
+        p.unit,
+        p.sale_price,
+        GROUP_CONCAT(
+            CONCAT(pv.id, '|', pv.variant_name, '|', pv.sku, '|', COALESCE(pv.sale_price, p.sale_price))
+            SEPARATOR '||'
+        ) as variants
+    FROM products p
+    LEFT JOIN product_variants pv ON p.id = pv.product_id AND pv.is_active = 1
+    WHERE p.is_active = 1
+    GROUP BY p.id
+    ORDER BY p.name | Params: Array
+(
+)
+
+[01-Nov-2025 16:50:10 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 9
+)
+
+[01-Nov-2025 17:04:17 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 10
+)
+
+[01-Nov-2025 17:18:18 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 11
+)
+
+[01-Nov-2025 17:18:58 Asia/Dhaka] === PAYMENT SUBMISSION START ===
+[01-Nov-2025 17:18:58 Asia/Dhaka] POST data: Array
+(
+    [action] => collect_payment
+    [customer_id] => 11
+    [payment_date] => 2025-11-01
+    [payment_amount] => 2345566.00
+    [payment_method] => Cash
+    [collected_by_employee_id] => 1
+    [cash_account_id] => 22
+    [bank_account_id] => 
+    [cheque_number] => 
+    [cheque_date] => 
+    [bank_transaction_type] => 
+    [reference_number] => ruygi
+    [notes] => gfgiu
+    [invoice_allocation] => Array
+        (
+            [11] => 2345566
+        )
+
+)
+
+[01-Nov-2025 17:18:58 Asia/Dhaka] Attempting payment insert with data: Array
+(
+    [payment_number] => PAY-20251101-7859
+    [receipt_number] => RCP-20251101-4027
+    [customer_id] => 11
+    [amount] => 2345566
+)
+
+[01-Nov-2025 17:18:58 Asia/Dhaka] ✓✓✓ Payment inserted successfully! ID: 11
+[01-Nov-2025 17:18:58 Asia/Dhaka] ✓ Transaction committed successfully
+[01-Nov-2025 17:18:58 Asia/Dhaka] Payment ID: 11, Receipt: RCP-20251101-4027
+[01-Nov-2025 17:19:25 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 11
+)
+
+[01-Nov-2025 17:20:54 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 11
+)
+
+[01-Nov-2025 17:21:16 Asia/Dhaka] === PAYMENT SUBMISSION START ===
+[01-Nov-2025 17:21:16 Asia/Dhaka] POST data: Array
+(
+    [action] => collect_payment
+    [customer_id] => 11
+    [payment_date] => 2025-11-01
+    [payment_amount] => 564654.00
+    [payment_method] => Bank Transfer
+    [collected_by_employee_id] => 
+    [cash_account_id] => 
+    [bank_account_id] => 12
+    [cheque_number] => 
+    [cheque_date] => 
+    [bank_transaction_type] => Deposit
+    [reference_number] => 6457
+    [notes] => 7687
+    [invoice_allocation] => Array
+        (
+            [11] => 564654
+        )
+
+)
+
+[01-Nov-2025 17:21:16 Asia/Dhaka] Attempting payment insert with data: Array
+(
+    [payment_number] => PAY-20251101-0656
+    [receipt_number] => RCP-20251101-5196
+    [customer_id] => 11
+    [amount] => 564654
+)
+
+[01-Nov-2025 17:21:16 Asia/Dhaka] ✓✓✓ Payment inserted successfully! ID: 12
+[01-Nov-2025 17:21:16 Asia/Dhaka] ✓ Transaction committed successfully
+[01-Nov-2025 17:21:16 Asia/Dhaka] Payment ID: 12, Receipt: RCP-20251101-5196
+[01-Nov-2025 18:09:25 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'p.name' in 'SELECT' in query: SELECT 
+        coi.*,
+        p.name as product_name,
+        p.sku as product_sku,
+        p.unit as product_unit,
+        pv.variant_name,
+        pv.sku as variant_sku
+    FROM credit_order_items coi
+    LEFT JOIN products p ON coi.product_id = p.id
+    LEFT JOIN product_variants pv ON coi.variant_id = pv.id
+    WHERE coi.order_id = ?
+    ORDER BY coi.id | Params: Array
+(
+    [0] => 7
+)
+
+[01-Nov-2025 18:09:25 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_active' in 'WHERE' in query: SELECT id, name FROM branches WHERE is_active = 1 ORDER BY name | Params: Array
+(
+)
+
+[01-Nov-2025 18:09:25 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'p.name' in 'SELECT' in query: SELECT 
+        p.id,
+        p.name,
+        p.sku,
+        p.unit,
+        p.sale_price,
+        GROUP_CONCAT(
+            CONCAT(pv.id, '|', pv.variant_name, '|', pv.sku, '|', COALESCE(pv.sale_price, p.sale_price))
+            SEPARATOR '||'
+        ) as variants
+    FROM products p
+    LEFT JOIN product_variants pv ON p.id = pv.product_id AND pv.is_active = 1
+    WHERE p.is_active = 1
+    GROUP BY p.id
+    ORDER BY p.name | Params: Array
+(
+)
+
+[04-Nov-2025 01:26:11 Asia/Dhaka] SQL Error [01000]: SQLSTATE[01000]: Warning: 1265 Data truncated for column 'action' at row 1 in query: INSERT INTO `credit_order_workflow` (`order_id`, `from_status`, `to_status`, `action`, `performed_by_user_id`, `comments`) VALUES (?, ?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 12
+    [1] => pending_approval
+    [2] => approved
+    [3] => approved
+    [4] => 1
+    [5] => Order approved
+)
+
+[04-Nov-2025 01:26:11 Asia/Dhaka] Database insert failed for table 'credit_order_workflow'.
+[04-Nov-2025 01:27:03 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cow.created_at' in 'ORDER BY' in query: SELECT cow.*, u.display_name as performed_by_name
+     FROM credit_order_workflow cow
+     LEFT JOIN users u ON cow.performed_by_user_id = u.id
+     WHERE cow.order_id = ?
+     ORDER BY cow.created_at DESC | Params: Array
+(
+    [0] => 12
+)
+
+[04-Nov-2025 01:32:14 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cow.created_at' in 'ORDER BY' in query: SELECT cow.*, u.display_name as performed_by_name
+     FROM credit_order_workflow cow
+     LEFT JOIN users u ON cow.performed_by_user_id = u.id
+     WHERE cow.order_id = ?
+     ORDER BY cow.created_at DESC | Params: Array
+(
+    [0] => 14
+)
+
+[04-Nov-2025 01:32:33 Asia/Dhaka] SQL Error [01000]: SQLSTATE[01000]: Warning: 1265 Data truncated for column 'action' at row 1 in query: INSERT INTO `credit_order_workflow` (`order_id`, `from_status`, `to_status`, `action`, `performed_by_user_id`, `comments`) VALUES (?, ?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 13
+    [1] => pending_approval
+    [2] => approved
+    [3] => approved
+    [4] => 1
+    [5] => Order approved
+)
+
+[04-Nov-2025 01:32:33 Asia/Dhaka] Database insert failed for table 'credit_order_workflow'.
+[04-Nov-2025 01:32:44 Asia/Dhaka] SQL Error [01000]: SQLSTATE[01000]: Warning: 1265 Data truncated for column 'action' at row 1 in query: INSERT INTO `credit_order_workflow` (`order_id`, `from_status`, `to_status`, `action`, `performed_by_user_id`, `comments`) VALUES (?, ?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 14
+    [1] => pending_approval
+    [2] => approved
+    [3] => approved
+    [4] => 1
+    [5] => Order approved
+)
+
+[04-Nov-2025 01:32:44 Asia/Dhaka] Database insert failed for table 'credit_order_workflow'.
+[04-Nov-2025 01:35:02 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'approved' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[04-Nov-2025 01:35:02 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'in_production' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[04-Nov-2025 01:35:02 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'produced' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[04-Nov-2025 01:35:02 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[04-Nov-2025 01:35:18 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'approved' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[04-Nov-2025 01:35:18 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'in_production' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[04-Nov-2025 01:35:18 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'produced' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[04-Nov-2025 01:35:18 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[04-Nov-2025 01:35:21 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'approved' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[04-Nov-2025 01:35:21 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'in_production' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[04-Nov-2025 01:35:21 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'produced' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[04-Nov-2025 01:35:21 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[04-Nov-2025 01:35:29 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'approved' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[04-Nov-2025 01:35:29 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'in_production' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[04-Nov-2025 01:35:29 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'produced' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[04-Nov-2025 01:35:29 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[04-Nov-2025 01:35:52 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[04-Nov-2025 01:35:52 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'shipped' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[04-Nov-2025 01:35:52 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'delivered' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[04-Nov-2025 01:36:16 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[04-Nov-2025 01:36:16 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'shipped' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[04-Nov-2025 01:36:16 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'delivered' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[04-Nov-2025 01:36:47 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'ready_to_ship' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[04-Nov-2025 01:36:47 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'shipped' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[04-Nov-2025 01:36:47 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.assigned_branch_id' in 'WHERE' in query: SELECT COUNT(*) as c FROM credit_orders WHERE status = 'delivered' AND co.assigned_branch_id = ? | Params: Array
+(
+    [0] => 2
+)
+

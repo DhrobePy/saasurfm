@@ -1,8 +1,7 @@
 <?php
 require_once '../core/init.php';
 
-$allowed_roles = ['Superadmin', 'admin', 'Accounts', 'sales-srg', 'sales-demra', 'sales-other', 
-                  'production manager-srg', 'production manager-demra', 
+$allowed_roles = ['Superadmin', 'admin', 'Accounts', 'sales-srg', 'sales-demra', 'sales-other', 'production manager-srg', 'production manager-demra', 
                   'dispatcher-srg', 'dispatcher-demra', 'dispatchpos-srg', 'dispatchpos-demra'];
 restrict_access($allowed_roles);
 

@@ -744,3 +744,18 @@ Stack trace:
 [27-Oct-2025 12:45:52 Asia/Dhaka] POS Accounting: Using fallback account for: POS Cash
 [27-Oct-2025 12:45:52 Asia/Dhaka] POS Accounting SUCCESS: Journal #10 created for Order #ORD-20251027-0003. Debits: ৳3360, Credits: ৳3360
 [27-Oct-2025 12:45:52 Asia/Dhaka] POS Order ORD-20251027-0003 completed successfully. Total: ৳3360, Discount: ৳0, Payment: Cash, Journal: JE-10
+[01-Nov-2025 13:04:14 Asia/Dhaka] POS Accounting: Using fallback account for: Sales Discount
+[01-Nov-2025 13:04:14 Asia/Dhaka] POS Accounting: Branch-specific account not found: POS Cash for SRG
+[01-Nov-2025 13:04:14 Asia/Dhaka] POS Accounting: Using fallback account for: POS Cash
+[01-Nov-2025 13:04:14 Asia/Dhaka] POS Accounting SUCCESS: Journal #23 created for Order #ORD-20251101-0001. Debits: ৳11100, Credits: ৳11100
+[01-Nov-2025 13:04:14 Asia/Dhaka] POS Order ORD-20251101-0001 completed successfully. Total: ৳11100, Discount: ৳0, Payment: Cash, Journal: JE-23
+[04-Nov-2025 01:39:02 Asia/Dhaka] POS Accounting: Using fallback account for: Sales Discount
+[04-Nov-2025 01:39:02 Asia/Dhaka] POS Accounting: Branch-specific account not found: POS Cash for SRG
+[04-Nov-2025 01:39:02 Asia/Dhaka] POS Accounting: Using fallback account for: POS Cash
+[04-Nov-2025 01:39:02 Asia/Dhaka] POS Accounting SUCCESS: Journal #32 created for Order #ORD-20251104-0001. Debits: ৳22260, Credits: ৳22260
+[04-Nov-2025 01:39:02 Asia/Dhaka] POS Order ORD-20251104-0001 completed successfully. Total: ৳22260, Discount: ৳0, Payment: Cash, Journal: JE-32
+[04-Nov-2025 01:40:15 Asia/Dhaka] POS Accounting: Using fallback account for: Sales Discount
+[04-Nov-2025 01:40:15 Asia/Dhaka] POS Accounting: Branch-specific account not found: POS Cash for SRG
+[04-Nov-2025 01:40:15 Asia/Dhaka] POS Accounting: Using fallback account for: POS Cash
+[04-Nov-2025 01:40:15 Asia/Dhaka] POS Accounting SUCCESS: Journal #33 created for Order #ORD-20251104-0002. Debits: ৳24790, Credits: ৳24790
+[04-Nov-2025 01:40:15 Asia/Dhaka] POS Order ORD-20251104-0002 completed successfully. Total: ৳24790, Discount: ৳0, Payment: Cash, Journal: JE-33

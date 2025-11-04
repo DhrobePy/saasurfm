@@ -15,27 +15,29 @@ if (!$order_id) {
 
 // --- VALIDATION ---
 try {
+    // First check if order exists at all
     $check_order = $db->query("SELECT id, order_number, status FROM credit_orders WHERE id = ?", [$order_id])->first();
 
     if (!$check_order) {
         die("Error: Order ID #{$order_id} does not exist in the database.");
     }
 
+    // Check if order is in a printable status
     $printable_statuses = ['shipped', 'delivered'];
     if (!in_array($check_order->status, $printable_statuses)) {
         die("Error: Order #{$check_order->order_number} has status '{$check_order->status}'. Invoice can only be printed for shipped or delivered orders.<br><br><a href='javascript:history.back()'>Go Back</a>");
     }
 
-    // --- GET FULL ORDER DETAILS ---
+    // --- GET FULL ORDER DETAILS (RECTIFIED QUERY) ---
     $order = $db->query(
         "SELECT co.*, 
                 c.name as customer_name,
                 c.phone_number as customer_phone,
                 c.email as customer_email,
-                c.business_address as customer_address,
+                c.business_address as customer_address, -- RECTIFIED: Was c.address
                 b.name as branch_name,
                 b.address as branch_address,
-                b.phone_number as branch_phone,
+                b.phone_number as branch_phone, -- RECTIFIED: Was b.phone
                 cos.truck_number,
                 cos.driver_name,
                 cos.driver_contact,
@@ -52,6 +54,7 @@ try {
     )->first();
 
     if (!$order) {
+        // This will now only trigger if the join fails unexpectedly
         die("Error: Could not load complete order details for Order ID #{$order_id}. Database query failed.");
     }
 
@@ -76,14 +79,15 @@ try {
     }
 
 } catch (Exception $e) {
-    die("A fatal error occurred: " . $e->getMessage());
+    // Catch the SQL error and display it
+     die("A fatal error occurred: " . $e->getMessage());
 }
 
-// Get company info
+// Get company info (customize this as needed)
 $company = [
-    'name' => 'উজ্জল ফ্লাওয়ার মিলস',
+    'name' => 'উজ্জল ফ্লাওয়ার মিলস ',
     'tagline' => '',
-    'address' => '১৭, নুরাইবাগ ডেমরা ঢাকা',
+    'address' => '১৭, নুরাইবাগ ডেমরা ঢাকা ',
     'phone' => '+880-XXX-XXXXXX',
     'email' => 'info@ujjalfm.com',
     'website' => 'www.ujjalfm.com'
@@ -96,6 +100,7 @@ $company = [
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Invoice - <?php echo htmlspecialchars($order->order_number); ?></title>
     <style>
+        /* ... (Your existing CSS styles are all correct) ... */
         * {
             margin: 0;
             padding: 0;
@@ -401,9 +406,7 @@ $company = [
         <div class="invoice-header">
             <div class="company-info">
                 <h1><?php echo htmlspecialchars($company['name']); ?></h1>
-                <?php if ($company['tagline']): ?>
                 <p><?php echo htmlspecialchars($company['tagline']); ?></p>
-                <?php endif; ?>
                 <p><?php echo htmlspecialchars($company['address']); ?></p>
                 <p>Phone: <?php echo htmlspecialchars($company['phone']); ?></p>
                 <p>Email: <?php echo htmlspecialchars($company['email']); ?></p>
@@ -424,7 +427,8 @@ $company = [
             <div class="info-block">
                 <h3>Bill To</h3>
                 <p><strong><?php echo htmlspecialchars($order->customer_name); ?></strong></p>
-                <p><?php echo nl2br(htmlspecialchars($order->customer_address)); ?></p>
+                <!-- RECTIFIED: Use customer_address (which maps to business_address) -->
+                <p><?php echo nl2br(htmlspecialchars($order->customer_address)); ?></p> 
                 <p>Phone: <?php echo htmlspecialchars($order->customer_phone); ?></p>
                 <?php if ($order->customer_email): ?>
                 <p>Email: <?php echo htmlspecialchars($order->customer_email); ?></p>
@@ -432,36 +436,36 @@ $company = [
             </div>
             <div class="info-block">
                 <h3>Ship To</h3>
+                <!-- Shipping address from the order -->
                 <p><strong><?php echo htmlspecialchars($order->customer_name); ?></strong></p>
-                <p><?php echo nl2br(htmlspecialchars($order->shipping_address)); ?></p>
-                <p style="margin-top: 10px;"><strong>Branch:</strong> <?php echo htmlspecialchars($order->branch_name); ?></p>
+                 <p><?php echo nl2br(htmlspecialchars($order->shipping_address)); ?></p>
+                 <p style="margin-top: 10px;"><strong>Branch:</strong> <?php echo htmlspecialchars($order->branch_name); ?></p>
             </div>
         </div>
         
-        <!-- Order Details -->
-        <div class="info-section" style="margin-top: -15px; margin-bottom: 20px;">
-            <div class="info-block">
+        <!-- Order Details (Moved from Ship To) -->
+         <div class="info-section" style="margin-top: -15px; margin-bottom: 20px;">
+             <div class="info-block">
                 <h3>Order Details</h3>
                 <p><strong>Order Number:</strong> <?php echo htmlspecialchars($order->order_number); ?></p>
                 <p><strong>Order Date:</strong> <?php echo date('M j, Y', strtotime($order->order_date)); ?></p>
                 <p><strong>Required Date:</strong> <?php echo date('M j, Y', strtotime($order->required_date)); ?></p>
                 <p><strong>Order Type:</strong> <?php echo ucwords(str_replace('_', ' ', $order->order_type)); ?></p>
-            </div>
-            <div class="info-block">
-                <!-- Empty -->
-            </div>
-        </div>
+             </div>
+             <div class="info-block">
+                <!-- Can be empty or add more details -->
+             </div>
+         </div>
         
         <!-- Items Table -->
         <table class="items-table">
             <thead>
                 <tr>
-                    <th style="width: 4%;">#</th>
-                    <th style="width: 30%;">Product Description</th>
-                    <th style="width: 13%;">SKU</th>
-                    <th class="text-right" style="width: 10%;">Qty</th>
-                    <th class="text-right" style="width: 13%;">Unit Price</th>
-                    <th class="text-right" style="width: 12%;">Discount</th>
+                    <th style="width: 5%;">#</th>
+                    <th style="width: 35%;">Product Description</th>
+                    <th style="width: 15%;">SKU</th>
+                    <th class="text-right" style="width: 12%;">Qty</th>
+                    <th class="text-right" style="width: 15%;">Unit Price</th>
                     <th class="text-right" style="width: 18%;">Total</th>
                 </tr>
             </thead>
@@ -484,18 +488,8 @@ $company = [
                         <?php endif; ?>
                     </td>
                     <td><?php echo htmlspecialchars($item->variant_sku ?? '-'); ?></td>
-                    <td class="text-right">
-                        <?php echo rtrim(rtrim(number_format($item->quantity, 2), '0'), '.'); ?> 
-                        <?php echo htmlspecialchars($item->unit_of_measure); ?>
-                    </td>
+                    <td class="text-right"><?php echo rtrim(rtrim(number_format($item->quantity, 2), '0'), '.'); ?> <?php echo $item->unit_of_measure; ?></td>
                     <td class="text-right">৳<?php echo number_format($item->unit_price, 2); ?></td>
-                    <td class="text-right" style="color: #ef4444;">
-                        <?php if ($item->discount_amount > 0): ?>
-                            ৳<?php echo number_format($item->discount_amount, 2); ?>
-                        <?php else: ?>
-                            -
-                        <?php endif; ?>
-                    </td>
                     <td class="text-right"><strong>৳<?php echo number_format($item->line_total, 2); ?></strong></td>
                 </tr>
                 <?php endforeach; ?>
@@ -512,7 +506,7 @@ $company = [
                 
                 <?php if ($order->discount_amount > 0): ?>
                 <div class="total-row">
-                    <span>Total Discount:</span>
+                    <span>Discount:</span>
                     <span style="color: #ef4444;">-৳<?php echo number_format($order->discount_amount, 2); ?></span>
                 </div>
                 <?php endif; ?>
@@ -596,8 +590,9 @@ $company = [
     </div>
     
     <script>
+        // Auto-focus for printing
         window.onload = function() {
-            // Optional: Auto-print on load
+            // Optional: Uncomment to auto-print
             // window.print();
         }
     </script>
