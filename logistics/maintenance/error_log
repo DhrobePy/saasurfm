@@ -1,0 +1,96 @@
+[14-Nov-2025 16:56:16 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'parts_cost' in 'INSERT INTO' in query: INSERT INTO `maintenance_logs` (`vehicle_id`, `maintenance_type`, `maintenance_date`, `service_provider`, `description`, `odometer_reading`, `parts_cost`, `labor_cost`, `total_cost`, `invoice_number`, `warranty_expiry_date`, `next_service_due_date`, `next_service_due_mileage`, `status`, `payment_status`, `notes`, `created_by_user_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 10
+    [1] => Oil Change
+    [2] => 2025-11-14
+    [3] => dfdf
+    [4] => dfdf
+    [5] => 90000
+    [6] => 12131
+    [7] => 1212
+    [8] => 13343
+    [9] => sddfg
+    [10] => 2025-11-21
+    [11] => 2026-02-04
+    [12] => 95000
+    [13] => Completed
+    [14] => Paid
+    [15] => fgdf
+    [16] => 1
+)
+
+[14-Nov-2025 16:56:16 Asia/Dhaka] Database insert failed for table 'maintenance_logs'.
+[14-Nov-2025 16:56:16 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'last_service_date' in 'SET' in query: UPDATE vehicles SET current_mileage = ?, last_service_date = ?, next_service_due_date = ?, next_service_due_mileage = ? WHERE id = ? | Params: Array
+(
+    [0] => 90000
+    [1] => 2025-11-14
+    [2] => 2026-02-04
+    [3] => 95000
+    [4] => 10
+)
+
+[14-Nov-2025 16:56:16 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'entry_date' in 'INSERT INTO' in query: INSERT INTO `journal_entries` (`entry_date`, `entry_type`, `reference_type`, `reference_id`, `description`, `created_by_user_id`) VALUES (?, ?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 2025-11-14
+    [1] => Expense
+    [2] => Maintenance
+    [3] => 
+    [4] => Maintenance for vehicle ID: 10 - Oil Change
+    [5] => 1
+)
+
+[14-Nov-2025 16:56:16 Asia/Dhaka] Database insert failed for table 'journal_entries'.
+[14-Nov-2025 16:56:16 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'account_code' in 'WHERE' in query: SELECT id FROM chart_of_accounts WHERE account_code = '5020' | Params: Array
+(
+)
+
+[14-Nov-2025 16:56:16 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: INSERT INTO `journal_entry_lines` (`journal_entry_id`, `account_id`, `debit`, `credit`) VALUES (?, ?, ?, ?) | Params: Array
+(
+    [0] => 
+    [1] => 5020
+    [2] => 13343
+    [3] => 0
+)
+
+[14-Nov-2025 16:56:16 Asia/Dhaka] Database insert failed for table 'journal_entry_lines'.
+[14-Nov-2025 16:56:16 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: INSERT INTO `journal_entry_lines` (`journal_entry_id`, `account_id`, `debit`, `credit`) VALUES (?, ?, ?, ?) | Params: Array
+(
+    [0] => 
+    [1] => 1010
+    [2] => 0
+    [3] => 13343
+)
+
+[14-Nov-2025 16:56:16 Asia/Dhaka] Database insert failed for table 'journal_entry_lines'.
+[14-Nov-2025 16:56:16 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'journal_entry_id' in 'SET' in query: UPDATE maintenance_logs SET journal_entry_id = ? WHERE id = ? | Params: Array
+(
+    [0] => 
+    [1] => 
+)
+
+[14-Nov-2025 17:00:19 Asia/Dhaka] Maintenance log error: [User: 1] Vehicle Maintenance Expense account (5020) not found or inactive. Please contact administrator.
+[14-Nov-2025 17:03:53 Asia/Dhaka] Maintenance log error: [User: 1] Vehicle Maintenance Expense account (5020) not found or inactive. Please contact administrator.
+[14-Nov-2025 17:06:43 Asia/Dhaka] Maintenance log error: [User: 1] Vehicle Maintenance Expense account (5020) not found or inactive. Please contact administrator.
+[14-Nov-2025 17:08:55 Asia/Dhaka] Maintenance log error: [User: 1] Vehicle Maintenance Expense account (5020) not found or inactive. Please contact administrator.
+[14-Nov-2025 17:13:32 Asia/Dhaka] Maintenance log error: [User: 1] Account 'Vehicle Maintenance Expense' not found or inactive. Please create this account in the Chart of Accounts.
+[14-Nov-2025 17:14:27 Asia/Dhaka] Maintenance log error: [User: 1] Account 'Vehicle Maintenance Expense' not found or inactive. Please create this account in the Chart of Accounts.
+[14-Nov-2025 17:22:40 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'entry_type' in 'INSERT INTO' in query: INSERT INTO `transaction_lines` (`journal_entry_id`, `account_id`, `entry_type`, `amount`, `description`) VALUES (?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 50
+    [1] => 35
+    [2] => debit
+    [3] => 234345
+    [4] => Maintenance expense - Ctg Metro-NA-17-1199
+)
+
+[14-Nov-2025 17:22:40 Asia/Dhaka] Database insert failed for table 'transaction_lines'.
+[14-Nov-2025 17:22:40 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'entry_type' in 'INSERT INTO' in query: INSERT INTO `transaction_lines` (`journal_entry_id`, `account_id`, `entry_type`, `amount`, `description`) VALUES (?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 50
+    [1] => 22
+    [2] => credit
+    [3] => 234345
+    [4] => Payment via Petty Cash Demra Mill
+)
+
+[14-Nov-2025 17:22:40 Asia/Dhaka] Database insert failed for table 'transaction_lines'.

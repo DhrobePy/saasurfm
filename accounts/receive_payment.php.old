@@ -1,0 +1,360 @@
+<?php
+require_once '../../core/init.php';
+
+// Access control
+$allowed_roles = ['Superadmin', 'admin', 'Accounts', 'accounts-rampura', 'accounts-srg', 'accounts-demra'];
+restrict_access($allowed_roles);
+
+global $db;
+$currentUser = getCurrentUser();
+$user_id = $currentUser['id'] ?? null;
+$pageTitle = 'Receive Payment';
+$error = null;
+$rental = null;
+$customer = null;
+$amount_due = 0;
+
+// Get rental_id from URL
+$rental_id = (int)($_GET['rental_id'] ?? 0);
+if ($rental_id <= 0) {
+    $_SESSION['error_flash'] = 'Invalid rental ID.';
+    header('Location: ../logistics/rentals/index.php');
+    exit();
+}
+
+// --- Get Data for the Invoice ---
+$rental = $db->query(
+    "SELECT vr.*, v.vehicle_number, c.name as customer_name, c.id as customer_id, c.current_balance
+     FROM vehicle_rentals vr
+     JOIN vehicles v ON vr.vehicle_id = v.id
+     JOIN customers c ON vr.customer_id = c.id
+     WHERE vr.id = ?",
+    [$rental_id]
+)->first();
+
+if (!$rental) {
+    $_SESSION['error_flash'] = 'Rental record not found.';
+    header('Location: ../logistics/rentals/index.php');
+    exit();
+}
+
+// Check if already paid
+if ($rental->payment_status === 'Paid') {
+    $_SESSION['error_flash'] = 'This rental invoice is already marked as fully paid.';
+    header('Location: ../logistics/rentals/index.php');
+    exit();
+}
+
+// Calculate Amount Due
+$total_paid = $db->query(
+    "SELECT SUM(amount) as paid FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     WHERE je.related_document_type = 'payment_rental' AND je.related_document_id = ?
+     AND tl.entry_type = 'debit'", // We are looking for debits to Cash/Bank
+    [$rental_id]
+)->first()->paid ?? 0;
+
+$amount_due = (float)$rental->total_amount - (float)$total_paid;
+$customer_id = $rental->customer_id;
+
+// --- Get Form Data ---
+$cash_accounts = $db->query("SELECT id, account_number, name FROM chart_of_accounts WHERE account_type IN ('Cash', 'Petty Cash') AND status = 'active'")->results();
+$bank_accounts = $db->query("SELECT id, account_number, name FROM chart_of_accounts WHERE account_type = 'Bank' AND status = 'active'")->results();
+$employees = $db->query("SELECT id, CONCAT(first_name, ' ', last_name) AS employee_name FROM employees WHERE status = 'active' ORDER BY first_name")->results();
+
+
+// --- Handle Form Submission ---
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $pdo = $db->getPdo();
+    try {
+        $pdo->beginTransaction();
+        
+        // --- Form Data ---
+        $payment_date = $_POST['payment_date'];
+        $amount = (float)$_POST['amount'];
+        $account_id = (int)$_POST['account_id']; // This is the Cash/Bank account
+        $handled_by_employee_id = (int)$_POST['handled_by_employee_id'];
+        $notes = trim($_POST['notes']) ?: null;
+
+        // --- Validation ---
+        if ($amount <= 0) throw new Exception("Payment amount must be greater than 0.");
+        if ($amount > $amount_due + 0.001) { // Add a small tolerance for float comparison
+             throw new Exception("Payment amount (৳" . number_format($amount, 2) . ") cannot be greater than the amount due (৳" . number_format($amount_due, 2) . ").");
+        }
+        if ($account_id <= 0) throw new Exception("Please select a valid payment account.");
+        
+        // --- Get Supporting Data for Accounting ---
+        $selected_account = $db->query("SELECT name FROM chart_of_accounts WHERE id = ?", [$account_id])->first();
+        $ar_account = $db->query("SELECT id FROM chart_of_accounts WHERE account_number = '1120' AND status = 'active' LIMIT 1")->first();
+        
+        if (!$ar_account) throw new Exception("Critical Error: 'Accounts Receivable (1120)' account not found.");
+
+        // =============================================
+        //  START ACCOUNTING & DATABASE TRANSACTIONS
+        // =============================================
+        
+        // 1. Create Journal Entry (The "Payment Receipt")
+        $journal_desc = "Payment received for Rental #" . $rental->id . 
+                        " from " . $rental->customer_name . 
+                        ". Received in: " . $selected_account->name;
+        
+        $journal_entry_id = $db->insert('journal_entries', [
+            'transaction_date' => $payment_date,
+            'description' => $journal_desc,
+            'related_document_type' => 'payment_rental', // Custom type for this payment
+            'related_document_id' => $rental_id,
+            'responsible_employee_id' => $handled_by_employee_id,
+            'created_by_user_id' => $user_id
+        ]);
+        if (!$journal_entry_id) throw new Exception("Failed to create journal entry.");
+
+        // 2. Create Transaction Lines (The "Payment" Details)
+        
+        // DEBIT: Cash or Bank (Asset Increase)
+        $db->insert('transaction_lines', [
+            'journal_entry_id' => $journal_entry_id,
+            'account_id' => $account_id,
+            'entry_type' => 'debit',
+            'amount' => $amount,
+            'description' => "Payment from " . $rental->customer_name
+        ]);
+        
+        // CREDIT: Accounts Receivable (Asset Decrease)
+        $db->insert('transaction_lines', [
+            'journal_entry_id' => $journal_entry_id,
+            'account_id' => $ar_account->id,
+            'entry_type' => 'credit',
+            'amount' => $amount,
+            'description' => "Payment applied to Rental #" . $rental->id
+        ]);
+        
+        // 3. Update Customer's Balance
+        $db->query(
+            "UPDATE customers SET current_balance = current_balance - ? WHERE id = ?",
+            [$amount, $customer_id]
+        );
+
+        // 4. Update Rental Payment Status
+        $new_total_paid = $total_paid + $amount;
+        $new_payment_status = 'Partially Paid';
+        // Use a small tolerance (epsilon) for float comparison
+        if ($new_total_paid >= ($rental->total_amount - 0.001)) {
+            $new_payment_status = 'Paid';
+        }
+        
+        $db->update('vehicle_rentals', $rental_id, [
+            'payment_status' => $new_payment_status
+        ]);
+        
+        $pdo->commit();
+        
+        $_SESSION['success_flash'] = "Payment of ৳" . number_format($amount, 2) . " recorded successfully!";
+        header('Location: ../logistics/rentals/index.php');
+        exit();
+        
+    } catch (Exception $e) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
+        $error = $e->getMessage();
+        error_log("Receive Payment error: [User: $user_id] " . $e->getMessage());
+    }
+}
+
+
+require_once '../../templates/header.php';
+?>
+
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+<div class="bg-white rounded-lg shadow-md p-6">
+    <div class="flex justify-between items-center mb-6 border-b pb-4">
+        <h1 class="text-2xl font-bold text-gray-900">💵 Receive Payment</h1>
+        <a href="../logistics/rentals/index.php" class="px-4 py-2 border rounded-lg hover:bg-gray-50">
+            <i class="fas fa-arrow-left mr-2"></i>Back to Rental List
+        </a>
+    </div>
+
+    <?php if ($error): ?>
+    <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded-r-lg shadow">
+        <p class="font-bold">Error</p>
+        <p><?php echo htmlspecialchars($error); ?></p>
+    </div>
+    <?php endif; ?>
+
+    <!-- Invoice Summary -->
+    <div class="bg-gray-50 p-4 rounded-lg border mb-6">
+        <h3 class="text-lg font-medium text-gray-900 mb-4 border-b pb-2">Payment For Rental #<?php echo $rental->id; ?></h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <p class="text-sm text-gray-500">Customer</p>
+                <p class="text-md font-medium text-gray-900"><?php echo htmlspecialchars($rental->customer_name); ?></p>
+            </div>
+            <div>
+                <p class="text-sm text-gray-500">Vehicle</p>
+                <p class="text-md font-medium text-gray-900"><?php echo htmlspecialchars($rental->vehicle_number); ?></p>
+            </div>
+            <div>
+                <p class="text-sm text-gray-500">Rental Period</p>
+                <p class="text-md font-medium text-gray-900"><?php echo date('d M Y', strtotime($rental->start_datetime)); ?> to <?php echo date('d M Y', strtotime($rental->end_datetime)); ?></p>
+            </div>
+            <div>
+                <p class="text-sm text-gray-500">Total Invoice Amount</p>
+                <p class="text-md font-medium text-gray-900">৳<?php echo number_format($rental->total_amount, 2); ?></p>
+            </div>
+            <div>
+                <p class="text-sm text-gray-500">Previously Paid</p>
+                <p class="text-md font-medium text-gray-900">৳<?php echo number_format($total_paid, 2); ?></p>
+            </div>
+            <div class="bg-blue-100 border border-blue-300 rounded-lg p-3">
+                <p class="text-sm font-bold text-blue-800">Amount Due</p>
+                <p class="text-2xl font-bold text-blue-600">৳<?php echo number_format($amount_due, 2); ?></p>
+            </div>
+        </div>
+    </div>
+
+
+    <form method="POST" class="space-y-6" x-data="{ amount: <?php echo $amount_due; ?>, maxAmount: <?php echo $amount_due; ?> }">
+        
+        <!-- Payment Details -->
+        <div class="bg-gray-50 p-4 rounded-lg border">
+            <h3 class="text-lg font-medium text-gray-900 mb-4 border-b pb-2">Payment Details</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Payment Date *</label>
+                    <input type="date" name="payment_date" required
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                           value="<?php echo date('Y-m-d'); ?>"
+                           max="<?php echo date('Y-m-d'); ?>">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Payment Amount (৳) *</label>
+                    <input type="number" step="0.01" name="amount" x-model.number="amount" required
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                           x-bind:max="maxAmount"
+                           placeholder="0.00">
+                    <button type="button" @click="amount = maxAmount" class="text-xs text-blue-600 hover:underline mt-1">Pay Full Amount</button>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Receive In (Method) *</label>
+                    <select name="payment_method" id="payment_method" required 
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                            onchange="updateAccountDropdown()">
+                        <option value="">-- Select Payment Method --</option>
+                        <option value="Cash">Cash (Petty Cash)</option>
+                        <option value="Bank">Bank Account</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Receive to (Account) *</label>
+                    <select name="account_id" id="account_id" required 
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                            onchange="updateAccountName()">
+                        <option value="">-- Select payment method first --</option>
+                    </select>
+                </div>
+                
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Received By (Employee) *</label>
+                    <select name="handled_by_employee_id" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        <option value="">-- Select Employee --</option>
+                        <?php foreach ($employees as $employee): ?>
+                        <option value="<?php echo $employee->id; ?>" <?php echo ($employee->id == $user_id) ? 'selected' : ''; ?>>
+                            <?php echo htmlspecialchars($employee->employee_name); ?>
+                        </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+                    <textarea name="notes" rows="2" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                              placeholder="Payment reference, cheque number, etc..."></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Accounting Preview -->
+        <div class="bg-yellow-50 border-2 border-yellow-300 rounded-lg p-6">
+            <h4 class="font-bold text-gray-800 mb-4 text-lg">
+                <i class="fas fa-calculator mr-2"></i>Accounting Preview (Double-Entry)
+            </h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-green-50 border-2 border-green-300 rounded-lg p-4">
+                    <p class="text-sm text-gray-600 font-semibold mb-2">DEBIT (Asset Increase)</p>
+                    <p class="text-gray-900 font-medium" id="debit_account_name">Select payment account</p>
+                    <p class="text-2xl font-bold text-green-600 mt-2" x-text="'৳' + parseFloat(amount).toLocaleString('en-BD', {minimumFractionDigits: 2})">৳0.00</p>
+                </div>
+                <div class="bg-red-50 border-2 border-red-300 rounded-lg p-4">
+                    <p class="text-sm text-gray-600 font-semibold mb-2">CREDIT (Asset Decrease)</p>
+                    <p class="text-gray-900 font-medium">Accounts Receivable (1120)</p>
+                    <p class="text-2xl font-bold text-red-600 mt-2" x-text="'৳' + parseFloat(amount).toLocaleString('en-BD', {minimumFractionDigits: 2})">৳0.00</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Submit -->
+        <div class="flex justify-end gap-3 pt-6 border-t mt-6">
+            <a href="../logistics/rentals/index.php" class="px-6 py-2 border rounded-lg hover:bg-gray-50 bg-white shadow-sm">
+                Cancel
+            </a>
+            <button type="submit" class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium shadow-sm">
+                <i class="fas fa-check mr-2"></i>Receive Payment
+            </button>
+        </div>
+    </form>
+</div>
+
+</div>
+
+<!-- Alpine.js for calculations -->
+<script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
+
+<script>
+// Store account data
+const cashAccounts = <?php echo json_encode($cash_accounts); ?>;
+const bankAccounts = <?php echo json_encode($bank_accounts); ?>;
+
+// Update account dropdown based on payment method
+function updateAccountDropdown() {
+    const method = document.getElementById('payment_method').value;
+    const accountSelect = document.getElementById('account_id');
+    
+    accountSelect.innerHTML = '<option value="">-- Select Account --</option>';
+    
+    let accounts = [];
+    if (method === 'Cash') {
+        accounts = cashAccounts;
+    } else if (method === 'Bank') {
+        accounts = bankAccounts;
+    }
+    
+    accounts.forEach(account => {
+        const option = document.createElement('option');
+        option.value = account.id;
+        option.textContent = `${account.account_number} - ${account.name}`;
+        option.dataset.name = account.name;
+        accountSelect.appendChild(option);
+    });
+    
+    updateAccountName();
+}
+
+// Update account name in preview
+function updateAccountName() {
+    const accountSelect = document.getElementById('account_id');
+    const selectedOption = accountSelect.options[accountSelect.selectedIndex];
+    const debitAccountName = document.getElementById('debit_account_name');
+    
+    if (accountSelect.value) {
+        debitAccountName.textContent = selectedOption.dataset.name;
+    } else {
+        debitAccountName.textContent = 'Select payment account';
+    }
+}
+</script>
+
+<?php require_once '../../templates/footer.php'; ?>

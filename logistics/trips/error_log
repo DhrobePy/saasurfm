@@ -1,0 +1,1149 @@
+[04-Nov-2025 23:49:52 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.customer_name' in 'SELECT' in query: SELECT 
+        ta.*,
+        v.vehicle_number,
+        v.vehicle_type,
+        d.driver_name,
+        d.phone_number as driver_phone,
+        co.order_number,
+        co.customer_name
+     FROM trip_assignments ta
+     JOIN vehicles v ON ta.vehicle_id = v.id
+     JOIN drivers d ON ta.driver_id = d.id
+     JOIN credit_orders co ON ta.order_id = co.id
+     
+     ORDER BY ta.trip_date DESC, ta.scheduled_time DESC
+     LIMIT 100 | Params: Array
+(
+)
+
+[08-Nov-2025 23:18:14 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.customer_name' in 'SELECT' in query: SELECT 
+        ta.*,
+        v.vehicle_number,
+        v.vehicle_type,
+        d.driver_name,
+        d.phone_number as driver_phone,
+        co.order_number,
+        co.customer_name
+     FROM trip_assignments ta
+     JOIN vehicles v ON ta.vehicle_id = v.id
+     JOIN drivers d ON ta.driver_id = d.id
+     JOIN credit_orders co ON ta.order_id = co.id
+     
+     ORDER BY ta.trip_date DESC, ta.scheduled_time DESC
+     LIMIT 100 | Params: Array
+(
+)
+
+[08-Nov-2025 23:18:19 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'customer_name' in 'SELECT' in query: SELECT id, order_number, customer_name, shipping_address, total_amount
+     FROM credit_orders 
+     WHERE status = 'approved' 
+     AND (truck_number IS NULL OR truck_number = '')
+     ORDER BY order_date DESC
+     LIMIT 50 | Params: Array
+(
+)
+
+[08-Nov-2025 23:18:40 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.customer_name' in 'SELECT' in query: SELECT 
+        ta.*,
+        v.vehicle_number,
+        v.vehicle_type,
+        d.driver_name,
+        d.phone_number as driver_phone,
+        co.order_number,
+        co.customer_name
+     FROM trip_assignments ta
+     JOIN vehicles v ON ta.vehicle_id = v.id
+     JOIN drivers d ON ta.driver_id = d.id
+     JOIN credit_orders co ON ta.order_id = co.id
+     
+     ORDER BY ta.trip_date DESC, ta.scheduled_time DESC
+     LIMIT 100 | Params: Array
+(
+)
+
+[08-Nov-2025 23:24:52 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.customer_name' in 'SELECT' in query: SELECT 
+        ta.*,
+        v.vehicle_number,
+        v.vehicle_type,
+        d.driver_name,
+        d.phone_number as driver_phone,
+        co.order_number,
+        co.customer_name
+     FROM trip_assignments ta
+     JOIN vehicles v ON ta.vehicle_id = v.id
+     JOIN drivers d ON ta.driver_id = d.id
+     JOIN credit_orders co ON ta.order_id = co.id
+     
+     ORDER BY ta.trip_date DESC, ta.scheduled_time DESC
+     LIMIT 100 | Params: Array
+(
+)
+
+[08-Nov-2025 23:25:03 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.customer_name' in 'SELECT' in query: SELECT 
+        ta.*,
+        v.vehicle_number,
+        v.vehicle_type,
+        d.driver_name,
+        d.phone_number as driver_phone,
+        co.order_number,
+        co.customer_name
+     FROM trip_assignments ta
+     JOIN vehicles v ON ta.vehicle_id = v.id
+     JOIN drivers d ON ta.driver_id = d.id
+     JOIN credit_orders co ON ta.order_id = co.id
+     
+     ORDER BY ta.trip_date DESC, ta.scheduled_time DESC
+     LIMIT 100 | Params: Array
+(
+)
+
+[09-Nov-2025 23:36:39 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.customer_name' in 'SELECT' in query: SELECT 
+        ta.*,
+        v.vehicle_number,
+        v.vehicle_type,
+        d.driver_name,
+        d.phone_number as driver_phone,
+        co.order_number,
+        co.customer_name
+     FROM trip_assignments ta
+     JOIN vehicles v ON ta.vehicle_id = v.id
+     JOIN drivers d ON ta.driver_id = d.id
+     JOIN credit_orders co ON ta.order_id = co.id
+     
+     ORDER BY ta.trip_date DESC, ta.scheduled_time DESC
+     LIMIT 100 | Params: Array
+(
+)
+
+[09-Nov-2025 23:37:07 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.customer_name' in 'SELECT' in query: SELECT 
+        ta.*,
+        v.vehicle_number,
+        v.vehicle_type,
+        d.driver_name,
+        d.phone_number as driver_phone,
+        co.order_number,
+        co.customer_name
+     FROM trip_assignments ta
+     JOIN vehicles v ON ta.vehicle_id = v.id
+     JOIN drivers d ON ta.driver_id = d.id
+     JOIN credit_orders co ON ta.order_id = co.id
+     
+     ORDER BY ta.trip_date DESC, ta.scheduled_time DESC
+     LIMIT 100 | Params: Array
+(
+)
+
+[10-Nov-2025 23:44:38 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'customer_name' in 'SELECT' in query: SELECT id, order_number, customer_name, shipping_address, total_amount
+     FROM credit_orders 
+     WHERE status = 'approved' 
+     AND (truck_number IS NULL OR truck_number = '')
+     ORDER BY order_date DESC
+     LIMIT 50 | Params: Array
+(
+)
+
+[10-Nov-2025 23:44:44 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.customer_name' in 'SELECT' in query: SELECT 
+        ta.*,
+        v.vehicle_number,
+        v.vehicle_type,
+        d.driver_name,
+        d.phone_number as driver_phone,
+        co.order_number,
+        co.customer_name
+     FROM trip_assignments ta
+     JOIN vehicles v ON ta.vehicle_id = v.id
+     JOIN drivers d ON ta.driver_id = d.id
+     JOIN credit_orders co ON ta.order_id = co.id
+     
+     ORDER BY ta.trip_date DESC, ta.scheduled_time DESC
+     LIMIT 100 | Params: Array
+(
+)
+
+[10-Nov-2025 23:45:22 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.customer_name' in 'SELECT' in query: SELECT 
+        ta.*,
+        v.vehicle_number,
+        v.vehicle_type,
+        d.driver_name,
+        d.phone_number as driver_phone,
+        co.order_number,
+        co.customer_name
+     FROM trip_assignments ta
+     JOIN vehicles v ON ta.vehicle_id = v.id
+     JOIN drivers d ON ta.driver_id = d.id
+     JOIN credit_orders co ON ta.order_id = co.id
+     
+     ORDER BY ta.trip_date DESC, ta.scheduled_time DESC
+     LIMIT 100 | Params: Array
+(
+)
+
+[11-Nov-2025 23:52:51 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.customer_name' in 'SELECT' in query: SELECT 
+        ta.*,
+        v.vehicle_number,
+        v.vehicle_type,
+        d.driver_name,
+        d.phone_number as driver_phone,
+        co.order_number,
+        co.customer_name
+     FROM trip_assignments ta
+     JOIN vehicles v ON ta.vehicle_id = v.id
+     JOIN drivers d ON ta.driver_id = d.id
+     JOIN credit_orders co ON ta.order_id = co.id
+     
+     ORDER BY ta.trip_date DESC, ta.scheduled_time DESC
+     LIMIT 100 | Params: Array
+(
+)
+
+[13-Nov-2025 00:51:20 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'co.customer_name' in 'SELECT' in query: SELECT 
+        ta.*,
+        v.vehicle_number,
+        v.vehicle_type,
+        d.driver_name,
+        d.phone_number as driver_phone,
+        co.order_number,
+        co.customer_name
+     FROM trip_assignments ta
+     JOIN vehicles v ON ta.vehicle_id = v.id
+     JOIN drivers d ON ta.driver_id = d.id
+     JOIN credit_orders co ON ta.order_id = co.id
+     
+     ORDER BY ta.trip_date DESC, ta.scheduled_time DESC
+     LIMIT 100 | Params: Array
+(
+)
+
+[13-Nov-2025 00:51:45 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'customer_name' in 'SELECT' in query: SELECT id, order_number, customer_name, shipping_address, total_amount
+     FROM credit_orders 
+     WHERE status = 'approved' 
+     AND (truck_number IS NULL OR truck_number = '')
+     ORDER BY order_date DESC
+     LIMIT 50 | Params: Array
+(
+)
+
+[13-Nov-2025 01:08:03 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'customer_name' in 'SELECT' in query: SELECT id, order_number, customer_name, shipping_address, total_amount
+     FROM credit_orders 
+     WHERE status = 'approved' 
+     AND (truck_number IS NULL OR truck_number = '')
+     ORDER BY order_date DESC
+     LIMIT 50 | Params: Array
+(
+)
+
+[12-Nov-2025 19:08:07 UTC] PHP Warning:  require_once(../core/init.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/logistics/trips/index.php on line 2
+[12-Nov-2025 19:08:07 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '../core/init.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/logistics/trips/index.php:2
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/logistics/trips/index.php on line 2
+[13-Nov-2025 01:11:13 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'customer_name' in 'SELECT' in query: SELECT id, order_number, customer_name, shipping_address, total_amount
+     FROM credit_orders 
+     WHERE status = 'approved' 
+     AND (truck_number IS NULL OR truck_number = '')
+     ORDER BY order_date DESC
+     LIMIT 50 | Params: Array
+(
+)
+
+[12-Nov-2025 19:11:17 UTC] PHP Warning:  require_once(../core/init.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/logistics/trips/index.php on line 2
+[12-Nov-2025 19:11:17 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '../core/init.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/logistics/trips/index.php:2
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/logistics/trips/index.php on line 2
+[12-Nov-2025 19:11:17 UTC] PHP Warning:  require_once(../core/init.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/logistics/trips/index.php on line 2
+[12-Nov-2025 19:11:17 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '../core/init.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/logistics/trips/index.php:2
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/logistics/trips/index.php on line 2
+[13-Nov-2025 01:12:13 Asia/Dhaka] PHP Warning:  require_once(../templates/header.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/logistics/trips/index.php on line 180
+[13-Nov-2025 01:12:13 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Failed opening required '../templates/header.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/logistics/trips/index.php:180
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/logistics/trips/index.php on line 180
+[13-Nov-2025 01:26:48 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.order_consolidation_suggestions' doesn't exist in query: 
+    SELECT 
+        ocs.*,
+        co1.order_number as order1_number,
+        co2.order_number as order2_number,
+        c1.name as customer1_name,
+        c2.name as customer2_name
+    FROM order_consolidation_suggestions ocs
+    JOIN credit_orders co1 ON ocs.order_id_1 = co1.id
+    JOIN credit_orders co2 ON ocs.order_id_2 = co2.id
+    JOIN customers c1 ON co1.customer_id = c1.id
+    JOIN customers c2 ON co2.customer_id = c2.id
+    WHERE ocs.status = 'pending'
+    AND co1.status = 'ready_to_ship'
+    AND co2.status = 'ready_to_ship'
+    ORDER BY ocs.potential_savings DESC
+    LIMIT 10
+ | Params: Array
+(
+)
+
+[13-Nov-2025 01:27:04 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'customer_name' in 'SELECT' in query: SELECT id, order_number, customer_name, shipping_address, total_amount
+     FROM credit_orders 
+     WHERE status = 'approved' 
+     AND (truck_number IS NULL OR truck_number = '')
+     ORDER BY order_date DESC
+     LIMIT 50 | Params: Array
+(
+)
+
+[13-Nov-2025 01:27:08 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.order_consolidation_suggestions' doesn't exist in query: 
+    SELECT 
+        ocs.*,
+        co1.order_number as order1_number,
+        co2.order_number as order2_number,
+        c1.name as customer1_name,
+        c2.name as customer2_name
+    FROM order_consolidation_suggestions ocs
+    JOIN credit_orders co1 ON ocs.order_id_1 = co1.id
+    JOIN credit_orders co2 ON ocs.order_id_2 = co2.id
+    JOIN customers c1 ON co1.customer_id = c1.id
+    JOIN customers c2 ON co2.customer_id = c2.id
+    WHERE ocs.status = 'pending'
+    AND co1.status = 'ready_to_ship'
+    AND co2.status = 'ready_to_ship'
+    ORDER BY ocs.potential_savings DESC
+    LIMIT 10
+ | Params: Array
+(
+)
+
+[13-Nov-2025 01:27:33 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.order_consolidation_suggestions' doesn't exist in query: 
+    SELECT 
+        ocs.*,
+        co1.order_number as order1_number,
+        co2.order_number as order2_number,
+        c1.name as customer1_name,
+        c2.name as customer2_name
+    FROM order_consolidation_suggestions ocs
+    JOIN credit_orders co1 ON ocs.order_id_1 = co1.id
+    JOIN credit_orders co2 ON ocs.order_id_2 = co2.id
+    JOIN customers c1 ON co1.customer_id = c1.id
+    JOIN customers c2 ON co2.customer_id = c2.id
+    WHERE ocs.status = 'pending'
+    AND co1.status = 'ready_to_ship'
+    AND co2.status = 'ready_to_ship'
+    ORDER BY ocs.potential_savings DESC
+    LIMIT 10
+ | Params: Array
+(
+)
+
+[13-Nov-2025 01:29:13 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.order_consolidation_suggestions' doesn't exist in query: 
+    SELECT 
+        ocs.*,
+        co1.order_number as order1_number,
+        co2.order_number as order2_number,
+        c1.name as customer1_name,
+        c2.name as customer2_name
+    FROM order_consolidation_suggestions ocs
+    JOIN credit_orders co1 ON ocs.order_id_1 = co1.id
+    JOIN credit_orders co2 ON ocs.order_id_2 = co2.id
+    JOIN customers c1 ON co1.customer_id = c1.id
+    JOIN customers c2 ON co2.customer_id = c2.id
+    WHERE ocs.status = 'pending'
+    AND co1.status = 'ready_to_ship'
+    AND co2.status = 'ready_to_ship'
+    ORDER BY ocs.potential_savings DESC
+    LIMIT 10
+ | Params: Array
+(
+)
+
+[13-Nov-2025 01:39:48 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.order_consolidation_suggestions' doesn't exist in query: 
+    SELECT 
+        ocs.*,
+        co1.order_number as order1_number,
+        co2.order_number as order2_number,
+        c1.name as customer1_name,
+        c2.name as customer2_name
+    FROM order_consolidation_suggestions ocs
+    JOIN credit_orders co1 ON ocs.order_id_1 = co1.id
+    JOIN credit_orders co2 ON ocs.order_id_2 = co2.id
+    JOIN customers c1 ON co1.customer_id = c1.id
+    JOIN customers c2 ON co2.customer_id = c2.id
+    WHERE ocs.status = 'pending'
+    AND co1.status = 'ready_to_ship'
+    AND co2.status = 'ready_to_ship'
+    ORDER BY ocs.potential_savings DESC
+    LIMIT 10
+ | Params: Array
+(
+)
+
+[13-Nov-2025 01:43:19 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.order_consolidation_suggestions' doesn't exist in query: 
+    SELECT 
+        ocs.*,
+        co1.order_number as order1_number,
+        co2.order_number as order2_number,
+        c1.name as customer1_name,
+        c2.name as customer2_name
+    FROM order_consolidation_suggestions ocs
+    JOIN credit_orders co1 ON ocs.order_id_1 = co1.id
+    JOIN credit_orders co2 ON ocs.order_id_2 = co2.id
+    JOIN customers c1 ON co1.customer_id = c1.id
+    JOIN customers c2 ON co2.customer_id = c2.id
+    WHERE ocs.status = 'pending'
+    AND co1.status = 'ready_to_ship'
+    AND co2.status = 'ready_to_ship'
+    ORDER BY ocs.potential_savings DESC
+    LIMIT 10
+ | Params: Array
+(
+)
+
+[13-Nov-2025 01:47:27 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.order_consolidation_suggestions' doesn't exist in query: 
+    SELECT 
+        ocs.*,
+        co1.order_number as order1_number,
+        co2.order_number as order2_number,
+        c1.name as customer1_name,
+        c2.name as customer2_name
+    FROM order_consolidation_suggestions ocs
+    JOIN credit_orders co1 ON ocs.order_id_1 = co1.id
+    JOIN credit_orders co2 ON ocs.order_id_2 = co2.id
+    JOIN customers c1 ON co1.customer_id = c1.id
+    JOIN customers c2 ON co2.customer_id = c2.id
+    WHERE ocs.status = 'pending'
+    AND co1.status = 'ready_to_ship'
+    AND co2.status = 'ready_to_ship'
+    ORDER BY ocs.potential_savings DESC
+    LIMIT 10
+ | Params: Array
+(
+)
+
+[13-Nov-2025 01:59:53 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.order_consolidation_suggestions' doesn't exist in query: 
+    SELECT 
+        ocs.*,
+        co1.order_number as order1_number,
+        co2.order_number as order2_number,
+        c1.name as customer1_name,
+        c2.name as customer2_name
+    FROM order_consolidation_suggestions ocs
+    JOIN credit_orders co1 ON ocs.order_id_1 = co1.id
+    JOIN credit_orders co2 ON ocs.order_id_2 = co2.id
+    JOIN customers c1 ON co1.customer_id = c1.id
+    JOIN customers c2 ON co2.customer_id = c2.id
+    WHERE ocs.status = 'pending'
+    AND co1.status = 'ready_to_ship'
+    AND co2.status = 'ready_to_ship'
+    ORDER BY ocs.potential_savings DESC
+    LIMIT 10
+ | Params: Array
+(
+)
+
+[13-Nov-2025 01:59:57 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.order_consolidation_suggestions' doesn't exist in query: 
+    SELECT 
+        ocs.*,
+        co1.order_number as order1_number,
+        co2.order_number as order2_number,
+        c1.name as customer1_name,
+        c2.name as customer2_name
+    FROM order_consolidation_suggestions ocs
+    JOIN credit_orders co1 ON ocs.order_id_1 = co1.id
+    JOIN credit_orders co2 ON ocs.order_id_2 = co2.id
+    JOIN customers c1 ON co1.customer_id = c1.id
+    JOIN customers c2 ON co2.customer_id = c2.id
+    WHERE ocs.status = 'pending'
+    AND co1.status = 'ready_to_ship'
+    AND co2.status = 'ready_to_ship'
+    ORDER BY ocs.potential_savings DESC
+    LIMIT 10
+ | Params: Array
+(
+)
+
+[13-Nov-2025 02:00:53 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.order_consolidation_suggestions' doesn't exist in query: 
+    SELECT 
+        ocs.*,
+        co1.order_number as order1_number,
+        co2.order_number as order2_number,
+        c1.name as customer1_name,
+        c2.name as customer2_name
+    FROM order_consolidation_suggestions ocs
+    JOIN credit_orders co1 ON ocs.order_id_1 = co1.id
+    JOIN credit_orders co2 ON ocs.order_id_2 = co2.id
+    JOIN customers c1 ON co1.customer_id = c1.id
+    JOIN customers c2 ON co2.customer_id = c2.id
+    WHERE ocs.status = 'pending'
+    AND co1.status = 'ready_to_ship'
+    AND co2.status = 'ready_to_ship'
+    ORDER BY ocs.potential_savings DESC
+    LIMIT 10
+ | Params: Array
+(
+)
+
+[13-Nov-2025 02:00:56 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.order_consolidation_suggestions' doesn't exist in query: 
+    SELECT 
+        ocs.*,
+        co1.order_number as order1_number,
+        co2.order_number as order2_number,
+        c1.name as customer1_name,
+        c2.name as customer2_name
+    FROM order_consolidation_suggestions ocs
+    JOIN credit_orders co1 ON ocs.order_id_1 = co1.id
+    JOIN credit_orders co2 ON ocs.order_id_2 = co2.id
+    JOIN customers c1 ON co1.customer_id = c1.id
+    JOIN customers c2 ON co2.customer_id = c2.id
+    WHERE ocs.status = 'pending'
+    AND co1.status = 'ready_to_ship'
+    AND co2.status = 'ready_to_ship'
+    ORDER BY ocs.potential_savings DESC
+    LIMIT 10
+ | Params: Array
+(
+)
+
+[13-Nov-2025 02:03:07 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.order_consolidation_suggestions' doesn't exist in query: 
+    SELECT 
+        ocs.*,
+        co1.order_number as order1_number,
+        co2.order_number as order2_number,
+        c1.name as customer1_name,
+        c2.name as customer2_name
+    FROM order_consolidation_suggestions ocs
+    JOIN credit_orders co1 ON ocs.order_id_1 = co1.id
+    JOIN credit_orders co2 ON ocs.order_id_2 = co2.id
+    JOIN customers c1 ON co1.customer_id = c1.id
+    JOIN customers c2 ON co2.customer_id = c2.id
+    WHERE ocs.status = 'pending'
+    AND co1.status = 'ready_to_ship'
+    AND co2.status = 'ready_to_ship'
+    ORDER BY ocs.potential_savings DESC
+    LIMIT 10
+ | Params: Array
+(
+)
+
+[13-Nov-2025 02:03:21 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.order_consolidation_suggestions' doesn't exist in query: 
+    SELECT 
+        ocs.*,
+        co1.order_number as order1_number,
+        co2.order_number as order2_number,
+        c1.name as customer1_name,
+        c2.name as customer2_name
+    FROM order_consolidation_suggestions ocs
+    JOIN credit_orders co1 ON ocs.order_id_1 = co1.id
+    JOIN credit_orders co2 ON ocs.order_id_2 = co2.id
+    JOIN customers c1 ON co1.customer_id = c1.id
+    JOIN customers c2 ON co2.customer_id = c2.id
+    WHERE ocs.status = 'pending'
+    AND co1.status = 'ready_to_ship'
+    AND co2.status = 'ready_to_ship'
+    ORDER BY ocs.potential_savings DESC
+    LIMIT 10
+ | Params: Array
+(
+)
+
+[13-Nov-2025 02:04:41 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.order_consolidation_suggestions' doesn't exist in query: 
+    SELECT 
+        ocs.*,
+        co1.order_number as order1_number,
+        co2.order_number as order2_number,
+        c1.name as customer1_name,
+        c2.name as customer2_name
+    FROM order_consolidation_suggestions ocs
+    JOIN credit_orders co1 ON ocs.order_id_1 = co1.id
+    JOIN credit_orders co2 ON ocs.order_id_2 = co2.id
+    JOIN customers c1 ON co1.customer_id = c1.id
+    JOIN customers c2 ON co2.customer_id = c2.id
+    WHERE ocs.status = 'pending'
+    AND co1.status = 'ready_to_ship'
+    AND co2.status = 'ready_to_ship'
+    ORDER BY ocs.potential_savings DESC
+    LIMIT 10
+ | Params: Array
+(
+)
+
+[13-Nov-2025 02:06:04 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_available' in 'SET' in query: UPDATE drivers SET is_available = 0, assigned_vehicle_id = ? WHERE id = ? | Params: Array
+(
+    [0] => 5
+    [1] => 30
+)
+
+[13-Nov-2025 02:07:06 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.order_consolidation_suggestions' doesn't exist in query: 
+    SELECT 
+        ocs.*,
+        co1.order_number as order1_number,
+        co2.order_number as order2_number,
+        c1.name as customer1_name,
+        c2.name as customer2_name
+    FROM order_consolidation_suggestions ocs
+    JOIN credit_orders co1 ON ocs.order_id_1 = co1.id
+    JOIN credit_orders co2 ON ocs.order_id_2 = co2.id
+    JOIN customers c1 ON co1.customer_id = c1.id
+    JOIN customers c2 ON co2.customer_id = c2.id
+    WHERE ocs.status = 'pending'
+    AND co1.status = 'ready_to_ship'
+    AND co2.status = 'ready_to_ship'
+    ORDER BY ocs.potential_savings DESC
+    LIMIT 10
+ | Params: Array
+(
+)
+
+[13-Nov-2025 02:07:08 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.order_consolidation_suggestions' doesn't exist in query: 
+    SELECT 
+        ocs.*,
+        co1.order_number as order1_number,
+        co1.total_amount as order1_amount,
+        co1.total_weight_kg as order1_weight,
+        co1.shipping_address as order1_address,
+        co2.order_number as order2_number,
+        co2.total_amount as order2_amount,
+        co2.total_weight_kg as order2_weight,
+        co2.shipping_address as order2_address,
+        c1.name as customer1_name,
+        c1.phone_number as customer1_phone,
+        c2.name as customer2_name,
+        c2.phone_number as customer2_phone
+    FROM order_consolidation_suggestions ocs
+    JOIN credit_orders co1 ON ocs.order_id_1 = co1.id
+    JOIN credit_orders co2 ON ocs.order_id_2 = co2.id
+    JOIN customers c1 ON co1.customer_id = c1.id
+    JOIN customers c2 ON co2.customer_id = c2.id
+    WHERE ocs.status = 'pending'
+    AND co1.status = 'ready_to_ship'
+    AND co2.status = 'ready_to_ship'
+    ORDER BY ocs.potential_savings DESC
+ | Params: Array
+(
+)
+
+[13-Nov-2025 02:07:12 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.order_consolidation_suggestions' doesn't exist in query: 
+    SELECT 
+        ocs.*,
+        co1.order_number as order1_number,
+        co1.total_amount as order1_amount,
+        co1.total_weight_kg as order1_weight,
+        co1.shipping_address as order1_address,
+        co2.order_number as order2_number,
+        co2.total_amount as order2_amount,
+        co2.total_weight_kg as order2_weight,
+        co2.shipping_address as order2_address,
+        c1.name as customer1_name,
+        c1.phone_number as customer1_phone,
+        c2.name as customer2_name,
+        c2.phone_number as customer2_phone
+    FROM order_consolidation_suggestions ocs
+    JOIN credit_orders co1 ON ocs.order_id_1 = co1.id
+    JOIN credit_orders co2 ON ocs.order_id_2 = co2.id
+    JOIN customers c1 ON co1.customer_id = c1.id
+    JOIN customers c2 ON co2.customer_id = c2.id
+    WHERE ocs.status = 'pending'
+    AND co1.status = 'ready_to_ship'
+    AND co2.status = 'ready_to_ship'
+    ORDER BY ocs.potential_savings DESC
+ | Params: Array
+(
+)
+
+[13-Nov-2025 02:07:19 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.order_consolidation_suggestions' doesn't exist in query: 
+    SELECT 
+        ocs.*,
+        co1.order_number as order1_number,
+        co2.order_number as order2_number,
+        c1.name as customer1_name,
+        c2.name as customer2_name
+    FROM order_consolidation_suggestions ocs
+    JOIN credit_orders co1 ON ocs.order_id_1 = co1.id
+    JOIN credit_orders co2 ON ocs.order_id_2 = co2.id
+    JOIN customers c1 ON co1.customer_id = c1.id
+    JOIN customers c2 ON co2.customer_id = c2.id
+    WHERE ocs.status = 'pending'
+    AND co1.status = 'ready_to_ship'
+    AND co2.status = 'ready_to_ship'
+    ORDER BY ocs.potential_savings DESC
+    LIMIT 10
+ | Params: Array
+(
+)
+
+[13-Nov-2025 02:07:25 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.order_consolidation_suggestions' doesn't exist in query: 
+    SELECT 
+        ocs.*,
+        co1.order_number as order1_number,
+        co2.order_number as order2_number,
+        c1.name as customer1_name,
+        c2.name as customer2_name
+    FROM order_consolidation_suggestions ocs
+    JOIN credit_orders co1 ON ocs.order_id_1 = co1.id
+    JOIN credit_orders co2 ON ocs.order_id_2 = co2.id
+    JOIN customers c1 ON co1.customer_id = c1.id
+    JOIN customers c2 ON co2.customer_id = c2.id
+    WHERE ocs.status = 'pending'
+    AND co1.status = 'ready_to_ship'
+    AND co2.status = 'ready_to_ship'
+    ORDER BY ocs.potential_savings DESC
+    LIMIT 10
+ | Params: Array
+(
+)
+
+[13-Nov-2025 02:12:33 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'v.registration_number' in 'SELECT' in query: SELECT ta.*,
+            v.vehicle_number,
+            v.category as vehicle_category,
+            v.vehicle_type,
+            v.capacity_kg,
+            v.fuel_type,
+            v.registration_number,
+            d.driver_name,
+            d.phone_number as driver_phone,
+            d.driver_type,
+            d.license_number,
+            d.rating as driver_rating,
+            u.display_name as created_by_name
+     FROM trip_assignments ta
+     LEFT JOIN vehicles v ON ta.vehicle_id = v.id
+     LEFT JOIN drivers d ON ta.driver_id = d.id
+     LEFT JOIN users u ON ta.created_by_user_id = u.id
+     WHERE ta.id = ? | Params: Array
+(
+    [0] => 7
+)
+
+[13-Nov-2025 02:12:33 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.order_consolidation_suggestions' doesn't exist in query: 
+    SELECT 
+        ocs.*,
+        co1.order_number as order1_number,
+        co2.order_number as order2_number,
+        c1.name as customer1_name,
+        c2.name as customer2_name
+    FROM order_consolidation_suggestions ocs
+    JOIN credit_orders co1 ON ocs.order_id_1 = co1.id
+    JOIN credit_orders co2 ON ocs.order_id_2 = co2.id
+    JOIN customers c1 ON co1.customer_id = c1.id
+    JOIN customers c2 ON co2.customer_id = c2.id
+    WHERE ocs.status = 'pending'
+    AND co1.status = 'ready_to_ship'
+    AND co2.status = 'ready_to_ship'
+    ORDER BY ocs.potential_savings DESC
+    LIMIT 10
+ | Params: Array
+(
+)
+
+[13-Nov-2025 02:12:39 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'v.registration_number' in 'SELECT' in query: SELECT ta.*,
+            v.vehicle_number,
+            v.category as vehicle_category,
+            v.vehicle_type,
+            v.capacity_kg,
+            v.fuel_type,
+            v.registration_number,
+            d.driver_name,
+            d.phone_number as driver_phone,
+            d.driver_type,
+            d.license_number,
+            d.rating as driver_rating,
+            u.display_name as created_by_name
+     FROM trip_assignments ta
+     LEFT JOIN vehicles v ON ta.vehicle_id = v.id
+     LEFT JOIN drivers d ON ta.driver_id = d.id
+     LEFT JOIN users u ON ta.created_by_user_id = u.id
+     WHERE ta.id = ? | Params: Array
+(
+    [0] => 7
+)
+
+[13-Nov-2025 02:12:39 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.order_consolidation_suggestions' doesn't exist in query: 
+    SELECT 
+        ocs.*,
+        co1.order_number as order1_number,
+        co2.order_number as order2_number,
+        c1.name as customer1_name,
+        c2.name as customer2_name
+    FROM order_consolidation_suggestions ocs
+    JOIN credit_orders co1 ON ocs.order_id_1 = co1.id
+    JOIN credit_orders co2 ON ocs.order_id_2 = co2.id
+    JOIN customers c1 ON co1.customer_id = c1.id
+    JOIN customers c2 ON co2.customer_id = c2.id
+    WHERE ocs.status = 'pending'
+    AND co1.status = 'ready_to_ship'
+    AND co2.status = 'ready_to_ship'
+    ORDER BY ocs.potential_savings DESC
+    LIMIT 10
+ | Params: Array
+(
+)
+
+[13-Nov-2025 02:13:06 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.order_consolidation_suggestions' doesn't exist in query: 
+    SELECT 
+        ocs.*,
+        co1.order_number as order1_number,
+        co2.order_number as order2_number,
+        c1.name as customer1_name,
+        c2.name as customer2_name
+    FROM order_consolidation_suggestions ocs
+    JOIN credit_orders co1 ON ocs.order_id_1 = co1.id
+    JOIN credit_orders co2 ON ocs.order_id_2 = co2.id
+    JOIN customers c1 ON co1.customer_id = c1.id
+    JOIN customers c2 ON co2.customer_id = c2.id
+    WHERE ocs.status = 'pending'
+    AND co1.status = 'ready_to_ship'
+    AND co2.status = 'ready_to_ship'
+    ORDER BY ocs.potential_savings DESC
+    LIMIT 10
+ | Params: Array
+(
+)
+
+[13-Nov-2025 02:13:06 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.order_consolidation_suggestions' doesn't exist in query: 
+    SELECT 
+        ocs.*,
+        co1.order_number as order1_number,
+        co2.order_number as order2_number,
+        c1.name as customer1_name,
+        c2.name as customer2_name
+    FROM order_consolidation_suggestions ocs
+    JOIN credit_orders co1 ON ocs.order_id_1 = co1.id
+    JOIN credit_orders co2 ON ocs.order_id_2 = co2.id
+    JOIN customers c1 ON co1.customer_id = c1.id
+    JOIN customers c2 ON co2.customer_id = c2.id
+    WHERE ocs.status = 'pending'
+    AND co1.status = 'ready_to_ship'
+    AND co2.status = 'ready_to_ship'
+    ORDER BY ocs.potential_savings DESC
+    LIMIT 10
+ | Params: Array
+(
+)
+
+[13-Nov-2025 09:34:28 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.order_consolidation_suggestions' doesn't exist in query: 
+    SELECT 
+        ocs.*,
+        co1.order_number as order1_number,
+        co2.order_number as order2_number,
+        c1.name as customer1_name,
+        c2.name as customer2_name
+    FROM order_consolidation_suggestions ocs
+    JOIN credit_orders co1 ON ocs.order_id_1 = co1.id
+    JOIN credit_orders co2 ON ocs.order_id_2 = co2.id
+    JOIN customers c1 ON co1.customer_id = c1.id
+    JOIN customers c2 ON co2.customer_id = c2.id
+    WHERE ocs.status = 'pending'
+    AND co1.status = 'ready_to_ship'
+    AND co2.status = 'ready_to_ship'
+    ORDER BY ocs.potential_savings DESC
+    LIMIT 10
+ | Params: Array
+(
+)
+
+[13-Nov-2025 09:35:22 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.order_consolidation_suggestions' doesn't exist in query: 
+    SELECT 
+        ocs.*,
+        co1.order_number as order1_number,
+        co2.order_number as order2_number,
+        c1.name as customer1_name,
+        c2.name as customer2_name
+    FROM order_consolidation_suggestions ocs
+    JOIN credit_orders co1 ON ocs.order_id_1 = co1.id
+    JOIN credit_orders co2 ON ocs.order_id_2 = co2.id
+    JOIN customers c1 ON co1.customer_id = c1.id
+    JOIN customers c2 ON co2.customer_id = c2.id
+    WHERE ocs.status = 'pending'
+    AND co1.status = 'ready_to_ship'
+    AND co2.status = 'ready_to_ship'
+    ORDER BY ocs.potential_savings DESC
+    LIMIT 10
+ | Params: Array
+(
+)
+
+[13-Nov-2025 18:21:19 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.order_consolidation_suggestions' doesn't exist in query: 
+    SELECT 
+        ocs.*,
+        co1.order_number as order1_number,
+        co2.order_number as order2_number,
+        c1.name as customer1_name,
+        c2.name as customer2_name
+    FROM order_consolidation_suggestions ocs
+    JOIN credit_orders co1 ON ocs.order_id_1 = co1.id
+    JOIN credit_orders co2 ON ocs.order_id_2 = co2.id
+    JOIN customers c1 ON co1.customer_id = c1.id
+    JOIN customers c2 ON co2.customer_id = c2.id
+    WHERE ocs.status = 'pending'
+    AND co1.status = 'ready_to_ship'
+    AND co2.status = 'ready_to_ship'
+    ORDER BY ocs.potential_savings DESC
+    LIMIT 10
+ | Params: Array
+(
+)
+
+[13-Nov-2025 18:21:38 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'v.registration_number' in 'SELECT' in query: SELECT ta.*,
+            v.vehicle_number,
+            v.category as vehicle_category,
+            v.vehicle_type,
+            v.capacity_kg,
+            v.fuel_type,
+            v.registration_number,
+            d.driver_name,
+            d.phone_number as driver_phone,
+            d.driver_type,
+            d.license_number,
+            d.rating as driver_rating,
+            u.display_name as created_by_name
+     FROM trip_assignments ta
+     LEFT JOIN vehicles v ON ta.vehicle_id = v.id
+     LEFT JOIN drivers d ON ta.driver_id = d.id
+     LEFT JOIN users u ON ta.created_by_user_id = u.id
+     WHERE ta.id = ? | Params: Array
+(
+    [0] => 7
+)
+
+[13-Nov-2025 18:21:38 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.order_consolidation_suggestions' doesn't exist in query: 
+    SELECT 
+        ocs.*,
+        co1.order_number as order1_number,
+        co2.order_number as order2_number,
+        c1.name as customer1_name,
+        c2.name as customer2_name
+    FROM order_consolidation_suggestions ocs
+    JOIN credit_orders co1 ON ocs.order_id_1 = co1.id
+    JOIN credit_orders co2 ON ocs.order_id_2 = co2.id
+    JOIN customers c1 ON co1.customer_id = c1.id
+    JOIN customers c2 ON co2.customer_id = c2.id
+    WHERE ocs.status = 'pending'
+    AND co1.status = 'ready_to_ship'
+    AND co2.status = 'ready_to_ship'
+    ORDER BY ocs.potential_savings DESC
+    LIMIT 10
+ | Params: Array
+(
+)
+
+[13-Nov-2025 18:21:43 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.order_consolidation_suggestions' doesn't exist in query: 
+    SELECT 
+        ocs.*,
+        co1.order_number as order1_number,
+        co1.total_amount as order1_amount,
+        co1.total_weight_kg as order1_weight,
+        co1.shipping_address as order1_address,
+        co2.order_number as order2_number,
+        co2.total_amount as order2_amount,
+        co2.total_weight_kg as order2_weight,
+        co2.shipping_address as order2_address,
+        c1.name as customer1_name,
+        c1.phone_number as customer1_phone,
+        c2.name as customer2_name,
+        c2.phone_number as customer2_phone
+    FROM order_consolidation_suggestions ocs
+    JOIN credit_orders co1 ON ocs.order_id_1 = co1.id
+    JOIN credit_orders co2 ON ocs.order_id_2 = co2.id
+    JOIN customers c1 ON co1.customer_id = c1.id
+    JOIN customers c2 ON co2.customer_id = c2.id
+    WHERE ocs.status = 'pending'
+    AND co1.status = 'ready_to_ship'
+    AND co2.status = 'ready_to_ship'
+    ORDER BY ocs.potential_savings DESC
+ | Params: Array
+(
+)
+
+[13-Nov-2025 18:21:45 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.order_consolidation_suggestions' doesn't exist in query: 
+    SELECT 
+        ocs.*,
+        co1.order_number as order1_number,
+        co1.total_amount as order1_amount,
+        co1.total_weight_kg as order1_weight,
+        co1.shipping_address as order1_address,
+        co2.order_number as order2_number,
+        co2.total_amount as order2_amount,
+        co2.total_weight_kg as order2_weight,
+        co2.shipping_address as order2_address,
+        c1.name as customer1_name,
+        c1.phone_number as customer1_phone,
+        c2.name as customer2_name,
+        c2.phone_number as customer2_phone
+    FROM order_consolidation_suggestions ocs
+    JOIN credit_orders co1 ON ocs.order_id_1 = co1.id
+    JOIN credit_orders co2 ON ocs.order_id_2 = co2.id
+    JOIN customers c1 ON co1.customer_id = c1.id
+    JOIN customers c2 ON co2.customer_id = c2.id
+    WHERE ocs.status = 'pending'
+    AND co1.status = 'ready_to_ship'
+    AND co2.status = 'ready_to_ship'
+    ORDER BY ocs.potential_savings DESC
+ | Params: Array
+(
+)
+
+[13-Nov-2025 18:21:46 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.order_consolidation_suggestions' doesn't exist in query: 
+    SELECT 
+        ocs.*,
+        co1.order_number as order1_number,
+        co2.order_number as order2_number,
+        c1.name as customer1_name,
+        c2.name as customer2_name
+    FROM order_consolidation_suggestions ocs
+    JOIN credit_orders co1 ON ocs.order_id_1 = co1.id
+    JOIN credit_orders co2 ON ocs.order_id_2 = co2.id
+    JOIN customers c1 ON co1.customer_id = c1.id
+    JOIN customers c2 ON co2.customer_id = c2.id
+    WHERE ocs.status = 'pending'
+    AND co1.status = 'ready_to_ship'
+    AND co2.status = 'ready_to_ship'
+    ORDER BY ocs.potential_savings DESC
+    LIMIT 10
+ | Params: Array
+(
+)
+
+[13-Nov-2025 18:21:51 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.order_consolidation_suggestions' doesn't exist in query: 
+    SELECT 
+        ocs.*,
+        co1.order_number as order1_number,
+        co2.order_number as order2_number,
+        c1.name as customer1_name,
+        c2.name as customer2_name
+    FROM order_consolidation_suggestions ocs
+    JOIN credit_orders co1 ON ocs.order_id_1 = co1.id
+    JOIN credit_orders co2 ON ocs.order_id_2 = co2.id
+    JOIN customers c1 ON co1.customer_id = c1.id
+    JOIN customers c2 ON co2.customer_id = c2.id
+    WHERE ocs.status = 'pending'
+    AND co1.status = 'ready_to_ship'
+    AND co2.status = 'ready_to_ship'
+    ORDER BY ocs.potential_savings DESC
+    LIMIT 10
+ | Params: Array
+(
+)
+
+[14-Nov-2025 09:43:07 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.order_consolidation_suggestions' doesn't exist in query: 
+    SELECT 
+        ocs.*,
+        co1.order_number as order1_number,
+        co2.order_number as order2_number,
+        c1.name as customer1_name,
+        c2.name as customer2_name
+    FROM order_consolidation_suggestions ocs
+    JOIN credit_orders co1 ON ocs.order_id_1 = co1.id
+    JOIN credit_orders co2 ON ocs.order_id_2 = co2.id
+    JOIN customers c1 ON co1.customer_id = c1.id
+    JOIN customers c2 ON co2.customer_id = c2.id
+    WHERE ocs.status = 'pending'
+    AND co1.status = 'ready_to_ship'
+    AND co2.status = 'ready_to_ship'
+    ORDER BY ocs.potential_savings DESC
+    LIMIT 10
+ | Params: Array
+(
+)
+
+[14-Nov-2025 09:43:13 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.order_consolidation_suggestions' doesn't exist in query: 
+    SELECT 
+        ocs.*,
+        co1.order_number as order1_number,
+        co2.order_number as order2_number,
+        c1.name as customer1_name,
+        c2.name as customer2_name
+    FROM order_consolidation_suggestions ocs
+    JOIN credit_orders co1 ON ocs.order_id_1 = co1.id
+    JOIN credit_orders co2 ON ocs.order_id_2 = co2.id
+    JOIN customers c1 ON co1.customer_id = c1.id
+    JOIN customers c2 ON co2.customer_id = c2.id
+    WHERE ocs.status = 'pending'
+    AND co1.status = 'ready_to_ship'
+    AND co2.status = 'ready_to_ship'
+    ORDER BY ocs.potential_savings DESC
+    LIMIT 10
+ | Params: Array
+(
+)
+
+[14-Nov-2025 09:43:15 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.order_consolidation_suggestions' doesn't exist in query: 
+    SELECT 
+        ocs.*,
+        co1.order_number as order1_number,
+        co2.order_number as order2_number,
+        c1.name as customer1_name,
+        c2.name as customer2_name
+    FROM order_consolidation_suggestions ocs
+    JOIN credit_orders co1 ON ocs.order_id_1 = co1.id
+    JOIN credit_orders co2 ON ocs.order_id_2 = co2.id
+    JOIN customers c1 ON co1.customer_id = c1.id
+    JOIN customers c2 ON co2.customer_id = c2.id
+    WHERE ocs.status = 'pending'
+    AND co1.status = 'ready_to_ship'
+    AND co2.status = 'ready_to_ship'
+    ORDER BY ocs.potential_savings DESC
+    LIMIT 10
+ | Params: Array
+(
+)
+
+[14-Nov-2025 10:45:35 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.order_consolidation_suggestions' doesn't exist in query: 
+    SELECT 
+        ocs.*,
+        co1.order_number as order1_number,
+        co2.order_number as order2_number,
+        c1.name as customer1_name,
+        c2.name as customer2_name
+    FROM order_consolidation_suggestions ocs
+    JOIN credit_orders co1 ON ocs.order_id_1 = co1.id
+    JOIN credit_orders co2 ON ocs.order_id_2 = co2.id
+    JOIN customers c1 ON co1.customer_id = c1.id
+    JOIN customers c2 ON co2.customer_id = c2.id
+    WHERE ocs.status = 'pending'
+    AND co1.status = 'ready_to_ship'
+    AND co2.status = 'ready_to_ship'
+    ORDER BY ocs.potential_savings DESC
+    LIMIT 10
+ | Params: Array
+(
+)
+
+[14-Nov-2025 16:34:00 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.order_consolidation_suggestions' doesn't exist in query: 
+    SELECT 
+        ocs.*,
+        co1.order_number as order1_number,
+        co2.order_number as order2_number,
+        c1.name as customer1_name,
+        c2.name as customer2_name
+    FROM order_consolidation_suggestions ocs
+    JOIN credit_orders co1 ON ocs.order_id_1 = co1.id
+    JOIN credit_orders co2 ON ocs.order_id_2 = co2.id
+    JOIN customers c1 ON co1.customer_id = c1.id
+    JOIN customers c2 ON co2.customer_id = c2.id
+    WHERE ocs.status = 'pending'
+    AND co1.status = 'ready_to_ship'
+    AND co2.status = 'ready_to_ship'
+    ORDER BY ocs.potential_savings DESC
+    LIMIT 10
+ | Params: Array
+(
+)
+
+[14-Nov-2025 16:34:28 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.order_consolidation_suggestions' doesn't exist in query: 
+    SELECT 
+        ocs.*,
+        co1.order_number as order1_number,
+        co2.order_number as order2_number,
+        c1.name as customer1_name,
+        c2.name as customer2_name
+    FROM order_consolidation_suggestions ocs
+    JOIN credit_orders co1 ON ocs.order_id_1 = co1.id
+    JOIN credit_orders co2 ON ocs.order_id_2 = co2.id
+    JOIN customers c1 ON co1.customer_id = c1.id
+    JOIN customers c2 ON co2.customer_id = c2.id
+    WHERE ocs.status = 'pending'
+    AND co1.status = 'ready_to_ship'
+    AND co2.status = 'ready_to_ship'
+    ORDER BY ocs.potential_savings DESC
+    LIMIT 10
+ | Params: Array
+(
+)
+

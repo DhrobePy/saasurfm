@@ -1,0 +1,21 @@
+[14-Nov-2025 20:05:24 Asia/Dhaka] Rental manage error: [User: 1] Critical Error: 'Accounts Receivable (1120)' account not found.
+[14-Nov-2025 20:09:18 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'entry_type' in 'INSERT INTO' in query: INSERT INTO `transaction_lines` (`journal_entry_id`, `account_id`, `entry_type`, `amount`, `description`) VALUES (?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 52
+    [1] => 38
+    [2] => debit
+    [3] => 10000
+    [4] => Invoice for DHK-HA-5678 rental
+)
+
+[14-Nov-2025 20:09:18 Asia/Dhaka] Database insert failed for table 'transaction_lines'.
+[14-Nov-2025 20:09:18 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'entry_type' in 'INSERT INTO' in query: INSERT INTO `transaction_lines` (`journal_entry_id`, `account_id`, `entry_type`, `amount`, `description`) VALUES (?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 52
+    [1] => 37
+    [2] => credit
+    [3] => 10000
+    [4] => Rental income from nibirrrrr
+)
+
+[14-Nov-2025 20:09:18 Asia/Dhaka] Database insert failed for table 'transaction_lines'.

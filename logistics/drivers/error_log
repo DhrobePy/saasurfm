@@ -1,0 +1,62 @@
+[08-Nov-2025 21:15:20 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'd.assigned_branch_id' in 'ON' in query: SELECT d.*, v.vehicle_number, b.name as branch_name
+     FROM drivers d
+     LEFT JOIN vehicles v ON d.assigned_vehicle_id = v.id
+     LEFT JOIN branches b ON d.assigned_branch_id = b.id
+     
+     ORDER BY d.driver_type, d.driver_name | Params: Array
+(
+)
+
+[08-Nov-2025 22:20:22 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'd.assigned_branch_id' in 'ON' in query: SELECT d.*, v.vehicle_number, b.name as branch_name
+     FROM drivers d
+     LEFT JOIN vehicles v ON d.assigned_vehicle_id = v.id
+     LEFT JOIN branches b ON d.assigned_branch_id = b.id
+     
+     ORDER BY d.driver_type, d.driver_name | Params: Array
+(
+)
+
+[08-Nov-2025 22:22:18 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'd.assigned_branch_id' in 'ON' in query: SELECT d.*, v.vehicle_number, b.name as branch_name
+     FROM drivers d
+     LEFT JOIN vehicles v ON d.assigned_vehicle_id = v.id
+     LEFT JOIN branches b ON d.assigned_branch_id = b.id
+     
+     ORDER BY d.driver_type, d.driver_name | Params: Array
+(
+)
+
+[08-Nov-2025 22:23:56 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'email' in 'INSERT INTO' in query: INSERT INTO `drivers` (`driver_name`, `phone_number`, `email`, `driver_type`, `license_number`, `license_type`, `license_issue_date`, `license_expiry_date`, `nid_number`, `address`, `emergency_contact_name`, `emergency_contact_phone`, `date_of_birth`, `join_date`, `status`, `assigned_branch_id`, `notes`, `salary`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => Rahim shap
+    [1] => 01912071988
+    [2] => fhgf@gmail.com
+    [3] => Permanent
+    [4] => DL-123456789
+    [5] => Heavy
+    [6] => 2021-07-08
+    [7] => 2031-09-08
+    [8] => 1235356777888
+    [9] => 
+    [10] => 
+    [11] => 
+    [12] => 1996-11-08
+    [13] => 2025-11-01
+    [14] => Active
+    [15] => 
+    [16] => 
+    [17] => 12000
+)
+
+[08-Nov-2025 22:23:56 Asia/Dhaka] Database insert failed for table 'drivers'.
+[08-Nov-2025 22:23:56 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'd.assigned_branch_id' in 'ON' in query: SELECT d.*, v.vehicle_number, b.name as branch_name
+     FROM drivers d
+     LEFT JOIN vehicles v ON d.assigned_vehicle_id = v.id
+     LEFT JOIN branches b ON d.assigned_branch_id = b.id
+     
+     ORDER BY d.driver_type, d.driver_name | Params: Array
+(
+)
+
+[08-Nov-2025 22:38:08 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$photo_path in /home/ujjalfmc/public_html/saas.ujjalfm.com/logistics/drivers/index.php on line 100
+[08-Nov-2025 22:38:08 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$photo_path in /home/ujjalfmc/public_html/saas.ujjalfm.com/logistics/drivers/index.php on line 100
+[08-Nov-2025 22:38:08 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$daily_rate in /home/ujjalfmc/public_html/saas.ujjalfm.com/logistics/drivers/index.php on line 187

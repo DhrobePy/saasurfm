@@ -1,0 +1,104 @@
+[08-Nov-2025 20:18:04 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'v.assigned_branch_id' in 'ON' in query: SELECT v.*, b.name as branch_name, d.driver_name
+     FROM vehicles v
+     LEFT JOIN branches b ON v.assigned_branch_id = b.id
+     LEFT JOIN drivers d ON d.assigned_vehicle_id = v.id
+     
+     ORDER BY v.vehicle_type, v.vehicle_number | Params: Array
+(
+)
+
+[08-Nov-2025 20:18:25 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'v.assigned_branch_id' in 'ON' in query: SELECT v.*, b.name as branch_name, d.driver_name
+     FROM vehicles v
+     LEFT JOIN branches b ON v.assigned_branch_id = b.id
+     LEFT JOIN drivers d ON d.assigned_vehicle_id = v.id
+     
+     ORDER BY v.vehicle_type, v.vehicle_number | Params: Array
+(
+)
+
+[08-Nov-2025 20:21:13 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'v.assigned_branch_id' in 'ON' in query: SELECT v.*, b.name as branch_name, d.driver_name
+     FROM vehicles v
+     LEFT JOIN branches b ON v.assigned_branch_id = b.id
+     LEFT JOIN drivers d ON d.assigned_vehicle_id = v.id
+     
+     ORDER BY v.vehicle_type, v.vehicle_number | Params: Array
+(
+)
+
+[08-Nov-2025 20:21:21 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'v.assigned_branch_id' in 'ON' in query: SELECT v.*, b.name as branch_name, d.driver_name
+     FROM vehicles v
+     LEFT JOIN branches b ON v.assigned_branch_id = b.id
+     LEFT JOIN drivers d ON d.assigned_vehicle_id = v.id
+     
+     ORDER BY v.vehicle_type, v.vehicle_number | Params: Array
+(
+)
+
+[08-Nov-2025 20:21:26 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'v.assigned_branch_id' in 'ON' in query: SELECT v.*, b.name as branch_name, d.driver_name
+     FROM vehicles v
+     LEFT JOIN branches b ON v.assigned_branch_id = b.id
+     LEFT JOIN drivers d ON d.assigned_vehicle_id = v.id
+     
+     ORDER BY v.vehicle_type, v.vehicle_number | Params: Array
+(
+)
+
+[08-Nov-2025 20:22:28 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'v.assigned_branch_id' in 'ON' in query: SELECT v.*, b.name as branch_name, d.driver_name
+     FROM vehicles v
+     LEFT JOIN branches b ON v.assigned_branch_id = b.id
+     LEFT JOIN drivers d ON d.assigned_vehicle_id = v.id
+     
+     ORDER BY v.vehicle_type, v.vehicle_number | Params: Array
+(
+)
+
+[08-Nov-2025 20:24:44 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'make' in 'INSERT INTO' in query: INSERT INTO `vehicles` (`vehicle_number`, `vehicle_type`, `category`, `model`, `make`, `year`, `capacity_kg`, `fuel_type`, `status`, `ownership_status`, `assigned_branch_id`, `notes`, `purchase_date`, `purchase_price`, `current_mileage`, `next_service_due_date`, `next_service_due_mileage`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => DHK-GHA-21-3776
+    [1] => Own
+    [2] => Truck
+    [3] => Lp200
+    [4] => Ashol
+    [5] => 2014
+    [6] => 25000
+    [7] => Diesel
+    [8] => Active
+    [9] => Owned
+    [10] => 
+    [11] => 
+    [12] => 2016-05-08
+    [13] => 1000000
+    [14] => 169000
+    [15] => 2025-11-30
+    [16] => 175000
+)
+
+[08-Nov-2025 20:24:44 Asia/Dhaka] Database insert failed for table 'vehicles'.
+[08-Nov-2025 20:24:44 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'v.assigned_branch_id' in 'ON' in query: SELECT v.*, b.name as branch_name, d.driver_name
+     FROM vehicles v
+     LEFT JOIN branches b ON v.assigned_branch_id = b.id
+     LEFT JOIN drivers d ON d.assigned_vehicle_id = v.id
+     
+     ORDER BY v.vehicle_type, v.vehicle_number | Params: Array
+(
+)
+
+[08-Nov-2025 20:25:16 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'v.assigned_branch_id' in 'ON' in query: SELECT v.*, b.name as branch_name, d.driver_name
+     FROM vehicles v
+     LEFT JOIN branches b ON v.assigned_branch_id = b.id
+     LEFT JOIN drivers d ON d.assigned_vehicle_id = v.id
+     
+     ORDER BY v.vehicle_type, v.vehicle_number | Params: Array
+(
+)
+
+[08-Nov-2025 20:25:18 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'v.assigned_branch_id' in 'ON' in query: SELECT v.*, b.name as branch_name, d.driver_name
+     FROM vehicles v
+     LEFT JOIN branches b ON v.assigned_branch_id = b.id
+     LEFT JOIN drivers d ON d.assigned_vehicle_id = v.id
+     
+     ORDER BY v.vehicle_type, v.vehicle_number | Params: Array
+(
+)
+
+[08-Nov-2025 21:14:28 Asia/Dhaka] PHP Warning:  Array to string conversion in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Database.php on line 64

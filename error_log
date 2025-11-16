@@ -14,3 +14,5 @@ Stack trace:
 Stack trace:
 #0 {main}
   thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/index.php on line 9
+[05-Nov-2025 07:48:21 UTC] PHP Warning:  session_start(): open(/opt/alt/php84/var/lib/php/session/sess_913f1050a6a55f4f4e08e76aad54ab04, O_RDWR) failed: Disk quota exceeded (122) in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/init.php on line 6
+[05-Nov-2025 07:48:21 UTC] PHP Warning:  session_start(): Failed to read session data: files (path: /opt/alt/php84/var/lib/php/session) in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/init.php on line 6

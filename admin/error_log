@@ -15663,3 +15663,2388 @@ Stack trace:
     [3] => 2025-11-04 23:59:59
 )
 
+[04-Nov-2025 21:44:30 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            (
+                (SELECT COUNT(id) FROM pos_sales WHERE created_at BETWEEN ? AND ?) +
+                (SELECT COUNT(id) FROM credit_orders WHERE created_at BETWEEN ? AND ?)
+            )
+        AS total_orders
+     | Params: Array
+(
+    [0] => 2025-11-04 00:00:00
+    [1] => 2025-11-04 23:59:59
+    [2] => 2025-11-04 00:00:00
+    [3] => 2025-11-04 23:59:59
+)
+
+[04-Nov-2025 21:44:30 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            DATE_FORMAT(created_at, '%Y-%m') as sales_month,
+            SUM(total_amount) as total
+        FROM (
+            -- Query 1: POS Sales
+            SELECT created_at, total_amount 
+            FROM pos_sales
+            WHERE created_at BETWEEN ? AND ?
+            
+            UNION ALL
+            
+            -- Query 2: Completed Credit Sales
+            SELECT created_at, total_amount 
+            FROM credit_orders
+            WHERE created_at BETWEEN ? AND ?
+            AND status IN ('Shipped', 'Dispatched', 'Delivered')
+        ) AS combined_sales
+        GROUP BY sales_month
+        ORDER BY sales_month ASC
+     | Params: Array
+(
+    [0] => 2025-11-04 00:00:00
+    [1] => 2025-11-04 23:59:59
+    [2] => 2025-11-04 00:00:00
+    [3] => 2025-11-04 23:59:59
+)
+
+[04-Nov-2025 21:44:38 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            (
+                (SELECT COUNT(id) FROM pos_sales WHERE created_at BETWEEN ? AND ?) +
+                (SELECT COUNT(id) FROM credit_orders WHERE created_at BETWEEN ? AND ?)
+            )
+        AS total_orders
+     | Params: Array
+(
+    [0] => 2025-11-04 00:00:00
+    [1] => 2025-11-04 23:59:59
+    [2] => 2025-11-04 00:00:00
+    [3] => 2025-11-04 23:59:59
+)
+
+[04-Nov-2025 21:44:38 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            DATE_FORMAT(created_at, '%Y-%m') as sales_month,
+            SUM(total_amount) as total
+        FROM (
+            -- Query 1: POS Sales
+            SELECT created_at, total_amount 
+            FROM pos_sales
+            WHERE created_at BETWEEN ? AND ?
+            
+            UNION ALL
+            
+            -- Query 2: Completed Credit Sales
+            SELECT created_at, total_amount 
+            FROM credit_orders
+            WHERE created_at BETWEEN ? AND ?
+            AND status IN ('Shipped', 'Dispatched', 'Delivered')
+        ) AS combined_sales
+        GROUP BY sales_month
+        ORDER BY sales_month ASC
+     | Params: Array
+(
+    [0] => 2025-11-04 00:00:00
+    [1] => 2025-11-04 23:59:59
+    [2] => 2025-11-04 00:00:00
+    [3] => 2025-11-04 23:59:59
+)
+
+[04-Nov-2025 21:46:03 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            (
+                (SELECT COUNT(id) FROM pos_sales WHERE created_at BETWEEN ? AND ?) +
+                (SELECT COUNT(id) FROM credit_orders WHERE created_at BETWEEN ? AND ?)
+            )
+        AS total_orders
+     | Params: Array
+(
+    [0] => 2025-11-04 00:00:00
+    [1] => 2025-11-04 23:59:59
+    [2] => 2025-11-04 00:00:00
+    [3] => 2025-11-04 23:59:59
+)
+
+[04-Nov-2025 21:46:03 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            DATE_FORMAT(created_at, '%Y-%m') as sales_month,
+            SUM(total_amount) as total
+        FROM (
+            -- Query 1: POS Sales
+            SELECT created_at, total_amount 
+            FROM pos_sales
+            WHERE created_at BETWEEN ? AND ?
+            
+            UNION ALL
+            
+            -- Query 2: Completed Credit Sales
+            SELECT created_at, total_amount 
+            FROM credit_orders
+            WHERE created_at BETWEEN ? AND ?
+            AND status IN ('Shipped', 'Dispatched', 'Delivered')
+        ) AS combined_sales
+        GROUP BY sales_month
+        ORDER BY sales_month ASC
+     | Params: Array
+(
+    [0] => 2025-11-04 00:00:00
+    [1] => 2025-11-04 23:59:59
+    [2] => 2025-11-04 00:00:00
+    [3] => 2025-11-04 23:59:59
+)
+
+[04-Nov-2025 21:46:10 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            (
+                (SELECT COUNT(id) FROM pos_sales WHERE created_at BETWEEN ? AND ?) +
+                (SELECT COUNT(id) FROM credit_orders WHERE created_at BETWEEN ? AND ?)
+            )
+        AS total_orders
+     | Params: Array
+(
+    [0] => 2025-11-04 00:00:00
+    [1] => 2025-11-04 23:59:59
+    [2] => 2025-11-04 00:00:00
+    [3] => 2025-11-04 23:59:59
+)
+
+[04-Nov-2025 21:46:10 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            DATE_FORMAT(created_at, '%Y-%m') as sales_month,
+            SUM(total_amount) as total
+        FROM (
+            -- Query 1: POS Sales
+            SELECT created_at, total_amount 
+            FROM pos_sales
+            WHERE created_at BETWEEN ? AND ?
+            
+            UNION ALL
+            
+            -- Query 2: Completed Credit Sales
+            SELECT created_at, total_amount 
+            FROM credit_orders
+            WHERE created_at BETWEEN ? AND ?
+            AND status IN ('Shipped', 'Dispatched', 'Delivered')
+        ) AS combined_sales
+        GROUP BY sales_month
+        ORDER BY sales_month ASC
+     | Params: Array
+(
+    [0] => 2025-11-04 00:00:00
+    [1] => 2025-11-04 23:59:59
+    [2] => 2025-11-04 00:00:00
+    [3] => 2025-11-04 23:59:59
+)
+
+[04-Nov-2025 21:51:53 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            (
+                (SELECT COUNT(id) FROM pos_sales WHERE created_at BETWEEN ? AND ?) +
+                (SELECT COUNT(id) FROM credit_orders WHERE created_at BETWEEN ? AND ?)
+            )
+        AS total_orders
+     | Params: Array
+(
+    [0] => 2025-11-04 00:00:00
+    [1] => 2025-11-04 23:59:59
+    [2] => 2025-11-04 00:00:00
+    [3] => 2025-11-04 23:59:59
+)
+
+[04-Nov-2025 21:51:53 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            DATE_FORMAT(created_at, '%Y-%m') as sales_month,
+            SUM(total_amount) as total
+        FROM (
+            -- Query 1: POS Sales
+            SELECT created_at, total_amount 
+            FROM pos_sales
+            WHERE created_at BETWEEN ? AND ?
+            
+            UNION ALL
+            
+            -- Query 2: Completed Credit Sales
+            SELECT created_at, total_amount 
+            FROM credit_orders
+            WHERE created_at BETWEEN ? AND ?
+            AND status IN ('Shipped', 'Dispatched', 'Delivered')
+        ) AS combined_sales
+        GROUP BY sales_month
+        ORDER BY sales_month ASC
+     | Params: Array
+(
+    [0] => 2025-11-04 00:00:00
+    [1] => 2025-11-04 23:59:59
+    [2] => 2025-11-04 00:00:00
+    [3] => 2025-11-04 23:59:59
+)
+
+[04-Nov-2025 22:54:14 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            (
+                (SELECT COUNT(id) FROM pos_sales WHERE created_at BETWEEN ? AND ?) +
+                (SELECT COUNT(id) FROM credit_orders WHERE created_at BETWEEN ? AND ?)
+            )
+        AS total_orders
+     | Params: Array
+(
+    [0] => 2025-11-04 00:00:00
+    [1] => 2025-11-04 23:59:59
+    [2] => 2025-11-04 00:00:00
+    [3] => 2025-11-04 23:59:59
+)
+
+[04-Nov-2025 22:54:14 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            DATE_FORMAT(created_at, '%Y-%m') as sales_month,
+            SUM(total_amount) as total
+        FROM (
+            -- Query 1: POS Sales
+            SELECT created_at, total_amount 
+            FROM pos_sales
+            WHERE created_at BETWEEN ? AND ?
+            
+            UNION ALL
+            
+            -- Query 2: Completed Credit Sales
+            SELECT created_at, total_amount 
+            FROM credit_orders
+            WHERE created_at BETWEEN ? AND ?
+            AND status IN ('Shipped', 'Dispatched', 'Delivered')
+        ) AS combined_sales
+        GROUP BY sales_month
+        ORDER BY sales_month ASC
+     | Params: Array
+(
+    [0] => 2025-11-04 00:00:00
+    [1] => 2025-11-04 23:59:59
+    [2] => 2025-11-04 00:00:00
+    [3] => 2025-11-04 23:59:59
+)
+
+[04-Nov-2025 22:54:24 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            (
+                (SELECT COUNT(id) FROM pos_sales WHERE created_at BETWEEN ? AND ?) +
+                (SELECT COUNT(id) FROM credit_orders WHERE created_at BETWEEN ? AND ?)
+            )
+        AS total_orders
+     | Params: Array
+(
+    [0] => 2025-11-04 00:00:00
+    [1] => 2025-11-04 23:59:59
+    [2] => 2025-11-04 00:00:00
+    [3] => 2025-11-04 23:59:59
+)
+
+[04-Nov-2025 22:54:24 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            DATE_FORMAT(created_at, '%Y-%m') as sales_month,
+            SUM(total_amount) as total
+        FROM (
+            -- Query 1: POS Sales
+            SELECT created_at, total_amount 
+            FROM pos_sales
+            WHERE created_at BETWEEN ? AND ?
+            
+            UNION ALL
+            
+            -- Query 2: Completed Credit Sales
+            SELECT created_at, total_amount 
+            FROM credit_orders
+            WHERE created_at BETWEEN ? AND ?
+            AND status IN ('Shipped', 'Dispatched', 'Delivered')
+        ) AS combined_sales
+        GROUP BY sales_month
+        ORDER BY sales_month ASC
+     | Params: Array
+(
+    [0] => 2025-11-04 00:00:00
+    [1] => 2025-11-04 23:59:59
+    [2] => 2025-11-04 00:00:00
+    [3] => 2025-11-04 23:59:59
+)
+
+[04-Nov-2025 22:55:57 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            (
+                (SELECT COUNT(id) FROM pos_sales WHERE created_at BETWEEN ? AND ?) +
+                (SELECT COUNT(id) FROM credit_orders WHERE created_at BETWEEN ? AND ?)
+            )
+        AS total_orders
+     | Params: Array
+(
+    [0] => 2025-11-04 00:00:00
+    [1] => 2025-11-04 23:59:59
+    [2] => 2025-11-04 00:00:00
+    [3] => 2025-11-04 23:59:59
+)
+
+[04-Nov-2025 22:55:57 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            DATE_FORMAT(created_at, '%Y-%m') as sales_month,
+            SUM(total_amount) as total
+        FROM (
+            -- Query 1: POS Sales
+            SELECT created_at, total_amount 
+            FROM pos_sales
+            WHERE created_at BETWEEN ? AND ?
+            
+            UNION ALL
+            
+            -- Query 2: Completed Credit Sales
+            SELECT created_at, total_amount 
+            FROM credit_orders
+            WHERE created_at BETWEEN ? AND ?
+            AND status IN ('Shipped', 'Dispatched', 'Delivered')
+        ) AS combined_sales
+        GROUP BY sales_month
+        ORDER BY sales_month ASC
+     | Params: Array
+(
+    [0] => 2025-11-04 00:00:00
+    [1] => 2025-11-04 23:59:59
+    [2] => 2025-11-04 00:00:00
+    [3] => 2025-11-04 23:59:59
+)
+
+[04-Nov-2025 23:48:25 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            (
+                (SELECT COUNT(id) FROM pos_sales WHERE created_at BETWEEN ? AND ?) +
+                (SELECT COUNT(id) FROM credit_orders WHERE created_at BETWEEN ? AND ?)
+            )
+        AS total_orders
+     | Params: Array
+(
+    [0] => 2025-11-04 00:00:00
+    [1] => 2025-11-04 23:59:59
+    [2] => 2025-11-04 00:00:00
+    [3] => 2025-11-04 23:59:59
+)
+
+[04-Nov-2025 23:48:25 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            DATE_FORMAT(created_at, '%Y-%m') as sales_month,
+            SUM(total_amount) as total
+        FROM (
+            -- Query 1: POS Sales
+            SELECT created_at, total_amount 
+            FROM pos_sales
+            WHERE created_at BETWEEN ? AND ?
+            
+            UNION ALL
+            
+            -- Query 2: Completed Credit Sales
+            SELECT created_at, total_amount 
+            FROM credit_orders
+            WHERE created_at BETWEEN ? AND ?
+            AND status IN ('Shipped', 'Dispatched', 'Delivered')
+        ) AS combined_sales
+        GROUP BY sales_month
+        ORDER BY sales_month ASC
+     | Params: Array
+(
+    [0] => 2025-11-04 00:00:00
+    [1] => 2025-11-04 23:59:59
+    [2] => 2025-11-04 00:00:00
+    [3] => 2025-11-04 23:59:59
+)
+
+[05-Nov-2025 00:01:15 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            (
+                (SELECT COUNT(id) FROM pos_sales WHERE created_at BETWEEN ? AND ?) +
+                (SELECT COUNT(id) FROM credit_orders WHERE created_at BETWEEN ? AND ?)
+            )
+        AS total_orders
+     | Params: Array
+(
+    [0] => 2025-11-05 00:00:00
+    [1] => 2025-11-05 23:59:59
+    [2] => 2025-11-05 00:00:00
+    [3] => 2025-11-05 23:59:59
+)
+
+[05-Nov-2025 00:01:15 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            DATE_FORMAT(created_at, '%Y-%m') as sales_month,
+            SUM(total_amount) as total
+        FROM (
+            -- Query 1: POS Sales
+            SELECT created_at, total_amount 
+            FROM pos_sales
+            WHERE created_at BETWEEN ? AND ?
+            
+            UNION ALL
+            
+            -- Query 2: Completed Credit Sales
+            SELECT created_at, total_amount 
+            FROM credit_orders
+            WHERE created_at BETWEEN ? AND ?
+            AND status IN ('Shipped', 'Dispatched', 'Delivered')
+        ) AS combined_sales
+        GROUP BY sales_month
+        ORDER BY sales_month ASC
+     | Params: Array
+(
+    [0] => 2025-11-05 00:00:00
+    [1] => 2025-11-05 23:59:59
+    [2] => 2025-11-05 00:00:00
+    [3] => 2025-11-05 23:59:59
+)
+
+[05-Nov-2025 00:01:54 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            (
+                (SELECT COUNT(id) FROM pos_sales WHERE created_at BETWEEN ? AND ?) +
+                (SELECT COUNT(id) FROM credit_orders WHERE created_at BETWEEN ? AND ?)
+            )
+        AS total_orders
+     | Params: Array
+(
+    [0] => 2025-11-05 00:00:00
+    [1] => 2025-11-05 23:59:59
+    [2] => 2025-11-05 00:00:00
+    [3] => 2025-11-05 23:59:59
+)
+
+[05-Nov-2025 00:01:54 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            DATE_FORMAT(created_at, '%Y-%m') as sales_month,
+            SUM(total_amount) as total
+        FROM (
+            -- Query 1: POS Sales
+            SELECT created_at, total_amount 
+            FROM pos_sales
+            WHERE created_at BETWEEN ? AND ?
+            
+            UNION ALL
+            
+            -- Query 2: Completed Credit Sales
+            SELECT created_at, total_amount 
+            FROM credit_orders
+            WHERE created_at BETWEEN ? AND ?
+            AND status IN ('Shipped', 'Dispatched', 'Delivered')
+        ) AS combined_sales
+        GROUP BY sales_month
+        ORDER BY sales_month ASC
+     | Params: Array
+(
+    [0] => 2025-11-05 00:00:00
+    [1] => 2025-11-05 23:59:59
+    [2] => 2025-11-05 00:00:00
+    [3] => 2025-11-05 23:59:59
+)
+
+[08-Nov-2025 20:17:59 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            (
+                (SELECT COUNT(id) FROM pos_sales WHERE created_at BETWEEN ? AND ?) +
+                (SELECT COUNT(id) FROM credit_orders WHERE created_at BETWEEN ? AND ?)
+            )
+        AS total_orders
+     | Params: Array
+(
+    [0] => 2025-11-08 00:00:00
+    [1] => 2025-11-08 23:59:59
+    [2] => 2025-11-08 00:00:00
+    [3] => 2025-11-08 23:59:59
+)
+
+[08-Nov-2025 20:17:59 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            DATE_FORMAT(created_at, '%Y-%m') as sales_month,
+            SUM(total_amount) as total
+        FROM (
+            -- Query 1: POS Sales
+            SELECT created_at, total_amount 
+            FROM pos_sales
+            WHERE created_at BETWEEN ? AND ?
+            
+            UNION ALL
+            
+            -- Query 2: Completed Credit Sales
+            SELECT created_at, total_amount 
+            FROM credit_orders
+            WHERE created_at BETWEEN ? AND ?
+            AND status IN ('Shipped', 'Dispatched', 'Delivered')
+        ) AS combined_sales
+        GROUP BY sales_month
+        ORDER BY sales_month ASC
+     | Params: Array
+(
+    [0] => 2025-11-08 00:00:00
+    [1] => 2025-11-08 23:59:59
+    [2] => 2025-11-08 00:00:00
+    [3] => 2025-11-08 23:59:59
+)
+
+[08-Nov-2025 20:21:22 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            (
+                (SELECT COUNT(id) FROM pos_sales WHERE created_at BETWEEN ? AND ?) +
+                (SELECT COUNT(id) FROM credit_orders WHERE created_at BETWEEN ? AND ?)
+            )
+        AS total_orders
+     | Params: Array
+(
+    [0] => 2025-11-08 00:00:00
+    [1] => 2025-11-08 23:59:59
+    [2] => 2025-11-08 00:00:00
+    [3] => 2025-11-08 23:59:59
+)
+
+[08-Nov-2025 20:21:22 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            DATE_FORMAT(created_at, '%Y-%m') as sales_month,
+            SUM(total_amount) as total
+        FROM (
+            -- Query 1: POS Sales
+            SELECT created_at, total_amount 
+            FROM pos_sales
+            WHERE created_at BETWEEN ? AND ?
+            
+            UNION ALL
+            
+            -- Query 2: Completed Credit Sales
+            SELECT created_at, total_amount 
+            FROM credit_orders
+            WHERE created_at BETWEEN ? AND ?
+            AND status IN ('Shipped', 'Dispatched', 'Delivered')
+        ) AS combined_sales
+        GROUP BY sales_month
+        ORDER BY sales_month ASC
+     | Params: Array
+(
+    [0] => 2025-11-08 00:00:00
+    [1] => 2025-11-08 23:59:59
+    [2] => 2025-11-08 00:00:00
+    [3] => 2025-11-08 23:59:59
+)
+
+[08-Nov-2025 21:08:03 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            (
+                (SELECT COUNT(id) FROM pos_sales WHERE created_at BETWEEN ? AND ?) +
+                (SELECT COUNT(id) FROM credit_orders WHERE created_at BETWEEN ? AND ?)
+            )
+        AS total_orders
+     | Params: Array
+(
+    [0] => 2025-11-08 00:00:00
+    [1] => 2025-11-08 23:59:59
+    [2] => 2025-11-08 00:00:00
+    [3] => 2025-11-08 23:59:59
+)
+
+[08-Nov-2025 21:08:03 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            DATE_FORMAT(created_at, '%Y-%m') as sales_month,
+            SUM(total_amount) as total
+        FROM (
+            -- Query 1: POS Sales
+            SELECT created_at, total_amount 
+            FROM pos_sales
+            WHERE created_at BETWEEN ? AND ?
+            
+            UNION ALL
+            
+            -- Query 2: Completed Credit Sales
+            SELECT created_at, total_amount 
+            FROM credit_orders
+            WHERE created_at BETWEEN ? AND ?
+            AND status IN ('Shipped', 'Dispatched', 'Delivered')
+        ) AS combined_sales
+        GROUP BY sales_month
+        ORDER BY sales_month ASC
+     | Params: Array
+(
+    [0] => 2025-11-08 00:00:00
+    [1] => 2025-11-08 23:59:59
+    [2] => 2025-11-08 00:00:00
+    [3] => 2025-11-08 23:59:59
+)
+
+[08-Nov-2025 21:08:05 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            (
+                (SELECT COUNT(id) FROM pos_sales WHERE created_at BETWEEN ? AND ?) +
+                (SELECT COUNT(id) FROM credit_orders WHERE created_at BETWEEN ? AND ?)
+            )
+        AS total_orders
+     | Params: Array
+(
+    [0] => 2025-11-08 00:00:00
+    [1] => 2025-11-08 23:59:59
+    [2] => 2025-11-08 00:00:00
+    [3] => 2025-11-08 23:59:59
+)
+
+[08-Nov-2025 21:08:05 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            DATE_FORMAT(created_at, '%Y-%m') as sales_month,
+            SUM(total_amount) as total
+        FROM (
+            -- Query 1: POS Sales
+            SELECT created_at, total_amount 
+            FROM pos_sales
+            WHERE created_at BETWEEN ? AND ?
+            
+            UNION ALL
+            
+            -- Query 2: Completed Credit Sales
+            SELECT created_at, total_amount 
+            FROM credit_orders
+            WHERE created_at BETWEEN ? AND ?
+            AND status IN ('Shipped', 'Dispatched', 'Delivered')
+        ) AS combined_sales
+        GROUP BY sales_month
+        ORDER BY sales_month ASC
+     | Params: Array
+(
+    [0] => 2025-11-08 00:00:00
+    [1] => 2025-11-08 23:59:59
+    [2] => 2025-11-08 00:00:00
+    [3] => 2025-11-08 23:59:59
+)
+
+[08-Nov-2025 22:12:50 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            (
+                (SELECT COUNT(id) FROM pos_sales WHERE created_at BETWEEN ? AND ?) +
+                (SELECT COUNT(id) FROM credit_orders WHERE created_at BETWEEN ? AND ?)
+            )
+        AS total_orders
+     | Params: Array
+(
+    [0] => 2025-11-08 00:00:00
+    [1] => 2025-11-08 23:59:59
+    [2] => 2025-11-08 00:00:00
+    [3] => 2025-11-08 23:59:59
+)
+
+[08-Nov-2025 22:12:50 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            DATE_FORMAT(created_at, '%Y-%m') as sales_month,
+            SUM(total_amount) as total
+        FROM (
+            -- Query 1: POS Sales
+            SELECT created_at, total_amount 
+            FROM pos_sales
+            WHERE created_at BETWEEN ? AND ?
+            
+            UNION ALL
+            
+            -- Query 2: Completed Credit Sales
+            SELECT created_at, total_amount 
+            FROM credit_orders
+            WHERE created_at BETWEEN ? AND ?
+            AND status IN ('Shipped', 'Dispatched', 'Delivered')
+        ) AS combined_sales
+        GROUP BY sales_month
+        ORDER BY sales_month ASC
+     | Params: Array
+(
+    [0] => 2025-11-08 00:00:00
+    [1] => 2025-11-08 23:59:59
+    [2] => 2025-11-08 00:00:00
+    [3] => 2025-11-08 23:59:59
+)
+
+[08-Nov-2025 22:20:18 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            (
+                (SELECT COUNT(id) FROM pos_sales WHERE created_at BETWEEN ? AND ?) +
+                (SELECT COUNT(id) FROM credit_orders WHERE created_at BETWEEN ? AND ?)
+            )
+        AS total_orders
+     | Params: Array
+(
+    [0] => 2025-11-08 00:00:00
+    [1] => 2025-11-08 23:59:59
+    [2] => 2025-11-08 00:00:00
+    [3] => 2025-11-08 23:59:59
+)
+
+[08-Nov-2025 22:20:18 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            DATE_FORMAT(created_at, '%Y-%m') as sales_month,
+            SUM(total_amount) as total
+        FROM (
+            -- Query 1: POS Sales
+            SELECT created_at, total_amount 
+            FROM pos_sales
+            WHERE created_at BETWEEN ? AND ?
+            
+            UNION ALL
+            
+            -- Query 2: Completed Credit Sales
+            SELECT created_at, total_amount 
+            FROM credit_orders
+            WHERE created_at BETWEEN ? AND ?
+            AND status IN ('Shipped', 'Dispatched', 'Delivered')
+        ) AS combined_sales
+        GROUP BY sales_month
+        ORDER BY sales_month ASC
+     | Params: Array
+(
+    [0] => 2025-11-08 00:00:00
+    [1] => 2025-11-08 23:59:59
+    [2] => 2025-11-08 00:00:00
+    [3] => 2025-11-08 23:59:59
+)
+
+[09-Nov-2025 18:19:01 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            (
+                (SELECT COUNT(id) FROM pos_sales WHERE created_at BETWEEN ? AND ?) +
+                (SELECT COUNT(id) FROM credit_orders WHERE created_at BETWEEN ? AND ?)
+            )
+        AS total_orders
+     | Params: Array
+(
+    [0] => 2025-11-09 00:00:00
+    [1] => 2025-11-09 23:59:59
+    [2] => 2025-11-09 00:00:00
+    [3] => 2025-11-09 23:59:59
+)
+
+[09-Nov-2025 18:19:01 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            DATE_FORMAT(created_at, '%Y-%m') as sales_month,
+            SUM(total_amount) as total
+        FROM (
+            -- Query 1: POS Sales
+            SELECT created_at, total_amount 
+            FROM pos_sales
+            WHERE created_at BETWEEN ? AND ?
+            
+            UNION ALL
+            
+            -- Query 2: Completed Credit Sales
+            SELECT created_at, total_amount 
+            FROM credit_orders
+            WHERE created_at BETWEEN ? AND ?
+            AND status IN ('Shipped', 'Dispatched', 'Delivered')
+        ) AS combined_sales
+        GROUP BY sales_month
+        ORDER BY sales_month ASC
+     | Params: Array
+(
+    [0] => 2025-11-09 00:00:00
+    [1] => 2025-11-09 23:59:59
+    [2] => 2025-11-09 00:00:00
+    [3] => 2025-11-09 23:59:59
+)
+
+[09-Nov-2025 22:58:40 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            (
+                (SELECT COUNT(id) FROM pos_sales WHERE created_at BETWEEN ? AND ?) +
+                (SELECT COUNT(id) FROM credit_orders WHERE created_at BETWEEN ? AND ?)
+            )
+        AS total_orders
+     | Params: Array
+(
+    [0] => 2025-11-09 00:00:00
+    [1] => 2025-11-09 23:59:59
+    [2] => 2025-11-09 00:00:00
+    [3] => 2025-11-09 23:59:59
+)
+
+[09-Nov-2025 22:58:40 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            DATE_FORMAT(created_at, '%Y-%m') as sales_month,
+            SUM(total_amount) as total
+        FROM (
+            -- Query 1: POS Sales
+            SELECT created_at, total_amount 
+            FROM pos_sales
+            WHERE created_at BETWEEN ? AND ?
+            
+            UNION ALL
+            
+            -- Query 2: Completed Credit Sales
+            SELECT created_at, total_amount 
+            FROM credit_orders
+            WHERE created_at BETWEEN ? AND ?
+            AND status IN ('Shipped', 'Dispatched', 'Delivered')
+        ) AS combined_sales
+        GROUP BY sales_month
+        ORDER BY sales_month ASC
+     | Params: Array
+(
+    [0] => 2025-11-09 00:00:00
+    [1] => 2025-11-09 23:59:59
+    [2] => 2025-11-09 00:00:00
+    [3] => 2025-11-09 23:59:59
+)
+
+[09-Nov-2025 23:36:36 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            (
+                (SELECT COUNT(id) FROM pos_sales WHERE created_at BETWEEN ? AND ?) +
+                (SELECT COUNT(id) FROM credit_orders WHERE created_at BETWEEN ? AND ?)
+            )
+        AS total_orders
+     | Params: Array
+(
+    [0] => 2025-11-09 00:00:00
+    [1] => 2025-11-09 23:59:59
+    [2] => 2025-11-09 00:00:00
+    [3] => 2025-11-09 23:59:59
+)
+
+[09-Nov-2025 23:36:36 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            DATE_FORMAT(created_at, '%Y-%m') as sales_month,
+            SUM(total_amount) as total
+        FROM (
+            -- Query 1: POS Sales
+            SELECT created_at, total_amount 
+            FROM pos_sales
+            WHERE created_at BETWEEN ? AND ?
+            
+            UNION ALL
+            
+            -- Query 2: Completed Credit Sales
+            SELECT created_at, total_amount 
+            FROM credit_orders
+            WHERE created_at BETWEEN ? AND ?
+            AND status IN ('Shipped', 'Dispatched', 'Delivered')
+        ) AS combined_sales
+        GROUP BY sales_month
+        ORDER BY sales_month ASC
+     | Params: Array
+(
+    [0] => 2025-11-09 00:00:00
+    [1] => 2025-11-09 23:59:59
+    [2] => 2025-11-09 00:00:00
+    [3] => 2025-11-09 23:59:59
+)
+
+[10-Nov-2025 23:42:53 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            (
+                (SELECT COUNT(id) FROM pos_sales WHERE created_at BETWEEN ? AND ?) +
+                (SELECT COUNT(id) FROM credit_orders WHERE created_at BETWEEN ? AND ?)
+            )
+        AS total_orders
+     | Params: Array
+(
+    [0] => 2025-11-10 00:00:00
+    [1] => 2025-11-10 23:59:59
+    [2] => 2025-11-10 00:00:00
+    [3] => 2025-11-10 23:59:59
+)
+
+[10-Nov-2025 23:42:53 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            DATE_FORMAT(created_at, '%Y-%m') as sales_month,
+            SUM(total_amount) as total
+        FROM (
+            -- Query 1: POS Sales
+            SELECT created_at, total_amount 
+            FROM pos_sales
+            WHERE created_at BETWEEN ? AND ?
+            
+            UNION ALL
+            
+            -- Query 2: Completed Credit Sales
+            SELECT created_at, total_amount 
+            FROM credit_orders
+            WHERE created_at BETWEEN ? AND ?
+            AND status IN ('Shipped', 'Dispatched', 'Delivered')
+        ) AS combined_sales
+        GROUP BY sales_month
+        ORDER BY sales_month ASC
+     | Params: Array
+(
+    [0] => 2025-11-10 00:00:00
+    [1] => 2025-11-10 23:59:59
+    [2] => 2025-11-10 00:00:00
+    [3] => 2025-11-10 23:59:59
+)
+
+[11-Nov-2025 16:30:06 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            (
+                (SELECT COUNT(id) FROM pos_sales WHERE created_at BETWEEN ? AND ?) +
+                (SELECT COUNT(id) FROM credit_orders WHERE created_at BETWEEN ? AND ?)
+            )
+        AS total_orders
+     | Params: Array
+(
+    [0] => 2025-11-11 00:00:00
+    [1] => 2025-11-11 23:59:59
+    [2] => 2025-11-11 00:00:00
+    [3] => 2025-11-11 23:59:59
+)
+
+[11-Nov-2025 16:30:06 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            DATE_FORMAT(created_at, '%Y-%m') as sales_month,
+            SUM(total_amount) as total
+        FROM (
+            -- Query 1: POS Sales
+            SELECT created_at, total_amount 
+            FROM pos_sales
+            WHERE created_at BETWEEN ? AND ?
+            
+            UNION ALL
+            
+            -- Query 2: Completed Credit Sales
+            SELECT created_at, total_amount 
+            FROM credit_orders
+            WHERE created_at BETWEEN ? AND ?
+            AND status IN ('Shipped', 'Dispatched', 'Delivered')
+        ) AS combined_sales
+        GROUP BY sales_month
+        ORDER BY sales_month ASC
+     | Params: Array
+(
+    [0] => 2025-11-11 00:00:00
+    [1] => 2025-11-11 23:59:59
+    [2] => 2025-11-11 00:00:00
+    [3] => 2025-11-11 23:59:59
+)
+
+[11-Nov-2025 16:31:09 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            (
+                (SELECT COUNT(id) FROM pos_sales WHERE created_at BETWEEN ? AND ?) +
+                (SELECT COUNT(id) FROM credit_orders WHERE created_at BETWEEN ? AND ?)
+            )
+        AS total_orders
+     | Params: Array
+(
+    [0] => 2025-11-11 00:00:00
+    [1] => 2025-11-11 23:59:59
+    [2] => 2025-11-11 00:00:00
+    [3] => 2025-11-11 23:59:59
+)
+
+[11-Nov-2025 16:31:09 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            DATE_FORMAT(created_at, '%Y-%m') as sales_month,
+            SUM(total_amount) as total
+        FROM (
+            -- Query 1: POS Sales
+            SELECT created_at, total_amount 
+            FROM pos_sales
+            WHERE created_at BETWEEN ? AND ?
+            
+            UNION ALL
+            
+            -- Query 2: Completed Credit Sales
+            SELECT created_at, total_amount 
+            FROM credit_orders
+            WHERE created_at BETWEEN ? AND ?
+            AND status IN ('Shipped', 'Dispatched', 'Delivered')
+        ) AS combined_sales
+        GROUP BY sales_month
+        ORDER BY sales_month ASC
+     | Params: Array
+(
+    [0] => 2025-11-11 00:00:00
+    [1] => 2025-11-11 23:59:59
+    [2] => 2025-11-11 00:00:00
+    [3] => 2025-11-11 23:59:59
+)
+
+[11-Nov-2025 16:46:18 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 12
+    [1] => 2025-11-11
+)
+
+[11-Nov-2025 16:46:18 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 13
+    [1] => 2025-11-11
+)
+
+[11-Nov-2025 16:46:18 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 22
+    [1] => 2025-11-11
+)
+
+[11-Nov-2025 16:46:18 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 21
+    [1] => 2025-11-11
+)
+
+[11-Nov-2025 16:46:18 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 26
+    [1] => 2025-11-11
+)
+
+[11-Nov-2025 16:46:18 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 28
+    [1] => 2025-11-11
+)
+
+[11-Nov-2025 16:46:18 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 15
+    [1] => 2025-11-11
+)
+
+[11-Nov-2025 16:46:18 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 14
+    [1] => 2025-11-11
+)
+
+[11-Nov-2025 16:46:18 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 23
+    [1] => 2025-11-11
+)
+
+[11-Nov-2025 16:46:18 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 30
+    [1] => 2025-11-11
+)
+
+[11-Nov-2025 16:46:18 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 2
+    [1] => 2025-11-11
+)
+
+[11-Nov-2025 16:46:18 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 32
+    [1] => 2025-11-11
+)
+
+[11-Nov-2025 16:46:18 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 31
+    [1] => 2025-11-11
+)
+
+[11-Nov-2025 16:46:18 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 17
+    [1] => 2025-11-11
+)
+
+[11-Nov-2025 16:46:18 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 16
+    [1] => 2025-11-11
+)
+
+[11-Nov-2025 16:46:18 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 24
+    [1] => 2025-11-11
+)
+
+[11-Nov-2025 16:46:18 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 1
+    [1] => 2025-11-11
+)
+
+[11-Nov-2025 16:46:18 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 18
+    [1] => 2025-11-11
+)
+
+[11-Nov-2025 16:46:18 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 20
+    [1] => 2025-11-11
+)
+
+[11-Nov-2025 16:46:18 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 19
+    [1] => 2025-11-11
+)
+
+[11-Nov-2025 16:46:18 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 27
+    [1] => 2025-11-11
+)
+
+[11-Nov-2025 16:46:18 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 29
+    [1] => 2025-11-11
+)
+
+[11-Nov-2025 16:46:18 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 25
+    [1] => 2025-11-11
+)
+
+[11-Nov-2025 16:46:18 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(jel.credit_amount - jel.debit_amount), 0) as total
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         JOIN chart_of_accounts coa ON jel.account_id = coa.id
+         WHERE je.entry_date <= ? AND je.status = 'Posted' AND coa.account_type_group = 'Revenue' | Params: Array
+(
+    [0] => 2025-11-11
+)
+
+[11-Nov-2025 16:46:18 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(jel.debit_amount - jel.credit_amount), 0) as total
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         JOIN chart_of_accounts coa ON jel.account_id = coa.id
+         WHERE je.entry_date <= ? AND je.status = 'Posted' AND coa.account_type_group = 'Expense' | Params: Array
+(
+    [0] => 2025-11-11
+)
+
+[11-Nov-2025 16:48:45 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            (
+                (SELECT COUNT(id) FROM pos_sales WHERE created_at BETWEEN ? AND ?) +
+                (SELECT COUNT(id) FROM credit_orders WHERE created_at BETWEEN ? AND ?)
+            )
+        AS total_orders
+     | Params: Array
+(
+    [0] => 2025-11-11 00:00:00
+    [1] => 2025-11-11 23:59:59
+    [2] => 2025-11-11 00:00:00
+    [3] => 2025-11-11 23:59:59
+)
+
+[11-Nov-2025 16:48:45 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            DATE_FORMAT(created_at, '%Y-%m') as sales_month,
+            SUM(total_amount) as total
+        FROM (
+            -- Query 1: POS Sales
+            SELECT created_at, total_amount 
+            FROM pos_sales
+            WHERE created_at BETWEEN ? AND ?
+            
+            UNION ALL
+            
+            -- Query 2: Completed Credit Sales
+            SELECT created_at, total_amount 
+            FROM credit_orders
+            WHERE created_at BETWEEN ? AND ?
+            AND status IN ('Shipped', 'Dispatched', 'Delivered')
+        ) AS combined_sales
+        GROUP BY sales_month
+        ORDER BY sales_month ASC
+     | Params: Array
+(
+    [0] => 2025-11-11 00:00:00
+    [1] => 2025-11-11 23:59:59
+    [2] => 2025-11-11 00:00:00
+    [3] => 2025-11-11 23:59:59
+)
+
+[11-Nov-2025 23:52:43 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            (
+                (SELECT COUNT(id) FROM pos_sales WHERE created_at BETWEEN ? AND ?) +
+                (SELECT COUNT(id) FROM credit_orders WHERE created_at BETWEEN ? AND ?)
+            )
+        AS total_orders
+     | Params: Array
+(
+    [0] => 2025-11-11 00:00:00
+    [1] => 2025-11-11 23:59:59
+    [2] => 2025-11-11 00:00:00
+    [3] => 2025-11-11 23:59:59
+)
+
+[11-Nov-2025 23:52:43 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            DATE_FORMAT(created_at, '%Y-%m') as sales_month,
+            SUM(total_amount) as total
+        FROM (
+            -- Query 1: POS Sales
+            SELECT created_at, total_amount 
+            FROM pos_sales
+            WHERE created_at BETWEEN ? AND ?
+            
+            UNION ALL
+            
+            -- Query 2: Completed Credit Sales
+            SELECT created_at, total_amount 
+            FROM credit_orders
+            WHERE created_at BETWEEN ? AND ?
+            AND status IN ('Shipped', 'Dispatched', 'Delivered')
+        ) AS combined_sales
+        GROUP BY sales_month
+        ORDER BY sales_month ASC
+     | Params: Array
+(
+    [0] => 2025-11-11 00:00:00
+    [1] => 2025-11-11 23:59:59
+    [2] => 2025-11-11 00:00:00
+    [3] => 2025-11-11 23:59:59
+)
+
+[13-Nov-2025 00:51:08 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            (
+                (SELECT COUNT(id) FROM pos_sales WHERE created_at BETWEEN ? AND ?) +
+                (SELECT COUNT(id) FROM credit_orders WHERE created_at BETWEEN ? AND ?)
+            )
+        AS total_orders
+     | Params: Array
+(
+    [0] => 2025-11-13 00:00:00
+    [1] => 2025-11-13 23:59:59
+    [2] => 2025-11-13 00:00:00
+    [3] => 2025-11-13 23:59:59
+)
+
+[13-Nov-2025 00:51:08 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            DATE_FORMAT(created_at, '%Y-%m') as sales_month,
+            SUM(total_amount) as total
+        FROM (
+            -- Query 1: POS Sales
+            SELECT created_at, total_amount 
+            FROM pos_sales
+            WHERE created_at BETWEEN ? AND ?
+            
+            UNION ALL
+            
+            -- Query 2: Completed Credit Sales
+            SELECT created_at, total_amount 
+            FROM credit_orders
+            WHERE created_at BETWEEN ? AND ?
+            AND status IN ('Shipped', 'Dispatched', 'Delivered')
+        ) AS combined_sales
+        GROUP BY sales_month
+        ORDER BY sales_month ASC
+     | Params: Array
+(
+    [0] => 2025-11-13 00:00:00
+    [1] => 2025-11-13 23:59:59
+    [2] => 2025-11-13 00:00:00
+    [3] => 2025-11-13 23:59:59
+)
+
+[13-Nov-2025 09:33:38 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            (
+                (SELECT COUNT(id) FROM pos_sales WHERE created_at BETWEEN ? AND ?) +
+                (SELECT COUNT(id) FROM credit_orders WHERE created_at BETWEEN ? AND ?)
+            )
+        AS total_orders
+     | Params: Array
+(
+    [0] => 2025-11-13 00:00:00
+    [1] => 2025-11-13 23:59:59
+    [2] => 2025-11-13 00:00:00
+    [3] => 2025-11-13 23:59:59
+)
+
+[13-Nov-2025 09:33:38 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            DATE_FORMAT(created_at, '%Y-%m') as sales_month,
+            SUM(total_amount) as total
+        FROM (
+            -- Query 1: POS Sales
+            SELECT created_at, total_amount 
+            FROM pos_sales
+            WHERE created_at BETWEEN ? AND ?
+            
+            UNION ALL
+            
+            -- Query 2: Completed Credit Sales
+            SELECT created_at, total_amount 
+            FROM credit_orders
+            WHERE created_at BETWEEN ? AND ?
+            AND status IN ('Shipped', 'Dispatched', 'Delivered')
+        ) AS combined_sales
+        GROUP BY sales_month
+        ORDER BY sales_month ASC
+     | Params: Array
+(
+    [0] => 2025-11-13 00:00:00
+    [1] => 2025-11-13 23:59:59
+    [2] => 2025-11-13 00:00:00
+    [3] => 2025-11-13 23:59:59
+)
+
+[13-Nov-2025 09:58:35 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            (
+                (SELECT COUNT(id) FROM pos_sales WHERE created_at BETWEEN ? AND ?) +
+                (SELECT COUNT(id) FROM credit_orders WHERE created_at BETWEEN ? AND ?)
+            )
+        AS total_orders
+     | Params: Array
+(
+    [0] => 2025-11-13 00:00:00
+    [1] => 2025-11-13 23:59:59
+    [2] => 2025-11-13 00:00:00
+    [3] => 2025-11-13 23:59:59
+)
+
+[13-Nov-2025 09:58:35 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            DATE_FORMAT(created_at, '%Y-%m') as sales_month,
+            SUM(total_amount) as total
+        FROM (
+            -- Query 1: POS Sales
+            SELECT created_at, total_amount 
+            FROM pos_sales
+            WHERE created_at BETWEEN ? AND ?
+            
+            UNION ALL
+            
+            -- Query 2: Completed Credit Sales
+            SELECT created_at, total_amount 
+            FROM credit_orders
+            WHERE created_at BETWEEN ? AND ?
+            AND status IN ('Shipped', 'Dispatched', 'Delivered')
+        ) AS combined_sales
+        GROUP BY sales_month
+        ORDER BY sales_month ASC
+     | Params: Array
+(
+    [0] => 2025-11-13 00:00:00
+    [1] => 2025-11-13 23:59:59
+    [2] => 2025-11-13 00:00:00
+    [3] => 2025-11-13 23:59:59
+)
+
+[13-Nov-2025 11:08:17 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            (
+                (SELECT COUNT(id) FROM pos_sales WHERE created_at BETWEEN ? AND ?) +
+                (SELECT COUNT(id) FROM credit_orders WHERE created_at BETWEEN ? AND ?)
+            )
+        AS total_orders
+     | Params: Array
+(
+    [0] => 2025-11-13 00:00:00
+    [1] => 2025-11-13 23:59:59
+    [2] => 2025-11-13 00:00:00
+    [3] => 2025-11-13 23:59:59
+)
+
+[13-Nov-2025 11:08:17 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            DATE_FORMAT(created_at, '%Y-%m') as sales_month,
+            SUM(total_amount) as total
+        FROM (
+            -- Query 1: POS Sales
+            SELECT created_at, total_amount 
+            FROM pos_sales
+            WHERE created_at BETWEEN ? AND ?
+            
+            UNION ALL
+            
+            -- Query 2: Completed Credit Sales
+            SELECT created_at, total_amount 
+            FROM credit_orders
+            WHERE created_at BETWEEN ? AND ?
+            AND status IN ('Shipped', 'Dispatched', 'Delivered')
+        ) AS combined_sales
+        GROUP BY sales_month
+        ORDER BY sales_month ASC
+     | Params: Array
+(
+    [0] => 2025-11-13 00:00:00
+    [1] => 2025-11-13 23:59:59
+    [2] => 2025-11-13 00:00:00
+    [3] => 2025-11-13 23:59:59
+)
+
+[13-Nov-2025 18:21:07 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            (
+                (SELECT COUNT(id) FROM pos_sales WHERE created_at BETWEEN ? AND ?) +
+                (SELECT COUNT(id) FROM credit_orders WHERE created_at BETWEEN ? AND ?)
+            )
+        AS total_orders
+     | Params: Array
+(
+    [0] => 2025-11-13 00:00:00
+    [1] => 2025-11-13 23:59:59
+    [2] => 2025-11-13 00:00:00
+    [3] => 2025-11-13 23:59:59
+)
+
+[13-Nov-2025 18:21:07 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            DATE_FORMAT(created_at, '%Y-%m') as sales_month,
+            SUM(total_amount) as total
+        FROM (
+            -- Query 1: POS Sales
+            SELECT created_at, total_amount 
+            FROM pos_sales
+            WHERE created_at BETWEEN ? AND ?
+            
+            UNION ALL
+            
+            -- Query 2: Completed Credit Sales
+            SELECT created_at, total_amount 
+            FROM credit_orders
+            WHERE created_at BETWEEN ? AND ?
+            AND status IN ('Shipped', 'Dispatched', 'Delivered')
+        ) AS combined_sales
+        GROUP BY sales_month
+        ORDER BY sales_month ASC
+     | Params: Array
+(
+    [0] => 2025-11-13 00:00:00
+    [1] => 2025-11-13 23:59:59
+    [2] => 2025-11-13 00:00:00
+    [3] => 2025-11-13 23:59:59
+)
+
+[13-Nov-2025 18:24:05 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 12
+    [1] => 2025-11-13
+)
+
+[13-Nov-2025 18:24:05 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 13
+    [1] => 2025-11-13
+)
+
+[13-Nov-2025 18:24:05 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 22
+    [1] => 2025-11-13
+)
+
+[13-Nov-2025 18:24:05 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 21
+    [1] => 2025-11-13
+)
+
+[13-Nov-2025 18:24:05 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 26
+    [1] => 2025-11-13
+)
+
+[13-Nov-2025 18:24:05 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 28
+    [1] => 2025-11-13
+)
+
+[13-Nov-2025 18:24:05 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 15
+    [1] => 2025-11-13
+)
+
+[13-Nov-2025 18:24:05 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 14
+    [1] => 2025-11-13
+)
+
+[13-Nov-2025 18:24:05 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 23
+    [1] => 2025-11-13
+)
+
+[13-Nov-2025 18:24:05 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 30
+    [1] => 2025-11-13
+)
+
+[13-Nov-2025 18:24:05 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 2
+    [1] => 2025-11-13
+)
+
+[13-Nov-2025 18:24:05 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 32
+    [1] => 2025-11-13
+)
+
+[13-Nov-2025 18:24:05 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 31
+    [1] => 2025-11-13
+)
+
+[13-Nov-2025 18:24:05 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 17
+    [1] => 2025-11-13
+)
+
+[13-Nov-2025 18:24:05 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 16
+    [1] => 2025-11-13
+)
+
+[13-Nov-2025 18:24:05 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 24
+    [1] => 2025-11-13
+)
+
+[13-Nov-2025 18:24:05 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 1
+    [1] => 2025-11-13
+)
+
+[13-Nov-2025 18:24:05 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 18
+    [1] => 2025-11-13
+)
+
+[13-Nov-2025 18:24:05 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 20
+    [1] => 2025-11-13
+)
+
+[13-Nov-2025 18:24:05 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 19
+    [1] => 2025-11-13
+)
+
+[13-Nov-2025 18:24:05 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 27
+    [1] => 2025-11-13
+)
+
+[13-Nov-2025 18:24:05 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 29
+    [1] => 2025-11-13
+)
+
+[13-Nov-2025 18:24:05 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(debit_amount), 0) - COALESCE(SUM(credit_amount), 0) as balance
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         WHERE jel.account_id = ? AND je.entry_date <= ? AND je.status = 'Posted' | Params: Array
+(
+    [0] => 25
+    [1] => 2025-11-13
+)
+
+[13-Nov-2025 18:24:05 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(jel.credit_amount - jel.debit_amount), 0) as total
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         JOIN chart_of_accounts coa ON jel.account_id = coa.id
+         WHERE je.entry_date <= ? AND je.status = 'Posted' AND coa.account_type_group = 'Revenue' | Params: Array
+(
+    [0] => 2025-11-13
+)
+
+[13-Nov-2025 18:24:05 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist in query: SELECT COALESCE(SUM(jel.debit_amount - jel.credit_amount), 0) as total
+         FROM journal_entry_lines jel
+         JOIN journal_entries je ON jel.journal_entry_id = je.id
+         JOIN chart_of_accounts coa ON jel.account_id = coa.id
+         WHERE je.entry_date <= ? AND je.status = 'Posted' AND coa.account_type_group = 'Expense' | Params: Array
+(
+    [0] => 2025-11-13
+)
+
+[14-Nov-2025 01:15:56 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            (
+                (SELECT COUNT(id) FROM pos_sales WHERE created_at BETWEEN ? AND ?) +
+                (SELECT COUNT(id) FROM credit_orders WHERE created_at BETWEEN ? AND ?)
+            )
+        AS total_orders
+     | Params: Array
+(
+    [0] => 2025-11-14 00:00:00
+    [1] => 2025-11-14 23:59:59
+    [2] => 2025-11-14 00:00:00
+    [3] => 2025-11-14 23:59:59
+)
+
+[14-Nov-2025 01:15:56 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            DATE_FORMAT(created_at, '%Y-%m') as sales_month,
+            SUM(total_amount) as total
+        FROM (
+            -- Query 1: POS Sales
+            SELECT created_at, total_amount 
+            FROM pos_sales
+            WHERE created_at BETWEEN ? AND ?
+            
+            UNION ALL
+            
+            -- Query 2: Completed Credit Sales
+            SELECT created_at, total_amount 
+            FROM credit_orders
+            WHERE created_at BETWEEN ? AND ?
+            AND status IN ('Shipped', 'Dispatched', 'Delivered')
+        ) AS combined_sales
+        GROUP BY sales_month
+        ORDER BY sales_month ASC
+     | Params: Array
+(
+    [0] => 2025-11-14 00:00:00
+    [1] => 2025-11-14 23:59:59
+    [2] => 2025-11-14 00:00:00
+    [3] => 2025-11-14 23:59:59
+)
+
+[14-Nov-2025 05:45:28 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            (
+                (SELECT COUNT(id) FROM pos_sales WHERE created_at BETWEEN ? AND ?) +
+                (SELECT COUNT(id) FROM credit_orders WHERE created_at BETWEEN ? AND ?)
+            )
+        AS total_orders
+     | Params: Array
+(
+    [0] => 2025-11-14 00:00:00
+    [1] => 2025-11-14 23:59:59
+    [2] => 2025-11-14 00:00:00
+    [3] => 2025-11-14 23:59:59
+)
+
+[14-Nov-2025 05:45:28 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            DATE_FORMAT(created_at, '%Y-%m') as sales_month,
+            SUM(total_amount) as total
+        FROM (
+            -- Query 1: POS Sales
+            SELECT created_at, total_amount 
+            FROM pos_sales
+            WHERE created_at BETWEEN ? AND ?
+            
+            UNION ALL
+            
+            -- Query 2: Completed Credit Sales
+            SELECT created_at, total_amount 
+            FROM credit_orders
+            WHERE created_at BETWEEN ? AND ?
+            AND status IN ('Shipped', 'Dispatched', 'Delivered')
+        ) AS combined_sales
+        GROUP BY sales_month
+        ORDER BY sales_month ASC
+     | Params: Array
+(
+    [0] => 2025-11-14 00:00:00
+    [1] => 2025-11-14 23:59:59
+    [2] => 2025-11-14 00:00:00
+    [3] => 2025-11-14 23:59:59
+)
+
+[14-Nov-2025 08:36:14 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            (
+                (SELECT COUNT(id) FROM pos_sales WHERE created_at BETWEEN ? AND ?) +
+                (SELECT COUNT(id) FROM credit_orders WHERE created_at BETWEEN ? AND ?)
+            )
+        AS total_orders
+     | Params: Array
+(
+    [0] => 2025-11-14 00:00:00
+    [1] => 2025-11-14 23:59:59
+    [2] => 2025-11-14 00:00:00
+    [3] => 2025-11-14 23:59:59
+)
+
+[14-Nov-2025 08:36:14 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            DATE_FORMAT(created_at, '%Y-%m') as sales_month,
+            SUM(total_amount) as total
+        FROM (
+            -- Query 1: POS Sales
+            SELECT created_at, total_amount 
+            FROM pos_sales
+            WHERE created_at BETWEEN ? AND ?
+            
+            UNION ALL
+            
+            -- Query 2: Completed Credit Sales
+            SELECT created_at, total_amount 
+            FROM credit_orders
+            WHERE created_at BETWEEN ? AND ?
+            AND status IN ('Shipped', 'Dispatched', 'Delivered')
+        ) AS combined_sales
+        GROUP BY sales_month
+        ORDER BY sales_month ASC
+     | Params: Array
+(
+    [0] => 2025-11-14 00:00:00
+    [1] => 2025-11-14 23:59:59
+    [2] => 2025-11-14 00:00:00
+    [3] => 2025-11-14 23:59:59
+)
+
+[14-Nov-2025 09:42:45 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            (
+                (SELECT COUNT(id) FROM pos_sales WHERE created_at BETWEEN ? AND ?) +
+                (SELECT COUNT(id) FROM credit_orders WHERE created_at BETWEEN ? AND ?)
+            )
+        AS total_orders
+     | Params: Array
+(
+    [0] => 2025-11-14 00:00:00
+    [1] => 2025-11-14 23:59:59
+    [2] => 2025-11-14 00:00:00
+    [3] => 2025-11-14 23:59:59
+)
+
+[14-Nov-2025 09:42:45 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            DATE_FORMAT(created_at, '%Y-%m') as sales_month,
+            SUM(total_amount) as total
+        FROM (
+            -- Query 1: POS Sales
+            SELECT created_at, total_amount 
+            FROM pos_sales
+            WHERE created_at BETWEEN ? AND ?
+            
+            UNION ALL
+            
+            -- Query 2: Completed Credit Sales
+            SELECT created_at, total_amount 
+            FROM credit_orders
+            WHERE created_at BETWEEN ? AND ?
+            AND status IN ('Shipped', 'Dispatched', 'Delivered')
+        ) AS combined_sales
+        GROUP BY sales_month
+        ORDER BY sales_month ASC
+     | Params: Array
+(
+    [0] => 2025-11-14 00:00:00
+    [1] => 2025-11-14 23:59:59
+    [2] => 2025-11-14 00:00:00
+    [3] => 2025-11-14 23:59:59
+)
+
+[14-Nov-2025 10:16:38 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            (
+                (SELECT COUNT(id) FROM pos_sales WHERE created_at BETWEEN ? AND ?) +
+                (SELECT COUNT(id) FROM credit_orders WHERE created_at BETWEEN ? AND ?)
+            )
+        AS total_orders
+     | Params: Array
+(
+    [0] => 2025-11-14 00:00:00
+    [1] => 2025-11-14 23:59:59
+    [2] => 2025-11-14 00:00:00
+    [3] => 2025-11-14 23:59:59
+)
+
+[14-Nov-2025 10:16:38 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            DATE_FORMAT(created_at, '%Y-%m') as sales_month,
+            SUM(total_amount) as total
+        FROM (
+            -- Query 1: POS Sales
+            SELECT created_at, total_amount 
+            FROM pos_sales
+            WHERE created_at BETWEEN ? AND ?
+            
+            UNION ALL
+            
+            -- Query 2: Completed Credit Sales
+            SELECT created_at, total_amount 
+            FROM credit_orders
+            WHERE created_at BETWEEN ? AND ?
+            AND status IN ('Shipped', 'Dispatched', 'Delivered')
+        ) AS combined_sales
+        GROUP BY sales_month
+        ORDER BY sales_month ASC
+     | Params: Array
+(
+    [0] => 2025-11-14 00:00:00
+    [1] => 2025-11-14 23:59:59
+    [2] => 2025-11-14 00:00:00
+    [3] => 2025-11-14 23:59:59
+)
+
+[14-Nov-2025 10:20:34 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            (
+                (SELECT COUNT(id) FROM pos_sales WHERE created_at BETWEEN ? AND ?) +
+                (SELECT COUNT(id) FROM credit_orders WHERE created_at BETWEEN ? AND ?)
+            )
+        AS total_orders
+     | Params: Array
+(
+    [0] => 2025-11-14 00:00:00
+    [1] => 2025-11-14 23:59:59
+    [2] => 2025-11-14 00:00:00
+    [3] => 2025-11-14 23:59:59
+)
+
+[14-Nov-2025 10:20:34 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            DATE_FORMAT(created_at, '%Y-%m') as sales_month,
+            SUM(total_amount) as total
+        FROM (
+            -- Query 1: POS Sales
+            SELECT created_at, total_amount 
+            FROM pos_sales
+            WHERE created_at BETWEEN ? AND ?
+            
+            UNION ALL
+            
+            -- Query 2: Completed Credit Sales
+            SELECT created_at, total_amount 
+            FROM credit_orders
+            WHERE created_at BETWEEN ? AND ?
+            AND status IN ('Shipped', 'Dispatched', 'Delivered')
+        ) AS combined_sales
+        GROUP BY sales_month
+        ORDER BY sales_month ASC
+     | Params: Array
+(
+    [0] => 2025-11-14 00:00:00
+    [1] => 2025-11-14 23:59:59
+    [2] => 2025-11-14 00:00:00
+    [3] => 2025-11-14 23:59:59
+)
+
+[14-Nov-2025 10:22:13 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            (
+                (SELECT COUNT(id) FROM pos_sales WHERE created_at BETWEEN ? AND ?) +
+                (SELECT COUNT(id) FROM credit_orders WHERE created_at BETWEEN ? AND ?)
+            )
+        AS total_orders
+     | Params: Array
+(
+    [0] => 2025-11-14 00:00:00
+    [1] => 2025-11-14 23:59:59
+    [2] => 2025-11-14 00:00:00
+    [3] => 2025-11-14 23:59:59
+)
+
+[14-Nov-2025 10:22:13 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            DATE_FORMAT(created_at, '%Y-%m') as sales_month,
+            SUM(total_amount) as total
+        FROM (
+            -- Query 1: POS Sales
+            SELECT created_at, total_amount 
+            FROM pos_sales
+            WHERE created_at BETWEEN ? AND ?
+            
+            UNION ALL
+            
+            -- Query 2: Completed Credit Sales
+            SELECT created_at, total_amount 
+            FROM credit_orders
+            WHERE created_at BETWEEN ? AND ?
+            AND status IN ('Shipped', 'Dispatched', 'Delivered')
+        ) AS combined_sales
+        GROUP BY sales_month
+        ORDER BY sales_month ASC
+     | Params: Array
+(
+    [0] => 2025-11-14 00:00:00
+    [1] => 2025-11-14 23:59:59
+    [2] => 2025-11-14 00:00:00
+    [3] => 2025-11-14 23:59:59
+)
+
+[14-Nov-2025 10:25:48 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            (
+                (SELECT COUNT(id) FROM pos_sales WHERE created_at BETWEEN ? AND ?) +
+                (SELECT COUNT(id) FROM credit_orders WHERE created_at BETWEEN ? AND ?)
+            )
+        AS total_orders
+     | Params: Array
+(
+    [0] => 2025-11-14 00:00:00
+    [1] => 2025-11-14 23:59:59
+    [2] => 2025-11-14 00:00:00
+    [3] => 2025-11-14 23:59:59
+)
+
+[14-Nov-2025 10:25:48 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            DATE_FORMAT(created_at, '%Y-%m') as sales_month,
+            SUM(total_amount) as total
+        FROM (
+            -- Query 1: POS Sales
+            SELECT created_at, total_amount 
+            FROM pos_sales
+            WHERE created_at BETWEEN ? AND ?
+            
+            UNION ALL
+            
+            -- Query 2: Completed Credit Sales
+            SELECT created_at, total_amount 
+            FROM credit_orders
+            WHERE created_at BETWEEN ? AND ?
+            AND status IN ('Shipped', 'Dispatched', 'Delivered')
+        ) AS combined_sales
+        GROUP BY sales_month
+        ORDER BY sales_month ASC
+     | Params: Array
+(
+    [0] => 2025-11-14 00:00:00
+    [1] => 2025-11-14 23:59:59
+    [2] => 2025-11-14 00:00:00
+    [3] => 2025-11-14 23:59:59
+)
+
+[14-Nov-2025 10:27:07 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            (
+                (SELECT COUNT(id) FROM pos_sales WHERE created_at BETWEEN ? AND ?) +
+                (SELECT COUNT(id) FROM credit_orders WHERE created_at BETWEEN ? AND ?)
+            )
+        AS total_orders
+     | Params: Array
+(
+    [0] => 2025-11-14 00:00:00
+    [1] => 2025-11-14 23:59:59
+    [2] => 2025-11-14 00:00:00
+    [3] => 2025-11-14 23:59:59
+)
+
+[14-Nov-2025 10:27:07 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            DATE_FORMAT(created_at, '%Y-%m') as sales_month,
+            SUM(total_amount) as total
+        FROM (
+            -- Query 1: POS Sales
+            SELECT created_at, total_amount 
+            FROM pos_sales
+            WHERE created_at BETWEEN ? AND ?
+            
+            UNION ALL
+            
+            -- Query 2: Completed Credit Sales
+            SELECT created_at, total_amount 
+            FROM credit_orders
+            WHERE created_at BETWEEN ? AND ?
+            AND status IN ('Shipped', 'Dispatched', 'Delivered')
+        ) AS combined_sales
+        GROUP BY sales_month
+        ORDER BY sales_month ASC
+     | Params: Array
+(
+    [0] => 2025-11-14 00:00:00
+    [1] => 2025-11-14 23:59:59
+    [2] => 2025-11-14 00:00:00
+    [3] => 2025-11-14 23:59:59
+)
+
+[14-Nov-2025 10:29:55 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            (
+                (SELECT COUNT(id) FROM pos_sales WHERE created_at BETWEEN ? AND ?) +
+                (SELECT COUNT(id) FROM credit_orders WHERE created_at BETWEEN ? AND ?)
+            )
+        AS total_orders
+     | Params: Array
+(
+    [0] => 2025-11-14 00:00:00
+    [1] => 2025-11-14 23:59:59
+    [2] => 2025-11-14 00:00:00
+    [3] => 2025-11-14 23:59:59
+)
+
+[14-Nov-2025 10:29:55 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            DATE_FORMAT(created_at, '%Y-%m') as sales_month,
+            SUM(total_amount) as total
+        FROM (
+            -- Query 1: POS Sales
+            SELECT created_at, total_amount 
+            FROM pos_sales
+            WHERE created_at BETWEEN ? AND ?
+            
+            UNION ALL
+            
+            -- Query 2: Completed Credit Sales
+            SELECT created_at, total_amount 
+            FROM credit_orders
+            WHERE created_at BETWEEN ? AND ?
+            AND status IN ('Shipped', 'Dispatched', 'Delivered')
+        ) AS combined_sales
+        GROUP BY sales_month
+        ORDER BY sales_month ASC
+     | Params: Array
+(
+    [0] => 2025-11-14 00:00:00
+    [1] => 2025-11-14 23:59:59
+    [2] => 2025-11-14 00:00:00
+    [3] => 2025-11-14 23:59:59
+)
+
+[14-Nov-2025 10:33:07 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            (
+                (SELECT COUNT(id) FROM pos_sales WHERE created_at BETWEEN ? AND ?) +
+                (SELECT COUNT(id) FROM credit_orders WHERE created_at BETWEEN ? AND ?)
+            )
+        AS total_orders
+     | Params: Array
+(
+    [0] => 2025-11-14 00:00:00
+    [1] => 2025-11-14 23:59:59
+    [2] => 2025-11-14 00:00:00
+    [3] => 2025-11-14 23:59:59
+)
+
+[14-Nov-2025 10:33:07 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            DATE_FORMAT(created_at, '%Y-%m') as sales_month,
+            SUM(total_amount) as total
+        FROM (
+            -- Query 1: POS Sales
+            SELECT created_at, total_amount 
+            FROM pos_sales
+            WHERE created_at BETWEEN ? AND ?
+            
+            UNION ALL
+            
+            -- Query 2: Completed Credit Sales
+            SELECT created_at, total_amount 
+            FROM credit_orders
+            WHERE created_at BETWEEN ? AND ?
+            AND status IN ('Shipped', 'Dispatched', 'Delivered')
+        ) AS combined_sales
+        GROUP BY sales_month
+        ORDER BY sales_month ASC
+     | Params: Array
+(
+    [0] => 2025-11-14 00:00:00
+    [1] => 2025-11-14 23:59:59
+    [2] => 2025-11-14 00:00:00
+    [3] => 2025-11-14 23:59:59
+)
+
+[14-Nov-2025 12:24:40 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            (
+                (SELECT COUNT(id) FROM pos_sales WHERE created_at BETWEEN ? AND ?) +
+                (SELECT COUNT(id) FROM credit_orders WHERE created_at BETWEEN ? AND ?)
+            )
+        AS total_orders
+     | Params: Array
+(
+    [0] => 2025-11-14 00:00:00
+    [1] => 2025-11-14 23:59:59
+    [2] => 2025-11-14 00:00:00
+    [3] => 2025-11-14 23:59:59
+)
+
+[14-Nov-2025 12:24:40 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            DATE_FORMAT(created_at, '%Y-%m') as sales_month,
+            SUM(total_amount) as total
+        FROM (
+            -- Query 1: POS Sales
+            SELECT created_at, total_amount 
+            FROM pos_sales
+            WHERE created_at BETWEEN ? AND ?
+            
+            UNION ALL
+            
+            -- Query 2: Completed Credit Sales
+            SELECT created_at, total_amount 
+            FROM credit_orders
+            WHERE created_at BETWEEN ? AND ?
+            AND status IN ('Shipped', 'Dispatched', 'Delivered')
+        ) AS combined_sales
+        GROUP BY sales_month
+        ORDER BY sales_month ASC
+     | Params: Array
+(
+    [0] => 2025-11-14 00:00:00
+    [1] => 2025-11-14 23:59:59
+    [2] => 2025-11-14 00:00:00
+    [3] => 2025-11-14 23:59:59
+)
+
+[14-Nov-2025 16:33:22 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            (
+                (SELECT COUNT(id) FROM pos_sales WHERE created_at BETWEEN ? AND ?) +
+                (SELECT COUNT(id) FROM credit_orders WHERE created_at BETWEEN ? AND ?)
+            )
+        AS total_orders
+     | Params: Array
+(
+    [0] => 2025-11-14 00:00:00
+    [1] => 2025-11-14 23:59:59
+    [2] => 2025-11-14 00:00:00
+    [3] => 2025-11-14 23:59:59
+)
+
+[14-Nov-2025 16:33:22 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            DATE_FORMAT(created_at, '%Y-%m') as sales_month,
+            SUM(total_amount) as total
+        FROM (
+            -- Query 1: POS Sales
+            SELECT created_at, total_amount 
+            FROM pos_sales
+            WHERE created_at BETWEEN ? AND ?
+            
+            UNION ALL
+            
+            -- Query 2: Completed Credit Sales
+            SELECT created_at, total_amount 
+            FROM credit_orders
+            WHERE created_at BETWEEN ? AND ?
+            AND status IN ('Shipped', 'Dispatched', 'Delivered')
+        ) AS combined_sales
+        GROUP BY sales_month
+        ORDER BY sales_month ASC
+     | Params: Array
+(
+    [0] => 2025-11-14 00:00:00
+    [1] => 2025-11-14 23:59:59
+    [2] => 2025-11-14 00:00:00
+    [3] => 2025-11-14 23:59:59
+)
+
+[14-Nov-2025 17:13:38 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            (
+                (SELECT COUNT(id) FROM pos_sales WHERE created_at BETWEEN ? AND ?) +
+                (SELECT COUNT(id) FROM credit_orders WHERE created_at BETWEEN ? AND ?)
+            )
+        AS total_orders
+     | Params: Array
+(
+    [0] => 2025-11-14 00:00:00
+    [1] => 2025-11-14 23:59:59
+    [2] => 2025-11-14 00:00:00
+    [3] => 2025-11-14 23:59:59
+)
+
+[14-Nov-2025 17:13:38 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            DATE_FORMAT(created_at, '%Y-%m') as sales_month,
+            SUM(total_amount) as total
+        FROM (
+            -- Query 1: POS Sales
+            SELECT created_at, total_amount 
+            FROM pos_sales
+            WHERE created_at BETWEEN ? AND ?
+            
+            UNION ALL
+            
+            -- Query 2: Completed Credit Sales
+            SELECT created_at, total_amount 
+            FROM credit_orders
+            WHERE created_at BETWEEN ? AND ?
+            AND status IN ('Shipped', 'Dispatched', 'Delivered')
+        ) AS combined_sales
+        GROUP BY sales_month
+        ORDER BY sales_month ASC
+     | Params: Array
+(
+    [0] => 2025-11-14 00:00:00
+    [1] => 2025-11-14 23:59:59
+    [2] => 2025-11-14 00:00:00
+    [3] => 2025-11-14 23:59:59
+)
+
+[14-Nov-2025 19:14:42 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            (
+                (SELECT COUNT(id) FROM pos_sales WHERE created_at BETWEEN ? AND ?) +
+                (SELECT COUNT(id) FROM credit_orders WHERE created_at BETWEEN ? AND ?)
+            )
+        AS total_orders
+     | Params: Array
+(
+    [0] => 2025-11-14 00:00:00
+    [1] => 2025-11-14 23:59:59
+    [2] => 2025-11-14 00:00:00
+    [3] => 2025-11-14 23:59:59
+)
+
+[14-Nov-2025 19:14:42 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist in query: 
+        SELECT 
+            DATE_FORMAT(created_at, '%Y-%m') as sales_month,
+            SUM(total_amount) as total
+        FROM (
+            -- Query 1: POS Sales
+            SELECT created_at, total_amount 
+            FROM pos_sales
+            WHERE created_at BETWEEN ? AND ?
+            
+            UNION ALL
+            
+            -- Query 2: Completed Credit Sales
+            SELECT created_at, total_amount 
+            FROM credit_orders
+            WHERE created_at BETWEEN ? AND ?
+            AND status IN ('Shipped', 'Dispatched', 'Delivered')
+        ) AS combined_sales
+        GROUP BY sales_month
+        ORDER BY sales_month ASC
+     | Params: Array
+(
+    [0] => 2025-11-14 00:00:00
+    [1] => 2025-11-14 23:59:59
+    [2] => 2025-11-14 00:00:00
+    [3] => 2025-11-14 23:59:59
+)
+
