@@ -42,6 +42,8 @@
     $credit_sales_roles = ['Superadmin', 'admin', 'Accounts', 'accounts-demra', 'accounts-srg', 'dispatch-demra', 'dispatch-srg', 'production manager-srg', 'production manager-demra', 'sales-srg', 'sales-demra', 'collector', 'sales-other'];
     $pos_roles = ['Superadmin', 'admin', 'accountspos-demra', 'accountspos-srg', 'dispatchpos-demra', 'dispatchpos-srg'];
     $logistics_roles = ['Superadmin', 'admin', 'Accounts', 'Transport Manager', 'dispatch-demra', 'dispatch-srg', 'dispatchpos-demra', 'dispatchpos-srg'];
+    $purchase_roles = ['Superadmin', 'admin', 'Accounts', 'accounts-demra', 'accounts-srg', 'production manager-srg', 'production manager-demra'];
+
     ?>
 
     <nav class="bg-white shadow-lg border-b border-gray-200" x-data="{ mobileMenuOpen: false }">
@@ -164,6 +166,43 @@
                             </div>
                         </div>
                         <?php endif; ?>
+                       <!---- Purchase Module----->
+                       
+                        
+                        <?php if (in_array($user_role, $purchase_roles)): ?>
+                    <div class="relative" x-data="{ open: false }">
+                        <button @click="open = !open" class="text-gray-600 hover:text-primary-600 inline-flex items-center px-1 pt-1 text-sm font-medium h-full">
+                            <i class="fas fa-shopping-cart text-xs mr-1"></i>
+                            Purchase <i class="fas fa-chevron-down text-xs ml-1"></i>
+                        </button>
+                        <div x-show="open" @click.away="open = false" x-transition class="absolute left-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
+                            <div class="py-1">
+                                <!-- Shipment Info - Market Intelligence -->
+                                <a href="<?php echo url('modules/wheat_shipment_dashboard.php'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-primary-600">
+                                    <i class="fas fa-ship text-primary-600 mr-2"></i>
+                                    <span class="font-medium">Shipment Info</span>
+                                    <span class="text-xs text-gray-500 block ml-6">Bangladesh Wheat Imports</span>
+                                </a>
+                                
+                                <div class="border-t border-gray-100 my-1"></div>
+                                
+                                <!-- Future procurement modules -->
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-400 cursor-not-allowed">
+                                    <i class="fas fa-file-invoice mr-2"></i>
+                                    Purchase Orders <span class="text-xs">(Coming Soon)</span>
+                                </a>
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-400 cursor-not-allowed">
+                                    <i class="fas fa-dolly mr-2"></i>
+                                    Suppliers <span class="text-xs">(Coming Soon)</span>
+                                </a>
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-400 cursor-not-allowed">
+                                    <i class="fas fa-box mr-2"></i>
+                                    Raw Materials <span class="text-xs">(Coming Soon)</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <?php endif; ?>
 
                         <!-- Admin -->
                         <?php if (in_array($user_role, $admin_roles)): ?>

@@ -1147,3 +1147,110 @@ Stack trace:
 (
 )
 
+[16-Nov-2025 19:47:57 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.order_consolidation_suggestions' doesn't exist in query: 
+    SELECT 
+        ocs.*,
+        co1.order_number as order1_number,
+        co2.order_number as order2_number,
+        c1.name as customer1_name,
+        c2.name as customer2_name
+    FROM order_consolidation_suggestions ocs
+    JOIN credit_orders co1 ON ocs.order_id_1 = co1.id
+    JOIN credit_orders co2 ON ocs.order_id_2 = co2.id
+    JOIN customers c1 ON co1.customer_id = c1.id
+    JOIN customers c2 ON co2.customer_id = c2.id
+    WHERE ocs.status = 'pending'
+    AND co1.status = 'ready_to_ship'
+    AND co2.status = 'ready_to_ship'
+    ORDER BY ocs.potential_savings DESC
+    LIMIT 10
+ | Params: Array
+(
+)
+
+[16-Nov-2025 19:48:04 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.order_consolidation_suggestions' doesn't exist in query: 
+    SELECT 
+        ocs.*,
+        co1.order_number as order1_number,
+        co2.order_number as order2_number,
+        c1.name as customer1_name,
+        c2.name as customer2_name
+    FROM order_consolidation_suggestions ocs
+    JOIN credit_orders co1 ON ocs.order_id_1 = co1.id
+    JOIN credit_orders co2 ON ocs.order_id_2 = co2.id
+    JOIN customers c1 ON co1.customer_id = c1.id
+    JOIN customers c2 ON co2.customer_id = c2.id
+    WHERE ocs.status = 'pending'
+    AND co1.status = 'ready_to_ship'
+    AND co2.status = 'ready_to_ship'
+    ORDER BY ocs.potential_savings DESC
+    LIMIT 10
+ | Params: Array
+(
+)
+
+[16-Nov-2025 19:48:04 Asia/Dhaka] Trip management error: Cannot complete trip. 1 order(s) not yet delivered.
+[16-Nov-2025 19:48:37 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.order_consolidation_suggestions' doesn't exist in query: 
+    SELECT 
+        ocs.*,
+        co1.order_number as order1_number,
+        co2.order_number as order2_number,
+        c1.name as customer1_name,
+        c2.name as customer2_name
+    FROM order_consolidation_suggestions ocs
+    JOIN credit_orders co1 ON ocs.order_id_1 = co1.id
+    JOIN credit_orders co2 ON ocs.order_id_2 = co2.id
+    JOIN customers c1 ON co1.customer_id = c1.id
+    JOIN customers c2 ON co2.customer_id = c2.id
+    WHERE ocs.status = 'pending'
+    AND co1.status = 'ready_to_ship'
+    AND co2.status = 'ready_to_ship'
+    ORDER BY ocs.potential_savings DESC
+    LIMIT 10
+ | Params: Array
+(
+)
+
+[16-Nov-2025 19:48:43 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'v.registration_number' in 'SELECT' in query: SELECT ta.*,
+            v.vehicle_number,
+            v.category as vehicle_category,
+            v.vehicle_type,
+            v.capacity_kg,
+            v.fuel_type,
+            v.registration_number,
+            d.driver_name,
+            d.phone_number as driver_phone,
+            d.driver_type,
+            d.license_number,
+            d.rating as driver_rating,
+            u.display_name as created_by_name
+     FROM trip_assignments ta
+     LEFT JOIN vehicles v ON ta.vehicle_id = v.id
+     LEFT JOIN drivers d ON ta.driver_id = d.id
+     LEFT JOIN users u ON ta.created_by_user_id = u.id
+     WHERE ta.id = ? | Params: Array
+(
+    [0] => 7
+)
+
+[16-Nov-2025 19:48:43 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.order_consolidation_suggestions' doesn't exist in query: 
+    SELECT 
+        ocs.*,
+        co1.order_number as order1_number,
+        co2.order_number as order2_number,
+        c1.name as customer1_name,
+        c2.name as customer2_name
+    FROM order_consolidation_suggestions ocs
+    JOIN credit_orders co1 ON ocs.order_id_1 = co1.id
+    JOIN credit_orders co2 ON ocs.order_id_2 = co2.id
+    JOIN customers c1 ON co1.customer_id = c1.id
+    JOIN customers c2 ON co2.customer_id = c2.id
+    WHERE ocs.status = 'pending'
+    AND co1.status = 'ready_to_ship'
+    AND co2.status = 'ready_to_ship'
+    ORDER BY ocs.potential_savings DESC
+    LIMIT 10
+ | Params: Array
+(
+)
+

@@ -39,7 +39,7 @@ if (!$is_admin && !$is_accounts && $user_id) {
 }
 
 /* -----------------------------
-   ROLE-BASED STATISTICS
+   DASHBOARD STATISTICS
 ----------------------------- */
 $stats = [];
 
@@ -88,43 +88,50 @@ if ($is_sales && $user_id) {
 }
 
 /* -----------------------------
-   RECENT ORDERS & ACTIVITY
+   ORDER HISTORY & FILTERING
 ----------------------------- */
-$recent_orders = [];
-$limit = 15;
+// Default filters
+$date_from = $_GET['date_from'] ?? date('Y-m-01');
+$date_to   = $_GET['date_to'] ?? date('Y-m-d');
+$status_filter = $_GET['status'] ?? '';
 
-if ($is_admin || $is_accounts) {
-    $recent_orders = $db->query("
-        SELECT co.*, c.name AS customer_name, u.display_name AS created_by_name
-        FROM credit_orders co
-        JOIN customers c ON co.customer_id = c.id
-        JOIN users u ON co.created_by_user_id = u.id
-        ORDER BY co.created_at DESC
-        LIMIT $limit
-    ")->results();
-} elseif ($is_sales && $user_id) {
-    $recent_orders = $db->query("
-        SELECT co.*, c.name AS customer_name
-        FROM credit_orders co
-        JOIN customers c ON co.customer_id = c.id
-        WHERE co.created_by_user_id = ?
-        ORDER BY co.created_at DESC
-        LIMIT $limit
-    ", [$user_id])->results();
-} elseif (($is_production || $is_dispatcher) && $user_branch !== null) {
-    $branch_filter = "AND co.assigned_branch_id = {$db->getPdo()->quote($user_branch)}";
-    $status_filter = $is_production
-        ? "IN ('approved', 'in_production', 'produced')"
-        : "IN ('ready_to_ship', 'shipped')";
-    $recent_orders = $db->query("
-        SELECT co.*, c.name AS customer_name
-        FROM credit_orders co
-        JOIN customers c ON co.customer_id = c.id
-        WHERE co.status $status_filter $branch_filter
-        ORDER BY co.updated_at DESC
-        LIMIT $limit
-    ")->results();
+// Build Query based on Role and Filters
+$sql_conditions = ["co.order_date BETWEEN ? AND ?"];
+$sql_params = [$date_from, $date_to];
+
+if (!empty($status_filter)) {
+    $sql_conditions[] = "co.status = ?";
+    $sql_params[] = $status_filter;
 }
+
+// Role-specific constraints
+if ($is_sales && $user_id) {
+    $sql_conditions[] = "co.created_by_user_id = ?";
+    $sql_params[] = $user_id;
+} elseif (($is_production || $is_dispatcher) && $user_branch !== null) {
+    $sql_conditions[] = "co.assigned_branch_id = ?";
+    $sql_params[] = $user_branch;
+    
+    // Filter specific statuses for production/dispatch views if needed, 
+    // or let them see everything history-wise for their branch.
+}
+
+$where_clause = implode(' AND ', $sql_conditions);
+
+$orders_query = "
+    SELECT co.*, 
+           c.name AS customer_name, 
+           u.display_name AS created_by_name,
+           (co.total_amount - co.amount_paid) as due_amount
+    FROM credit_orders co
+    JOIN customers c ON co.customer_id = c.id
+    JOIN users u ON co.created_by_user_id = u.id
+    WHERE $where_clause
+    ORDER BY co.order_date DESC, co.id DESC
+    LIMIT 100
+";
+
+$orders = $db->query($orders_query, $sql_params)->results();
 
 require_once '../templates/header.php';
 ?>
@@ -277,15 +284,44 @@ require_once '../templates/header.php';
 </div>
 
 <!-- ======================
-        RECENT ORDERS
+    CREDIT ORDER HISTORY
 ======================= -->
 <div class="bg-white rounded-lg shadow-lg overflow-hidden mb-8">
-    <div class="p-5 border-b border-gray-200 bg-gray-50 flex justify-between items-center">
-        <h2 class="text-xl font-bold text-gray-800">Recent Activity / Orders</h2>
+    <div class="p-5 border-b border-gray-200 bg-gray-50 flex flex-wrap justify-between items-center gap-4">
+        <h2 class="text-xl font-bold text-gray-800 flex items-center">
+            <i class="fas fa-history mr-2 text-blue-600"></i> Credit Order History
+        </h2>
+        
+        <div class="flex flex-wrap gap-3 w-full md:w-auto">
+            <!-- Search & Filter Form -->
+            <form method="GET" class="flex flex-wrap gap-2 w-full md:w-auto">
+                <input type="date" name="date_from" value="<?php echo $date_from; ?>" class="px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500">
+                <input type="date" name="date_to" value="<?php echo $date_to; ?>" class="px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500">
+                
+                <select name="status" class="px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500">
+                    <option value="">All Status</option>
+                    <option value="pending_approval" <?php echo $status_filter == 'pending_approval' ? 'selected' : ''; ?>>Pending</option>
+                    <option value="approved" <?php echo $status_filter == 'approved' ? 'selected' : ''; ?>>Approved</option>
+                    <option value="shipped" <?php echo $status_filter == 'shipped' ? 'selected' : ''; ?>>Shipped</option>
+                    <option value="delivered" <?php echo $status_filter == 'delivered' ? 'selected' : ''; ?>>Delivered</option>
+                    <option value="cancelled" <?php echo $status_filter == 'cancelled' ? 'selected' : ''; ?>>Cancelled</option>
+                </select>
+                
+                <button type="submit" class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition">
+                    <i class="fas fa-filter mr-1"></i> Filter
+                </button>
+            </form>
+
+            <!-- CSV Export Button -->
+            <a href="credit_history_export.php?date_from=<?php echo $date_from; ?>&date_to=<?php echo $date_to; ?>&status=<?php echo $status_filter; ?>" 
+               class="px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition flex items-center justify-center">
+                <i class="fas fa-file-csv mr-2"></i> Export CSV
+            </a>
+        </div>
     </div>
 
     <div class="overflow-x-auto">
-        <?php if (!empty($recent_orders)): ?>
+        <?php if (!empty($orders)): ?>
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-100">
                     <tr>
@@ -295,13 +331,14 @@ require_once '../templates/header.php';
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase">Created By</th>
                         <?php endif; ?>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase">Date</th>
-                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-600 uppercase">Amount (BDT)</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-600 uppercase">Total (BDT)</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-600 uppercase">Due (BDT)</th>
                         <th class="px-6 py-3 text-center text-xs font-medium text-gray-600 uppercase">Status</th>
                         <th class="px-6 py-3 text-center text-xs font-medium text-gray-600 uppercase">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
-                    <?php foreach ($recent_orders as $order): ?>
+                    <?php foreach ($orders as $order): ?>
                     <tr class="hover:bg-primary-50 transition-colors">
                         <td class="px-6 py-4 text-sm font-medium text-primary-700">
                             <a href="credit_order_view.php?id=<?php echo $order->id; ?>" class="hover:underline">
@@ -321,6 +358,9 @@ require_once '../templates/header.php';
                         </td>
                         <td class="px-6 py-4 text-sm text-right font-semibold text-gray-800">
                             <?php echo number_format($order->total_amount, 2); ?>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-right font-medium <?php echo $order->due_amount > 0 ? 'text-red-600' : 'text-green-600'; ?>">
+                            <?php echo number_format($order->due_amount, 2); ?>
                         </td>
                         <td class="px-6 py-4 text-center">
                             <?php
@@ -344,9 +384,14 @@ require_once '../templates/header.php';
                             </span>
                         </td>
                         <td class="px-6 py-4 text-center text-sm font-medium">
-                            <a href="credit_order_view.php?id=<?php echo $order->id; ?>" class="text-primary-600 hover:text-primary-900" title="View Details">
-                                <i class="fas fa-eye fa-fw"></i>
+                            <a href="credit_order_view.php?id=<?php echo $order->id; ?>" class="text-primary-600 hover:text-primary-900 px-2" title="View Details">
+                                <i class="fas fa-eye"></i>
                             </a>
+                            <?php if ($order->status !== 'cancelled' && ($is_admin || $is_accounts)): ?>
+                            <a href="cr_invoice.php?order_id=<?php echo $order->id; ?>" class="text-green-600 hover:text-green-900 px-2" title="Invoice">
+                                <i class="fas fa-file-invoice-dollar"></i>
+                            </a>
+                            <?php endif; ?>
                         </td>
                     </tr>
                     <?php endforeach; ?>
@@ -355,18 +400,10 @@ require_once '../templates/header.php';
         <?php else: ?>
             <div class="p-12 text-center text-gray-500">
                 <i class="fas fa-inbox text-5xl mb-4 text-gray-300"></i>
-                <p class="text-lg font-medium">No recent orders found matching your criteria.</p>
+                <p class="text-lg font-medium">No orders found matching your criteria.</p>
             </div>
         <?php endif; ?>
     </div>
-
-    <?php if (!empty($recent_orders)): ?>
-    <div class="p-4 border-t bg-gray-50 text-right">
-        <a href="#" class="text-sm text-primary-600 hover:underline font-medium">
-            View All Orders <i class="fas fa-arrow-right ml-1"></i>
-        </a>
-    </div>
-    <?php endif; ?>
 </div>
 
 <!-- ======================

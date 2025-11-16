@@ -9,8 +9,9 @@ $currentUser = getCurrentUser();
 $pageTitle = 'Customer Ledger';
 
 // Get all customers
+// FIX: Schema has 'phone_number', not 'phone'. Aliasing it to 'phone' to keep variable consistent.
 $customers = $db->query(
-    "SELECT id, name, phone 
+    "SELECT id, name, phone_number as phone 
      FROM customers 
      WHERE status = 'active' 
      ORDER BY name ASC"
@@ -37,8 +38,7 @@ if ($selected_customer_id) {
     if ($customer_info) {
         // Get ledger entries
         $ledger_entries = $db->query(
-            "SELECT * 
-             FROM customer_ledger 
+            "SELECT * FROM customer_ledger 
              WHERE customer_id = ? 
              AND transaction_date BETWEEN ? AND ?
              ORDER BY transaction_date ASC, id ASC",
@@ -121,9 +121,10 @@ require_once '../templates/header.php';
             <button type="button" onclick="window.print()" class="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
                 <i class="fas fa-print mr-2"></i>Print Ledger
             </button>
+            <!-- Updated Link to CSV Export -->
             <a href="customer_ledger_export.php?customer_id=<?php echo $selected_customer_id; ?>&date_from=<?php echo $date_from; ?>&date_to=<?php echo $date_to; ?>" 
                class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
-                <i class="fas fa-file-excel mr-2"></i>Export Excel
+                <i class="fas fa-file-csv mr-2"></i>Export CSV
             </a>
         </div>
         <?php endif; ?>
@@ -144,7 +145,8 @@ require_once '../templates/header.php';
             </div>
             <div class="flex justify-between">
                 <span class="text-gray-600">Phone:</span>
-                <span class="font-medium"><?php echo htmlspecialchars($customer_info->phone); ?></span>
+                <!-- FIX: Mapped variable name for display -->
+                <span class="font-medium"><?php echo htmlspecialchars($customer_info->phone_number); ?></span>
             </div>
             <?php if ($customer_info->email): ?>
             <div class="flex justify-between">
@@ -158,11 +160,12 @@ require_once '../templates/header.php';
             </div>
             <div class="flex justify-between">
                 <span class="text-gray-600">Available Credit:</span>
-                <span class="font-bold text-green-600">৳<?php echo number_format($customer_info->available_credit ?? 0, 2); ?></span>
+                <!-- Calculated on the fly -->
+                <span class="font-bold text-green-600">৳<?php echo number_format(($customer_info->credit_limit ?? 0) - ($customer_info->current_balance ?? 0), 2); ?></span>
             </div>
             <div class="flex justify-between">
                 <span class="text-gray-600">Used Credit:</span>
-                <span class="font-bold text-orange-600">৳<?php echo number_format($customer_info->used_credit ?? 0, 2); ?></span>
+                <span class="font-bold text-orange-600">৳<?php echo number_format($customer_info->current_balance ?? 0, 2); ?></span>
             </div>
         </div>
     </div>

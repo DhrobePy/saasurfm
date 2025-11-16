@@ -759,3 +759,9 @@ Stack trace:
 [04-Nov-2025 01:40:15 Asia/Dhaka] POS Accounting: Using fallback account for: POS Cash
 [04-Nov-2025 01:40:15 Asia/Dhaka] POS Accounting SUCCESS: Journal #33 created for Order #ORD-20251104-0002. Debits: ৳24790, Credits: ৳24790
 [04-Nov-2025 01:40:15 Asia/Dhaka] POS Order ORD-20251104-0002 completed successfully. Total: ৳24790, Discount: ৳0, Payment: Cash, Journal: JE-33
+[16-Nov-2025 18:01:43 Asia/Dhaka] POS Accounting: Branch-specific account not found: Sales Revenue for HO
+[16-Nov-2025 18:01:43 Asia/Dhaka] POS Accounting: Using fallback account for: Sales Revenue
+[16-Nov-2025 18:01:43 Asia/Dhaka] POS Accounting: Using fallback account for: Sales Discount
+[16-Nov-2025 18:01:43 Asia/Dhaka] POS Accounting: Using fallback account for: Undeposited
+[16-Nov-2025 18:01:43 Asia/Dhaka] POS Accounting SUCCESS: Journal #53 created for Order #ORD-20251116-0001. Debits: ৳11050, Credits: ৳11050
+[16-Nov-2025 18:01:43 Asia/Dhaka] POS Order ORD-20251116-0001 completed successfully. Total: ৳11050, Discount: ৳0, Payment: Bank Deposit, Journal: JE-53

@@ -183,23 +183,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 break;
                 
             case 'get_order_timeline':
-                // Get order_id from POST (since JS was updated to send POST)
-                $order_id = (int)$_POST['order_id']; 
+                $order_id = (int)$_GET['order_id'];
                 
-                // FIX: Removed 'notes' from SELECT as it does not exist in schema
                 $timeline = $db->query(
                     "SELECT 
                         action_type,
                         field_name,
                         old_value,
                         new_value,
-                        -- notes column removed
+                        notes,
                         created_at,
                         u.display_name as user_name
                     FROM credit_order_audit coa
                     LEFT JOIN users u ON coa.user_id = u.id
                     WHERE coa.order_id = ?
-                    ORDER BY coa.created_at DESC",
+                    ORDER BY coa.created_at ASC",
                     [$order_id]
                 )->results();
                 
@@ -2075,34 +2073,24 @@ function cancelOrder(orderId) {
 }
 
 // Show timeline
-// Show timeline - FIX applied here
 function showTimeline(orderId) {
     document.getElementById('timelineModal').classList.remove('hidden');
-    // Clear previous content and show loading
-    const contentDiv = document.getElementById('timelineContent');
-    contentDiv.innerHTML = `
+    document.getElementById('timelineContent').innerHTML = `
         <div class="text-center py-8">
             <i class="fas fa-spinner fa-spin text-4xl text-gray-400"></i>
             <p class="text-gray-500 mt-3">Loading timeline...</p>
         </div>
     `;
     
-    // Create FormData to send action and order_id via POST
-    const formData = new FormData();
-    formData.append('action', 'get_order_timeline');
-    formData.append('order_id', orderId);
-    
-    // Use POST to match the PHP handler logic
-    fetch(window.location.href, {
-        method: 'POST',
-        body: formData
+    fetch(window.location.href + '?action=get_order_timeline&order_id=' + orderId, {
+        method: 'POST'
     })
     .then(response => response.json())
     .then(data => {
         if (data.success && data.timeline.length > 0) {
             let html = '<div class="space-y-4">';
             
-            data.timeline.forEach((event) => {
+            data.timeline.forEach((event, index) => {
                 const actionIcons = {
                     'created': 'fa-plus-circle text-blue-600',
                     'updated': 'fa-edit text-yellow-600',
@@ -2121,9 +2109,9 @@ function showTimeline(orderId) {
                                 <p class="font-semibold text-gray-900">
                                     ${event.action_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
                                 </p>
-                                <!-- FIX: Removed notes display since it's not in DB -->
+                                ${event.notes ? `<p class="text-sm text-gray-600 mt-1">${escapeHtml(event.notes)}</p>` : ''}
                                 <p class="text-xs text-gray-500 mt-2">
-                                    by ${escapeHtml(event.user_name || 'System')} • ${new Date(event.created_at).toLocaleString()}
+                                    by ${escapeHtml(event.user_name)} • ${new Date(event.created_at).toLocaleString()}
                                 </p>
                             </div>
                         </div>
@@ -2132,9 +2120,9 @@ function showTimeline(orderId) {
             });
             
             html += '</div>';
-            contentDiv.innerHTML = html;
+            document.getElementById('timelineContent').innerHTML = html;
         } else {
-            contentDiv.innerHTML = `
+            document.getElementById('timelineContent').innerHTML = `
                 <p class="text-center text-gray-500 py-8">
                     <i class="fas fa-inbox text-4xl mb-3 text-gray-300 block"></i>
                     No timeline events found
@@ -2144,9 +2132,9 @@ function showTimeline(orderId) {
     })
     .catch(error => {
         console.error('Error:', error);
-        contentDiv.innerHTML = `
+        document.getElementById('timelineContent').innerHTML = `
             <p class="text-center text-red-500 py-8">
-                Failed to load timeline. Please try again later.
+                Failed to load timeline
             </p>
         `;
     });
