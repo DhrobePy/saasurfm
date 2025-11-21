@@ -493,3 +493,1111 @@
 [14-Nov-2025 20:34:07 Asia/Dhaka] Asset accounts: 9
 [14-Nov-2025 20:34:07 Asia/Dhaka] Income accounts: 8
 [14-Nov-2025 20:34:07 Asia/Dhaka] Expense accounts: 9
+[17-Nov-2025 14:37:09 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[17-Nov-2025 14:37:09 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'bpca.chart_of_account_id' in 'ON' in query: SELECT 
+        coa.id, 
+        coa.name as account_name, 
+        coa.account_type,
+        b.name as branch_name,
+        ba.account_number, 
+        ba.bank_name,
+        bpca.current_balance as cash_box_memo_balance, -- This is the memo balance from the cash box
+        (SELECT SUM(tl.debit_amount - tl.credit_amount) 
+         FROM transaction_lines tl 
+         WHERE tl.account_id = coa.id) as ledger_balance
+     FROM chart_of_accounts coa
+     LEFT JOIN bank_accounts ba ON coa.id = ba.chart_of_account_id
+     LEFT JOIN branch_petty_cash_accounts bpca ON coa.id = bpca.chart_of_account_id
+     LEFT JOIN branches b ON coa.branch_id = b.id
+     WHERE coa.account_type IN ('Bank', 'Petty Cash', 'Cash')
+     ORDER BY coa.account_type, b.name, coa.name | Params: Array
+(
+)
+
+[17-Nov-2025 14:37:09 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2025-11-01
+    [1] => 2025-11-17
+)
+
+[17-Nov-2025 14:37:09 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2025-11-01
+    [1] => 2025-11-17
+)
+
+[17-Nov-2025 14:37:09 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[17-Nov-2025 14:38:22 Asia/Dhaka] Total accounts retrieved: 29
+[17-Nov-2025 14:38:22 Asia/Dhaka] Added to income: Credit sales Sirajgonh (Type: Revenue)
+[17-Nov-2025 14:38:22 Asia/Dhaka] Added to income: Credit Sales Sirajgonj (Type: Revenue)
+[17-Nov-2025 14:38:22 Asia/Dhaka] Added to expenses: Fuel Expense (Type: Expense)
+[17-Nov-2025 14:38:22 Asia/Dhaka] Added to assets: Petty Cash Demra Mill (Type: Petty Cash)
+[17-Nov-2025 14:38:22 Asia/Dhaka] Added to assets: Petty Cash HO (Type: Petty Cash)
+[17-Nov-2025 14:38:22 Asia/Dhaka] Added to assets: POS Cash - Demra (Type: Petty Cash)
+[17-Nov-2025 14:38:22 Asia/Dhaka] Added to assets: POS Cash - Head Office (Type: Petty Cash)
+[17-Nov-2025 14:38:22 Asia/Dhaka] Added to assets: POS Rampura (Type: Petty Cash)
+[17-Nov-2025 14:38:22 Asia/Dhaka] Added to income: POS Sales Collection Rampura (Type: Revenue)
+[17-Nov-2025 14:38:22 Asia/Dhaka] Added to income: POS sales Collection Sirajgonj (Type: Revenue)
+[17-Nov-2025 14:38:22 Asia/Dhaka] Added to income: POS Sales Revenue - Demra (Type: Revenue)
+[17-Nov-2025 14:38:22 Asia/Dhaka] Added to income: POS Sales Revenue - Head Office (Type: Revenue)
+[17-Nov-2025 14:38:22 Asia/Dhaka] Added to income: POS Sales Revenue SRG (Type: Revenue)
+[17-Nov-2025 14:38:22 Asia/Dhaka] Added to assets: POS Sales Sirajgonj (Type: Petty Cash)
+[17-Nov-2025 14:38:22 Asia/Dhaka] Added to expenses: Raw Material (Type: Expense)
+[17-Nov-2025 14:38:22 Asia/Dhaka] Added to expenses: Repairs and Maintainance (Type: Expense)
+[17-Nov-2025 14:38:22 Asia/Dhaka] Added to expenses: Salary Expense Demra (Type: Expense)
+[17-Nov-2025 14:38:22 Asia/Dhaka] Added to expenses: Salary Expense Sirajgonj (Type: Expense)
+[17-Nov-2025 14:38:22 Asia/Dhaka] Added to expenses: Sales Discounts (Type: Expense)
+[17-Nov-2025 14:38:22 Asia/Dhaka] Added to assets: ucbl - ujjal flour mills (1662301000000228) (Type: Bank)
+[17-Nov-2025 14:38:22 Asia/Dhaka] Added to assets: UCBL - Ujjal Flour Mills (2122101000000123) (Type: Bank)
+[17-Nov-2025 14:38:22 Asia/Dhaka] Added to assets: Undeposited Funds (Type: Other Current Asset)
+[17-Nov-2025 14:38:22 Asia/Dhaka] Added to expenses: Vehicle Document Expense (Type: Expense)
+[17-Nov-2025 14:38:22 Asia/Dhaka] Added to expenses: Vehicle Maintanance (Type: Expense)
+[17-Nov-2025 14:38:22 Asia/Dhaka] Added to expenses: Vehicle Maintenance Expense (Type: Expense)
+[17-Nov-2025 14:38:22 Asia/Dhaka] Added to income: Vehicle Rental Income (Type: Revenue)
+[17-Nov-2025 14:38:22 Asia/Dhaka] Asset accounts: 9
+[17-Nov-2025 14:38:22 Asia/Dhaka] Income accounts: 8
+[17-Nov-2025 14:38:22 Asia/Dhaka] Expense accounts: 9
+[17-Nov-2025 14:39:00 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[17-Nov-2025 14:39:00 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'bpca.chart_of_account_id' in 'ON' in query: SELECT 
+        coa.id, 
+        coa.name as account_name, 
+        coa.account_type,
+        b.name as branch_name,
+        ba.account_number, 
+        ba.bank_name,
+        bpca.current_balance as cash_box_memo_balance, -- This is the memo balance from the cash box
+        (SELECT SUM(tl.debit_amount - tl.credit_amount) 
+         FROM transaction_lines tl 
+         WHERE tl.account_id = coa.id) as ledger_balance
+     FROM chart_of_accounts coa
+     LEFT JOIN bank_accounts ba ON coa.id = ba.chart_of_account_id
+     LEFT JOIN branch_petty_cash_accounts bpca ON coa.id = bpca.chart_of_account_id
+     LEFT JOIN branches b ON coa.branch_id = b.id
+     WHERE coa.account_type IN ('Bank', 'Petty Cash', 'Cash')
+     ORDER BY coa.account_type, b.name, coa.name | Params: Array
+(
+)
+
+[17-Nov-2025 14:39:00 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2025-11-01
+    [1] => 2025-11-17
+)
+
+[17-Nov-2025 14:39:00 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2025-11-01
+    [1] => 2025-11-17
+)
+
+[17-Nov-2025 14:39:00 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[17-Nov-2025 14:39:20 Asia/Dhaka] Total accounts retrieved: 29
+[17-Nov-2025 14:39:20 Asia/Dhaka] Added to income: Credit sales Sirajgonh (Type: Revenue)
+[17-Nov-2025 14:39:20 Asia/Dhaka] Added to income: Credit Sales Sirajgonj (Type: Revenue)
+[17-Nov-2025 14:39:20 Asia/Dhaka] Added to expenses: Fuel Expense (Type: Expense)
+[17-Nov-2025 14:39:20 Asia/Dhaka] Added to assets: Petty Cash Demra Mill (Type: Petty Cash)
+[17-Nov-2025 14:39:20 Asia/Dhaka] Added to assets: Petty Cash HO (Type: Petty Cash)
+[17-Nov-2025 14:39:20 Asia/Dhaka] Added to assets: POS Cash - Demra (Type: Petty Cash)
+[17-Nov-2025 14:39:20 Asia/Dhaka] Added to assets: POS Cash - Head Office (Type: Petty Cash)
+[17-Nov-2025 14:39:20 Asia/Dhaka] Added to assets: POS Rampura (Type: Petty Cash)
+[17-Nov-2025 14:39:20 Asia/Dhaka] Added to income: POS Sales Collection Rampura (Type: Revenue)
+[17-Nov-2025 14:39:20 Asia/Dhaka] Added to income: POS sales Collection Sirajgonj (Type: Revenue)
+[17-Nov-2025 14:39:20 Asia/Dhaka] Added to income: POS Sales Revenue - Demra (Type: Revenue)
+[17-Nov-2025 14:39:20 Asia/Dhaka] Added to income: POS Sales Revenue - Head Office (Type: Revenue)
+[17-Nov-2025 14:39:20 Asia/Dhaka] Added to income: POS Sales Revenue SRG (Type: Revenue)
+[17-Nov-2025 14:39:20 Asia/Dhaka] Added to assets: POS Sales Sirajgonj (Type: Petty Cash)
+[17-Nov-2025 14:39:20 Asia/Dhaka] Added to expenses: Raw Material (Type: Expense)
+[17-Nov-2025 14:39:20 Asia/Dhaka] Added to expenses: Repairs and Maintainance (Type: Expense)
+[17-Nov-2025 14:39:20 Asia/Dhaka] Added to expenses: Salary Expense Demra (Type: Expense)
+[17-Nov-2025 14:39:20 Asia/Dhaka] Added to expenses: Salary Expense Sirajgonj (Type: Expense)
+[17-Nov-2025 14:39:20 Asia/Dhaka] Added to expenses: Sales Discounts (Type: Expense)
+[17-Nov-2025 14:39:20 Asia/Dhaka] Added to assets: ucbl - ujjal flour mills (1662301000000228) (Type: Bank)
+[17-Nov-2025 14:39:20 Asia/Dhaka] Added to assets: UCBL - Ujjal Flour Mills (2122101000000123) (Type: Bank)
+[17-Nov-2025 14:39:20 Asia/Dhaka] Added to assets: Undeposited Funds (Type: Other Current Asset)
+[17-Nov-2025 14:39:20 Asia/Dhaka] Added to expenses: Vehicle Document Expense (Type: Expense)
+[17-Nov-2025 14:39:20 Asia/Dhaka] Added to expenses: Vehicle Maintanance (Type: Expense)
+[17-Nov-2025 14:39:20 Asia/Dhaka] Added to expenses: Vehicle Maintenance Expense (Type: Expense)
+[17-Nov-2025 14:39:20 Asia/Dhaka] Added to income: Vehicle Rental Income (Type: Revenue)
+[17-Nov-2025 14:39:20 Asia/Dhaka] Asset accounts: 9
+[17-Nov-2025 14:39:20 Asia/Dhaka] Income accounts: 8
+[17-Nov-2025 14:39:20 Asia/Dhaka] Expense accounts: 9
+[17-Nov-2025 14:46:32 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[17-Nov-2025 14:46:32 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'bpca.chart_of_account_id' in 'ON' in query: SELECT 
+        coa.id, 
+        coa.name as account_name, 
+        coa.account_type,
+        b.name as branch_name,
+        ba.account_number, 
+        ba.bank_name,
+        bpca.current_balance as cash_box_memo_balance, -- This is the memo balance from the cash box
+        (SELECT SUM(tl.debit_amount - tl.credit_amount) 
+         FROM transaction_lines tl 
+         WHERE tl.account_id = coa.id) as ledger_balance
+     FROM chart_of_accounts coa
+     LEFT JOIN bank_accounts ba ON coa.id = ba.chart_of_account_id
+     LEFT JOIN branch_petty_cash_accounts bpca ON coa.id = bpca.chart_of_account_id
+     LEFT JOIN branches b ON coa.branch_id = b.id
+     WHERE coa.account_type IN ('Bank', 'Petty Cash', 'Cash')
+     ORDER BY coa.account_type, b.name, coa.name | Params: Array
+(
+)
+
+[17-Nov-2025 14:46:32 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2025-11-01
+    [1] => 2025-11-17
+)
+
+[17-Nov-2025 14:46:32 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2025-11-01
+    [1] => 2025-11-17
+)
+
+[17-Nov-2025 14:46:32 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[17-Nov-2025 14:46:41 Asia/Dhaka] Total accounts retrieved: 29
+[17-Nov-2025 14:46:41 Asia/Dhaka] Added to income: Credit sales Sirajgonh (Type: Revenue)
+[17-Nov-2025 14:46:41 Asia/Dhaka] Added to income: Credit Sales Sirajgonj (Type: Revenue)
+[17-Nov-2025 14:46:41 Asia/Dhaka] Added to expenses: Fuel Expense (Type: Expense)
+[17-Nov-2025 14:46:41 Asia/Dhaka] Added to assets: Petty Cash Demra Mill (Type: Petty Cash)
+[17-Nov-2025 14:46:41 Asia/Dhaka] Added to assets: Petty Cash HO (Type: Petty Cash)
+[17-Nov-2025 14:46:41 Asia/Dhaka] Added to assets: POS Cash - Demra (Type: Petty Cash)
+[17-Nov-2025 14:46:41 Asia/Dhaka] Added to assets: POS Cash - Head Office (Type: Petty Cash)
+[17-Nov-2025 14:46:41 Asia/Dhaka] Added to assets: POS Rampura (Type: Petty Cash)
+[17-Nov-2025 14:46:41 Asia/Dhaka] Added to income: POS Sales Collection Rampura (Type: Revenue)
+[17-Nov-2025 14:46:41 Asia/Dhaka] Added to income: POS sales Collection Sirajgonj (Type: Revenue)
+[17-Nov-2025 14:46:41 Asia/Dhaka] Added to income: POS Sales Revenue - Demra (Type: Revenue)
+[17-Nov-2025 14:46:41 Asia/Dhaka] Added to income: POS Sales Revenue - Head Office (Type: Revenue)
+[17-Nov-2025 14:46:41 Asia/Dhaka] Added to income: POS Sales Revenue SRG (Type: Revenue)
+[17-Nov-2025 14:46:41 Asia/Dhaka] Added to assets: POS Sales Sirajgonj (Type: Petty Cash)
+[17-Nov-2025 14:46:41 Asia/Dhaka] Added to expenses: Raw Material (Type: Expense)
+[17-Nov-2025 14:46:41 Asia/Dhaka] Added to expenses: Repairs and Maintainance (Type: Expense)
+[17-Nov-2025 14:46:41 Asia/Dhaka] Added to expenses: Salary Expense Demra (Type: Expense)
+[17-Nov-2025 14:46:41 Asia/Dhaka] Added to expenses: Salary Expense Sirajgonj (Type: Expense)
+[17-Nov-2025 14:46:41 Asia/Dhaka] Added to expenses: Sales Discounts (Type: Expense)
+[17-Nov-2025 14:46:41 Asia/Dhaka] Added to assets: ucbl - ujjal flour mills (1662301000000228) (Type: Bank)
+[17-Nov-2025 14:46:41 Asia/Dhaka] Added to assets: UCBL - Ujjal Flour Mills (2122101000000123) (Type: Bank)
+[17-Nov-2025 14:46:41 Asia/Dhaka] Added to assets: Undeposited Funds (Type: Other Current Asset)
+[17-Nov-2025 14:46:41 Asia/Dhaka] Added to expenses: Vehicle Document Expense (Type: Expense)
+[17-Nov-2025 14:46:41 Asia/Dhaka] Added to expenses: Vehicle Maintanance (Type: Expense)
+[17-Nov-2025 14:46:41 Asia/Dhaka] Added to expenses: Vehicle Maintenance Expense (Type: Expense)
+[17-Nov-2025 14:46:41 Asia/Dhaka] Added to income: Vehicle Rental Income (Type: Revenue)
+[17-Nov-2025 14:46:41 Asia/Dhaka] Asset accounts: 9
+[17-Nov-2025 14:46:41 Asia/Dhaka] Income accounts: 8
+[17-Nov-2025 14:46:41 Asia/Dhaka] Expense accounts: 9
+[17-Nov-2025 14:47:20 Asia/Dhaka] Total accounts retrieved: 29
+[17-Nov-2025 14:47:20 Asia/Dhaka] Added to income: Credit sales Sirajgonh (Type: Revenue)
+[17-Nov-2025 14:47:20 Asia/Dhaka] Added to income: Credit Sales Sirajgonj (Type: Revenue)
+[17-Nov-2025 14:47:20 Asia/Dhaka] Added to expenses: Fuel Expense (Type: Expense)
+[17-Nov-2025 14:47:20 Asia/Dhaka] Added to assets: Petty Cash Demra Mill (Type: Petty Cash)
+[17-Nov-2025 14:47:20 Asia/Dhaka] Added to assets: Petty Cash HO (Type: Petty Cash)
+[17-Nov-2025 14:47:20 Asia/Dhaka] Added to assets: POS Cash - Demra (Type: Petty Cash)
+[17-Nov-2025 14:47:20 Asia/Dhaka] Added to assets: POS Cash - Head Office (Type: Petty Cash)
+[17-Nov-2025 14:47:20 Asia/Dhaka] Added to assets: POS Rampura (Type: Petty Cash)
+[17-Nov-2025 14:47:20 Asia/Dhaka] Added to income: POS Sales Collection Rampura (Type: Revenue)
+[17-Nov-2025 14:47:20 Asia/Dhaka] Added to income: POS sales Collection Sirajgonj (Type: Revenue)
+[17-Nov-2025 14:47:20 Asia/Dhaka] Added to income: POS Sales Revenue - Demra (Type: Revenue)
+[17-Nov-2025 14:47:20 Asia/Dhaka] Added to income: POS Sales Revenue - Head Office (Type: Revenue)
+[17-Nov-2025 14:47:20 Asia/Dhaka] Added to income: POS Sales Revenue SRG (Type: Revenue)
+[17-Nov-2025 14:47:20 Asia/Dhaka] Added to assets: POS Sales Sirajgonj (Type: Petty Cash)
+[17-Nov-2025 14:47:20 Asia/Dhaka] Added to expenses: Raw Material (Type: Expense)
+[17-Nov-2025 14:47:20 Asia/Dhaka] Added to expenses: Repairs and Maintainance (Type: Expense)
+[17-Nov-2025 14:47:20 Asia/Dhaka] Added to expenses: Salary Expense Demra (Type: Expense)
+[17-Nov-2025 14:47:20 Asia/Dhaka] Added to expenses: Salary Expense Sirajgonj (Type: Expense)
+[17-Nov-2025 14:47:20 Asia/Dhaka] Added to expenses: Sales Discounts (Type: Expense)
+[17-Nov-2025 14:47:20 Asia/Dhaka] Added to assets: ucbl - ujjal flour mills (1662301000000228) (Type: Bank)
+[17-Nov-2025 14:47:20 Asia/Dhaka] Added to assets: UCBL - Ujjal Flour Mills (2122101000000123) (Type: Bank)
+[17-Nov-2025 14:47:20 Asia/Dhaka] Added to assets: Undeposited Funds (Type: Other Current Asset)
+[17-Nov-2025 14:47:20 Asia/Dhaka] Added to expenses: Vehicle Document Expense (Type: Expense)
+[17-Nov-2025 14:47:20 Asia/Dhaka] Added to expenses: Vehicle Maintanance (Type: Expense)
+[17-Nov-2025 14:47:20 Asia/Dhaka] Added to expenses: Vehicle Maintenance Expense (Type: Expense)
+[17-Nov-2025 14:47:20 Asia/Dhaka] Added to income: Vehicle Rental Income (Type: Revenue)
+[17-Nov-2025 14:47:20 Asia/Dhaka] Asset accounts: 9
+[17-Nov-2025 14:47:20 Asia/Dhaka] Income accounts: 8
+[17-Nov-2025 14:47:20 Asia/Dhaka] Expense accounts: 9
+[17-Nov-2025 14:47:20 Asia/Dhaka] Total accounts retrieved: 29
+[17-Nov-2025 14:47:20 Asia/Dhaka] Added to income: Credit sales Sirajgonh (Type: Revenue)
+[17-Nov-2025 14:47:20 Asia/Dhaka] Added to income: Credit Sales Sirajgonj (Type: Revenue)
+[17-Nov-2025 14:47:20 Asia/Dhaka] Added to expenses: Fuel Expense (Type: Expense)
+[17-Nov-2025 14:47:20 Asia/Dhaka] Added to assets: Petty Cash Demra Mill (Type: Petty Cash)
+[17-Nov-2025 14:47:20 Asia/Dhaka] Added to assets: Petty Cash HO (Type: Petty Cash)
+[17-Nov-2025 14:47:20 Asia/Dhaka] Added to assets: POS Cash - Demra (Type: Petty Cash)
+[17-Nov-2025 14:47:20 Asia/Dhaka] Added to assets: POS Cash - Head Office (Type: Petty Cash)
+[17-Nov-2025 14:47:20 Asia/Dhaka] Added to assets: POS Rampura (Type: Petty Cash)
+[17-Nov-2025 14:47:20 Asia/Dhaka] Added to income: POS Sales Collection Rampura (Type: Revenue)
+[17-Nov-2025 14:47:20 Asia/Dhaka] Added to income: POS sales Collection Sirajgonj (Type: Revenue)
+[17-Nov-2025 14:47:20 Asia/Dhaka] Added to income: POS Sales Revenue - Demra (Type: Revenue)
+[17-Nov-2025 14:47:20 Asia/Dhaka] Added to income: POS Sales Revenue - Head Office (Type: Revenue)
+[17-Nov-2025 14:47:20 Asia/Dhaka] Added to income: POS Sales Revenue SRG (Type: Revenue)
+[17-Nov-2025 14:47:20 Asia/Dhaka] Added to assets: POS Sales Sirajgonj (Type: Petty Cash)
+[17-Nov-2025 14:47:20 Asia/Dhaka] Added to expenses: Raw Material (Type: Expense)
+[17-Nov-2025 14:47:20 Asia/Dhaka] Added to expenses: Repairs and Maintainance (Type: Expense)
+[17-Nov-2025 14:47:20 Asia/Dhaka] Added to expenses: Salary Expense Demra (Type: Expense)
+[17-Nov-2025 14:47:20 Asia/Dhaka] Added to expenses: Salary Expense Sirajgonj (Type: Expense)
+[17-Nov-2025 14:47:20 Asia/Dhaka] Added to expenses: Sales Discounts (Type: Expense)
+[17-Nov-2025 14:47:20 Asia/Dhaka] Added to assets: ucbl - ujjal flour mills (1662301000000228) (Type: Bank)
+[17-Nov-2025 14:47:20 Asia/Dhaka] Added to assets: UCBL - Ujjal Flour Mills (2122101000000123) (Type: Bank)
+[17-Nov-2025 14:47:20 Asia/Dhaka] Added to assets: Undeposited Funds (Type: Other Current Asset)
+[17-Nov-2025 14:47:20 Asia/Dhaka] Added to expenses: Vehicle Document Expense (Type: Expense)
+[17-Nov-2025 14:47:20 Asia/Dhaka] Added to expenses: Vehicle Maintanance (Type: Expense)
+[17-Nov-2025 14:47:20 Asia/Dhaka] Added to expenses: Vehicle Maintenance Expense (Type: Expense)
+[17-Nov-2025 14:47:20 Asia/Dhaka] Added to income: Vehicle Rental Income (Type: Revenue)
+[17-Nov-2025 14:47:20 Asia/Dhaka] Asset accounts: 9
+[17-Nov-2025 14:47:20 Asia/Dhaka] Income accounts: 8
+[17-Nov-2025 14:47:20 Asia/Dhaka] Expense accounts: 9
+[17-Nov-2025 15:03:39 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[17-Nov-2025 15:03:39 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'bpca.chart_of_account_id' in 'ON' in query: SELECT 
+        coa.id, 
+        coa.name as account_name, 
+        coa.account_type,
+        b.name as branch_name,
+        ba.account_number, 
+        ba.bank_name,
+        bpca.current_balance as cash_box_memo_balance, -- This is the memo balance from the cash box
+        (SELECT SUM(tl.debit_amount - tl.credit_amount) 
+         FROM transaction_lines tl 
+         WHERE tl.account_id = coa.id) as ledger_balance
+     FROM chart_of_accounts coa
+     LEFT JOIN bank_accounts ba ON coa.id = ba.chart_of_account_id
+     LEFT JOIN branch_petty_cash_accounts bpca ON coa.id = bpca.chart_of_account_id
+     LEFT JOIN branches b ON coa.branch_id = b.id
+     WHERE coa.account_type IN ('Bank', 'Petty Cash', 'Cash')
+     ORDER BY coa.account_type, b.name, coa.name | Params: Array
+(
+)
+
+[17-Nov-2025 15:03:39 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2025-11-01
+    [1] => 2025-11-17
+)
+
+[17-Nov-2025 15:03:39 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2025-11-01
+    [1] => 2025-11-17
+)
+
+[17-Nov-2025 15:03:39 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[17-Nov-2025 15:03:41 Asia/Dhaka] Total accounts retrieved: 29
+[17-Nov-2025 15:03:41 Asia/Dhaka] Added to income: Credit sales Sirajgonh (Type: Revenue)
+[17-Nov-2025 15:03:41 Asia/Dhaka] Added to income: Credit Sales Sirajgonj (Type: Revenue)
+[17-Nov-2025 15:03:41 Asia/Dhaka] Added to expenses: Fuel Expense (Type: Expense)
+[17-Nov-2025 15:03:41 Asia/Dhaka] Added to assets: Petty Cash Demra Mill (Type: Petty Cash)
+[17-Nov-2025 15:03:41 Asia/Dhaka] Added to assets: Petty Cash HO (Type: Petty Cash)
+[17-Nov-2025 15:03:41 Asia/Dhaka] Added to assets: POS Cash - Demra (Type: Petty Cash)
+[17-Nov-2025 15:03:41 Asia/Dhaka] Added to assets: POS Cash - Head Office (Type: Petty Cash)
+[17-Nov-2025 15:03:41 Asia/Dhaka] Added to assets: POS Rampura (Type: Petty Cash)
+[17-Nov-2025 15:03:41 Asia/Dhaka] Added to income: POS Sales Collection Rampura (Type: Revenue)
+[17-Nov-2025 15:03:41 Asia/Dhaka] Added to income: POS sales Collection Sirajgonj (Type: Revenue)
+[17-Nov-2025 15:03:41 Asia/Dhaka] Added to income: POS Sales Revenue - Demra (Type: Revenue)
+[17-Nov-2025 15:03:41 Asia/Dhaka] Added to income: POS Sales Revenue - Head Office (Type: Revenue)
+[17-Nov-2025 15:03:41 Asia/Dhaka] Added to income: POS Sales Revenue SRG (Type: Revenue)
+[17-Nov-2025 15:03:41 Asia/Dhaka] Added to assets: POS Sales Sirajgonj (Type: Petty Cash)
+[17-Nov-2025 15:03:41 Asia/Dhaka] Added to expenses: Raw Material (Type: Expense)
+[17-Nov-2025 15:03:41 Asia/Dhaka] Added to expenses: Repairs and Maintainance (Type: Expense)
+[17-Nov-2025 15:03:41 Asia/Dhaka] Added to expenses: Salary Expense Demra (Type: Expense)
+[17-Nov-2025 15:03:41 Asia/Dhaka] Added to expenses: Salary Expense Sirajgonj (Type: Expense)
+[17-Nov-2025 15:03:41 Asia/Dhaka] Added to expenses: Sales Discounts (Type: Expense)
+[17-Nov-2025 15:03:41 Asia/Dhaka] Added to assets: ucbl - ujjal flour mills (1662301000000228) (Type: Bank)
+[17-Nov-2025 15:03:41 Asia/Dhaka] Added to assets: UCBL - Ujjal Flour Mills (2122101000000123) (Type: Bank)
+[17-Nov-2025 15:03:41 Asia/Dhaka] Added to assets: Undeposited Funds (Type: Other Current Asset)
+[17-Nov-2025 15:03:41 Asia/Dhaka] Added to expenses: Vehicle Document Expense (Type: Expense)
+[17-Nov-2025 15:03:41 Asia/Dhaka] Added to expenses: Vehicle Maintanance (Type: Expense)
+[17-Nov-2025 15:03:41 Asia/Dhaka] Added to expenses: Vehicle Maintenance Expense (Type: Expense)
+[17-Nov-2025 15:03:41 Asia/Dhaka] Added to income: Vehicle Rental Income (Type: Revenue)
+[17-Nov-2025 15:03:41 Asia/Dhaka] Asset accounts: 9
+[17-Nov-2025 15:03:41 Asia/Dhaka] Income accounts: 8
+[17-Nov-2025 15:03:41 Asia/Dhaka] Expense accounts: 9
+[17-Nov-2025 15:58:22 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[17-Nov-2025 15:58:22 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'bpca.chart_of_account_id' in 'ON' in query: SELECT 
+        coa.id, 
+        coa.name as account_name, 
+        coa.account_type,
+        b.name as branch_name,
+        ba.account_number, 
+        ba.bank_name,
+        bpca.current_balance as cash_box_memo_balance, -- This is the memo balance from the cash box
+        (SELECT SUM(tl.debit_amount - tl.credit_amount) 
+         FROM transaction_lines tl 
+         WHERE tl.account_id = coa.id) as ledger_balance
+     FROM chart_of_accounts coa
+     LEFT JOIN bank_accounts ba ON coa.id = ba.chart_of_account_id
+     LEFT JOIN branch_petty_cash_accounts bpca ON coa.id = bpca.chart_of_account_id
+     LEFT JOIN branches b ON coa.branch_id = b.id
+     WHERE coa.account_type IN ('Bank', 'Petty Cash', 'Cash')
+     ORDER BY coa.account_type, b.name, coa.name | Params: Array
+(
+)
+
+[17-Nov-2025 15:58:22 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2025-11-01
+    [1] => 2025-11-17
+)
+
+[17-Nov-2025 15:58:22 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2025-11-01
+    [1] => 2025-11-17
+)
+
+[17-Nov-2025 15:58:22 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[17-Nov-2025 15:58:24 Asia/Dhaka] Total accounts retrieved: 29
+[17-Nov-2025 15:58:24 Asia/Dhaka] Added to income: Credit sales Sirajgonh (Type: Revenue)
+[17-Nov-2025 15:58:24 Asia/Dhaka] Added to income: Credit Sales Sirajgonj (Type: Revenue)
+[17-Nov-2025 15:58:24 Asia/Dhaka] Added to expenses: Fuel Expense (Type: Expense)
+[17-Nov-2025 15:58:24 Asia/Dhaka] Added to assets: Petty Cash Demra Mill (Type: Petty Cash)
+[17-Nov-2025 15:58:24 Asia/Dhaka] Added to assets: Petty Cash HO (Type: Petty Cash)
+[17-Nov-2025 15:58:24 Asia/Dhaka] Added to assets: POS Cash - Demra (Type: Petty Cash)
+[17-Nov-2025 15:58:24 Asia/Dhaka] Added to assets: POS Cash - Head Office (Type: Petty Cash)
+[17-Nov-2025 15:58:24 Asia/Dhaka] Added to assets: POS Rampura (Type: Petty Cash)
+[17-Nov-2025 15:58:24 Asia/Dhaka] Added to income: POS Sales Collection Rampura (Type: Revenue)
+[17-Nov-2025 15:58:24 Asia/Dhaka] Added to income: POS sales Collection Sirajgonj (Type: Revenue)
+[17-Nov-2025 15:58:24 Asia/Dhaka] Added to income: POS Sales Revenue - Demra (Type: Revenue)
+[17-Nov-2025 15:58:24 Asia/Dhaka] Added to income: POS Sales Revenue - Head Office (Type: Revenue)
+[17-Nov-2025 15:58:24 Asia/Dhaka] Added to income: POS Sales Revenue SRG (Type: Revenue)
+[17-Nov-2025 15:58:24 Asia/Dhaka] Added to assets: POS Sales Sirajgonj (Type: Petty Cash)
+[17-Nov-2025 15:58:24 Asia/Dhaka] Added to expenses: Raw Material (Type: Expense)
+[17-Nov-2025 15:58:24 Asia/Dhaka] Added to expenses: Repairs and Maintainance (Type: Expense)
+[17-Nov-2025 15:58:24 Asia/Dhaka] Added to expenses: Salary Expense Demra (Type: Expense)
+[17-Nov-2025 15:58:24 Asia/Dhaka] Added to expenses: Salary Expense Sirajgonj (Type: Expense)
+[17-Nov-2025 15:58:24 Asia/Dhaka] Added to expenses: Sales Discounts (Type: Expense)
+[17-Nov-2025 15:58:24 Asia/Dhaka] Added to assets: ucbl - ujjal flour mills (1662301000000228) (Type: Bank)
+[17-Nov-2025 15:58:24 Asia/Dhaka] Added to assets: UCBL - Ujjal Flour Mills (2122101000000123) (Type: Bank)
+[17-Nov-2025 15:58:24 Asia/Dhaka] Added to assets: Undeposited Funds (Type: Other Current Asset)
+[17-Nov-2025 15:58:24 Asia/Dhaka] Added to expenses: Vehicle Document Expense (Type: Expense)
+[17-Nov-2025 15:58:24 Asia/Dhaka] Added to expenses: Vehicle Maintanance (Type: Expense)
+[17-Nov-2025 15:58:24 Asia/Dhaka] Added to expenses: Vehicle Maintenance Expense (Type: Expense)
+[17-Nov-2025 15:58:24 Asia/Dhaka] Added to income: Vehicle Rental Income (Type: Revenue)
+[17-Nov-2025 15:58:24 Asia/Dhaka] Asset accounts: 9
+[17-Nov-2025 15:58:24 Asia/Dhaka] Income accounts: 8
+[17-Nov-2025 15:58:24 Asia/Dhaka] Expense accounts: 9
+[17-Nov-2025 16:02:53 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[17-Nov-2025 16:02:53 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'bpca.chart_of_account_id' in 'ON' in query: SELECT 
+        coa.id, 
+        coa.name as account_name, 
+        coa.account_type,
+        b.name as branch_name,
+        ba.account_number, 
+        ba.bank_name,
+        bpca.current_balance as cash_box_memo_balance, -- This is the memo balance from the cash box
+        (SELECT SUM(tl.debit_amount - tl.credit_amount) 
+         FROM transaction_lines tl 
+         WHERE tl.account_id = coa.id) as ledger_balance
+     FROM chart_of_accounts coa
+     LEFT JOIN bank_accounts ba ON coa.id = ba.chart_of_account_id
+     LEFT JOIN branch_petty_cash_accounts bpca ON coa.id = bpca.chart_of_account_id
+     LEFT JOIN branches b ON coa.branch_id = b.id
+     WHERE coa.account_type IN ('Bank', 'Petty Cash', 'Cash')
+     ORDER BY coa.account_type, b.name, coa.name | Params: Array
+(
+)
+
+[17-Nov-2025 16:02:53 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2025-11-01
+    [1] => 2025-11-17
+)
+
+[17-Nov-2025 16:02:53 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2025-11-01
+    [1] => 2025-11-17
+)
+
+[17-Nov-2025 16:02:53 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[17-Nov-2025 16:03:08 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[17-Nov-2025 16:03:08 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'bpca.chart_of_account_id' in 'ON' in query: SELECT 
+        coa.id, 
+        coa.name as account_name, 
+        coa.account_type,
+        b.name as branch_name,
+        ba.account_number, 
+        ba.bank_name,
+        bpca.current_balance as cash_box_memo_balance, -- This is the memo balance from the cash box
+        (SELECT SUM(tl.debit_amount - tl.credit_amount) 
+         FROM transaction_lines tl 
+         WHERE tl.account_id = coa.id) as ledger_balance
+     FROM chart_of_accounts coa
+     LEFT JOIN bank_accounts ba ON coa.id = ba.chart_of_account_id
+     LEFT JOIN branch_petty_cash_accounts bpca ON coa.id = bpca.chart_of_account_id
+     LEFT JOIN branches b ON coa.branch_id = b.id
+     WHERE coa.account_type IN ('Bank', 'Petty Cash', 'Cash')
+     ORDER BY coa.account_type, b.name, coa.name | Params: Array
+(
+)
+
+[17-Nov-2025 16:03:08 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2025-11-01
+    [1] => 2025-11-17
+)
+
+[17-Nov-2025 16:03:08 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2025-11-01
+    [1] => 2025-11-17
+)
+
+[17-Nov-2025 16:03:08 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[17-Nov-2025 16:04:03 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[17-Nov-2025 16:04:03 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'bpca.chart_of_account_id' in 'ON' in query: SELECT 
+        coa.id, 
+        coa.name as account_name, 
+        coa.account_type,
+        b.name as branch_name,
+        ba.account_number, 
+        ba.bank_name,
+        bpca.current_balance as cash_box_memo_balance, -- This is the memo balance from the cash box
+        (SELECT SUM(tl.debit_amount - tl.credit_amount) 
+         FROM transaction_lines tl 
+         WHERE tl.account_id = coa.id) as ledger_balance
+     FROM chart_of_accounts coa
+     LEFT JOIN bank_accounts ba ON coa.id = ba.chart_of_account_id
+     LEFT JOIN branch_petty_cash_accounts bpca ON coa.id = bpca.chart_of_account_id
+     LEFT JOIN branches b ON coa.branch_id = b.id
+     WHERE coa.account_type IN ('Bank', 'Petty Cash', 'Cash')
+     ORDER BY coa.account_type, b.name, coa.name | Params: Array
+(
+)
+
+[17-Nov-2025 16:04:03 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2025-11-01
+    [1] => 2025-11-17
+)
+
+[17-Nov-2025 16:04:03 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2025-11-01
+    [1] => 2025-11-17
+)
+
+[17-Nov-2025 16:04:03 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[17-Nov-2025 16:29:59 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[17-Nov-2025 16:29:59 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'bpca.chart_of_account_id' in 'ON' in query: SELECT 
+        coa.id, 
+        coa.name as account_name, 
+        coa.account_type,
+        b.name as branch_name,
+        ba.account_number, 
+        ba.bank_name,
+        bpca.current_balance as cash_box_memo_balance, -- This is the memo balance from the cash box
+        (SELECT SUM(tl.debit_amount - tl.credit_amount) 
+         FROM transaction_lines tl 
+         WHERE tl.account_id = coa.id) as ledger_balance
+     FROM chart_of_accounts coa
+     LEFT JOIN bank_accounts ba ON coa.id = ba.chart_of_account_id
+     LEFT JOIN branch_petty_cash_accounts bpca ON coa.id = bpca.chart_of_account_id
+     LEFT JOIN branches b ON coa.branch_id = b.id
+     WHERE coa.account_type IN ('Bank', 'Petty Cash', 'Cash')
+     ORDER BY coa.account_type, b.name, coa.name | Params: Array
+(
+)
+
+[17-Nov-2025 16:29:59 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2025-11-01
+    [1] => 2025-11-17
+)
+
+[17-Nov-2025 16:29:59 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2025-11-01
+    [1] => 2025-11-17
+)
+
+[17-Nov-2025 16:29:59 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[17-Nov-2025 16:31:18 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[17-Nov-2025 16:31:18 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'bpca.chart_of_account_id' in 'ON' in query: SELECT 
+        coa.id, 
+        coa.name as account_name, 
+        coa.account_type,
+        b.name as branch_name,
+        ba.account_number, 
+        ba.bank_name,
+        bpca.current_balance as cash_box_memo_balance, -- This is the memo balance from the cash box
+        (SELECT SUM(tl.debit_amount - tl.credit_amount) 
+         FROM transaction_lines tl 
+         WHERE tl.account_id = coa.id) as ledger_balance
+     FROM chart_of_accounts coa
+     LEFT JOIN bank_accounts ba ON coa.id = ba.chart_of_account_id
+     LEFT JOIN branch_petty_cash_accounts bpca ON coa.id = bpca.chart_of_account_id
+     LEFT JOIN branches b ON coa.branch_id = b.id
+     WHERE coa.account_type IN ('Bank', 'Petty Cash', 'Cash')
+     ORDER BY coa.account_type, b.name, coa.name | Params: Array
+(
+)
+
+[17-Nov-2025 16:31:18 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2025-11-01
+    [1] => 2025-11-17
+)
+
+[17-Nov-2025 16:31:18 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2025-11-01
+    [1] => 2025-11-17
+)
+
+[17-Nov-2025 16:31:18 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[17-Nov-2025 16:31:21 Asia/Dhaka] Total accounts retrieved: 29
+[17-Nov-2025 16:31:21 Asia/Dhaka] Added to income: Credit sales Sirajgonh (Type: Revenue)
+[17-Nov-2025 16:31:21 Asia/Dhaka] Added to income: Credit Sales Sirajgonj (Type: Revenue)
+[17-Nov-2025 16:31:21 Asia/Dhaka] Added to expenses: Fuel Expense (Type: Expense)
+[17-Nov-2025 16:31:21 Asia/Dhaka] Added to assets: Petty Cash Demra Mill (Type: Petty Cash)
+[17-Nov-2025 16:31:21 Asia/Dhaka] Added to assets: Petty Cash HO (Type: Petty Cash)
+[17-Nov-2025 16:31:21 Asia/Dhaka] Added to assets: POS Cash - Demra (Type: Petty Cash)
+[17-Nov-2025 16:31:21 Asia/Dhaka] Added to assets: POS Cash - Head Office (Type: Petty Cash)
+[17-Nov-2025 16:31:21 Asia/Dhaka] Added to assets: POS Rampura (Type: Petty Cash)
+[17-Nov-2025 16:31:21 Asia/Dhaka] Added to income: POS Sales Collection Rampura (Type: Revenue)
+[17-Nov-2025 16:31:21 Asia/Dhaka] Added to income: POS sales Collection Sirajgonj (Type: Revenue)
+[17-Nov-2025 16:31:21 Asia/Dhaka] Added to income: POS Sales Revenue - Demra (Type: Revenue)
+[17-Nov-2025 16:31:21 Asia/Dhaka] Added to income: POS Sales Revenue - Head Office (Type: Revenue)
+[17-Nov-2025 16:31:21 Asia/Dhaka] Added to income: POS Sales Revenue SRG (Type: Revenue)
+[17-Nov-2025 16:31:21 Asia/Dhaka] Added to assets: POS Sales Sirajgonj (Type: Petty Cash)
+[17-Nov-2025 16:31:21 Asia/Dhaka] Added to expenses: Raw Material (Type: Expense)
+[17-Nov-2025 16:31:21 Asia/Dhaka] Added to expenses: Repairs and Maintainance (Type: Expense)
+[17-Nov-2025 16:31:21 Asia/Dhaka] Added to expenses: Salary Expense Demra (Type: Expense)
+[17-Nov-2025 16:31:21 Asia/Dhaka] Added to expenses: Salary Expense Sirajgonj (Type: Expense)
+[17-Nov-2025 16:31:21 Asia/Dhaka] Added to expenses: Sales Discounts (Type: Expense)
+[17-Nov-2025 16:31:21 Asia/Dhaka] Added to assets: ucbl - ujjal flour mills (1662301000000228) (Type: Bank)
+[17-Nov-2025 16:31:21 Asia/Dhaka] Added to assets: UCBL - Ujjal Flour Mills (2122101000000123) (Type: Bank)
+[17-Nov-2025 16:31:21 Asia/Dhaka] Added to assets: Undeposited Funds (Type: Other Current Asset)
+[17-Nov-2025 16:31:21 Asia/Dhaka] Added to expenses: Vehicle Document Expense (Type: Expense)
+[17-Nov-2025 16:31:21 Asia/Dhaka] Added to expenses: Vehicle Maintanance (Type: Expense)
+[17-Nov-2025 16:31:21 Asia/Dhaka] Added to expenses: Vehicle Maintenance Expense (Type: Expense)
+[17-Nov-2025 16:31:21 Asia/Dhaka] Added to income: Vehicle Rental Income (Type: Revenue)
+[17-Nov-2025 16:31:21 Asia/Dhaka] Asset accounts: 9
+[17-Nov-2025 16:31:21 Asia/Dhaka] Income accounts: 8
+[17-Nov-2025 16:31:21 Asia/Dhaka] Expense accounts: 9
+[17-Nov-2025 17:09:01 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[17-Nov-2025 17:09:01 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'bpca.chart_of_account_id' in 'ON' in query: SELECT 
+        coa.id, 
+        coa.name as account_name, 
+        coa.account_type,
+        b.name as branch_name,
+        ba.account_number, 
+        ba.bank_name,
+        bpca.current_balance as cash_box_memo_balance, -- This is the memo balance from the cash box
+        (SELECT SUM(tl.debit_amount - tl.credit_amount) 
+         FROM transaction_lines tl 
+         WHERE tl.account_id = coa.id) as ledger_balance
+     FROM chart_of_accounts coa
+     LEFT JOIN bank_accounts ba ON coa.id = ba.chart_of_account_id
+     LEFT JOIN branch_petty_cash_accounts bpca ON coa.id = bpca.chart_of_account_id
+     LEFT JOIN branches b ON coa.branch_id = b.id
+     WHERE coa.account_type IN ('Bank', 'Petty Cash', 'Cash')
+     ORDER BY coa.account_type, b.name, coa.name | Params: Array
+(
+)
+
+[17-Nov-2025 17:09:01 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2025-11-01
+    [1] => 2025-11-17
+)
+
+[17-Nov-2025 17:09:01 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2025-11-01
+    [1] => 2025-11-17
+)
+
+[17-Nov-2025 17:09:01 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[17-Nov-2025 17:10:51 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[17-Nov-2025 17:10:51 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'bpca.chart_of_account_id' in 'ON' in query: SELECT 
+        coa.id, 
+        coa.name as account_name, 
+        coa.account_type,
+        b.name as branch_name,
+        ba.account_number, 
+        ba.bank_name,
+        bpca.current_balance as cash_box_memo_balance, -- This is the memo balance from the cash box
+        (SELECT SUM(tl.debit_amount - tl.credit_amount) 
+         FROM transaction_lines tl 
+         WHERE tl.account_id = coa.id) as ledger_balance
+     FROM chart_of_accounts coa
+     LEFT JOIN bank_accounts ba ON coa.id = ba.chart_of_account_id
+     LEFT JOIN branch_petty_cash_accounts bpca ON coa.id = bpca.chart_of_account_id
+     LEFT JOIN branches b ON coa.branch_id = b.id
+     WHERE coa.account_type IN ('Bank', 'Petty Cash', 'Cash')
+     ORDER BY coa.account_type, b.name, coa.name | Params: Array
+(
+)
+
+[17-Nov-2025 17:10:51 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2025-11-01
+    [1] => 2025-11-17
+)
+
+[17-Nov-2025 17:10:51 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2025-11-01
+    [1] => 2025-11-17
+)
+
+[17-Nov-2025 17:10:51 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[17-Nov-2025 18:05:49 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[17-Nov-2025 18:05:49 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'bpca.chart_of_account_id' in 'ON' in query: SELECT 
+        coa.id, 
+        coa.name as account_name, 
+        coa.account_type,
+        b.name as branch_name,
+        ba.account_number, 
+        ba.bank_name,
+        bpca.current_balance as cash_box_memo_balance, -- This is the memo balance from the cash box
+        (SELECT SUM(tl.debit_amount - tl.credit_amount) 
+         FROM transaction_lines tl 
+         WHERE tl.account_id = coa.id) as ledger_balance
+     FROM chart_of_accounts coa
+     LEFT JOIN bank_accounts ba ON coa.id = ba.chart_of_account_id
+     LEFT JOIN branch_petty_cash_accounts bpca ON coa.id = bpca.chart_of_account_id
+     LEFT JOIN branches b ON coa.branch_id = b.id
+     WHERE coa.account_type IN ('Bank', 'Petty Cash', 'Cash')
+     ORDER BY coa.account_type, b.name, coa.name | Params: Array
+(
+)
+
+[17-Nov-2025 18:05:49 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2025-11-01
+    [1] => 2025-11-17
+)
+
+[17-Nov-2025 18:05:49 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2025-11-01
+    [1] => 2025-11-17
+)
+
+[17-Nov-2025 18:05:49 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[17-Nov-2025 18:08:17 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[17-Nov-2025 18:08:17 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'bpca.chart_of_account_id' in 'ON' in query: SELECT 
+        coa.id, 
+        coa.name as account_name, 
+        coa.account_type,
+        b.name as branch_name,
+        ba.account_number, 
+        ba.bank_name,
+        bpca.current_balance as cash_box_memo_balance, -- This is the memo balance from the cash box
+        (SELECT SUM(tl.debit_amount - tl.credit_amount) 
+         FROM transaction_lines tl 
+         WHERE tl.account_id = coa.id) as ledger_balance
+     FROM chart_of_accounts coa
+     LEFT JOIN bank_accounts ba ON coa.id = ba.chart_of_account_id
+     LEFT JOIN branch_petty_cash_accounts bpca ON coa.id = bpca.chart_of_account_id
+     LEFT JOIN branches b ON coa.branch_id = b.id
+     WHERE coa.account_type IN ('Bank', 'Petty Cash', 'Cash')
+     ORDER BY coa.account_type, b.name, coa.name | Params: Array
+(
+)
+
+[17-Nov-2025 18:08:17 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2025-11-01
+    [1] => 2025-11-17
+)
+
+[17-Nov-2025 18:08:17 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2025-11-01
+    [1] => 2025-11-17
+)
+
+[17-Nov-2025 18:08:17 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[21-Nov-2025 17:10:46 UTC] PHP Warning:  require_once(/home/ujjalfmc/public_html/saas.ujjalfm.com/accounts/init.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/accounts/daily_log.php on line 2
+[21-Nov-2025 17:10:46 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/ujjalfmc/public_html/saas.ujjalfm.com/accounts/init.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/accounts/daily_log.php:2
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/accounts/daily_log.php on line 2
+[21-Nov-2025 23:12:37 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined function requireLogin() in /home/ujjalfmc/public_html/saas.ujjalfm.com/accounts/daily_log.php:3
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/accounts/daily_log.php on line 3
+[21-Nov-2025 23:13:38 Asia/Dhaka] PHP Warning:  Undefined variable $conn in /home/ujjalfmc/public_html/saas.ujjalfm.com/accounts/daily_log.php on line 13
+[21-Nov-2025 23:13:38 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to a member function query() on null in /home/ujjalfmc/public_html/saas.ujjalfm.com/accounts/daily_log.php:13
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/accounts/daily_log.php on line 13

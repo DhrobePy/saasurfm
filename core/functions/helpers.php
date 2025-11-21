@@ -40,6 +40,7 @@ function getCurrentUser() {
             'display_name' => $_SESSION['user_display_name'] ?? 'User',
             'role'         => $_SESSION['user_role'] ?? null,
             'email'        => $_SESSION['user_email'] ?? null,
+            'branch_id'    => $_SESSION['user_branch_id'] ?? null,
         ];
     }
     return null;
@@ -151,6 +152,23 @@ function display_message(){
     }
     
     return $message;
+}
+function redirect($path, $message = '', $type = 'success') {
+    if (!empty($message)) {
+        if ($type === 'success') {
+            $_SESSION['success_flash'] = $message;
+        } else {
+            $_SESSION['error_flash'] = $message;
+        }
+    }
+    
+    // If path doesn't start with http, treat it as relative path
+    if (strpos($path, 'http') !== 0) {
+        $path = url($path);
+    }
+    
+    header('Location: ' . $path);
+    exit();
 }
 
 // You can add other global helper functions here as needed.

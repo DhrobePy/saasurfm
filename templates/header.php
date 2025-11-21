@@ -162,47 +162,102 @@
                                     <a href="<?php echo url('accounts/bank_accounts.php'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Bank Accounts</a>
                                     <a href="<?php echo url('accounts/all_accounts.php'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">All Statements</a>
                                     <a href="<?php echo url('admin/balance_sheet.php'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Balance Sheet</a>
+                                    <a href="<?php echo url('accounts/daily_log.php'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Daily Log</a>
                                 </div>
                             </div>
                         </div>
                         <?php endif; ?>
                        <!---- Purchase Module----->
-                       
                         
-                        <?php if (in_array($user_role, $purchase_roles)): ?>
+                        <!-- Purchase Module -->
+                    <?php if (in_array($user_role, $accounts_roles)): ?>
                     <div class="relative" x-data="{ open: false }">
                         <button @click="open = !open" class="text-gray-600 hover:text-primary-600 inline-flex items-center px-1 pt-1 text-sm font-medium h-full">
-                            <i class="fas fa-shopping-cart text-xs mr-1"></i>
                             Purchase <i class="fas fa-chevron-down text-xs ml-1"></i>
                         </button>
                         <div x-show="open" @click.away="open = false" x-transition class="absolute left-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
                             <div class="py-1">
-                                <!-- Shipment Info - Market Intelligence -->
+                                <a href="<?php echo url('purchase/index.php'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fas fa-tachometer-alt w-5 text-gray-400"></i> Dashboard
+                                </a>
                                 <a href="<?php echo url('modules/wheat_shipment_dashboard.php'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-primary-600">
                                     <i class="fas fa-ship text-primary-600 mr-2"></i>
                                     <span class="font-medium">Shipment Info</span>
                                     <span class="text-xs text-gray-500 block ml-6">Bangladesh Wheat Imports</span>
                                 </a>
-                                
                                 <div class="border-t border-gray-100 my-1"></div>
-                                
-                                <!-- Future procurement modules -->
-                                <a href="#" class="block px-4 py-2 text-sm text-gray-400 cursor-not-allowed">
-                                    <i class="fas fa-file-invoice mr-2"></i>
-                                    Purchase Orders <span class="text-xs">(Coming Soon)</span>
+                                <div class="px-4 py-1">
+                                    <span class="text-xs font-semibold text-gray-400 uppercase">Suppliers</span>
+                                </div>
+                                <a href="<?php echo url('purchase/suppliers.php'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fas fa-users w-5 text-gray-400"></i> All Suppliers
                                 </a>
-                                <a href="#" class="block px-4 py-2 text-sm text-gray-400 cursor-not-allowed">
-                                    <i class="fas fa-dolly mr-2"></i>
-                                    Suppliers <span class="text-xs">(Coming Soon)</span>
+                                <a href="<?php echo url('purchase/supplier_form.php'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fas fa-user-plus w-5 text-gray-400"></i> Add Supplier
                                 </a>
-                                <a href="#" class="block px-4 py-2 text-sm text-gray-400 cursor-not-allowed">
-                                    <i class="fas fa-box mr-2"></i>
-                                    Raw Materials <span class="text-xs">(Coming Soon)</span>
+                                <div class="border-t border-gray-100 my-1"></div>
+                                <div class="px-4 py-1">
+                                    <span class="text-xs font-semibold text-gray-400 uppercase">Purchase Orders</span>
+                                </div>
+                                <a href="<?php echo url('purchase/purchase_orders.php'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fas fa-file-invoice w-5 text-gray-400"></i> All POs
+                                </a>
+                                <a href="<?php echo url('purchase/create_po.php'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fas fa-plus-circle w-5 text-blue-500"></i> Create PO
+                                </a>
+                                <a href="<?php echo url('purchase/purchase_orders.php?status=pending_approval'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fas fa-clock w-5 text-orange-400"></i> Pending Approval
+                                </a>
+                                <div class="border-t border-gray-100 my-1"></div>
+                                <div class="px-4 py-1">
+                                    <span class="text-xs font-semibold text-gray-400 uppercase">Goods Received</span>
+                                </div>
+                                <a href="<?php echo url('purchase/goods_received.php'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fas fa-clipboard-check w-5 text-gray-400"></i> All GRNs
+                                </a>
+                                <a href="<?php echo url('purchase/create_grn.php'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fas fa-truck-loading w-5 text-green-500"></i> Receive Goods
+                                </a>
+                                <div class="border-t border-gray-100 my-1"></div>
+                                <div class="px-4 py-1">
+                                    <span class="text-xs font-semibold text-gray-400 uppercase">Invoices</span>
+                                </div>
+                                <a href="<?php echo url('purchase/invoices.php'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fas fa-file-invoice-dollar w-5 text-gray-400"></i> All Invoices
+                                </a>
+                                <a href="<?php echo url('purchase/create_invoice.php'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fas fa-plus-circle w-5 text-blue-500"></i> Create Invoice
+                                </a>
+                                <a href="<?php echo url('purchase/invoices.php?payment_status=unpaid'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fas fa-exclamation-circle w-5 text-red-400"></i> Unpaid Invoices
+                                </a>
+                                <div class="border-t border-gray-100 my-1"></div>
+                                <div class="px-4 py-1">
+                                    <span class="text-xs font-semibold text-gray-400 uppercase">Payments</span>
+                                </div>
+                                <a href="<?php echo url('purchase/payments.php'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fas fa-money-bill-wave w-5 text-gray-400"></i> All Payments
+                                </a>
+                                <a href="<?php echo url('purchase/create_payment.php'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fas fa-hand-holding-usd w-5 text-green-500"></i> Make Payment
+                                </a>
+                                <div class="border-t border-gray-100 my-1"></div>
+                                <a href="<?php echo url('purchase/reports.php'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fas fa-chart-bar w-5 text-purple-400"></i> Reports
                                 </a>
                             </div>
                         </div>
                     </div>
                     <?php endif; ?>
+                        
+                        
+                        
+                                <!-- Shipment Info - Market Intelligence -->
+                                
+                                
+                              
+                                
+                                
 
                         <!-- Admin -->
                         <?php if (in_array($user_role, $admin_roles)): ?>
