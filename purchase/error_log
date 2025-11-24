@@ -107,3 +107,169 @@ Stack trace:
 Stack trace:
 #0 {main}
   thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php on line 673
+[22-Nov-2025 15:00:23 Asia/Dhaka] PHP Warning:  require_once(../includes/footer.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php on line 673
+[22-Nov-2025 15:00:23 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Failed opening required '../includes/footer.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php:673
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php on line 673
+[23-Nov-2025 20:24:53 UTC] PHP Warning:  require_once(../init.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 10
+[23-Nov-2025 20:24:53 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '../init.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php:10
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 10
+[24-Nov-2025 02:26:49 Asia/Dhaka] PHP Warning:  require_once(../core/classes/PurchaseAdnanManager.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 14
+[24-Nov-2025 02:26:49 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Failed opening required '../core/classes/PurchaseAdnanManager.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php:14
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 14
+[24-Nov-2025 02:27:18 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined method Database::getConnection() in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Purchaseadnanmanager.php:16
+Stack trace:
+#0 /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php(22): PurchaseAdnanManager->__construct()
+#1 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Purchaseadnanmanager.php on line 16
+[24-Nov-2025 02:32:37 Asia/Dhaka] PHP Warning:  include(../header.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 30
+[24-Nov-2025 02:32:37 Asia/Dhaka] PHP Warning:  include(): Failed opening '../header.php' for inclusion (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 30
+[24-Nov-2025 02:32:37 Asia/Dhaka] PHP Warning:  include(../footer.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 303
+[24-Nov-2025 02:32:37 Asia/Dhaka] PHP Warning:  include(): Failed opening '../footer.php' for inclusion (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 303
+[24-Nov-2025 02:32:59 Asia/Dhaka] PHP Warning:  include(../footer.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 303
+[24-Nov-2025 02:32:59 Asia/Dhaka] PHP Warning:  include(): Failed opening '../footer.php' for inclusion (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 303
+[24-Nov-2025 02:34:02 Asia/Dhaka] PHP Warning:  require_once(../includes/footer.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php on line 673
+[24-Nov-2025 02:34:02 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Failed opening required '../includes/footer.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php:673
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php on line 673
+[24-Nov-2025 02:34:40 Asia/Dhaka] PHP Warning:  require_once(../includes/footer.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php on line 673
+[24-Nov-2025 02:34:40 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Failed opening required '../includes/footer.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php:673
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php on line 673
+[23-Nov-2025 20:34:55 UTC] PHP Warning:  require_once(../init.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_create_po.php on line 10
+[23-Nov-2025 20:34:55 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '../init.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_create_po.php:10
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_create_po.php on line 10
+[24-Nov-2025 02:35:36 Asia/Dhaka] PHP Warning:  require_once(../includes/footer.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php on line 673
+[24-Nov-2025 02:35:36 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Failed opening required '../includes/footer.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php:673
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php on line 673
+[23-Nov-2025 20:35:49 UTC] PHP Warning:  require_once(../init.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_create_po.php on line 10
+[23-Nov-2025 20:35:49 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '../init.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_create_po.php:10
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_create_po.php on line 10
+[24-Nov-2025 02:36:18 Asia/Dhaka] PHP Warning:  include(../header.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_create_po.php on line 39
+[24-Nov-2025 02:36:18 Asia/Dhaka] PHP Warning:  include(): Failed opening '../header.php' for inclusion (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_create_po.php on line 39
+[24-Nov-2025 02:36:18 Asia/Dhaka] PHP Warning:  include(../footer.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_create_po.php on line 205
+[24-Nov-2025 02:36:18 Asia/Dhaka] PHP Warning:  include(): Failed opening '../footer.php' for inclusion (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_create_po.php on line 205
+[24-Nov-2025 02:36:38 Asia/Dhaka] PHP Warning:  include(../footer.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_create_po.php on line 205
+[24-Nov-2025 02:36:38 Asia/Dhaka] PHP Warning:  include(): Failed opening '../footer.php' for inclusion (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_create_po.php on line 205
+[24-Nov-2025 02:43:25 Asia/Dhaka] PHP Warning:  include(../header.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_create_po.php on line 39
+[24-Nov-2025 02:43:25 Asia/Dhaka] PHP Warning:  include(): Failed opening '../header.php' for inclusion (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_create_po.php on line 39
+[24-Nov-2025 02:43:25 Asia/Dhaka] PHP Warning:  include(../footer.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_create_po.php on line 211
+[24-Nov-2025 02:43:25 Asia/Dhaka] PHP Warning:  include(): Failed opening '../footer.php' for inclusion (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_create_po.php on line 211
+[24-Nov-2025 02:52:10 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined function e() in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_view_po.php:34
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_view_po.php on line 34
+[24-Nov-2025 02:56:05 Asia/Dhaka] PHP Warning:  include(../header.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 32
+[24-Nov-2025 02:56:05 Asia/Dhaka] PHP Warning:  include(): Failed opening '../header.php' for inclusion (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 32
+[24-Nov-2025 02:56:05 Asia/Dhaka] PHP Warning:  include(../footer.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 305
+[24-Nov-2025 02:56:05 Asia/Dhaka] PHP Warning:  include(): Failed opening '../footer.php' for inclusion (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 305
+[24-Nov-2025 02:57:49 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined function e() in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_view_po.php:34
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_view_po.php on line 34
+[24-Nov-2025 03:35:01 Asia/Dhaka] PHP Warning:  Array to string conversion in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Purchaseadnanmanager.php on line 174
+[24-Nov-2025 03:46:08 Asia/Dhaka] PHP Warning:  Array to string conversion in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Purchaseadnanmanager.php on line 174
+[24-Nov-2025 03:51:05 Asia/Dhaka] PHP Warning:  Array to string conversion in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_record_grn.php on line 39
+[24-Nov-2025 03:52:45 Asia/Dhaka] PHP Warning:  Undefined array key "delivery_status" in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Purchaseadnanmanager.php on line 147
+[24-Nov-2025 03:52:45 Asia/Dhaka] PHP Warning:  Undefined array key "delivery_status" in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Purchaseadnanmanager.php on line 151
+[24-Nov-2025 08:42:21 Asia/Dhaka] PHP Warning:  Undefined array key "delivery_status" in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Purchaseadnanmanager.php on line 147
+[24-Nov-2025 08:42:21 Asia/Dhaka] PHP Warning:  Undefined array key "delivery_status" in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Purchaseadnanmanager.php on line 151
+[24-Nov-2025 08:49:02 Asia/Dhaka] PHP Parse error:  syntax error, unexpected token "&&" in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Purchaseadnanmanager.php on line 147
+[24-Nov-2025 08:51:31 Asia/Dhaka] PHP Parse error:  syntax error, unexpected token "public" in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Purchaseadnanmanager.php on line 186
+[24-Nov-2025 09:11:08 Asia/Dhaka] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_active' in 'WHERE' in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Purchasepaymentadnanmanager.php:420
+Stack trace:
+#0 /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Purchasepaymentadnanmanager.php(420): PDO->query()
+#1 /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_record_payment.php(18): PurchasePaymentAdnanManager->getAllBankAccounts()
+#2 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Purchasepaymentadnanmanager.php on line 420
+[24-Nov-2025 09:46:07 Asia/Dhaka] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'employee_id' in 'SELECT' in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Purchasepaymentadnanmanager.php:444
+Stack trace:
+#0 /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Purchasepaymentadnanmanager.php(444): PDO->query()
+#1 /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_record_payment.php(21): PurchasePaymentAdnanManager->getAllEmployees()
+#2 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Purchasepaymentadnanmanager.php on line 444
+[24-Nov-2025 09:48:23 Asia/Dhaka] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'designation' in 'SELECT' in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Purchasepaymentadnanmanager.php:444
+Stack trace:
+#0 /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Purchasepaymentadnanmanager.php(444): PDO->query()
+#1 /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_record_payment.php(21): PurchasePaymentAdnanManager->getAllEmployees()
+#2 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Purchasepaymentadnanmanager.php on line 444
+[24-Nov-2025 09:50:02 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$designation in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_record_payment.php on line 225
+[24-Nov-2025 09:50:02 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$designation in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_record_payment.php on line 225
+[24-Nov-2025 09:50:02 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$designation in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_record_payment.php on line 225
+[24-Nov-2025 09:50:02 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$designation in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_record_payment.php on line 225
+[24-Nov-2025 09:50:02 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$designation in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_record_payment.php on line 225
+[24-Nov-2025 09:50:02 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$designation in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_record_payment.php on line 225
+[24-Nov-2025 09:50:02 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$designation in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_record_payment.php on line 225
+[24-Nov-2025 09:50:02 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$designation in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_record_payment.php on line 225
+[24-Nov-2025 09:50:59 Asia/Dhaka] Missing accounts for payment journal entry
+[24-Nov-2025 11:02:00 Asia/Dhaka] PHP Warning:  require_once(../includes/footer.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php on line 673
+[24-Nov-2025 11:02:00 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Failed opening required '../includes/footer.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php:673
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php on line 673
+[24-Nov-2025 11:02:54 Asia/Dhaka] PHP Warning:  require_once(../includes/footer.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php on line 673
+[24-Nov-2025 11:02:54 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Failed opening required '../includes/footer.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php:673
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php on line 673
+[24-Nov-2025 11:05:37 Asia/Dhaka] PHP Warning:  Undefined array key "quantity" in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php on line 66
+[24-Nov-2025 11:05:37 Asia/Dhaka] PHP Warning:  require_once(../includes/footer.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php on line 673
+[24-Nov-2025 11:05:37 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Failed opening required '../includes/footer.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php:673
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php on line 673
+[24-Nov-2025 11:08:38 Asia/Dhaka] PHP Warning:  Undefined array key "quantity" in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php on line 66
+[24-Nov-2025 11:08:38 Asia/Dhaka] PHP Warning:  require_once(../includes/footer.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php on line 673
+[24-Nov-2025 11:08:38 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Failed opening required '../includes/footer.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php:673
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php on line 673
+[24-Nov-2025 11:10:42 Asia/Dhaka] PHP Warning:  require_once(../includes/footer.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php on line 673
+[24-Nov-2025 11:10:42 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Failed opening required '../includes/footer.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php:673
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php on line 673
+[24-Nov-2025 11:12:17 Asia/Dhaka] PHP Warning:  require_once(../includes/footer.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php on line 673
+[24-Nov-2025 11:12:17 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Failed opening required '../includes/footer.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php:673
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php on line 673
+[24-Nov-2025 11:13:46 Asia/Dhaka] PHP Warning:  require_once(../includes/footer.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php on line 673
+[24-Nov-2025 11:13:46 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Failed opening required '../includes/footer.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php:673
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php on line 673
+[24-Nov-2025 11:14:40 Asia/Dhaka] PHP Warning:  require_once(../includes/footer.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php on line 673
+[24-Nov-2025 11:14:40 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Failed opening required '../includes/footer.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php:673
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php on line 673
+[24-Nov-2025 11:15:20 Asia/Dhaka] PHP Warning:  require_once(../includes/footer.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php on line 673
+[24-Nov-2025 11:15:20 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Failed opening required '../includes/footer.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php:673
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php on line 673
+[24-Nov-2025 11:16:30 Asia/Dhaka] PHP Warning:  Undefined array key "quantity" in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php on line 66
+[24-Nov-2025 11:16:30 Asia/Dhaka] PHP Warning:  require_once(../includes/footer.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php on line 673
+[24-Nov-2025 11:16:30 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Failed opening required '../includes/footer.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php:673
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php on line 673
+[24-Nov-2025 11:21:05 Asia/Dhaka] Error recording GRN: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect decimal value: '' for column `ujjalfmc_saas`.`goods_received_adnan`.`expected_quantity` at row 1
+[24-Nov-2025 11:21:05 Asia/Dhaka] PHP Warning:  Array to string conversion in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_record_grn.php on line 39
+[24-Nov-2025 11:32:52 Asia/Dhaka] PHP Warning:  Array to string conversion in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_record_grn.php on line 39
+[24-Nov-2025 11:35:03 Asia/Dhaka] PHP Warning:  Array to string conversion in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_record_grn.php on line 39

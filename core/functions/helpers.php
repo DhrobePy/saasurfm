@@ -153,6 +153,13 @@ function display_message(){
     
     return $message;
 }
+
+if (!function_exists('e')) {
+    function e($string) {
+        return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
+    }
+}
+
 function redirect($path, $message = '', $type = 'success') {
     if (!empty($message)) {
         if ($type === 'success') {

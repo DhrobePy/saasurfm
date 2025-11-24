@@ -862,3 +862,1054 @@
     [0] => 23
 )
 
+[23-Nov-2025 11:29:34 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cow.created_at' in 'ORDER BY' in query: SELECT cow.*, u.display_name as performed_by_name
+     FROM credit_order_workflow cow
+     LEFT JOIN users u ON cow.performed_by_user_id = u.id
+     WHERE cow.order_id = ?
+     ORDER BY cow.created_at DESC | Params: Array
+(
+    [0] => 23
+)
+
+[23-Nov-2025 11:30:21 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cow.created_at' in 'ORDER BY' in query: SELECT cow.*, u.display_name as performed_by_name
+     FROM credit_order_workflow cow
+     LEFT JOIN users u ON cow.performed_by_user_id = u.id
+     WHERE cow.order_id = ?
+     ORDER BY cow.created_at DESC | Params: Array
+(
+    [0] => 23
+)
+
+[23-Nov-2025 14:23:12 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cow.created_at' in 'ORDER BY' in query: SELECT cow.*, u.display_name as performed_by_name
+     FROM credit_order_workflow cow
+     LEFT JOIN users u ON cow.performed_by_user_id = u.id
+     WHERE cow.order_id = ?
+     ORDER BY cow.created_at DESC | Params: Array
+(
+    [0] => 23
+)
+
+[23-Nov-2025 14:23:19 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cow.created_at' in 'ORDER BY' in query: SELECT cow.*, u.display_name as performed_by_name
+     FROM credit_order_workflow cow
+     LEFT JOIN users u ON cow.performed_by_user_id = u.id
+     WHERE cow.order_id = ?
+     ORDER BY cow.created_at DESC | Params: Array
+(
+    [0] => 23
+)
+
+[23-Nov-2025 14:23:30 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cow.created_at' in 'ORDER BY' in query: SELECT cow.*, u.display_name as performed_by_name
+     FROM credit_order_workflow cow
+     LEFT JOIN users u ON cow.performed_by_user_id = u.id
+     WHERE cow.order_id = ?
+     ORDER BY cow.created_at DESC | Params: Array
+(
+    [0] => 23
+)
+
+[23-Nov-2025 14:27:12 Asia/Dhaka] SQL Error [23000]: SQLSTATE[23000]: Integrity constraint violation: 1052 Column 'created_at' in SELECT is ambiguous in query: SELECT 
+                        action_type,
+                        field_name,
+                        old_value,
+                        new_value,
+                        -- notes column removed
+                        created_at,
+                        u.display_name as user_name
+                    FROM credit_order_audit coa
+                    LEFT JOIN users u ON coa.user_id = u.id
+                    WHERE coa.order_id = ?
+                    ORDER BY coa.created_at DESC | Params: Array
+(
+    [0] => 26
+)
+
+[23-Nov-2025 14:28:48 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 10
+)
+
+[23-Nov-2025 14:29:16 Asia/Dhaka] === PAYMENT SUBMISSION START ===
+[23-Nov-2025 14:29:16 Asia/Dhaka] POST data: Array
+(
+    [action] => collect_payment
+    [customer_id] => 10
+    [payment_date] => 2025-11-23
+    [payment_amount] => 800000
+    [payment_method] => Cash
+    [collected_by_employee_id] => 4
+    [cash_account_id] => 22
+    [bank_account_id] => 
+    [cheque_number] => 
+    [cheque_date] => 
+    [bank_transaction_type] => 
+    [reference_number] => 
+    [notes] => 
+)
+
+[23-Nov-2025 14:29:16 Asia/Dhaka] Attempting payment insert with data: Array
+(
+    [payment_number] => PAY-20251123-3321
+    [receipt_number] => RCP-20251123-7589
+    [customer_id] => 10
+    [amount] => 800000
+)
+
+[23-Nov-2025 14:29:16 Asia/Dhaka] ✓✓✓ Payment inserted successfully! ID: 14
+[23-Nov-2025 14:29:16 Asia/Dhaka] ✓ Transaction committed successfully
+[23-Nov-2025 14:29:16 Asia/Dhaka] Payment ID: 14, Receipt: RCP-20251123-7589
+[23-Nov-2025 14:29:37 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 7
+)
+
+[23-Nov-2025 14:29:44 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 1
+)
+
+[23-Nov-2025 14:30:09 Asia/Dhaka] === PAYMENT SUBMISSION START ===
+[23-Nov-2025 14:30:09 Asia/Dhaka] POST data: Array
+(
+    [action] => collect_payment
+    [customer_id] => 1
+    [payment_date] => 2025-11-23
+    [payment_amount] => 3300000
+    [payment_method] => Cash
+    [collected_by_employee_id] => 5
+    [cash_account_id] => 15
+    [bank_account_id] => 
+    [cheque_number] => 
+    [cheque_date] => 
+    [bank_transaction_type] => 
+    [reference_number] => 
+    [notes] => 
+)
+
+[23-Nov-2025 14:30:09 Asia/Dhaka] Attempting payment insert with data: Array
+(
+    [payment_number] => PAY-20251123-5854
+    [receipt_number] => RCP-20251123-7367
+    [customer_id] => 1
+    [amount] => 3300000
+)
+
+[23-Nov-2025 14:30:09 Asia/Dhaka] ✓✓✓ Payment inserted successfully! ID: 15
+[23-Nov-2025 14:30:09 Asia/Dhaka] ✓ Transaction committed successfully
+[23-Nov-2025 14:30:09 Asia/Dhaka] Payment ID: 15, Receipt: RCP-20251123-7367
+[23-Nov-2025 17:23:34 Asia/Dhaka] SQL Error [HY000]: SQLSTATE[HY000]: General error: 1364 Field 'branch_id' doesn't have a default value in query: INSERT INTO `production_schedule` (`order_id`, `production_started_at`, `status`) VALUES (?, ?, ?) | Params: Array
+(
+    [0] => 22
+    [1] => 2025-11-23 17:23:34
+    [2] => in_progress
+)
+
+[23-Nov-2025 17:23:34 Asia/Dhaka] Database insert failed for table 'production_schedule'.
+[23-Nov-2025 17:23:46 Asia/Dhaka] SQL Error [HY000]: SQLSTATE[HY000]: General error: 1364 Field 'branch_id' doesn't have a default value in query: INSERT INTO `production_schedule` (`order_id`, `production_started_at`, `status`) VALUES (?, ?, ?) | Params: Array
+(
+    [0] => 24
+    [1] => 2025-11-23 17:23:46
+    [2] => in_progress
+)
+
+[23-Nov-2025 17:23:46 Asia/Dhaka] Database insert failed for table 'production_schedule'.
+[23-Nov-2025 17:25:00 Asia/Dhaka] SQL Error [HY000]: SQLSTATE[HY000]: General error: 1364 Field 'branch_id' doesn't have a default value in query: INSERT INTO `production_schedule` (`order_id`, `production_started_at`, `status`) VALUES (?, ?, ?) | Params: Array
+(
+    [0] => 21
+    [1] => 2025-11-23 17:25:00
+    [2] => in_progress
+)
+
+[23-Nov-2025 17:25:00 Asia/Dhaka] Database insert failed for table 'production_schedule'.
+[23-Nov-2025 17:29:43 Asia/Dhaka] Order 23 final status after commit: shipped
+[23-Nov-2025 17:32:06 Asia/Dhaka] Order 21 final status after commit: shipped
+[23-Nov-2025 17:37:17 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$payment_amount in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 457
+[23-Nov-2025 17:37:17 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$payment_amount in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 457
+[23-Nov-2025 17:37:17 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$payment_amount in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 457
+[23-Nov-2025 17:37:17 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$payment_amount in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 457
+[23-Nov-2025 17:37:17 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$payment_amount in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 457
+[23-Nov-2025 17:37:39 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 16
+)
+
+[23-Nov-2025 17:39:22 Asia/Dhaka] === PAYMENT SUBMISSION START ===
+[23-Nov-2025 17:39:22 Asia/Dhaka] POST data: Array
+(
+    [action] => collect_payment
+    [customer_id] => 16
+    [payment_date] => 2025-11-23
+    [payment_amount] => 50000
+    [payment_method] => Bank Transfer
+    [collected_by_employee_id] => 4
+    [cash_account_id] => 
+    [bank_account_id] => 12
+    [cheque_number] => 
+    [cheque_date] => 
+    [bank_transaction_type] => NPSB
+    [reference_number] => 122345
+    [notes] => 
+)
+
+[23-Nov-2025 17:39:22 Asia/Dhaka] Attempting payment insert with data: Array
+(
+    [payment_number] => PAY-20251123-7710
+    [receipt_number] => RCP-20251123-1055
+    [customer_id] => 16
+    [amount] => 50000
+)
+
+[23-Nov-2025 17:39:22 Asia/Dhaka] ✓✓✓ Payment inserted successfully! ID: 16
+[23-Nov-2025 17:39:22 Asia/Dhaka] ✓ Transaction committed successfully
+[23-Nov-2025 17:39:22 Asia/Dhaka] Payment ID: 16, Receipt: RCP-20251123-1055
+[23-Nov-2025 20:04:46 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 16
+)
+
+[24-Nov-2025 12:54:43 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 7
+)
+
+[24-Nov-2025 12:55:06 Asia/Dhaka] === PAYMENT SUBMISSION START ===
+[24-Nov-2025 12:55:06 Asia/Dhaka] POST data: Array
+(
+    [action] => collect_payment
+    [customer_id] => 7
+    [payment_date] => 2025-11-24
+    [payment_amount] => 22365
+    [payment_method] => Bank Transfer
+    [collected_by_employee_id] => 
+    [cash_account_id] => 
+    [bank_account_id] => 12
+    [cheque_number] => 
+    [cheque_date] => 
+    [bank_transaction_type] => NPSB
+    [reference_number] => 1234566
+    [notes] => 
+)
+
+[24-Nov-2025 12:55:06 Asia/Dhaka] Attempting payment insert with data: Array
+(
+    [payment_number] => PAY-20251124-5017
+    [receipt_number] => RCP-20251124-0014
+    [customer_id] => 7
+    [amount] => 22365
+)
+
+[24-Nov-2025 12:55:06 Asia/Dhaka] ✓✓✓ Payment inserted successfully! ID: 17
+[24-Nov-2025 12:55:06 Asia/Dhaka] ✓ Transaction committed successfully
+[24-Nov-2025 12:55:06 Asia/Dhaka] Payment ID: 17, Receipt: RCP-20251124-0014
+[24-Nov-2025 12:56:18 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 1
+)
+
+[24-Nov-2025 13:01:15 Asia/Dhaka] === PAYMENT SUBMISSION START ===
+[24-Nov-2025 13:01:15 Asia/Dhaka] POST data: Array
+(
+    [action] => collect_payment
+    [customer_id] => 1
+    [payment_date] => 2025-11-24
+    [payment_amount] => 60162
+    [payment_method] => Bank Transfer
+    [collected_by_employee_id] => 
+    [cash_account_id] => 
+    [bank_account_id] => 13
+    [cheque_number] => 
+    [cheque_date] => 
+    [bank_transaction_type] => Deposit
+    [reference_number] => 23154
+    [notes] => 
+)
+
+[24-Nov-2025 13:01:15 Asia/Dhaka] Attempting payment insert with data: Array
+(
+    [payment_number] => PAY-20251124-6883
+    [receipt_number] => RCP-20251124-1451
+    [customer_id] => 1
+    [amount] => 60162
+)
+
+[24-Nov-2025 13:01:15 Asia/Dhaka] ✓✓✓ Payment inserted successfully! ID: 18
+[24-Nov-2025 13:01:15 Asia/Dhaka] ✓ Transaction committed successfully
+[24-Nov-2025 13:01:15 Asia/Dhaka] Payment ID: 18, Receipt: RCP-20251124-1451
+[24-Nov-2025 13:01:54 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 10
+)
+
+[24-Nov-2025 13:04:39 Asia/Dhaka] === PAYMENT SUBMISSION START ===
+[24-Nov-2025 13:04:39 Asia/Dhaka] POST data: Array
+(
+    [action] => collect_payment
+    [customer_id] => 10
+    [payment_date] => 2025-11-24
+    [payment_amount] => 15457
+    [payment_method] => Bank Transfer
+    [collected_by_employee_id] => 
+    [cash_account_id] => 
+    [bank_account_id] => 12
+    [cheque_number] => 
+    [cheque_date] => 
+    [bank_transaction_type] => Deposit
+    [reference_number] => 321456
+    [notes] => 
+)
+
+[24-Nov-2025 13:04:39 Asia/Dhaka] Attempting payment insert with data: Array
+(
+    [payment_number] => PAY-20251124-2947
+    [receipt_number] => RCP-20251124-6571
+    [customer_id] => 10
+    [amount] => 15457
+)
+
+[24-Nov-2025 13:04:39 Asia/Dhaka] ✓✓✓ Payment inserted successfully! ID: 19
+[24-Nov-2025 13:04:39 Asia/Dhaka] ✓ Transaction committed successfully
+[24-Nov-2025 13:04:39 Asia/Dhaka] Payment ID: 19, Receipt: RCP-20251124-6571
+[24-Nov-2025 13:04:49 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 1
+)
+
+[24-Nov-2025 13:04:54 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 16
+)
+
+[24-Nov-2025 13:05:14 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 1
+)
+
+[24-Nov-2025 13:05:16 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 16
+)
+
+[24-Nov-2025 14:54:29 Asia/Dhaka] SQL Error [HY000]: SQLSTATE[HY000]: General error: 1364 Field 'branch_id' doesn't have a default value in query: INSERT INTO `production_schedule` (`order_id`, `production_started_at`, `status`) VALUES (?, ?, ?) | Params: Array
+(
+    [0] => 28
+    [1] => 2025-11-24 14:54:29
+    [2] => in_progress
+)
+
+[24-Nov-2025 14:54:29 Asia/Dhaka] Database insert failed for table 'production_schedule'.
+[24-Nov-2025 14:54:31 Asia/Dhaka] SQL Error [HY000]: SQLSTATE[HY000]: General error: 1364 Field 'branch_id' doesn't have a default value in query: INSERT INTO `production_schedule` (`order_id`, `production_started_at`, `status`) VALUES (?, ?, ?) | Params: Array
+(
+    [0] => 29
+    [1] => 2025-11-24 14:54:31
+    [2] => in_progress
+)
+
+[24-Nov-2025 14:54:31 Asia/Dhaka] Database insert failed for table 'production_schedule'.
+[24-Nov-2025 14:55:01 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cow.created_at' in 'ORDER BY' in query: SELECT cow.*, u.display_name as performed_by_name
+     FROM credit_order_workflow cow
+     LEFT JOIN users u ON cow.performed_by_user_id = u.id
+     WHERE cow.order_id = ?
+     ORDER BY cow.created_at DESC | Params: Array
+(
+    [0] => 28
+)
+
+[24-Nov-2025 15:04:18 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 1
+)
+
+[24-Nov-2025 15:04:21 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 16
+)
+
+[24-Nov-2025 15:04:22 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 1
+)
+
+[24-Nov-2025 15:04:24 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 16
+)
+
+[24-Nov-2025 15:04:26 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 1
+)
+
+[24-Nov-2025 15:08:29 Asia/Dhaka] Order 28 final status after commit: shipped
+[24-Nov-2025 15:08:43 Asia/Dhaka] Order 29 final status after commit: shipped
+[24-Nov-2025 15:09:21 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 14
+)
+
+[24-Nov-2025 15:12:58 Asia/Dhaka] === PAYMENT SUBMISSION START ===
+[24-Nov-2025 15:12:58 Asia/Dhaka] POST data: Array
+(
+    [action] => collect_payment
+    [customer_id] => 14
+    [payment_date] => 2025-11-24
+    [payment_amount] => 1200000.00
+    [payment_method] => Bank Transfer
+    [collected_by_employee_id] => 
+    [cash_account_id] => 
+    [bank_account_id] => 12
+    [cheque_number] => 
+    [cheque_date] => 
+    [bank_transaction_type] => Deposit
+    [reference_number] => 9854663
+    [notes] => 
+    [invoice_allocation] => Array
+        (
+            [29] => 1246500.00
+        )
+
+)
+
+[24-Nov-2025 15:12:58 Asia/Dhaka] Attempting payment insert with data: Array
+(
+    [payment_number] => PAY-20251124-0756
+    [receipt_number] => RCP-20251124-4594
+    [customer_id] => 14
+    [amount] => 1200000
+)
+
+[24-Nov-2025 15:12:58 Asia/Dhaka] ✓✓✓ Payment inserted successfully! ID: 20
+[24-Nov-2025 15:12:58 Asia/Dhaka] ✓ Transaction committed successfully
+[24-Nov-2025 15:12:58 Asia/Dhaka] Payment ID: 20, Receipt: RCP-20251124-4594
+[24-Nov-2025 15:13:06 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 14
+)
+
+[24-Nov-2025 15:28:24 Asia/Dhaka] SQL Error [HY000]: SQLSTATE[HY000]: General error: 1364 Field 'branch_id' doesn't have a default value in query: INSERT INTO `production_schedule` (`order_id`, `production_started_at`, `status`) VALUES (?, ?, ?) | Params: Array
+(
+    [0] => 30
+    [1] => 2025-11-24 15:28:24
+    [2] => in_progress
+)
+
+[24-Nov-2025 15:28:24 Asia/Dhaka] Database insert failed for table 'production_schedule'.
+[24-Nov-2025 15:28:56 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cow.created_at' in 'ORDER BY' in query: SELECT cow.*, u.display_name as performed_by_name
+     FROM credit_order_workflow cow
+     LEFT JOIN users u ON cow.performed_by_user_id = u.id
+     WHERE cow.order_id = ?
+     ORDER BY cow.created_at DESC | Params: Array
+(
+    [0] => 30
+)
+
+[24-Nov-2025 16:33:21 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 14
+)
+
+[24-Nov-2025 16:36:11 Asia/Dhaka] Order 30 final status after commit: shipped
+[24-Nov-2025 16:36:41 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 14
+)
+
+[24-Nov-2025 16:58:10 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 22
+)
+
+[24-Nov-2025 16:59:51 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 22
+)
+
+[24-Nov-2025 17:12:23 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 14
+)
+
+[24-Nov-2025 17:12:25 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 14
+)
+
+[24-Nov-2025 17:13:50 Asia/Dhaka] === PAYMENT SUBMISSION START ===
+[24-Nov-2025 17:13:50 Asia/Dhaka] POST data: Array
+(
+    [action] => collect_payment
+    [customer_id] => 14
+    [payment_date] => 2025-11-24
+    [payment_amount] => 250000
+    [payment_method] => Cash
+    [collected_by_employee_id] => 5
+    [cash_account_id] => 21
+    [bank_account_id] => 
+    [cheque_number] => 
+    [cheque_date] => 
+    [bank_transaction_type] => 
+    [reference_number] => 5665
+    [notes] => 
+)
+
+[24-Nov-2025 17:13:50 Asia/Dhaka] Attempting payment insert with data: Array
+(
+    [payment_number] => PAY-20251124-2289
+    [receipt_number] => RCP-20251124-5320
+    [customer_id] => 14
+    [amount] => 250000
+)
+
+[24-Nov-2025 17:13:50 Asia/Dhaka] ✓✓✓ Payment inserted successfully! ID: 21
+[24-Nov-2025 17:13:50 Asia/Dhaka] ✓ Transaction committed successfully
+[24-Nov-2025 17:13:50 Asia/Dhaka] Payment ID: 21, Receipt: RCP-20251124-5320
+[24-Nov-2025 17:14:08 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 14
+)
+
+[24-Nov-2025 17:25:10 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'p.name' in 'SELECT' in query: SELECT 
+        coi.*,
+        p.name as product_name,
+        p.sku as product_sku,
+        p.unit as product_unit,
+        pv.variant_name,
+        pv.sku as variant_sku
+    FROM credit_order_items coi
+    LEFT JOIN products p ON coi.product_id = p.id
+    LEFT JOIN product_variants pv ON coi.variant_id = pv.id
+    WHERE coi.order_id = ?
+    ORDER BY coi.id | Params: Array
+(
+    [0] => 32
+)
+
+[24-Nov-2025 17:25:10 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_active' in 'WHERE' in query: SELECT id, name FROM branches WHERE is_active = 1 ORDER BY name | Params: Array
+(
+)
+
+[24-Nov-2025 17:25:10 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'p.name' in 'SELECT' in query: SELECT 
+        p.id,
+        p.name,
+        p.sku,
+        p.unit,
+        p.sale_price,
+        GROUP_CONCAT(
+            CONCAT(pv.id, '|', pv.variant_name, '|', pv.sku, '|', COALESCE(pv.sale_price, p.sale_price))
+            SEPARATOR '||'
+        ) as variants
+    FROM products p
+    LEFT JOIN product_variants pv ON p.id = pv.product_id AND pv.is_active = 1
+    WHERE p.is_active = 1
+    GROUP BY p.id
+    ORDER BY p.name | Params: Array
+(
+)
+
+[24-Nov-2025 17:25:41 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cow.created_at' in 'ORDER BY' in query: SELECT cow.*, u.display_name as performed_by_name
+     FROM credit_order_workflow cow
+     LEFT JOIN users u ON cow.performed_by_user_id = u.id
+     WHERE cow.order_id = ?
+     ORDER BY cow.created_at DESC | Params: Array
+(
+    [0] => 32
+)
+
+[24-Nov-2025 17:35:09 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 16
+)
+
+[24-Nov-2025 17:35:55 Asia/Dhaka] === PAYMENT SUBMISSION START ===
+[24-Nov-2025 17:35:55 Asia/Dhaka] POST data: Array
+(
+    [action] => collect_payment
+    [customer_id] => 16
+    [payment_date] => 2025-11-24
+    [payment_amount] => 110500
+    [payment_method] => Cash
+    [collected_by_employee_id] => 1
+    [cash_account_id] => 15
+    [bank_account_id] => 
+    [cheque_number] => 
+    [cheque_date] => 
+    [bank_transaction_type] => 
+    [reference_number] => 
+    [notes] => 
+    [invoice_allocation] => Array
+        (
+            [23] => 220500.00
+        )
+
+)
+
+[24-Nov-2025 17:35:55 Asia/Dhaka] Attempting payment insert with data: Array
+(
+    [payment_number] => PAY-20251124-6051
+    [receipt_number] => RCP-20251124-9930
+    [customer_id] => 16
+    [amount] => 110500
+)
+
+[24-Nov-2025 17:35:55 Asia/Dhaka] ✓✓✓ Payment inserted successfully! ID: 22
+[24-Nov-2025 17:35:55 Asia/Dhaka] ✓ Transaction committed successfully
+[24-Nov-2025 17:35:55 Asia/Dhaka] Payment ID: 22, Receipt: RCP-20251124-9930
+[24-Nov-2025 17:36:06 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 22
+)
+
+[24-Nov-2025 17:36:40 Asia/Dhaka] === PAYMENT SUBMISSION START ===
+[24-Nov-2025 17:36:40 Asia/Dhaka] POST data: Array
+(
+    [action] => collect_payment
+    [customer_id] => 22
+    [payment_date] => 2025-11-24
+    [payment_amount] => 1000000
+    [payment_method] => Cheque
+    [collected_by_employee_id] => 
+    [cash_account_id] => 
+    [bank_account_id] => 12
+    [cheque_number] => 654614
+    [cheque_date] => 2025-11-26
+    [bank_transaction_type] => 
+    [reference_number] => 652652
+    [notes] => 
+)
+
+[24-Nov-2025 17:36:40 Asia/Dhaka] Attempting payment insert with data: Array
+(
+    [payment_number] => PAY-20251124-3778
+    [receipt_number] => RCP-20251124-8144
+    [customer_id] => 22
+    [amount] => 1000000
+)
+
+[24-Nov-2025 17:36:40 Asia/Dhaka] ✓✓✓ Payment inserted successfully! ID: 23
+[24-Nov-2025 17:36:40 Asia/Dhaka] ✓ Transaction committed successfully
+[24-Nov-2025 17:36:40 Asia/Dhaka] Payment ID: 23, Receipt: RCP-20251124-8144
+[24-Nov-2025 17:36:44 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 1
+)
+
+[24-Nov-2025 17:36:47 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 18
+)
+
+[24-Nov-2025 17:37:10 Asia/Dhaka] === PAYMENT SUBMISSION START ===
+[24-Nov-2025 17:37:10 Asia/Dhaka] POST data: Array
+(
+    [action] => collect_payment
+    [customer_id] => 18
+    [payment_date] => 2025-11-24
+    [payment_amount] => 17950
+    [payment_method] => Bank Transfer
+    [collected_by_employee_id] => 
+    [cash_account_id] => 
+    [bank_account_id] => 13
+    [cheque_number] => 
+    [cheque_date] => 
+    [bank_transaction_type] => Deposit
+    [reference_number] => 6656
+    [notes] => 
+)
+
+[24-Nov-2025 17:37:10 Asia/Dhaka] Attempting payment insert with data: Array
+(
+    [payment_number] => PAY-20251124-8940
+    [receipt_number] => RCP-20251124-5514
+    [customer_id] => 18
+    [amount] => 17950
+)
+
+[24-Nov-2025 17:37:10 Asia/Dhaka] ✓✓✓ Payment inserted successfully! ID: 24
+[24-Nov-2025 17:37:10 Asia/Dhaka] ✓ Transaction committed successfully
+[24-Nov-2025 17:37:10 Asia/Dhaka] Payment ID: 24, Receipt: RCP-20251124-5514
+[24-Nov-2025 17:37:14 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 14
+)
+
+[24-Nov-2025 17:37:37 Asia/Dhaka] === PAYMENT SUBMISSION START ===
+[24-Nov-2025 17:37:37 Asia/Dhaka] POST data: Array
+(
+    [action] => collect_payment
+    [customer_id] => 14
+    [payment_date] => 2025-11-24
+    [payment_amount] => 1500
+    [payment_method] => Cash
+    [collected_by_employee_id] => 1
+    [cash_account_id] => 28
+    [bank_account_id] => 
+    [cheque_number] => 
+    [cheque_date] => 
+    [bank_transaction_type] => 
+    [reference_number] => 6564
+    [notes] => 
+)
+
+[24-Nov-2025 17:37:37 Asia/Dhaka] Attempting payment insert with data: Array
+(
+    [payment_number] => PAY-20251124-4588
+    [receipt_number] => RCP-20251124-1291
+    [customer_id] => 14
+    [amount] => 1500
+)
+
+[24-Nov-2025 17:37:37 Asia/Dhaka] ✓✓✓ Payment inserted successfully! ID: 25
+[24-Nov-2025 17:37:37 Asia/Dhaka] ✓ Transaction committed successfully
+[24-Nov-2025 17:37:37 Asia/Dhaka] Payment ID: 25, Receipt: RCP-20251124-1291
+[24-Nov-2025 17:37:41 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 1
+)
+
+[24-Nov-2025 17:37:57 Asia/Dhaka] === PAYMENT SUBMISSION START ===
+[24-Nov-2025 17:37:57 Asia/Dhaka] POST data: Array
+(
+    [action] => collect_payment
+    [customer_id] => 1
+    [payment_date] => 2025-11-24
+    [payment_amount] => .75
+    [payment_method] => Mobile Banking
+    [collected_by_employee_id] => 
+    [cash_account_id] => 
+    [bank_account_id] => 
+    [cheque_number] => 
+    [cheque_date] => 
+    [bank_transaction_type] => 
+    [reference_number] => 6325121
+    [notes] => 
+)
+
+[24-Nov-2025 17:37:57 Asia/Dhaka] Attempting payment insert with data: Array
+(
+    [payment_number] => PAY-20251124-7978
+    [receipt_number] => RCP-20251124-9246
+    [customer_id] => 1
+    [amount] => 0.75
+)
+
+[24-Nov-2025 17:37:57 Asia/Dhaka] ✓✓✓ Payment inserted successfully! ID: 26
+[24-Nov-2025 17:37:57 Asia/Dhaka] ✓ Transaction committed successfully
+[24-Nov-2025 17:37:57 Asia/Dhaka] Payment ID: 26, Receipt: RCP-20251124-9246

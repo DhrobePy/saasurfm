@@ -77,3 +77,29 @@ Stack trace:
     [0] => 10
 )
 
+[23-Nov-2025 12:02:24 Asia/Dhaka] SQL Error [22003]: SQLSTATE[22003]: Numeric value out of range: 1264 Out of range value for column 'credit_limit' at row 1 in query: UPDATE customers SET name = ?, business_name = ?, phone_number = ?, email = ?, business_address = ?, customer_type = ?, credit_limit = ?, status = ? WHERE id = ? | Params: Array
+(
+    [0] => Hazi Abul Kashem
+    [1] => Kashem & Sons
+    [2] => 01912071977
+    [3] => kashemandsons@gmail.com
+    [4] => Old Chaul Potti, Demra , Dhaka
+    [5] => Credit
+    [6] => 10000000000
+    [7] => active
+    [8] => 1
+)
+
+[24-Nov-2025 14:43:20 Asia/Dhaka] SQL Error [23000]: SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails (`ujjalfmc_saas`.`vehicle_rentals`, CONSTRAINT `vehicle_rentals_ibfk_2` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`)) in query: DELETE FROM customers WHERE id = ? | Params: Array
+(
+    [0] => 10
+)
+
+[24-Nov-2025 16:57:12 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined function get_initials() in /home/ujjalfmc/public_html/saas.ujjalfm.com/customers/view.php:180
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/customers/view.php on line 180
+[25-Nov-2025 02:29:08 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined function get_initials() in /home/ujjalfmc/public_html/saas.ujjalfm.com/customers/view.php:180
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/customers/view.php on line 180

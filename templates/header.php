@@ -180,6 +180,9 @@
                                 <a href="<?php echo url('purchase/index.php'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                     <i class="fas fa-tachometer-alt w-5 text-gray-400"></i> Dashboard
                                 </a>
+                                <a href="<?php echo url('purchase/purchase_adnan_index.php'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fas fa-tachometer-alt w-5 text-gray-400"></i> Dashboard (Adnan)
+                                </a>
                                 <a href="<?php echo url('modules/wheat_shipment_dashboard.php'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-primary-600">
                                     <i class="fas fa-ship text-primary-600 mr-2"></i>
                                     <span class="font-medium">Shipment Info</span>

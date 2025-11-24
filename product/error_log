@@ -25,3 +25,53 @@ Stack trace:
   thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/product/products.php on line 114
 [22-Oct-2025 19:10:53 Asia/Dhaka] PHP Parse error:  syntax error, unexpected token "public", expecting end of file in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/PDF.php on line 11
 [22-Oct-2025 19:14:31 Asia/Dhaka] PHP Parse error:  syntax error, unexpected identifier "D" in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/PDF.php on line 63
+[23-Nov-2025 17:47:39 Asia/Dhaka] SQL Error [01000]: SQLSTATE[01000]: Warning: 1265 Data truncated for column 'unit_of_measure' at row 1 in query: INSERT INTO product_variants (product_id, sku, weight_variant, grade, unit_of_measure, status) VALUES (?, ?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 3
+    [1] => 7-50-2
+    [2] => 50
+    [3] => 2
+    [4] => bag
+    [5] => active
+)
+
+[24-Nov-2025 11:18:20 Asia/Dhaka] SQL Error [01000]: SQLSTATE[01000]: Warning: 1265 Data truncated for column 'unit_of_measure' at row 1 in query: INSERT INTO product_variants (product_id, sku, weight_variant, grade, unit_of_measure, status) VALUES (?, ?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 4
+    [1] => RUTI MOIDA (50KG)-50-1
+    [2] => 50
+    [3] => 1
+    [4] => pcs
+    [5] => active
+)
+
+[24-Nov-2025 11:20:11 Asia/Dhaka] SQL Error [01000]: SQLSTATE[01000]: Warning: 1265 Data truncated for column 'unit_of_measure' at row 1 in query: INSERT INTO product_variants (product_id, sku, weight_variant, grade, unit_of_measure, status) VALUES (?, ?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 4
+    [1] => RUTI MOIDA (50KG)-50-1
+    [2] => 50
+    [3] => 1
+    [4] => bag
+    [5] => active
+)
+
+[24-Nov-2025 12:41:22 Asia/Dhaka] SQL Error [01000]: SQLSTATE[01000]: Warning: 1265 Data truncated for column 'unit_of_measure' at row 1 in query: INSERT INTO product_variants (product_id, sku, weight_variant, grade, unit_of_measure, status) VALUES (?, ?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 4
+    [1] => RUTI MOIDA (50KG)-50-B
+    [2] => 50
+    [3] => B
+    [4] => bag
+    [5] => active
+)
+
+[24-Nov-2025 12:49:21 Asia/Dhaka] SQL Error [23000]: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'RUTI MOIDA (50KG)-50-B' for key 'sku' in query: INSERT INTO product_variants (product_id, sku, weight_variant, grade, unit_of_measure, status) VALUES (?, ?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 4
+    [1] => RUTI MOIDA (50KG)-50-B
+    [2] => 50
+    [3] => B
+    [4] => kg
+    [5] => active
+)
+
