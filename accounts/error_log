@@ -5218,3 +5218,373 @@ Stack trace:
     [selected_date] => 2025-11-24
 )
 
+[25-Nov-2025 11:33:28 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'sp.bank_account_id' in 'ON' in query: 
+    SELECT 
+        sp.id,
+        sp.payment_number,
+        sp.payment_date,
+        sp.amount,
+        sp.payment_method,
+        s.company_name as supplier_name,
+        s.phone as supplier_phone,
+        b.name as branch_name,
+        ba.account_name as payment_account,
+        u.display_name as paid_by,
+        sp.created_at
+    FROM supplier_payments sp
+    LEFT JOIN suppliers s ON sp.supplier_id = s.id
+    LEFT JOIN branches b ON sp.branch_id = b.id
+    LEFT JOIN bank_accounts ba ON sp.bank_account_id = ba.id
+    LEFT JOIN users u ON sp.created_by_user_id = u.id
+    WHERE DATE(sp.payment_date) = :selected_date
+    
+    ORDER BY sp.created_at DESC
+ | Params: Array
+(
+    [selected_date] => 2025-11-25
+)
+
+[25-Nov-2025 11:33:28 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'v.registration_number' in 'SELECT' in query: 
+    SELECT 
+        te.id,
+        te.expense_date,
+        te.expense_type,
+        te.amount,
+        te.description,
+        v.registration_number as vehicle,
+        d.name as driver_name,
+        ta.trip_number,
+        u.display_name as created_by,
+        te.created_at
+    FROM transport_expenses te
+    LEFT JOIN vehicles v ON te.vehicle_id = v.id
+    LEFT JOIN drivers d ON te.driver_id = d.id
+    LEFT JOIN trip_assignments ta ON te.trip_id = ta.id
+    LEFT JOIN users u ON te.created_by_user_id = u.id
+    WHERE DATE(te.expense_date) = :selected_date
+    ORDER BY te.created_at DESC
+ | Params: Array
+(
+    [selected_date] => 2025-11-25
+)
+
+[25-Nov-2025 11:33:28 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'dv.account_id' in 'ON' in query: 
+    SELECT 
+        dv.id,
+        dv.voucher_number,
+        dv.voucher_date,
+        dv.amount,
+        dv.description,
+        dv.paid_to,
+        b.name as branch_name,
+        coa.name as expense_account,
+        u.display_name as created_by,
+        dv.created_at
+    FROM debit_vouchers dv
+    LEFT JOIN branches b ON dv.branch_id = b.id
+    LEFT JOIN chart_of_accounts coa ON dv.account_id = coa.id
+    LEFT JOIN users u ON dv.created_by_user_id = u.id
+    WHERE DATE(dv.voucher_date) = :selected_date
+    
+    ORDER BY dv.created_at DESC
+ | Params: Array
+(
+    [selected_date] => 2025-11-25
+)
+
+[25-Nov-2025 14:24:51 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'sp.bank_account_id' in 'ON' in query: 
+    SELECT 
+        sp.id,
+        sp.payment_number,
+        sp.payment_date,
+        sp.amount,
+        sp.payment_method,
+        s.company_name as supplier_name,
+        s.phone as supplier_phone,
+        b.name as branch_name,
+        ba.account_name as payment_account,
+        u.display_name as paid_by,
+        sp.created_at
+    FROM supplier_payments sp
+    LEFT JOIN suppliers s ON sp.supplier_id = s.id
+    LEFT JOIN branches b ON sp.branch_id = b.id
+    LEFT JOIN bank_accounts ba ON sp.bank_account_id = ba.id
+    LEFT JOIN users u ON sp.created_by_user_id = u.id
+    WHERE DATE(sp.payment_date) = :selected_date
+    
+    ORDER BY sp.created_at DESC
+ | Params: Array
+(
+    [selected_date] => 2025-11-25
+)
+
+[25-Nov-2025 14:24:51 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'v.registration_number' in 'SELECT' in query: 
+    SELECT 
+        te.id,
+        te.expense_date,
+        te.expense_type,
+        te.amount,
+        te.description,
+        v.registration_number as vehicle,
+        d.name as driver_name,
+        ta.trip_number,
+        u.display_name as created_by,
+        te.created_at
+    FROM transport_expenses te
+    LEFT JOIN vehicles v ON te.vehicle_id = v.id
+    LEFT JOIN drivers d ON te.driver_id = d.id
+    LEFT JOIN trip_assignments ta ON te.trip_id = ta.id
+    LEFT JOIN users u ON te.created_by_user_id = u.id
+    WHERE DATE(te.expense_date) = :selected_date
+    ORDER BY te.created_at DESC
+ | Params: Array
+(
+    [selected_date] => 2025-11-25
+)
+
+[25-Nov-2025 14:24:51 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'dv.account_id' in 'ON' in query: 
+    SELECT 
+        dv.id,
+        dv.voucher_number,
+        dv.voucher_date,
+        dv.amount,
+        dv.description,
+        dv.paid_to,
+        b.name as branch_name,
+        coa.name as expense_account,
+        u.display_name as created_by,
+        dv.created_at
+    FROM debit_vouchers dv
+    LEFT JOIN branches b ON dv.branch_id = b.id
+    LEFT JOIN chart_of_accounts coa ON dv.account_id = coa.id
+    LEFT JOIN users u ON dv.created_by_user_id = u.id
+    WHERE DATE(dv.voucher_date) = :selected_date
+    
+    ORDER BY dv.created_at DESC
+ | Params: Array
+(
+    [selected_date] => 2025-11-25
+)
+
+[25-Nov-2025 14:25:04 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'sp.bank_account_id' in 'ON' in query: 
+    SELECT 
+        sp.id,
+        sp.payment_number,
+        sp.payment_date,
+        sp.amount,
+        sp.payment_method,
+        s.company_name as supplier_name,
+        s.phone as supplier_phone,
+        b.name as branch_name,
+        ba.account_name as payment_account,
+        u.display_name as paid_by,
+        sp.created_at
+    FROM supplier_payments sp
+    LEFT JOIN suppliers s ON sp.supplier_id = s.id
+    LEFT JOIN branches b ON sp.branch_id = b.id
+    LEFT JOIN bank_accounts ba ON sp.bank_account_id = ba.id
+    LEFT JOIN users u ON sp.created_by_user_id = u.id
+    WHERE DATE(sp.payment_date) = :selected_date
+    
+    ORDER BY sp.created_at DESC
+ | Params: Array
+(
+    [selected_date] => 2025-11-25
+)
+
+[25-Nov-2025 14:25:04 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'v.registration_number' in 'SELECT' in query: 
+    SELECT 
+        te.id,
+        te.expense_date,
+        te.expense_type,
+        te.amount,
+        te.description,
+        v.registration_number as vehicle,
+        d.name as driver_name,
+        ta.trip_number,
+        u.display_name as created_by,
+        te.created_at
+    FROM transport_expenses te
+    LEFT JOIN vehicles v ON te.vehicle_id = v.id
+    LEFT JOIN drivers d ON te.driver_id = d.id
+    LEFT JOIN trip_assignments ta ON te.trip_id = ta.id
+    LEFT JOIN users u ON te.created_by_user_id = u.id
+    WHERE DATE(te.expense_date) = :selected_date
+    ORDER BY te.created_at DESC
+ | Params: Array
+(
+    [selected_date] => 2025-11-25
+)
+
+[25-Nov-2025 14:25:04 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'dv.account_id' in 'ON' in query: 
+    SELECT 
+        dv.id,
+        dv.voucher_number,
+        dv.voucher_date,
+        dv.amount,
+        dv.description,
+        dv.paid_to,
+        b.name as branch_name,
+        coa.name as expense_account,
+        u.display_name as created_by,
+        dv.created_at
+    FROM debit_vouchers dv
+    LEFT JOIN branches b ON dv.branch_id = b.id
+    LEFT JOIN chart_of_accounts coa ON dv.account_id = coa.id
+    LEFT JOIN users u ON dv.created_by_user_id = u.id
+    WHERE DATE(dv.voucher_date) = :selected_date
+    
+    ORDER BY dv.created_at DESC
+ | Params: Array
+(
+    [selected_date] => 2025-11-25
+)
+
+[25-Nov-2025 18:05:37 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'sp.bank_account_id' in 'ON' in query: 
+    SELECT 
+        sp.id,
+        sp.payment_number,
+        sp.payment_date,
+        sp.amount,
+        sp.payment_method,
+        s.company_name as supplier_name,
+        s.phone as supplier_phone,
+        b.name as branch_name,
+        ba.account_name as payment_account,
+        u.display_name as paid_by,
+        sp.created_at
+    FROM supplier_payments sp
+    LEFT JOIN suppliers s ON sp.supplier_id = s.id
+    LEFT JOIN branches b ON sp.branch_id = b.id
+    LEFT JOIN bank_accounts ba ON sp.bank_account_id = ba.id
+    LEFT JOIN users u ON sp.created_by_user_id = u.id
+    WHERE DATE(sp.payment_date) = :selected_date
+    
+    ORDER BY sp.created_at DESC
+ | Params: Array
+(
+    [selected_date] => 2025-11-25
+)
+
+[25-Nov-2025 18:05:37 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'v.registration_number' in 'SELECT' in query: 
+    SELECT 
+        te.id,
+        te.expense_date,
+        te.expense_type,
+        te.amount,
+        te.description,
+        v.registration_number as vehicle,
+        d.name as driver_name,
+        ta.trip_number,
+        u.display_name as created_by,
+        te.created_at
+    FROM transport_expenses te
+    LEFT JOIN vehicles v ON te.vehicle_id = v.id
+    LEFT JOIN drivers d ON te.driver_id = d.id
+    LEFT JOIN trip_assignments ta ON te.trip_id = ta.id
+    LEFT JOIN users u ON te.created_by_user_id = u.id
+    WHERE DATE(te.expense_date) = :selected_date
+    ORDER BY te.created_at DESC
+ | Params: Array
+(
+    [selected_date] => 2025-11-25
+)
+
+[25-Nov-2025 18:05:37 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'dv.account_id' in 'ON' in query: 
+    SELECT 
+        dv.id,
+        dv.voucher_number,
+        dv.voucher_date,
+        dv.amount,
+        dv.description,
+        dv.paid_to,
+        b.name as branch_name,
+        coa.name as expense_account,
+        u.display_name as created_by,
+        dv.created_at
+    FROM debit_vouchers dv
+    LEFT JOIN branches b ON dv.branch_id = b.id
+    LEFT JOIN chart_of_accounts coa ON dv.account_id = coa.id
+    LEFT JOIN users u ON dv.created_by_user_id = u.id
+    WHERE DATE(dv.voucher_date) = :selected_date
+    
+    ORDER BY dv.created_at DESC
+ | Params: Array
+(
+    [selected_date] => 2025-11-25
+)
+
+[25-Nov-2025 20:34:40 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'sp.bank_account_id' in 'ON' in query: 
+    SELECT 
+        sp.id,
+        sp.payment_number,
+        sp.payment_date,
+        sp.amount,
+        sp.payment_method,
+        s.company_name as supplier_name,
+        s.phone as supplier_phone,
+        b.name as branch_name,
+        ba.account_name as payment_account,
+        u.display_name as paid_by,
+        sp.created_at
+    FROM supplier_payments sp
+    LEFT JOIN suppliers s ON sp.supplier_id = s.id
+    LEFT JOIN branches b ON sp.branch_id = b.id
+    LEFT JOIN bank_accounts ba ON sp.bank_account_id = ba.id
+    LEFT JOIN users u ON sp.created_by_user_id = u.id
+    WHERE DATE(sp.payment_date) = :selected_date
+    
+    ORDER BY sp.created_at DESC
+ | Params: Array
+(
+    [selected_date] => 2025-11-25
+)
+
+[25-Nov-2025 20:34:40 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'v.registration_number' in 'SELECT' in query: 
+    SELECT 
+        te.id,
+        te.expense_date,
+        te.expense_type,
+        te.amount,
+        te.description,
+        v.registration_number as vehicle,
+        d.name as driver_name,
+        ta.trip_number,
+        u.display_name as created_by,
+        te.created_at
+    FROM transport_expenses te
+    LEFT JOIN vehicles v ON te.vehicle_id = v.id
+    LEFT JOIN drivers d ON te.driver_id = d.id
+    LEFT JOIN trip_assignments ta ON te.trip_id = ta.id
+    LEFT JOIN users u ON te.created_by_user_id = u.id
+    WHERE DATE(te.expense_date) = :selected_date
+    ORDER BY te.created_at DESC
+ | Params: Array
+(
+    [selected_date] => 2025-11-25
+)
+
+[25-Nov-2025 20:34:40 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'dv.account_id' in 'ON' in query: 
+    SELECT 
+        dv.id,
+        dv.voucher_number,
+        dv.voucher_date,
+        dv.amount,
+        dv.description,
+        dv.paid_to,
+        b.name as branch_name,
+        coa.name as expense_account,
+        u.display_name as created_by,
+        dv.created_at
+    FROM debit_vouchers dv
+    LEFT JOIN branches b ON dv.branch_id = b.id
+    LEFT JOIN chart_of_accounts coa ON dv.account_id = coa.id
+    LEFT JOIN users u ON dv.created_by_user_id = u.id
+    WHERE DATE(dv.voucher_date) = :selected_date
+    
+    ORDER BY dv.created_at DESC
+ | Params: Array
+(
+    [selected_date] => 2025-11-25
+)
+
