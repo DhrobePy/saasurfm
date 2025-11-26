@@ -75,3 +75,13 @@ Stack trace:
     [5] => active
 )
 
+[26-Nov-2025 18:04:34 Asia/Dhaka] SQL Error [01000]: SQLSTATE[01000]: Warning: 1265 Data truncated for column 'unit_of_measure' at row 1 in query: INSERT INTO product_variants (product_id, sku, weight_variant, grade, unit_of_measure, status) VALUES (?, ?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 2
+    [1] => 1HATI-50-A
+    [2] => 50
+    [3] => A
+    [4] => bag
+    [5] => active
+)
+

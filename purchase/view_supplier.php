@@ -1,9 +1,6 @@
 <?php
 require_once '../core/init.php';
-
-global $db;
-
-restrict_access();
+restrict_access(['Superadmin', 'admin', 'Accounts', 'accounts-demra', 'accounts-srg']);
 
 $currentUser = getCurrentUser();
 
@@ -13,32 +10,35 @@ if ($supplier_id === 0) {
     redirect('suppliers.php', 'Invalid supplier', 'error');
 }
 
-// Get supplier details
+// Database connection
+$db = Database::getInstance()->getPdo();
+
+// Get supplier details with Purchase Adnan aggregations
 $supplier_sql = "
     SELECT 
         s.*,
         u.display_name as created_by_name,
         COUNT(DISTINCT po.id) as total_pos,
-        COALESCE(SUM(CASE WHEN po.status NOT IN ('draft', 'cancelled') THEN po.total_amount ELSE 0 END), 0) as total_purchase_value,
-        COUNT(DISTINCT pi.id) as total_invoices,
-        COALESCE(SUM(pi.total_amount), 0) as total_invoice_value,
-        COALESCE(SUM(CASE WHEN pi.payment_status IN ('unpaid', 'partially_paid') THEN pi.balance_due ELSE 0 END), 0) as outstanding_invoices,
-        COUNT(DISTINCT sp.id) as total_payments,
-        COALESCE(SUM(sp.amount), 0) as total_paid
+        COALESCE(SUM(CASE WHEN po.po_status != 'cancelled' THEN po.total_order_value ELSE 0 END), 0) as total_purchase_value,
+        COALESCE(SUM(CASE WHEN po.po_status != 'cancelled' THEN po.total_received_value ELSE 0 END), 0) as total_received_value,
+        COALESCE(SUM(CASE WHEN po.po_status != 'cancelled' THEN po.total_paid ELSE 0 END), 0) as total_paid,
+        COALESCE(SUM(CASE WHEN po.payment_status IN ('unpaid', 'partial') THEN po.balance_payable ELSE 0 END), 0) as outstanding_amount,
+        COUNT(DISTINCT pmt.id) as total_payments,
+        COALESCE(SUM(pmt.amount_paid), 0) as total_payment_value
     FROM suppliers s
     LEFT JOIN users u ON s.created_by_user_id = u.id
-    LEFT JOIN purchase_orders po ON s.id = po.supplier_id
-    LEFT JOIN purchase_invoices pi ON s.id = pi.supplier_id AND pi.status = 'posted'
-    LEFT JOIN supplier_payments sp ON s.id = sp.supplier_id AND sp.status IN ('pending', 'cleared')
-    WHERE s.id = :id
+    LEFT JOIN purchase_orders_adnan po ON s.id = po.supplier_id
+    LEFT JOIN purchase_payments_adnan pmt ON s.id = pmt.supplier_id AND pmt.is_posted = 1
+    WHERE s.id = ?
     GROUP BY s.id, s.uuid, s.supplier_code, s.company_name, s.contact_person, s.email,
              s.phone, s.mobile, s.address, s.city, s.country, s.tax_id, s.payment_terms,
              s.credit_limit, s.opening_balance, s.current_balance, s.supplier_type,
              s.status, s.notes, s.created_by_user_id, s.created_at, s.updated_at, u.display_name
 ";
 
-$db->query($supplier_sql, ['id' => $supplier_id]);
-$supplier = $db->first();
+$stmt = $db->prepare($supplier_sql);
+$stmt->execute([$supplier_id]);
+$supplier = $stmt->fetch(PDO::FETCH_OBJ);
 
 if (!$supplier) {
     redirect('suppliers.php', 'Supplier not found', 'error');
@@ -46,45 +46,78 @@ if (!$supplier) {
 
 $pageTitle = $supplier->company_name;
 
-// Get recent purchase orders
+// Get recent purchase orders from Adnan module
 $recent_pos_sql = "
-    SELECT po.*, b.name as branch_name
-    FROM purchase_orders po
-    LEFT JOIN branches b ON po.branch_id = b.id
-    WHERE po.supplier_id = :supplier_id
+    SELECT 
+        po.id,
+        po.po_number,
+        po.po_date,
+        po.quantity_kg,
+        po.wheat_origin,
+        po.total_order_value,
+        po.delivery_status,
+        po.payment_status,
+        po.balance_payable,
+        po.created_at
+    FROM purchase_orders_adnan po
+    WHERE po.supplier_id = ?
+    AND po.po_status != 'cancelled'
     ORDER BY po.created_at DESC
     LIMIT 5
 ";
-$db->query($recent_pos_sql, ['supplier_id' => $supplier_id]);
-$recent_pos = $db->results();
+$stmt = $db->prepare($recent_pos_sql);
+$stmt->execute([$supplier_id]);
+$recent_pos = $stmt->fetchAll(PDO::FETCH_OBJ);
 
-// Get recent invoices
-$recent_invoices_sql = "
-    SELECT pi.*
-    FROM purchase_invoices pi
-    WHERE pi.supplier_id = :supplier_id
-    ORDER BY pi.created_at DESC
-    LIMIT 5
-";
-$db->query($recent_invoices_sql, ['supplier_id' => $supplier_id]);
-$recent_invoices = $db->results();
-
-// Get recent payments
+// Get recent payments from Adnan module
 $recent_payments_sql = "
-    SELECT sp.*, c.name as account_name
-    FROM supplier_payments sp
-    LEFT JOIN chart_of_accounts c ON sp.payment_account_id = c.id
-    WHERE sp.supplier_id = :supplier_id
-    ORDER BY sp.payment_date DESC
+    SELECT 
+        pmt.id,
+        pmt.payment_voucher_number,
+        pmt.payment_date,
+        pmt.amount_paid,
+        pmt.payment_method,
+        pmt.bank_name,
+        pmt.is_posted,
+        pmt.created_at,
+        pmt.po_number,
+        pmt.purchase_order_id
+    FROM purchase_payments_adnan pmt
+    WHERE pmt.supplier_id = ?
+    ORDER BY pmt.payment_date DESC
     LIMIT 5
 ";
-$db->query($recent_payments_sql, ['supplier_id' => $supplier_id]);
-$recent_payments = $db->results();
+$stmt = $db->prepare($recent_payments_sql);
+$stmt->execute([$supplier_id]);
+$recent_payments = $stmt->fetchAll(PDO::FETCH_OBJ);
+
+// Get GRNs (Goods Received Notes)
+$recent_grns_sql = "
+    SELECT 
+        grn.id,
+        grn.grn_number,
+        grn.grn_date,
+        grn.quantity_received_kg AS received_quantity_kg,
+        grn.truck_number,
+        grn.total_value,
+        grn.created_at,
+        grn.po_number,
+        grn.purchase_order_id,
+        po.wheat_origin
+    FROM goods_received_adnan grn
+    LEFT JOIN purchase_orders_adnan po ON grn.purchase_order_id = po.id
+    WHERE grn.supplier_id = ?
+    ORDER BY grn.created_at DESC
+    LIMIT 5
+";
+$stmt = $db->prepare($recent_grns_sql);
+$stmt->execute([$supplier_id]);
+$recent_grns = $stmt->fetchAll(PDO::FETCH_OBJ);
 
 require_once '../templates/header.php';
 ?>
 
-<div class="container mx-auto">
+<div class="w-full px-4 py-6">
 
     <!-- Page Header -->
     <div class="flex items-center justify-between mb-6">
@@ -109,7 +142,7 @@ require_once '../templates/header.php';
             <a href="supplier_ledger.php?id=<?php echo $supplier_id; ?>" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition">
                 <i class="fas fa-book mr-2"></i>View Ledger
             </a>
-            <a href="supplier_form.php?id=<?php echo $supplier_id; ?>" class="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition">
+            <a href="supplier_edit.php?id=<?php echo $supplier_id; ?>" class="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition">
                 <i class="fas fa-edit mr-2"></i>Edit
             </a>
             <a href="suppliers.php" class="text-gray-600 hover:text-gray-800">
@@ -125,7 +158,7 @@ require_once '../templates/header.php';
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm font-medium text-gray-600">Current Balance</p>
-                    <p class="text-2xl font-bold text-red-600 mt-2">BDT <?php echo number_format($supplier->current_balance, 2); ?></p>
+                    <p class="text-2xl font-bold text-red-600 mt-2">৳<?php echo number_format($supplier->current_balance, 2); ?></p>
                     <p class="text-xs text-gray-500 mt-1">Amount we owe</p>
                 </div>
                 <div class="p-3 bg-red-100 rounded-full">
@@ -139,7 +172,7 @@ require_once '../templates/header.php';
                 <div>
                     <p class="text-sm font-medium text-gray-600">Purchase Orders</p>
                     <p class="text-2xl font-bold text-blue-600 mt-2"><?php echo number_format($supplier->total_pos); ?></p>
-                    <p class="text-xs text-gray-500 mt-1">BDT <?php echo number_format($supplier->total_purchase_value, 2); ?></p>
+                    <p class="text-xs text-gray-500 mt-1">৳<?php echo number_format($supplier->total_purchase_value, 0); ?></p>
                 </div>
                 <div class="p-3 bg-blue-100 rounded-full">
                     <i class="fas fa-file-invoice text-blue-600 text-xl"></i>
@@ -150,22 +183,9 @@ require_once '../templates/header.php';
         <div class="bg-white rounded-lg shadow-md p-6">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm font-medium text-gray-600">Invoices</p>
-                    <p class="text-2xl font-bold text-indigo-600 mt-2"><?php echo number_format($supplier->total_invoices); ?></p>
-                    <p class="text-xs text-gray-500 mt-1">BDT <?php echo number_format($supplier->total_invoice_value, 2); ?></p>
-                </div>
-                <div class="p-3 bg-indigo-100 rounded-full">
-                    <i class="fas fa-file-invoice-dollar text-indigo-600 text-xl"></i>
-                </div>
-            </div>
-        </div>
-
-        <div class="bg-white rounded-lg shadow-md p-6">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm font-medium text-gray-600">Total Paid</p>
-                    <p class="text-2xl font-bold text-green-600 mt-2">BDT <?php echo number_format($supplier->total_paid, 2); ?></p>
-                    <p class="text-xs text-gray-500 mt-1"><?php echo number_format($supplier->total_payments); ?> payments</p>
+                    <p class="text-sm font-medium text-gray-600">Total Payments</p>
+                    <p class="text-2xl font-bold text-green-600 mt-2"><?php echo number_format($supplier->total_payments); ?></p>
+                    <p class="text-xs text-gray-500 mt-1">৳<?php echo number_format($supplier->total_paid, 0); ?></p>
                 </div>
                 <div class="p-3 bg-green-100 rounded-full">
                     <i class="fas fa-money-bill-wave text-green-600 text-xl"></i>
@@ -173,174 +193,171 @@ require_once '../templates/header.php';
             </div>
         </div>
 
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-600">Outstanding</p>
+                    <p class="text-2xl font-bold text-orange-600 mt-2">৳<?php echo number_format($supplier->outstanding_amount, 2); ?></p>
+                    <p class="text-xs text-gray-500 mt-1">Balance due</p>
+                </div>
+                <div class="p-3 bg-orange-100 rounded-full">
+                    <i class="fas fa-exclamation-triangle text-orange-600 text-xl"></i>
+                </div>
+            </div>
+        </div>
+
     </div>
 
-    <!-- Details and Info -->
+    <!-- Supplier Information -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
         
-        <!-- Basic Information -->
-        <div class="bg-white rounded-lg shadow-md p-6">
-            <h2 class="text-xl font-bold text-gray-900 mb-4 pb-2 border-b">Basic Information</h2>
-            
-            <div class="space-y-4">
-                <div>
-                    <p class="text-sm text-gray-600">Supplier Code</p>
-                    <p class="text-base font-semibold text-gray-900"><?php echo htmlspecialchars($supplier->supplier_code ?? 'N/A'); ?></p>
-                </div>
-                
-                <div>
-                    <p class="text-sm text-gray-600">Supplier Type</p>
-                    <p class="text-base font-semibold text-gray-900">
-                        <?php
-                        $type_icons = [
-                            'local' => 'fa-home',
-                            'international' => 'fa-globe',
-                            'both' => 'fa-globe-americas'
-                        ];
-                        $icon = $type_icons[$supplier->supplier_type] ?? 'fa-tag';
-                        ?>
-                        <i class="fas <?php echo $icon; ?> mr-2"></i><?php echo ucfirst($supplier->supplier_type); ?>
-                    </p>
-                </div>
-                
-                <div>
-                    <p class="text-sm text-gray-600">Tax ID / VAT / TIN</p>
-                    <p class="text-base font-semibold text-gray-900"><?php echo htmlspecialchars($supplier->tax_id ?? 'N/A'); ?></p>
-                </div>
-                
-                <div>
-                    <p class="text-sm text-gray-600">Payment Terms</p>
-                    <p class="text-base font-semibold text-gray-900"><?php echo htmlspecialchars($supplier->payment_terms ?? 'N/A'); ?></p>
-                </div>
-                
-                <div>
-                    <p class="text-sm text-gray-600">Credit Limit</p>
-                    <p class="text-base font-semibold text-gray-900">BDT <?php echo number_format($supplier->credit_limit, 2); ?></p>
-                </div>
-                
-                <div>
-                    <p class="text-sm text-gray-600">Created By</p>
-                    <p class="text-base font-semibold text-gray-900"><?php echo htmlspecialchars($supplier->created_by_name ?? 'N/A'); ?></p>
-                </div>
-                
-                <div>
-                    <p class="text-sm text-gray-600">Created At</p>
-                    <p class="text-base font-semibold text-gray-900"><?php echo date('M d, Y h:i A', strtotime($supplier->created_at)); ?></p>
-                </div>
-            </div>
-        </div>
-
         <!-- Contact Information -->
         <div class="bg-white rounded-lg shadow-md p-6">
-            <h2 class="text-xl font-bold text-gray-900 mb-4 pb-2 border-b">Contact Information</h2>
-            
-            <div class="space-y-4">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                <i class="fas fa-address-card text-primary-600"></i> Contact Information
+            </h3>
+            <div class="space-y-3 text-sm">
                 <div>
-                    <p class="text-sm text-gray-600">Contact Person</p>
-                    <p class="text-base font-semibold text-gray-900"><?php echo htmlspecialchars($supplier->contact_person ?? 'N/A'); ?></p>
+                    <p class="text-gray-600">Contact Person</p>
+                    <p class="font-medium text-gray-900"><?php echo htmlspecialchars($supplier->contact_person ?? 'N/A'); ?></p>
                 </div>
-                
-                <?php if ($supplier->email): ?>
                 <div>
-                    <p class="text-sm text-gray-600">Email</p>
-                    <p class="text-base font-semibold text-gray-900">
-                        <a href="mailto:<?php echo htmlspecialchars($supplier->email); ?>" class="text-primary-600 hover:text-primary-700">
-                            <i class="fas fa-envelope mr-2"></i><?php echo htmlspecialchars($supplier->email); ?>
-                        </a>
+                    <p class="text-gray-600">Phone</p>
+                    <p class="font-medium text-gray-900">
+                        <i class="fas fa-phone text-primary-600 mr-1"></i>
+                        <?php echo htmlspecialchars($supplier->phone ?? 'N/A'); ?>
                     </p>
                 </div>
-                <?php endif; ?>
-                
-                <?php if ($supplier->phone): ?>
-                <div>
-                    <p class="text-sm text-gray-600">Phone</p>
-                    <p class="text-base font-semibold text-gray-900">
-                        <a href="tel:<?php echo htmlspecialchars($supplier->phone); ?>" class="text-primary-600 hover:text-primary-700">
-                            <i class="fas fa-phone mr-2"></i><?php echo htmlspecialchars($supplier->phone); ?>
-                        </a>
-                    </p>
-                </div>
-                <?php endif; ?>
-                
                 <?php if ($supplier->mobile): ?>
                 <div>
-                    <p class="text-sm text-gray-600">Mobile</p>
-                    <p class="text-base font-semibold text-gray-900">
-                        <a href="tel:<?php echo htmlspecialchars($supplier->mobile); ?>" class="text-primary-600 hover:text-primary-700">
-                            <i class="fas fa-mobile-alt mr-2"></i><?php echo htmlspecialchars($supplier->mobile); ?>
-                        </a>
+                    <p class="text-gray-600">Mobile</p>
+                    <p class="font-medium text-gray-900">
+                        <i class="fas fa-mobile-alt text-primary-600 mr-1"></i>
+                        <?php echo htmlspecialchars($supplier->mobile); ?>
                     </p>
+                </div>
+                <?php endif; ?>
+                <div>
+                    <p class="text-gray-600">Email</p>
+                    <p class="font-medium text-gray-900">
+                        <i class="fas fa-envelope text-primary-600 mr-1"></i>
+                        <?php echo htmlspecialchars($supplier->email ?? 'N/A'); ?>
+                    </p>
+                </div>
+                <?php if ($supplier->address): ?>
+                <div>
+                    <p class="text-gray-600">Address</p>
+                    <p class="font-medium text-gray-900"><?php echo nl2br(htmlspecialchars($supplier->address)); ?></p>
+                </div>
+                <?php endif; ?>
+                <?php if ($supplier->city): ?>
+                <div>
+                    <p class="text-gray-600">City</p>
+                    <p class="font-medium text-gray-900"><?php echo htmlspecialchars($supplier->city); ?></p>
+                </div>
+                <?php endif; ?>
+                <?php if ($supplier->country): ?>
+                <div>
+                    <p class="text-gray-600">Country</p>
+                    <p class="font-medium text-gray-900"><?php echo htmlspecialchars($supplier->country); ?></p>
                 </div>
                 <?php endif; ?>
             </div>
         </div>
 
-        <!-- Address Information -->
+        <!-- Business Details -->
         <div class="bg-white rounded-lg shadow-md p-6">
-            <h2 class="text-xl font-bold text-gray-900 mb-4 pb-2 border-b">Address</h2>
-            
-            <div class="space-y-4">
-                <?php if ($supplier->address): ?>
+            <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                <i class="fas fa-building text-primary-600"></i> Business Details
+            </h3>
+            <div class="space-y-3 text-sm">
                 <div>
-                    <p class="text-sm text-gray-600">Street Address</p>
-                    <p class="text-base font-semibold text-gray-900"><?php echo nl2br(htmlspecialchars($supplier->address)); ?></p>
+                    <p class="text-gray-600">Supplier Type</p>
+                    <?php
+                    $type_colors = [
+                        'local' => 'bg-green-100 text-green-800',
+                        'international' => 'bg-blue-100 text-blue-800',
+                        'both' => 'bg-purple-100 text-purple-800'
+                    ];
+                    $color = $type_colors[$supplier->supplier_type] ?? 'bg-gray-100 text-gray-800';
+                    ?>
+                    <span class="inline-block mt-1 px-3 py-1 text-xs font-medium rounded-full <?php echo $color; ?>">
+                        <?php echo ucfirst($supplier->supplier_type); ?>
+                    </span>
+                </div>
+                <?php if ($supplier->tax_id): ?>
+                <div>
+                    <p class="text-gray-600">Tax ID / TIN</p>
+                    <p class="font-medium text-gray-900"><?php echo htmlspecialchars($supplier->tax_id); ?></p>
                 </div>
                 <?php endif; ?>
-                
-                <?php if ($supplier->city): ?>
                 <div>
-                    <p class="text-sm text-gray-600">City</p>
-                    <p class="text-base font-semibold text-gray-900"><?php echo htmlspecialchars($supplier->city); ?></p>
+                    <p class="text-gray-600">Payment Terms</p>
+                    <p class="font-medium text-gray-900"><?php echo htmlspecialchars($supplier->payment_terms ?? 'N/A'); ?></p>
                 </div>
-                <?php endif; ?>
-                
-                <?php if ($supplier->country): ?>
                 <div>
-                    <p class="text-sm text-gray-600">Country</p>
-                    <p class="text-base font-semibold text-gray-900"><?php echo htmlspecialchars($supplier->country); ?></p>
+                    <p class="text-gray-600">Credit Limit</p>
+                    <p class="font-medium text-gray-900">৳<?php echo number_format($supplier->credit_limit, 2); ?></p>
                 </div>
-                <?php endif; ?>
-                
-                <?php if ($supplier->notes): ?>
                 <div>
-                    <p class="text-sm text-gray-600">Notes</p>
-                    <p class="text-base text-gray-700"><?php echo nl2br(htmlspecialchars($supplier->notes)); ?></p>
+                    <p class="text-gray-600">Opening Balance</p>
+                    <p class="font-medium text-gray-900">৳<?php echo number_format($supplier->opening_balance, 2); ?></p>
                 </div>
-                <?php endif; ?>
+                <div>
+                    <p class="text-gray-600">Created By</p>
+                    <p class="font-medium text-gray-900"><?php echo htmlspecialchars($supplier->created_by_name ?? 'System'); ?></p>
+                </div>
+                <div>
+                    <p class="text-gray-600">Created Date</p>
+                    <p class="font-medium text-gray-900"><?php echo date('M d, Y', strtotime($supplier->created_at)); ?></p>
+                </div>
             </div>
+        </div>
+
+        <!-- Notes -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                <i class="fas fa-sticky-note text-primary-600"></i> Notes
+            </h3>
+            <?php if ($supplier->notes): ?>
+            <div class="text-sm text-gray-700 whitespace-pre-wrap">
+                <?php echo nl2br(htmlspecialchars($supplier->notes)); ?>
+            </div>
+            <?php else: ?>
+            <p class="text-sm text-gray-500 italic">No notes available</p>
+            <?php endif; ?>
         </div>
 
     </div>
 
-    <!-- Recent Activity Tabs -->
-    <div class="bg-white rounded-lg shadow-md" x-data="{ activeTab: 'pos' }">
+    <!-- Transaction History Tabs -->
+    <div class="bg-white rounded-lg shadow-md" x-data="{ activeTab: 'orders' }">
         
-        <!-- Tab Headers -->
+        <!-- Tab Navigation -->
         <div class="border-b border-gray-200">
-            <div class="flex gap-4 px-6">
-                <button @click="activeTab = 'pos'" 
-                        :class="activeTab === 'pos' ? 'border-primary-600 text-primary-600' : 'border-transparent text-gray-500 hover:text-gray-700'"
-                        class="py-4 px-1 border-b-2 font-medium text-sm transition">
-                    Purchase Orders (<?php echo $supplier->total_pos; ?>)
+            <nav class="flex -mb-px">
+                <button @click="activeTab = 'orders'" 
+                        :class="activeTab === 'orders' ? 'border-primary-600 text-primary-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+                        class="px-6 py-4 border-b-2 font-medium text-sm transition">
+                    <i class="fas fa-shopping-cart mr-2"></i>Purchase Orders (<?php echo count($recent_pos); ?>)
                 </button>
-                <button @click="activeTab = 'invoices'" 
-                        :class="activeTab === 'invoices' ? 'border-primary-600 text-primary-600' : 'border-transparent text-gray-500 hover:text-gray-700'"
-                        class="py-4 px-1 border-b-2 font-medium text-sm transition">
-                    Invoices (<?php echo $supplier->total_invoices; ?>)
+                <button @click="activeTab = 'grns'" 
+                        :class="activeTab === 'grns' ? 'border-primary-600 text-primary-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+                        class="px-6 py-4 border-b-2 font-medium text-sm transition">
+                    <i class="fas fa-truck-loading mr-2"></i>Goods Received (<?php echo count($recent_grns); ?>)
                 </button>
                 <button @click="activeTab = 'payments'" 
-                        :class="activeTab === 'payments' ? 'border-primary-600 text-primary-600' : 'border-transparent text-gray-500 hover:text-gray-700'"
-                        class="py-4 px-1 border-b-2 font-medium text-sm transition">
-                    Payments (<?php echo $supplier->total_payments; ?>)
+                        :class="activeTab === 'payments' ? 'border-primary-600 text-primary-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+                        class="px-6 py-4 border-b-2 font-medium text-sm transition">
+                    <i class="fas fa-money-bill-wave mr-2"></i>Payments (<?php echo count($recent_payments); ?>)
                 </button>
-            </div>
+            </nav>
         </div>
 
-        <!-- Tab Content -->
         <div class="p-6">
-            
+
             <!-- Purchase Orders Tab -->
-            <div x-show="activeTab === 'pos'">
+            <div x-show="activeTab === 'orders'" x-cloak>
                 <?php if (count($recent_pos) > 0): ?>
                 <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-gray-200">
@@ -348,8 +365,10 @@ require_once '../templates/header.php';
                             <tr>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">PO Number</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Branch</th>
-                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Amount</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Wheat Origin</th>
+                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Quantity (KG)</th>
+                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Total</th>
+                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Balance</th>
                                 <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Status</th>
                                 <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Actions</th>
                             </tr>
@@ -364,31 +383,33 @@ require_once '../templates/header.php';
                                     <?php echo date('M d, Y', strtotime($po->po_date)); ?>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    <?php echo htmlspecialchars($po->branch_name); ?>
+                                    <?php echo htmlspecialchars($po->wheat_origin); ?>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-right">
+                                    <?php echo number_format($po->quantity_kg, 0); ?>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900 text-right">
-                                    BDT <?php echo number_format($po->total_amount, 2); ?>
+                                    ৳<?php echo number_format($po->total_order_value, 2); ?>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-red-600 text-right">
+                                    ৳<?php echo number_format($po->balance_payable, 2); ?>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-center">
                                     <?php
                                     $status_colors = [
-                                        'draft' => 'bg-gray-100 text-gray-800',
-                                        'pending_approval' => 'bg-orange-100 text-orange-800',
-                                        'approved' => 'bg-blue-100 text-blue-800',
-                                        'ordered' => 'bg-indigo-100 text-indigo-800',
-                                        'partially_received' => 'bg-yellow-100 text-yellow-800',
-                                        'received' => 'bg-green-100 text-green-800',
-                                        'closed' => 'bg-gray-100 text-gray-800',
-                                        'cancelled' => 'bg-red-100 text-red-800'
+                                        'pending' => 'bg-gray-100 text-gray-800',
+                                        'partial' => 'bg-yellow-100 text-yellow-800',
+                                        'completed' => 'bg-green-100 text-green-800',
+                                        'closed' => 'bg-red-100 text-red-800'
                                     ];
-                                    $color = $status_colors[$po->status] ?? 'bg-gray-100 text-gray-800';
+                                    $color = $status_colors[$po->delivery_status] ?? 'bg-gray-100 text-gray-800';
                                     ?>
                                     <span class="px-2 py-1 text-xs font-medium rounded-full <?php echo $color; ?>">
-                                        <?php echo ucfirst(str_replace('_', ' ', $po->status)); ?>
+                                        <?php echo ucfirst($po->delivery_status); ?>
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-center text-sm">
-                                    <a href="view_po.php?id=<?php echo $po->id; ?>" class="text-primary-600 hover:text-primary-800">
+                                    <a href="purchase_adnan_view_po.php?id=<?php echo $po->id; ?>" class="text-primary-600 hover:text-primary-800">
                                         <i class="fas fa-eye"></i>
                                     </a>
                                 </td>
@@ -398,7 +419,7 @@ require_once '../templates/header.php';
                     </table>
                 </div>
                 <div class="mt-4">
-                    <a href="purchase_orders.php?supplier_id=<?php echo $supplier_id; ?>" class="text-sm text-primary-600 hover:text-primary-700">
+                    <a href="purchase_adnan_index.php?supplier_id=<?php echo $supplier_id; ?>" class="text-sm text-primary-600 hover:text-primary-700">
                         View all purchase orders →
                     </a>
                 </div>
@@ -406,56 +427,59 @@ require_once '../templates/header.php';
                 <div class="text-center py-12">
                     <i class="fas fa-file-invoice text-gray-300 text-5xl mb-4"></i>
                     <p class="text-gray-500">No purchase orders yet</p>
+                    <a href="purchase_adnan_create_po.php?supplier_id=<?php echo $supplier_id; ?>" class="mt-4 inline-block text-primary-600 hover:text-primary-700 font-medium">
+                        <i class="fas fa-plus-circle mr-2"></i>Create First Purchase Order
+                    </a>
                 </div>
                 <?php endif; ?>
             </div>
 
-            <!-- Invoices Tab -->
-            <div x-show="activeTab === 'invoices'" x-cloak>
-                <?php if (count($recent_invoices) > 0): ?>
+            <!-- GRNs Tab -->
+            <div x-show="activeTab === 'grns'" x-cloak>
+                <?php if (count($recent_grns) > 0): ?>
                 <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                             <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Invoice Number</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">GRN Number</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
-                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Total</th>
-                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Balance</th>
-                                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Status</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">PO Number</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Wheat Origin</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Truck#</th>
+                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Received (KG)</th>
+                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Value</th>
                                 <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Actions</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
-                            <?php foreach ($recent_invoices as $invoice): ?>
+                            <?php foreach ($recent_grns as $grn): ?>
                             <tr class="hover:bg-gray-50">
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                    <?php echo htmlspecialchars($invoice->invoice_number); ?>
+                                    <?php echo htmlspecialchars($grn->grn_number); ?>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    <?php echo date('M d, Y', strtotime($invoice->invoice_date)); ?>
+                                    <?php echo date('M d, Y', strtotime($grn->grn_date)); ?>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <a href="purchase_adnan_view_po.php?id=<?php echo $grn->purchase_order_id ?? 0; ?>" class="text-primary-600 hover:underline">
+                                        <?php echo htmlspecialchars($grn->po_number ?? 'N/A'); ?>
+                                    </a>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <?php echo htmlspecialchars($grn->wheat_origin ?? 'N/A'); ?>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <?php echo htmlspecialchars($grn->truck_number ?? 'N/A'); ?>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 text-right">
+                                    <?php echo number_format($grn->received_quantity_kg, 0); ?>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900 text-right">
-                                    BDT <?php echo number_format($invoice->total_amount, 2); ?>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-red-600 text-right">
-                                    BDT <?php echo number_format($invoice->balance_due, 2); ?>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-center">
-                                    <?php
-                                    $status_colors = [
-                                        'unpaid' => 'bg-red-100 text-red-800',
-                                        'partially_paid' => 'bg-yellow-100 text-yellow-800',
-                                        'paid' => 'bg-green-100 text-green-800'
-                                    ];
-                                    $color = $status_colors[$invoice->payment_status] ?? 'bg-gray-100 text-gray-800';
-                                    ?>
-                                    <span class="px-2 py-1 text-xs font-medium rounded-full <?php echo $color; ?>">
-                                        <?php echo ucfirst(str_replace('_', ' ', $invoice->payment_status)); ?>
-                                    </span>
+                                    ৳<?php echo number_format($grn->total_value, 2); ?>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-center text-sm">
-                                    <a href="view_invoice.php?id=<?php echo $invoice->id; ?>" class="text-primary-600 hover:text-primary-800">
-                                        <i class="fas fa-eye"></i>
+                                    <a href="purchase_adnan_grn_receipt.php?id=<?php echo $grn->id; ?>" class="text-primary-600 hover:text-primary-800" title="View Receipt">
+                                        <i class="fas fa-receipt"></i>
                                     </a>
                                 </td>
                             </tr>
@@ -463,15 +487,10 @@ require_once '../templates/header.php';
                         </tbody>
                     </table>
                 </div>
-                <div class="mt-4">
-                    <a href="invoices.php?supplier_id=<?php echo $supplier_id; ?>" class="text-sm text-primary-600 hover:text-primary-700">
-                        View all invoices →
-                    </a>
-                </div>
                 <?php else: ?>
                 <div class="text-center py-12">
-                    <i class="fas fa-file-invoice-dollar text-gray-300 text-5xl mb-4"></i>
-                    <p class="text-gray-500">No invoices yet</p>
+                    <i class="fas fa-truck-loading text-gray-300 text-5xl mb-4"></i>
+                    <p class="text-gray-500">No goods received yet</p>
                 </div>
                 <?php endif; ?>
             </div>
@@ -483,45 +502,63 @@ require_once '../templates/header.php';
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                             <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Payment Number</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Payment #</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">PO Number</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Method</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Account</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Bank/Account</th>
                                 <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Amount</th>
                                 <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Status</th>
+                                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Actions</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
                             <?php foreach ($recent_payments as $payment): ?>
                             <tr class="hover:bg-gray-50">
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                    <?php echo htmlspecialchars($payment->payment_number); ?>
+                                    <?php echo htmlspecialchars($payment->payment_voucher_number); ?>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                     <?php echo date('M d, Y', strtotime($payment->payment_date)); ?>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <?php if ($payment->po_number): ?>
+                                    <a href="purchase_adnan_view_po.php?id=<?php echo $payment->purchase_order_id ?? 0; ?>" class="text-primary-600 hover:underline">
+                                        <?php echo htmlspecialchars($payment->po_number); ?>
+                                    </a>
+                                    <?php else: ?>
+                                    N/A
+                                    <?php endif; ?>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <i class="fas fa-<?php 
+                                        echo $payment->payment_method === 'bank' ? 'university' : 
+                                             ($payment->payment_method === 'cheque' ? 'money-check' : 'money-bill-wave'); 
+                                    ?> mr-1"></i>
                                     <?php echo ucfirst(str_replace('_', ' ', $payment->payment_method)); ?>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    <?php echo htmlspecialchars($payment->account_name ?? 'N/A'); ?>
+                                    <?php echo htmlspecialchars($payment->bank_name ?? 'N/A'); ?>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-green-600 text-right">
-                                    BDT <?php echo number_format($payment->amount, 2); ?>
+                                    ৳<?php echo number_format($payment->amount_paid, 2); ?>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-center">
                                     <?php
                                     $status_colors = [
-                                        'pending' => 'bg-yellow-100 text-yellow-800',
-                                        'cleared' => 'bg-green-100 text-green-800',
-                                        'bounced' => 'bg-red-100 text-red-800',
-                                        'cancelled' => 'bg-gray-100 text-gray-800'
+                                        '0' => 'bg-yellow-100 text-yellow-800',
+                                        '1' => 'bg-green-100 text-green-800'
                                     ];
-                                    $color = $status_colors[$payment->status] ?? 'bg-gray-100 text-gray-800';
+                                    $color = $status_colors[$payment->is_posted] ?? 'bg-gray-100 text-gray-800';
                                     ?>
                                     <span class="px-2 py-1 text-xs font-medium rounded-full <?php echo $color; ?>">
-                                        <?php echo ucfirst($payment->status); ?>
+                                        <?php echo $payment->is_posted ? 'Posted' : 'Pending'; ?>
                                     </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-center text-sm">
+                                    <a href="purchase_adnan_payment_receipt.php?id=<?php echo $payment->id; ?>" class="text-primary-600 hover:text-primary-800" title="View Receipt">
+                                        <i class="fas fa-receipt"></i>
+                                    </a>
                                 </td>
                             </tr>
                             <?php endforeach; ?>
@@ -529,8 +566,8 @@ require_once '../templates/header.php';
                     </table>
                 </div>
                 <div class="mt-4">
-                    <a href="payments.php?supplier_id=<?php echo $supplier_id; ?>" class="text-sm text-primary-600 hover:text-primary-700">
-                        View all payments →
+                    <a href="purchase_adnan_index.php?supplier_id=<?php echo $supplier_id; ?>" class="text-sm text-primary-600 hover:text-primary-700">
+                        View all transactions →
                     </a>
                 </div>
                 <?php else: ?>
@@ -546,5 +583,8 @@ require_once '../templates/header.php';
     </div>
 
 </div>
+
+<!-- Alpine.js for tabs -->
+<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 
 <?php require_once '../templates/footer.php'; ?>

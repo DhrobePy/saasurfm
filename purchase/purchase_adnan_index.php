@@ -13,8 +13,6 @@ require_once '../core/classes/Database.php';
 require_once '../core/functions/helpers.php';
 require_once '../core/classes/Purchaseadnanmanager.php';
 
-
-
 // Restrict access to authorized users
 restrict_access(['Superadmin', 'admin', 'Accounts', 'accounts-demra', 'accounts-srg']);
 
@@ -22,6 +20,10 @@ $pageTitle = "Purchase (Adnan) - Dashboard";
 
 // Initialize manager
 $purchaseManager = new PurchaseAdnanManager();
+
+// Get current user
+$current_user = getCurrentUser();
+$is_superadmin = ($current_user['role'] === 'Superadmin');
 
 // Get dashboard statistics
 $stats = $purchaseManager->getDashboardStats();
@@ -43,7 +45,7 @@ include '../templates/header.php';
             <a href="purchase_adnan_create_po.php" class="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 flex items-center gap-2">
                 <i class="fas fa-plus"></i> New Purchase Order
             </a>
-            <a href="supplier_summary.php" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 flex items-center gap-2">
+            <a href="purchase_adnan_supplier_summary.php" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 flex items-center gap-2">
                 <i class="fas fa-chart-bar"></i> Supplier Summary
             </a>
         </div>
@@ -98,43 +100,12 @@ include '../templates/header.php';
                     <p class="text-2xl font-bold text-red-600 mt-2">৳<?php echo number_format($stats->balance_payable ?? 0, 0); ?></p>
                 </div>
                 <div class="bg-red-100 rounded-full p-3">
-                    <i class="fas fa-exclamation-circle text-red-600 text-2xl"></i>
+                    <i class="fas fa-exclamation-triangle text-red-600 text-2xl"></i>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- Charts Row -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        <!-- Wheat Origin Distribution -->
-        
-
-        <!-- Delivery & Payment Status -->
-        <div class="bg-white rounded-lg shadow-md p-6">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">Order Status</h3>
-            <div class="space-y-4">
-                <div>
-                    <div class="flex justify-between text-sm mb-1">
-                        <span class="text-gray-600">Delivery Completed</span>
-                        <span class="font-semibold"><?php echo $stats->completed_deliveries ?? 0; ?> / <?php echo $stats->total_orders ?? 0; ?></span>
-                    </div>
-                    <div class="w-full bg-gray-200 rounded-full h-2">
-                        <div class="bg-green-600 h-2 rounded-full" style="width: <?php echo $stats->total_orders > 0 ? ($stats->completed_deliveries / $stats->total_orders * 100) : 0; ?>%"></div>
-                    </div>
-                </div>
-                <div>
-                    <div class="flex justify-between text-sm mb-1">
-                        <span class="text-gray-600">Payment Completed</span>
-                        <span class="font-semibold"><?php echo $stats->completed_payments ?? 0; ?> / <?php echo $stats->total_orders ?? 0; ?></span>
-                    </div>
-                    <div class="w-full bg-gray-200 rounded-full h-2">
-                        <div class="bg-primary-600 h-2 rounded-full" style="width: <?php echo $stats->total_orders > 0 ? ($stats->completed_payments / $stats->total_orders * 100) : 0; ?>%"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
+    
     <!-- Quick Actions -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
         <a href="create_grn.php" class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
@@ -176,9 +147,8 @@ include '../templates/header.php';
 
     <!-- Recent Orders Table -->
     <div class="bg-white rounded-lg shadow-md overflow-hidden">
-        <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-            <h3 class="text-lg font-semibold text-gray-900">Recent Purchase Orders</h3>
-            <a href="purchase_orders.php" class="text-primary-600 hover:text-primary-700 text-sm font-medium">View All →</a>
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h2 class="text-xl font-semibold text-gray-900">Recent Purchase Orders</h2>
         </div>
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
@@ -188,10 +158,10 @@ include '../templates/header.php';
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Supplier</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Origin</th>
-                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Qty (KG)</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Quantity</th>
                         <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Value</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Delivery</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Payment</th>
+                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Delivery</th>
+                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Payment</th>
                         <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                     </tr>
                 </thead>
@@ -201,7 +171,7 @@ include '../templates/header.php';
                             <td colspan="9" class="px-6 py-8 text-center text-gray-500">
                                 <i class="fas fa-inbox text-4xl mb-2"></i>
                                 <p>No purchase orders found</p>
-                                <a href="create_po.php" class="text-primary-600 hover:text-primary-700 text-sm font-medium">Create your first PO</a>
+                                <a href="purchase_adnan_create_po.php" class="text-primary-600 hover:text-primary-700 text-sm font-medium">Create your first PO</a>
                             </td>
                         </tr>
                     <?php else: ?>
@@ -235,6 +205,7 @@ include '../templates/header.php';
                                         'pending' => 'bg-gray-100 text-gray-800',
                                         'partial' => 'bg-yellow-100 text-yellow-800',
                                         'completed' => 'bg-green-100 text-green-800',
+                                        'closed' => 'bg-red-100 text-red-800',
                                         'over_received' => 'bg-blue-100 text-blue-800'
                                     ];
                                     $badge_class = $delivery_badges[$order->delivery_status] ?? 'bg-gray-100 text-gray-800';
@@ -258,9 +229,39 @@ include '../templates/header.php';
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-center">
-                                    <a href="purchase_adnan_view_po.php?id=<?php echo $order->id; ?>" class="text-primary-600 hover:text-primary-800 mx-1" title="View">
-                                        <i class="fas fa-eye"></i>
-                                    </a>
+                                    <div class="flex items-center justify-center gap-2">
+                                        <!-- View Button -->
+                                        <a href="purchase_adnan_view_po.php?id=<?php echo $order->id; ?>" 
+                                           class="text-primary-600 hover:text-primary-800" 
+                                           title="View">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        
+                                        <?php if ($is_superadmin): ?>
+                                            <!-- Edit Button -->
+                                            <a href="purchase_adnan_edit_po.php?id=<?php echo $order->id; ?>" 
+                                               class="text-blue-600 hover:text-blue-800" 
+                                               title="Edit">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            
+                                            <!-- Close Deal Button (if not closed) -->
+                                            <?php if ($order->delivery_status !== 'closed' && $order->delivery_status !== 'completed'): ?>
+                                                <button onclick="closePO(<?php echo $order->id; ?>, '<?php echo htmlspecialchars($order->po_number); ?>')" 
+                                                        class="text-orange-600 hover:text-orange-800" 
+                                                        title="Close Deal">
+                                                    <i class="fas fa-lock"></i>
+                                                </button>
+                                            <?php endif; ?>
+                                            
+                                            <!-- Delete Button -->
+                                            <button onclick="deletePO(<?php echo $order->id; ?>, '<?php echo htmlspecialchars($order->po_number); ?>')" 
+                                                    class="text-red-600 hover:text-red-800" 
+                                                    title="Delete">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        <?php endif; ?>
+                                    </div>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -272,31 +273,56 @@ include '../templates/header.php';
 </div>
 
 <script>
-// Chart for wheat origin distribution
-<?php if (!empty($stats_by_origin)): ?>
-const ctx = document.getElementById('originChart').getContext('2d');
-const originChart = new Chart(ctx, {
-    type: 'doughnut',
-    data: {
-        labels: [<?php echo implode(',', array_map(function($s) { return '"' . $s->wheat_origin . '"'; }, $stats_by_origin)); ?>],
-        datasets: [{
-            data: [<?php echo implode(',', array_map(function($s) { return $s->order_count; }, $stats_by_origin)); ?>],
-            backgroundColor: ['#3B82F6', '#10B981'],
-            borderWidth: 2,
-            borderColor: '#fff'
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: {
-                position: 'bottom',
+function closePO(poId, poNumber) {
+    if (confirm(`Are you sure you want to CLOSE PO #${poNumber}?\n\nThis will:\n- Prevent further goods receipt\n- Mark delivery as "closed"\n- Keep all existing records\n\nThis action can be reversed by Superadmin.`)) {
+        fetch('purchase_adnan_close_po.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'po_id=' + poId
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert(data.message);
+                location.reload();
+            } else {
+                alert('Error: ' + data.message);
             }
+        })
+        .catch(error => {
+            alert('Error closing PO: ' + error);
+        });
+    }
+}
+
+function deletePO(poId, poNumber) {
+    if (confirm(`⚠️ WARNING: Are you sure you want to DELETE PO #${poNumber}?\n\nThis will:\n- Mark the PO as cancelled\n- NOT delete related GRNs and payments\n- Hide it from active lists\n\nThis action can be reversed by Superadmin.`)) {
+        const confirmText = prompt('Type "DELETE" to confirm deletion:');
+        if (confirmText === 'DELETE') {
+            fetch('purchase_adnan_delete_po.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'po_id=' + poId
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                    location.reload();
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                alert('Error deleting PO: ' + error);
+            });
         }
     }
-});
-<?php endif; ?>
+}
 </script>
 
 <?php include '../templates/footer.php'; ?>

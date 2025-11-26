@@ -152,6 +152,7 @@ require_once '../templates/header.php';
                                         <th class="px-3 py-2 text-right text-xs font-medium text-gray-500 uppercase">Value</th>
                                         <th class="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase">Variance</th>
                                         <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                                        <th class="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody class="bg-white divide-y divide-gray-200">
@@ -175,6 +176,14 @@ require_once '../templates/header.php';
                                             <span class="inline-block px-2 py-1 rounded text-xs <?php echo $grn->grn_status == 'posted' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'; ?>">
                                                 <?php echo ucfirst($grn->grn_status); ?>
                                             </span>
+                                        </td>
+                                        <td class="px-3 py-2 text-center">
+                                            <a href="<?php echo url('purchase/purchase_adnan_grn_receipt.php?id=' . $grn->id); ?>" 
+                                               class="text-green-600 hover:text-green-800" 
+                                               title="Print GRN Receipt"
+                                               target="_blank">
+                                                <i class="fas fa-print"></i>
+                                            </a>
                                         </td>
                                     </tr>
                                     <?php endforeach; ?>
@@ -210,6 +219,7 @@ require_once '../templates/header.php';
                                         <th class="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase">Method</th>
                                         <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Reference</th>
                                         <th class="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase">Status</th>
+                                        <th class="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody class="bg-white divide-y divide-gray-200">
@@ -228,6 +238,14 @@ require_once '../templates/header.php';
                                             <span class="inline-block px-2 py-1 rounded text-xs <?php echo $payment->is_posted ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'; ?>">
                                                 <?php echo $payment->is_posted ? 'Posted' : 'Pending'; ?>
                                             </span>
+                                        </td>
+                                        <td class="px-3 py-2 text-center">
+                                            <a href="<?php echo url('purchase/purchase_adnan_payment_receipt.php?id=' . $payment->id); ?>" 
+                                               class="text-yellow-600 hover:text-yellow-800" 
+                                               title="Print Payment Receipt"
+                                               target="_blank">
+                                                <i class="fas fa-print"></i>
+                                            </a>
                                         </td>
                                     </tr>
                                     <?php endforeach; ?>

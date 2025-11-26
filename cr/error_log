@@ -1913,3 +1913,182 @@
 [24-Nov-2025 17:37:57 Asia/Dhaka] ✓✓✓ Payment inserted successfully! ID: 26
 [24-Nov-2025 17:37:57 Asia/Dhaka] ✓ Transaction committed successfully
 [24-Nov-2025 17:37:57 Asia/Dhaka] Payment ID: 26, Receipt: RCP-20251124-9246
+[26-Nov-2025 14:35:42 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cow.created_at' in 'ORDER BY' in query: SELECT cow.*, u.display_name as performed_by_name
+     FROM credit_order_workflow cow
+     LEFT JOIN users u ON cow.performed_by_user_id = u.id
+     WHERE cow.order_id = ?
+     ORDER BY cow.created_at DESC | Params: Array
+(
+    [0] => 33
+)
+
+[26-Nov-2025 14:36:02 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cow.created_at' in 'ORDER BY' in query: SELECT cow.*, u.display_name as performed_by_name
+     FROM credit_order_workflow cow
+     LEFT JOIN users u ON cow.performed_by_user_id = u.id
+     WHERE cow.order_id = ?
+     ORDER BY cow.created_at DESC | Params: Array
+(
+    [0] => 33
+)
+
+[26-Nov-2025 14:36:22 Asia/Dhaka] SQL Error [HY000]: SQLSTATE[HY000]: General error: 1364 Field 'branch_id' doesn't have a default value in query: INSERT INTO `production_schedule` (`order_id`, `production_started_at`, `status`) VALUES (?, ?, ?) | Params: Array
+(
+    [0] => 33
+    [1] => 2025-11-26 14:36:22
+    [2] => in_progress
+)
+
+[26-Nov-2025 14:36:22 Asia/Dhaka] Database insert failed for table 'production_schedule'.
+[26-Nov-2025 14:37:55 Asia/Dhaka] Order 33 final status after commit: shipped
+[26-Nov-2025 14:38:42 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 7
+)
+
+[26-Nov-2025 14:40:00 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 7
+)
+
+[26-Nov-2025 18:14:25 Asia/Dhaka] SQL Error [HY000]: SQLSTATE[HY000]: General error: 1364 Field 'branch_id' doesn't have a default value in query: INSERT INTO `production_schedule` (`order_id`, `production_started_at`, `status`) VALUES (?, ?, ?) | Params: Array
+(
+    [0] => 34
+    [1] => 2025-11-26 18:14:25
+    [2] => in_progress
+)
+
+[26-Nov-2025 18:14:25 Asia/Dhaka] Database insert failed for table 'production_schedule'.
+[26-Nov-2025 18:17:11 Asia/Dhaka] Order 34 final status after commit: shipped
+[26-Nov-2025 18:19:32 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 20
+)
+
+[26-Nov-2025 18:21:04 Asia/Dhaka] === PAYMENT SUBMISSION START ===
+[26-Nov-2025 18:21:04 Asia/Dhaka] POST data: Array
+(
+    [action] => collect_payment
+    [customer_id] => 20
+    [payment_date] => 2025-11-26
+    [payment_amount] => 20500.00
+    [payment_method] => Bank Transfer
+    [collected_by_employee_id] => 
+    [cash_account_id] => 
+    [bank_account_id] => 13
+    [cheque_number] => 
+    [cheque_date] => 
+    [bank_transaction_type] => Deposit
+    [reference_number] => 23455
+    [notes] => 
+    [invoice_allocation] => Array
+        (
+            [34] => 20500.00
+        )
+
+)
+
+[26-Nov-2025 18:21:04 Asia/Dhaka] Attempting payment insert with data: Array
+(
+    [payment_number] => PAY-20251126-4096
+    [receipt_number] => RCP-20251126-8483
+    [customer_id] => 20
+    [amount] => 20500
+)
+
+[26-Nov-2025 18:21:04 Asia/Dhaka] ✓✓✓ Payment inserted successfully! ID: 27
+[26-Nov-2025 18:21:04 Asia/Dhaka] ✓ Transaction committed successfully
+[26-Nov-2025 18:21:04 Asia/Dhaka] Payment ID: 27, Receipt: RCP-20251126-8483
+[26-Nov-2025 18:21:13 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 7
+)
+
+[26-Nov-2025 18:24:07 Asia/Dhaka] SQL Error [HY000]: SQLSTATE[HY000]: General error: 1364 Field 'branch_id' doesn't have a default value in query: INSERT INTO `production_schedule` (`order_id`, `production_started_at`, `status`) VALUES (?, ?, ?) | Params: Array
+(
+    [0] => 35
+    [1] => 2025-11-26 18:24:07
+    [2] => in_progress
+)
+
+[26-Nov-2025 18:24:07 Asia/Dhaka] Database insert failed for table 'production_schedule'.
+[26-Nov-2025 18:25:43 Asia/Dhaka] Order 35 final status after commit: shipped
+[26-Nov-2025 18:25:52 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 19
+)
+
+[26-Nov-2025 19:06:39 Asia/Dhaka] SQL Error [23000]: SQLSTATE[23000]: Integrity constraint violation: 1052 Column 'created_at' in SELECT is ambiguous in query: SELECT 
+                        action_type,
+                        field_name,
+                        old_value,
+                        new_value,
+                        -- notes column removed
+                        created_at,
+                        u.display_name as user_name
+                    FROM credit_order_audit coa
+                    LEFT JOIN users u ON coa.user_id = u.id
+                    WHERE coa.order_id = ?
+                    ORDER BY coa.created_at DESC | Params: Array
+(
+    [0] => 33
+)
+
+[26-Nov-2025 19:56:05 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cow.created_at' in 'ORDER BY' in query: SELECT cow.*, u.display_name as performed_by_name
+     FROM credit_order_workflow cow
+     LEFT JOIN users u ON cow.performed_by_user_id = u.id
+     WHERE cow.order_id = ?
+     ORDER BY cow.created_at DESC | Params: Array
+(
+    [0] => 35
+)
+
