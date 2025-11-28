@@ -178,6 +178,20 @@ function redirect($path, $message = '', $type = 'success') {
     exit();
 }
 
+/**
+ * Sanitizes a string by trimming whitespace and converting special characters to HTML entities
+ * 
+ * @param string $input The string to sanitize
+ * @return string The sanitized string
+ */
+function sanitize($input) {
+    if (is_array($input)) {
+        return array_map('sanitize', $input);
+    }
+    return htmlspecialchars(trim($input), ENT_QUOTES, 'UTF-8');
+}
+
+
 // You can add other global helper functions here as needed.
 
 ?>

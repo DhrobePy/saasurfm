@@ -84,6 +84,7 @@
                                     <a href="<?php echo url('cr/credit_dispatch.php'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Dispatch</a>
                                     <a href="<?php echo url('cr/customer_ledger.php'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Customer Ledger</a>
                                     <a href="<?php echo url('cr/credit_payment_collect.php'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Collect Payment</a>
+                                    <a href="<?php echo url('cr/advance_payment_collection.php');?>" class="block ps-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Advance Collection</a>
                                     <a href="<?php echo url('cr/customer_credit_management.php'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Credit Limits</a>
                                 </div>
                             </div>

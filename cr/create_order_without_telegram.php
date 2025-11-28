@@ -138,99 +138,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         ]);
         
         $db->getPdo()->commit();
-        
-        // ============================================
-        // TELEGRAM NOTIFICATION
-        // ============================================
-        if (defined('TELEGRAM_NOTIFICATIONS_ENABLED') && TELEGRAM_NOTIFICATIONS_ENABLED) {
-            try {
-                require_once '../core/classes/TelegramNotifier.php';
-                
-                $telegram = new TelegramNotifier(TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID);
-                
-                // Get customer details
-                $customer = $db->query("SELECT name, phone_number, business_address FROM customers WHERE id = ?", [$customer_id])->first();
-                
-                // Get user's branch from role or detect from order
-                $branch_name = 'Head Office'; // Default
-                $user_role = $_SESSION['user_role'] ?? '';
-                
-                // Extract branch from role (e.g., 'sales-srg' -> 'Sirajgonj', 'sales-demra' -> 'Demra')
-                if (strpos($user_role, '-srg') !== false) {
-                    $branch_name = 'Sirajgonj Branch';
-                } elseif (strpos($user_role, '-demra') !== false) {
-                    $branch_name = 'Demra Branch';
-                } elseif (strpos($user_role, '-other') !== false) {
-                    $branch_name = 'Rampura Branch';
-                }
-                
-                // Prepare items array with product details
-                $notification_items = [];
-                foreach ($items as $item) {
-                    // Get product and variant details
-                    $product = $db->query("SELECT base_name FROM products WHERE id = ?", [$item['product_id']])->first();
-                    $variant_details = $db->query(
-                        "SELECT pv.grade, pv.weight_variant, pv.unit_of_measure, pv.sku 
-                         FROM product_variants pv 
-                         WHERE pv.id = ?", 
-                        [$item['variant_id']]
-                    )->first();
-                    
-                    $product_name = $product ? $product->base_name : 'Unknown Product';
-                    $variant_name = '';
-                    if ($variant_details) {
-                        $variant_name = trim($variant_details->grade . ' ' . $variant_details->weight_variant);
-                    }
-                    
-                    $notification_items[] = [
-                        'product_name' => $product_name,
-                        'variant_name' => $variant_name,
-                        'quantity' => floatval($item['quantity']),
-                        'unit' => $variant_details ? $variant_details->unit_of_measure : 'pcs',
-                        'unit_price' => number_format($item['unit_price'], 2),
-                        'subtotal' => number_format($item['line_total'], 2)
-                    ];
-                }
-                
-                // Get the actual user name from database (most reliable)
-                $user_info = $db->query("SELECT display_name FROM users WHERE id = ?", [$user_id])->first();
-                $created_by_name = $user_info ? $user_info->display_name : 'Unknown User';
-                
-                // Prepare order data for notification
-                $orderData = [
-                    'order_id' => $order_number,
-                    'order_date' => date('d M Y, h:i A'),
-                    'status' => 'Pending Approval',
-                    'customer_name' => $customer ? $customer->name : 'Unknown',
-                    'customer_phone' => $customer ? $customer->phone_number : 'N/A',
-                    'customer_address' => $customer && $customer->business_address ? $customer->business_address : 'N/A',
-                    'branch_name' => $branch_name,
-                    'items' => $notification_items,
-                    'subtotal' => floatval($subtotal),
-                    'discount_amount' => floatval($discount),
-                    'total_amount' => floatval($total),
-                    'paid_amount' => floatval($advance_paid),
-                    'due_amount' => floatval($balance_due),
-                    'created_by' => $created_by_name
-                ];
-                
-                // Send notification
-                $result = $telegram->sendCreditOrderNotification($orderData);
-                
-                // Optional: Log success
-                if ($result['success']) {
-                    error_log("Telegram notification sent for Order $order_number by $created_by_name");
-                }
-                
-            } catch (Exception $e) {
-                // Log error but don't stop the order process
-                error_log("Telegram notification failed for Order $order_number: " . $e->getMessage());
-            }
-        }
-        // ============================================
-        // END TELEGRAM NOTIFICATION
-        // ============================================
-        
         $_SESSION['success_flash'] = "Order $order_number created successfully! Awaiting approval.";
         header('Location: index.php');
         exit();
@@ -267,6 +174,8 @@ require_once '../templates/header.php';
     <input type="hidden" name="discount_amount" id="discount_amount">
     <input type="hidden" name="tax_amount" id="tax_amount">
     <input type="hidden" name="items_json" id="items_json">
+
+```
 <!-- Customer & Order Info -->
 <div class="bg-white rounded-lg shadow-md p-6">
     <h2 class="text-xl font-bold text-gray-800 mb-4">Customer Information</h2>
@@ -507,6 +416,7 @@ require_once '../templates/header.php';
         <i class="fas fa-check mr-2"></i>Submit for Approval
     </button>
 </div>
+```
 
 </form>
 

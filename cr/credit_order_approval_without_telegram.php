@@ -98,82 +98,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'approve') {
             ]);
             
             $db->getPdo()->commit();
-            
-            // ============================================
-            // TELEGRAM NOTIFICATION - APPROVAL
-            // ============================================
-            if (defined('TELEGRAM_NOTIFICATIONS_ENABLED') && TELEGRAM_NOTIFICATIONS_ENABLED) {
-                try {
-                    require_once '../core/classes/TelegramNotifier.php';
-                    $telegram = new TelegramNotifier(TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID);
-                    
-                    // Get customer details
-                    $customer_info = $db->query("SELECT name, phone_number FROM customers WHERE id = ?", [$order->customer_id])->first();
-                    
-                    // Get branch name
-                    $branch_info = $db->query("SELECT name FROM branches WHERE id = ?", [$branch_id])->first();
-                    $branch_name = $branch_info ? $branch_info->name : 'Unknown Branch';
-                    
-                    // Get approver name
-                    $approver_info = $db->query("SELECT display_name FROM users WHERE id = ?", [$user_id])->first();
-                    $approver_name = $approver_info ? $approver_info->display_name : 'Unknown User';
-                    
-                    // Get order items with product details
-                    $items = $db->query(
-                        "SELECT coi.*, 
-                                p.base_name as product_name,
-                                pv.grade,
-                                pv.weight_variant,
-                                pv.unit_of_measure,
-                                pv.sku as variant_sku
-                         FROM credit_order_items coi
-                         JOIN products p ON coi.product_id = p.id
-                         LEFT JOIN product_variants pv ON coi.variant_id = pv.id
-                         WHERE coi.order_id = ?",
-                        [$order_id]
-                    )->results();
-                    
-                    // Format items for notification
-                    $notification_items = [];
-                    foreach ($items as $item) {
-                        $variant_name = trim(($item->grade ?? '') . ' ' . ($item->weight_variant ?? ''));
-                        $notification_items[] = [
-                            'product_name' => $item->product_name,
-                            'variant_name' => $variant_name,
-                            'quantity' => floatval($item->quantity),
-                            'unit' => $item->unit_of_measure ?? 'pcs',
-                            'unit_price' => number_format($item->unit_price, 2),
-                            'subtotal' => number_format($item->line_total, 2)
-                        ];
-                    }
-                    
-                    // Prepare approval data
-                    $approvalData = [
-                        'order_number' => $order->order_number,
-                        'approval_date' => date('d M Y, h:i A'),
-                        'customer_name' => $customer_info ? $customer_info->name : 'Unknown',
-                        'customer_phone' => $customer_info ? $customer_info->phone_number : 'N/A',
-                        'assigned_branch' => $branch_name,
-                        'required_date' => date('d M Y', strtotime($required_date)),
-                        'items' => $notification_items,
-                        'subtotal' => floatval($order->subtotal),
-                        'discount_amount' => floatval($order->discount_amount),
-                        'total_amount' => floatval($order->total_amount),
-                        'advance_paid' => floatval($order->advance_paid),
-                        'balance_due' => floatval($order->balance_due),
-                        'comments' => $comments ?: 'Order approved for production',
-                        'approved_by' => $approver_name
-                    ];
-                    
-                    // Send notification
-                    $telegram->sendOrderApprovalNotification($approvalData);
-                    
-                } catch (Exception $e) {
-                    error_log("Telegram approval notification failed: " . $e->getMessage());
-                }
-            }
-            // END TELEGRAM NOTIFICATION
-            
             $_SESSION['success_flash'] = "Order $action successfully";
             header('Location: credit_order_approval.php');
             exit();
@@ -212,43 +136,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'reject') {
         ]);
         
         $db->getPdo()->commit();
-        
-        // ============================================
-        // TELEGRAM NOTIFICATION - REJECTION
-        // ============================================
-        if (defined('TELEGRAM_NOTIFICATIONS_ENABLED') && TELEGRAM_NOTIFICATIONS_ENABLED) {
-            try {
-                require_once '../core/classes/TelegramNotifier.php';
-                $telegram = new TelegramNotifier(TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID);
-                
-                // Get customer details
-                $customer_info = $db->query("SELECT name, phone_number FROM customers WHERE id = ?", [$order->customer_id])->first();
-                
-                // Get rejector name
-                $rejector_info = $db->query("SELECT display_name FROM users WHERE id = ?", [$user_id])->first();
-                $rejector_name = $rejector_info ? $rejector_info->display_name : 'Unknown User';
-                
-                // Prepare rejection data
-                $rejectionData = [
-                    'order_number' => $order->order_number,
-                    'rejection_date' => date('d M Y, h:i A'),
-                    'customer_name' => $customer_info ? $customer_info->name : 'Unknown',
-                    'customer_phone' => $customer_info ? $customer_info->phone_number : 'N/A',
-                    'total_amount' => floatval($order->total_amount),
-                    'balance_due' => floatval($order->balance_due),
-                    'rejection_reason' => $comments ?: 'Order rejected',
-                    'rejected_by' => $rejector_name
-                ];
-                
-                // Send notification
-                $telegram->sendOrderRejectionNotification($rejectionData);
-                
-            } catch (Exception $e) {
-                error_log("Telegram rejection notification failed: " . $e->getMessage());
-            }
-        }
-        // END TELEGRAM NOTIFICATION
-        
         $_SESSION['success_flash'] = "Order rejected";
         header('Location: credit_order_approval.php');
         exit();

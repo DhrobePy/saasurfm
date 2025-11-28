@@ -104,62 +104,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             $success = "Production started for order " . $order->order_number;
             
-            // ============================================
-            // TELEGRAM NOTIFICATION - PRODUCTION STARTED
-            // ============================================
-            if (defined('TELEGRAM_NOTIFICATIONS_ENABLED') && TELEGRAM_NOTIFICATIONS_ENABLED) {
-                try {
-                    require_once '../core/classes/TelegramNotifier.php';
-                    $telegram = new TelegramNotifier(TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID);
-                    
-                    // Get customer and branch details
-                    $customer_info = $db->query("SELECT name, phone_number FROM customers WHERE id = ?", [$order->customer_id])->first();
-                    $branch_info = $db->query("SELECT name FROM branches WHERE id = ?", [$order->assigned_branch_id])->first();
-                    
-                    // Get user name
-                    $user_info = $db->query("SELECT display_name FROM users WHERE id = ?", [$user_id])->first();
-                    
-                    // Get order items
-                    $items = $db->query(
-                        "SELECT coi.*, p.base_name as product_name, pv.grade, pv.weight_variant, pv.unit_of_measure
-                         FROM credit_order_items coi
-                         JOIN products p ON coi.product_id = p.id
-                         LEFT JOIN product_variants pv ON coi.variant_id = pv.id
-                         WHERE coi.order_id = ?",
-                        [$order_id]
-                    )->results();
-                    
-                    $notification_items = [];
-                    foreach ($items as $item) {
-                        $variant_name = trim(($item->grade ?? '') . ' ' . ($item->weight_variant ?? ''));
-                        $notification_items[] = [
-                            'product_name' => $item->product_name,
-                            'variant_name' => $variant_name,
-                            'quantity' => floatval($item->quantity),
-                            'unit' => $item->unit_of_measure ?? 'pcs'
-                        ];
-                    }
-                    
-                    $productionData = [
-                        'order_number' => $order->order_number,
-                        'started_at' => date('d M Y, h:i A'),
-                        'customer_name' => $customer_info ? $customer_info->name : 'Unknown',
-                        'customer_phone' => $customer_info ? $customer_info->phone_number : 'N/A',
-                        'branch_name' => $branch_info ? $branch_info->name : 'Unknown Branch',
-                        'required_date' => date('d M Y', strtotime($order->required_date)),
-                        'items' => $notification_items,
-                        'total_amount' => floatval($order->total_amount),
-                        'started_by' => $user_info ? $user_info->display_name : 'Unknown User'
-                    ];
-                    
-                    $telegram->sendProductionStartedNotification($productionData);
-                    
-                } catch (Exception $e) {
-                    error_log("Telegram production started notification failed: " . $e->getMessage());
-                }
-            }
-            // END TELEGRAM NOTIFICATION
-            
         } elseif ($action === 'complete') {
             $new_status = 'produced';
             $workflow_action = 'complete_production';
@@ -168,80 +112,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $db->query("UPDATE production_schedule SET production_completed_at = NOW(), status = 'completed' WHERE order_id = ?", [$order_id]);
             
             $success = "Production completed for order " . $order->order_number;
-            
-            // ============================================
-            // TELEGRAM NOTIFICATION - PRODUCTION COMPLETED
-            // ============================================
-            if (defined('TELEGRAM_NOTIFICATIONS_ENABLED') && TELEGRAM_NOTIFICATIONS_ENABLED) {
-                try {
-                    require_once '../core/classes/TelegramNotifier.php';
-                    $telegram = new TelegramNotifier(TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID);
-                    
-                    // Get customer and branch details
-                    $customer_info = $db->query("SELECT name, phone_number FROM customers WHERE id = ?", [$order->customer_id])->first();
-                    $branch_info = $db->query("SELECT name FROM branches WHERE id = ?", [$order->assigned_branch_id])->first();
-                    
-                    // Get user name
-                    $user_info = $db->query("SELECT display_name FROM users WHERE id = ?", [$user_id])->first();
-                    
-                    // Get production schedule for duration
-                    $schedule = $db->query("SELECT production_started_at, production_completed_at FROM production_schedule WHERE order_id = ?", [$order_id])->first();
-                    $duration = '';
-                    if ($schedule && $schedule->production_started_at) {
-                        $start = new DateTime($schedule->production_started_at);
-                        $end = new DateTime();
-                        $interval = $start->diff($end);
-                        
-                        if ($interval->d > 0) {
-                            $duration = $interval->d . ' day(s) ' . $interval->h . ' hour(s)';
-                        } elseif ($interval->h > 0) {
-                            $duration = $interval->h . ' hour(s) ' . $interval->i . ' min(s)';
-                        } else {
-                            $duration = $interval->i . ' minute(s)';
-                        }
-                    }
-                    
-                    // Get order items
-                    $items = $db->query(
-                        "SELECT coi.*, p.base_name as product_name, pv.grade, pv.weight_variant, pv.unit_of_measure
-                         FROM credit_order_items coi
-                         JOIN products p ON coi.product_id = p.id
-                         LEFT JOIN product_variants pv ON coi.variant_id = pv.id
-                         WHERE coi.order_id = ?",
-                        [$order_id]
-                    )->results();
-                    
-                    $notification_items = [];
-                    foreach ($items as $item) {
-                        $variant_name = trim(($item->grade ?? '') . ' ' . ($item->weight_variant ?? ''));
-                        $notification_items[] = [
-                            'product_name' => $item->product_name,
-                            'variant_name' => $variant_name,
-                            'quantity' => floatval($item->quantity),
-                            'unit' => $item->unit_of_measure ?? 'pcs'
-                        ];
-                    }
-                    
-                    $productionData = [
-                        'order_number' => $order->order_number,
-                        'completed_at' => date('d M Y, h:i A'),
-                        'customer_name' => $customer_info ? $customer_info->name : 'Unknown',
-                        'customer_phone' => $customer_info ? $customer_info->phone_number : 'N/A',
-                        'branch_name' => $branch_info ? $branch_info->name : 'Unknown Branch',
-                        'required_date' => date('d M Y', strtotime($order->required_date)),
-                        'items' => $notification_items,
-                        'total_amount' => floatval($order->total_amount),
-                        'duration' => $duration,
-                        'completed_by' => $user_info ? $user_info->display_name : 'Unknown User'
-                    ];
-                    
-                    $telegram->sendProductionCompletedNotification($productionData);
-                    
-                } catch (Exception $e) {
-                    error_log("Telegram production completed notification failed: " . $e->getMessage());
-                }
-            }
-            // END TELEGRAM NOTIFICATION
             
         } elseif ($action === 'ready') {
             $new_status = 'ready_to_ship';
@@ -271,63 +141,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             $success = "Order marked as ready to ship: " . $order->order_number;
             
-            // ============================================
-            // TELEGRAM NOTIFICATION - READY TO SHIP
-            // ============================================
-            if (defined('TELEGRAM_NOTIFICATIONS_ENABLED') && TELEGRAM_NOTIFICATIONS_ENABLED) {
-                try {
-                    require_once '../core/classes/TelegramNotifier.php';
-                    $telegram = new TelegramNotifier(TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID);
-                    
-                    // Get customer and branch details
-                    $customer_info = $db->query("SELECT name, phone_number FROM customers WHERE id = ?", [$order->customer_id])->first();
-                    $branch_info = $db->query("SELECT name FROM branches WHERE id = ?", [$order->assigned_branch_id])->first();
-                    
-                    // Get user name
-                    $user_info = $db->query("SELECT display_name FROM users WHERE id = ?", [$user_id])->first();
-                    
-                    // Get order items
-                    $items = $db->query(
-                        "SELECT coi.*, p.base_name as product_name, pv.grade, pv.weight_variant, pv.unit_of_measure
-                         FROM credit_order_items coi
-                         JOIN products p ON coi.product_id = p.id
-                         LEFT JOIN product_variants pv ON coi.variant_id = pv.id
-                         WHERE coi.order_id = ?",
-                        [$order_id]
-                    )->results();
-                    
-                    $notification_items = [];
-                    foreach ($items as $item) {
-                        $variant_name = trim(($item->grade ?? '') . ' ' . ($item->weight_variant ?? ''));
-                        $notification_items[] = [
-                            'product_name' => $item->product_name,
-                            'variant_name' => $variant_name,
-                            'quantity' => floatval($item->quantity),
-                            'unit' => $item->unit_of_measure ?? 'pcs'
-                        ];
-                    }
-                    
-                    $shipmentData = [
-                        'order_number' => $order->order_number,
-                        'ready_at' => date('d M Y, h:i A'),
-                        'customer_name' => $customer_info ? $customer_info->name : 'Unknown',
-                        'customer_phone' => $customer_info ? $customer_info->phone_number : 'N/A',
-                        'shipping_address' => $order->shipping_address ?? '',
-                        'branch_name' => $branch_info ? $branch_info->name : 'Unknown Branch',
-                        'items' => $notification_items,
-                        'total_amount' => floatval($order->total_amount),
-                        'balance_due' => floatval($order->balance_due),
-                        'marked_by' => $user_info ? $user_info->display_name : 'Unknown User'
-                    ];
-                    
-                    $telegram->sendReadyToShipNotification($shipmentData);
-                    
-                } catch (Exception $e) {
-                    error_log("Telegram ready to ship notification failed: " . $e->getMessage());
-                }
-            }
-            // END TELEGRAM NOTIFICATION
-            
         } elseif ($action === 'update_priority') {
             $priority = (int)$_POST['priority'];
             
@@ -343,38 +156,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             
             $success = "Priority updated";
-            
-            // ============================================
-            // TELEGRAM NOTIFICATION - PRIORITY UPDATED
-            // ============================================
-            if (defined('TELEGRAM_NOTIFICATIONS_ENABLED') && TELEGRAM_NOTIFICATIONS_ENABLED) {
-                try {
-                    require_once '../core/classes/TelegramNotifier.php';
-                    $telegram = new TelegramNotifier(TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID);
-                    
-                    // Get customer and branch details
-                    $customer_info = $db->query("SELECT name FROM customers WHERE id = ?", [$order->customer_id])->first();
-                    $branch_info = $db->query("SELECT name FROM branches WHERE id = ?", [$order->assigned_branch_id])->first();
-                    
-                    // Get user name
-                    $user_info = $db->query("SELECT display_name FROM users WHERE id = ?", [$user_id])->first();
-                    
-                    $priorityData = [
-                        'order_number' => $order->order_number,
-                        'new_priority' => $priority,
-                        'updated_at' => date('d M Y, h:i A'),
-                        'customer_name' => $customer_info ? $customer_info->name : 'Unknown',
-                        'branch_name' => $branch_info ? $branch_info->name : 'Unknown Branch',
-                        'updated_by' => $user_info ? $user_info->display_name : 'Unknown User'
-                    ];
-                    
-                    $telegram->sendPriorityUpdateNotification($priorityData);
-                    
-                } catch (Exception $e) {
-                    error_log("Telegram priority update notification failed: " . $e->getMessage());
-                }
-            }
-            // END TELEGRAM NOTIFICATION
             
         } else {
             throw new Exception("Invalid action");
