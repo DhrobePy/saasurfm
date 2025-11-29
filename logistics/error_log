@@ -682,3 +682,307 @@
 (
 )
 
+[29-Nov-2025 09:22:42 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'fill_date' in 'WHERE' in query: SELECT COALESCE(SUM(total_cost), 0) as total FROM fuel_logs WHERE MONTH(fill_date) = MONTH(CURDATE()) AND YEAR(fill_date) = YEAR(CURDATE()) | Params: Array
+(
+)
+
+[29-Nov-2025 09:22:42 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'total_cost' in 'SELECT' in query: SELECT COALESCE(SUM(total_cost), 0) as total FROM maintenance_logs WHERE MONTH(maintenance_date) = MONTH(CURDATE()) AND YEAR(maintenance_date) = YEAR(CURDATE()) | Params: Array
+(
+)
+
+[29-Nov-2025 09:22:42 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'vd.status' in 'WHERE' in query: SELECT vd.*, v.vehicle_number 
+         FROM vehicle_documents vd
+         JOIN vehicles v ON vd.vehicle_id = v.id
+         WHERE vd.expiry_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY)
+         AND vd.status = 'Active'
+         ORDER BY vd.expiry_date ASC
+         LIMIT 10 | Params: Array
+(
+)
+
+[29-Nov-2025 09:22:42 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'dd.status' in 'WHERE' in query: SELECT dd.*, d.driver_name 
+         FROM driver_documents dd
+         JOIN drivers d ON dd.driver_id = d.id
+         WHERE dd.expiry_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY)
+         AND dd.status = 'Active'
+         ORDER BY dd.expiry_date ASC
+         LIMIT 10 | Params: Array
+(
+)
+
+[29-Nov-2025 09:22:42 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'ta.order_id' in 'ON' in query: SELECT ta.*, v.vehicle_number, d.driver_name, co.order_number
+         FROM trip_assignments ta
+         JOIN vehicles v ON ta.vehicle_id = v.id
+         JOIN drivers d ON ta.driver_id = d.id
+         JOIN credit_orders co ON ta.order_id = co.id
+         ORDER BY ta.trip_date DESC, ta.created_at DESC
+         LIMIT 10 | Params: Array
+(
+)
+
+[29-Nov-2025 09:46:46 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'fill_date' in 'WHERE' in query: SELECT COALESCE(SUM(total_cost), 0) as total FROM fuel_logs WHERE MONTH(fill_date) = MONTH(CURDATE()) AND YEAR(fill_date) = YEAR(CURDATE()) | Params: Array
+(
+)
+
+[29-Nov-2025 09:46:46 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'total_cost' in 'SELECT' in query: SELECT COALESCE(SUM(total_cost), 0) as total FROM maintenance_logs WHERE MONTH(maintenance_date) = MONTH(CURDATE()) AND YEAR(maintenance_date) = YEAR(CURDATE()) | Params: Array
+(
+)
+
+[29-Nov-2025 09:46:46 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'vd.status' in 'WHERE' in query: SELECT vd.*, v.vehicle_number 
+         FROM vehicle_documents vd
+         JOIN vehicles v ON vd.vehicle_id = v.id
+         WHERE vd.expiry_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY)
+         AND vd.status = 'Active'
+         ORDER BY vd.expiry_date ASC
+         LIMIT 10 | Params: Array
+(
+)
+
+[29-Nov-2025 09:46:46 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'dd.status' in 'WHERE' in query: SELECT dd.*, d.driver_name 
+         FROM driver_documents dd
+         JOIN drivers d ON dd.driver_id = d.id
+         WHERE dd.expiry_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY)
+         AND dd.status = 'Active'
+         ORDER BY dd.expiry_date ASC
+         LIMIT 10 | Params: Array
+(
+)
+
+[29-Nov-2025 09:46:46 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'ta.order_id' in 'ON' in query: SELECT ta.*, v.vehicle_number, d.driver_name, co.order_number
+         FROM trip_assignments ta
+         JOIN vehicles v ON ta.vehicle_id = v.id
+         JOIN drivers d ON ta.driver_id = d.id
+         JOIN credit_orders co ON ta.order_id = co.id
+         ORDER BY ta.trip_date DESC, ta.created_at DESC
+         LIMIT 10 | Params: Array
+(
+)
+
+[29-Nov-2025 09:49:27 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'fill_date' in 'WHERE' in query: SELECT COALESCE(SUM(total_cost), 0) as total FROM fuel_logs WHERE MONTH(fill_date) = MONTH(CURDATE()) AND YEAR(fill_date) = YEAR(CURDATE()) | Params: Array
+(
+)
+
+[29-Nov-2025 09:49:27 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'total_cost' in 'SELECT' in query: SELECT COALESCE(SUM(total_cost), 0) as total FROM maintenance_logs WHERE MONTH(maintenance_date) = MONTH(CURDATE()) AND YEAR(maintenance_date) = YEAR(CURDATE()) | Params: Array
+(
+)
+
+[29-Nov-2025 09:49:27 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'vd.status' in 'WHERE' in query: SELECT vd.*, v.vehicle_number 
+         FROM vehicle_documents vd
+         JOIN vehicles v ON vd.vehicle_id = v.id
+         WHERE vd.expiry_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY)
+         AND vd.status = 'Active'
+         ORDER BY vd.expiry_date ASC
+         LIMIT 10 | Params: Array
+(
+)
+
+[29-Nov-2025 09:49:27 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'dd.status' in 'WHERE' in query: SELECT dd.*, d.driver_name 
+         FROM driver_documents dd
+         JOIN drivers d ON dd.driver_id = d.id
+         WHERE dd.expiry_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY)
+         AND dd.status = 'Active'
+         ORDER BY dd.expiry_date ASC
+         LIMIT 10 | Params: Array
+(
+)
+
+[29-Nov-2025 09:49:27 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'ta.order_id' in 'ON' in query: SELECT ta.*, v.vehicle_number, d.driver_name, co.order_number
+         FROM trip_assignments ta
+         JOIN vehicles v ON ta.vehicle_id = v.id
+         JOIN drivers d ON ta.driver_id = d.id
+         JOIN credit_orders co ON ta.order_id = co.id
+         ORDER BY ta.trip_date DESC, ta.created_at DESC
+         LIMIT 10 | Params: Array
+(
+)
+
+[29-Nov-2025 10:10:20 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'fill_date' in 'WHERE' in query: SELECT COALESCE(SUM(total_cost), 0) as total FROM fuel_logs WHERE MONTH(fill_date) = MONTH(CURDATE()) AND YEAR(fill_date) = YEAR(CURDATE()) | Params: Array
+(
+)
+
+[29-Nov-2025 10:10:20 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'total_cost' in 'SELECT' in query: SELECT COALESCE(SUM(total_cost), 0) as total FROM maintenance_logs WHERE MONTH(maintenance_date) = MONTH(CURDATE()) AND YEAR(maintenance_date) = YEAR(CURDATE()) | Params: Array
+(
+)
+
+[29-Nov-2025 10:10:20 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'vd.status' in 'WHERE' in query: SELECT vd.*, v.vehicle_number 
+         FROM vehicle_documents vd
+         JOIN vehicles v ON vd.vehicle_id = v.id
+         WHERE vd.expiry_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY)
+         AND vd.status = 'Active'
+         ORDER BY vd.expiry_date ASC
+         LIMIT 10 | Params: Array
+(
+)
+
+[29-Nov-2025 10:10:20 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'dd.status' in 'WHERE' in query: SELECT dd.*, d.driver_name 
+         FROM driver_documents dd
+         JOIN drivers d ON dd.driver_id = d.id
+         WHERE dd.expiry_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY)
+         AND dd.status = 'Active'
+         ORDER BY dd.expiry_date ASC
+         LIMIT 10 | Params: Array
+(
+)
+
+[29-Nov-2025 10:10:20 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'ta.order_id' in 'ON' in query: SELECT ta.*, v.vehicle_number, d.driver_name, co.order_number
+         FROM trip_assignments ta
+         JOIN vehicles v ON ta.vehicle_id = v.id
+         JOIN drivers d ON ta.driver_id = d.id
+         JOIN credit_orders co ON ta.order_id = co.id
+         ORDER BY ta.trip_date DESC, ta.created_at DESC
+         LIMIT 10 | Params: Array
+(
+)
+
+[29-Nov-2025 10:11:04 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'fill_date' in 'WHERE' in query: SELECT COALESCE(SUM(total_cost), 0) as total FROM fuel_logs WHERE MONTH(fill_date) = MONTH(CURDATE()) AND YEAR(fill_date) = YEAR(CURDATE()) | Params: Array
+(
+)
+
+[29-Nov-2025 10:11:04 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'total_cost' in 'SELECT' in query: SELECT COALESCE(SUM(total_cost), 0) as total FROM maintenance_logs WHERE MONTH(maintenance_date) = MONTH(CURDATE()) AND YEAR(maintenance_date) = YEAR(CURDATE()) | Params: Array
+(
+)
+
+[29-Nov-2025 10:11:04 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'vd.status' in 'WHERE' in query: SELECT vd.*, v.vehicle_number 
+         FROM vehicle_documents vd
+         JOIN vehicles v ON vd.vehicle_id = v.id
+         WHERE vd.expiry_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY)
+         AND vd.status = 'Active'
+         ORDER BY vd.expiry_date ASC
+         LIMIT 10 | Params: Array
+(
+)
+
+[29-Nov-2025 10:11:04 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'dd.status' in 'WHERE' in query: SELECT dd.*, d.driver_name 
+         FROM driver_documents dd
+         JOIN drivers d ON dd.driver_id = d.id
+         WHERE dd.expiry_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY)
+         AND dd.status = 'Active'
+         ORDER BY dd.expiry_date ASC
+         LIMIT 10 | Params: Array
+(
+)
+
+[29-Nov-2025 10:11:04 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'ta.order_id' in 'ON' in query: SELECT ta.*, v.vehicle_number, d.driver_name, co.order_number
+         FROM trip_assignments ta
+         JOIN vehicles v ON ta.vehicle_id = v.id
+         JOIN drivers d ON ta.driver_id = d.id
+         JOIN credit_orders co ON ta.order_id = co.id
+         ORDER BY ta.trip_date DESC, ta.created_at DESC
+         LIMIT 10 | Params: Array
+(
+)
+
+[29-Nov-2025 12:55:10 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'fill_date' in 'WHERE' in query: SELECT COALESCE(SUM(total_cost), 0) as total FROM fuel_logs WHERE MONTH(fill_date) = MONTH(CURDATE()) AND YEAR(fill_date) = YEAR(CURDATE()) | Params: Array
+(
+)
+
+[29-Nov-2025 12:55:10 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'total_cost' in 'SELECT' in query: SELECT COALESCE(SUM(total_cost), 0) as total FROM maintenance_logs WHERE MONTH(maintenance_date) = MONTH(CURDATE()) AND YEAR(maintenance_date) = YEAR(CURDATE()) | Params: Array
+(
+)
+
+[29-Nov-2025 12:55:10 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'vd.status' in 'WHERE' in query: SELECT vd.*, v.vehicle_number 
+         FROM vehicle_documents vd
+         JOIN vehicles v ON vd.vehicle_id = v.id
+         WHERE vd.expiry_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY)
+         AND vd.status = 'Active'
+         ORDER BY vd.expiry_date ASC
+         LIMIT 10 | Params: Array
+(
+)
+
+[29-Nov-2025 12:55:10 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'dd.status' in 'WHERE' in query: SELECT dd.*, d.driver_name 
+         FROM driver_documents dd
+         JOIN drivers d ON dd.driver_id = d.id
+         WHERE dd.expiry_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY)
+         AND dd.status = 'Active'
+         ORDER BY dd.expiry_date ASC
+         LIMIT 10 | Params: Array
+(
+)
+
+[29-Nov-2025 12:55:10 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'ta.order_id' in 'ON' in query: SELECT ta.*, v.vehicle_number, d.driver_name, co.order_number
+         FROM trip_assignments ta
+         JOIN vehicles v ON ta.vehicle_id = v.id
+         JOIN drivers d ON ta.driver_id = d.id
+         JOIN credit_orders co ON ta.order_id = co.id
+         ORDER BY ta.trip_date DESC, ta.created_at DESC
+         LIMIT 10 | Params: Array
+(
+)
+
+[29-Nov-2025 12:56:09 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'fill_date' in 'WHERE' in query: SELECT COALESCE(SUM(total_cost), 0) as total FROM fuel_logs WHERE MONTH(fill_date) = MONTH(CURDATE()) AND YEAR(fill_date) = YEAR(CURDATE()) | Params: Array
+(
+)
+
+[29-Nov-2025 12:56:09 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'total_cost' in 'SELECT' in query: SELECT COALESCE(SUM(total_cost), 0) as total FROM maintenance_logs WHERE MONTH(maintenance_date) = MONTH(CURDATE()) AND YEAR(maintenance_date) = YEAR(CURDATE()) | Params: Array
+(
+)
+
+[29-Nov-2025 12:56:09 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'vd.status' in 'WHERE' in query: SELECT vd.*, v.vehicle_number 
+         FROM vehicle_documents vd
+         JOIN vehicles v ON vd.vehicle_id = v.id
+         WHERE vd.expiry_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY)
+         AND vd.status = 'Active'
+         ORDER BY vd.expiry_date ASC
+         LIMIT 10 | Params: Array
+(
+)
+
+[29-Nov-2025 12:56:09 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'dd.status' in 'WHERE' in query: SELECT dd.*, d.driver_name 
+         FROM driver_documents dd
+         JOIN drivers d ON dd.driver_id = d.id
+         WHERE dd.expiry_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY)
+         AND dd.status = 'Active'
+         ORDER BY dd.expiry_date ASC
+         LIMIT 10 | Params: Array
+(
+)
+
+[29-Nov-2025 12:56:09 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'ta.order_id' in 'ON' in query: SELECT ta.*, v.vehicle_number, d.driver_name, co.order_number
+         FROM trip_assignments ta
+         JOIN vehicles v ON ta.vehicle_id = v.id
+         JOIN drivers d ON ta.driver_id = d.id
+         JOIN credit_orders co ON ta.order_id = co.id
+         ORDER BY ta.trip_date DESC, ta.created_at DESC
+         LIMIT 10 | Params: Array
+(
+)
+
+[29-Nov-2025 13:22:38 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'fill_date' in 'WHERE' in query: SELECT COALESCE(SUM(total_cost), 0) as total FROM fuel_logs WHERE MONTH(fill_date) = MONTH(CURDATE()) AND YEAR(fill_date) = YEAR(CURDATE()) | Params: Array
+(
+)
+
+[29-Nov-2025 13:22:38 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'total_cost' in 'SELECT' in query: SELECT COALESCE(SUM(total_cost), 0) as total FROM maintenance_logs WHERE MONTH(maintenance_date) = MONTH(CURDATE()) AND YEAR(maintenance_date) = YEAR(CURDATE()) | Params: Array
+(
+)
+
+[29-Nov-2025 13:22:38 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'vd.status' in 'WHERE' in query: SELECT vd.*, v.vehicle_number 
+         FROM vehicle_documents vd
+         JOIN vehicles v ON vd.vehicle_id = v.id
+         WHERE vd.expiry_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY)
+         AND vd.status = 'Active'
+         ORDER BY vd.expiry_date ASC
+         LIMIT 10 | Params: Array
+(
+)
+
+[29-Nov-2025 13:22:38 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'dd.status' in 'WHERE' in query: SELECT dd.*, d.driver_name 
+         FROM driver_documents dd
+         JOIN drivers d ON dd.driver_id = d.id
+         WHERE dd.expiry_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY)
+         AND dd.status = 'Active'
+         ORDER BY dd.expiry_date ASC
+         LIMIT 10 | Params: Array
+(
+)
+
+[29-Nov-2025 13:22:38 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'ta.order_id' in 'ON' in query: SELECT ta.*, v.vehicle_number, d.driver_name, co.order_number
+         FROM trip_assignments ta
+         JOIN vehicles v ON ta.vehicle_id = v.id
+         JOIN drivers d ON ta.driver_id = d.id
+         JOIN credit_orders co ON ta.order_id = co.id
+         ORDER BY ta.trip_date DESC, ta.created_at DESC
+         LIMIT 10 | Params: Array
+(
+)
+

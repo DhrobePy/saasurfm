@@ -46,27 +46,7 @@ if (!$default_sales_account) {
 }
 $default_sales_account_id = $default_sales_account->id ?? null;
 
-/* -----------------------------
-   DATE RANGE & STATUS FILTERING
------------------------------ */
-// Get filter inputs - Default to TODAY
-$from_date = isset($_GET['from_date']) ? $_GET['from_date'] : date('Y-m-d');
-$to_date = isset($_GET['to_date']) ? $_GET['to_date'] : date('Y-m-d');
-$status_filter = isset($_GET['status_filter']) ? $_GET['status_filter'] : 'ready_to_ship'; // Default: show only not-yet-dispatched
-
-// Build status condition
-$status_condition = "";
-if ($status_filter === 'ready_to_ship') {
-    $status_condition = "AND co.status = 'ready_to_ship'";
-} elseif ($status_filter === 'shipped') {
-    $status_condition = "AND co.status = 'shipped'";
-} elseif ($status_filter === 'delivered') {
-    $status_condition = "AND co.status = 'delivered'";
-} elseif ($status_filter === 'all') {
-    $status_condition = "AND co.status IN ('ready_to_ship', 'shipped', 'delivered')";
-}
-
-// Get orders with date range filter
+// Get orders ready to ship and shipped
 $orders = $db->query(
     "SELECT co.*, 
             c.name as customer_name,
@@ -83,9 +63,8 @@ $orders = $db->query(
      JOIN customers c ON co.customer_id = c.id
      LEFT JOIN branches b ON co.assigned_branch_id = b.id
      LEFT JOIN credit_order_shipping cos ON co.id = cos.order_id
-     WHERE co.assigned_branch_id IS NOT NULL
-     AND co.updated_at >= ? AND co.updated_at < DATE_ADD(?, INTERVAL 1 DAY)
-     $status_condition
+     WHERE co.status IN ('ready_to_ship', 'shipped', 'delivered') 
+     AND co.assigned_branch_id IS NOT NULL
      $branch_filter
      ORDER BY 
          CASE co.status 
@@ -94,7 +73,7 @@ $orders = $db->query(
              WHEN 'delivered' THEN 3
          END,
          co.required_date ASC",
-    array_merge([$from_date . ' 00:00:00', $to_date], $branch_params)
+    $branch_params
 )->results();
 
 // Handle shipping action
@@ -641,65 +620,6 @@ require_once '../templates/header.php';
     <div class="bg-green-600 rounded-lg shadow-lg p-6 text-white">
         <p class="text-sm opacity-90">Delivered</p>
         <p class="text-3xl font-bold mt-2"><?php echo $stats['delivered']; ?></p>
-    </div>
-</div>
-
-<!-- Filter Section -->
-<div class="bg-white rounded-lg shadow-md p-6 mb-6">
-    <h3 class="text-lg font-semibold text-gray-800 mb-4">
-        <i class="fas fa-filter mr-2"></i>Filter Orders
-    </h3>
-    <form method="GET" action="credit_dispatch.php" class="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <!-- From Date -->
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">From Date</label>
-            <input type="date" name="from_date" value="<?php echo htmlspecialchars($from_date); ?>" 
-                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500">
-        </div>
-        
-        <!-- To Date -->
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">To Date</label>
-            <input type="date" name="to_date" value="<?php echo htmlspecialchars($to_date); ?>" 
-                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500">
-        </div>
-        
-        <!-- Status Filter -->
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
-            <select name="status_filter" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500">
-                <option value="ready_to_ship" <?php echo $status_filter === 'ready_to_ship' ? 'selected' : ''; ?>>Ready to Ship Only</option>
-                <option value="shipped" <?php echo $status_filter === 'shipped' ? 'selected' : ''; ?>>Shipped Only</option>
-                <option value="delivered" <?php echo $status_filter === 'delivered' ? 'selected' : ''; ?>>Delivered Only</option>
-                <option value="all" <?php echo $status_filter === 'all' ? 'selected' : ''; ?>>All Statuses</option>
-            </select>
-        </div>
-        
-        <!-- Filter Buttons -->
-        <div class="flex items-end gap-2">
-            <button type="submit" class="flex-1 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors shadow-sm font-medium">
-                <i class="fas fa-filter mr-1"></i>Filter
-            </button>
-            <a href="credit_dispatch.php" class="bg-gray-200 text-gray-700 px-3 py-2 rounded-md hover:bg-gray-300 transition-colors shadow-sm" title="Reset">
-                <i class="fas fa-undo"></i>
-            </a>
-        </div>
-    </form>
-    
-    <div class="mt-3 pt-3 border-t border-gray-200 text-sm text-gray-600">
-        <i class="fas fa-info-circle mr-1"></i>
-        Showing <strong><?php echo count($orders); ?></strong> orders 
-        <?php if ($status_filter === 'ready_to_ship'): ?>
-            <span class="text-orange-600 font-semibold">ready to ship</span>
-        <?php elseif ($status_filter === 'shipped'): ?>
-            <span class="text-blue-600 font-semibold">shipped</span>
-        <?php elseif ($status_filter === 'delivered'): ?>
-            <span class="text-green-600 font-semibold">delivered</span>
-        <?php else: ?>
-            <span class="text-gray-600 font-semibold">in all statuses</span>
-        <?php endif; ?>
-        from <strong><?php echo date('M j, Y', strtotime($from_date)); ?></strong> 
-        to <strong><?php echo date('M j, Y', strtotime($to_date)); ?></strong>
     </div>
 </div>
 

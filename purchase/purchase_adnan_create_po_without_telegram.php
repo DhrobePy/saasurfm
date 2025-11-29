@@ -25,67 +25,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $result = $purchaseManager->createPurchaseOrder($_POST);
     
     if ($result['success']) {
-        // ============================================
-        // TELEGRAM NOTIFICATION - PURCHASE ORDER CREATED
-        // ============================================
-        try {
-            if (defined('TELEGRAM_NOTIFICATIONS_ENABLED') && TELEGRAM_NOTIFICATIONS_ENABLED) {
-                require_once '../core/classes/TelegramNotifier.php';
-                $telegram = new TelegramNotifier(TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID);
-                
-                $db = Database::getInstance();
-                
-                // Get complete PO details
-                $po = $db->query(
-                    "SELECT po.*, 
-                            s.company_name as supplier_name, 
-                            s.phone as supplier_phone, 
-                            s.email as supplier_email
-                     FROM purchase_orders_adnan po
-                     LEFT JOIN suppliers s ON po.supplier_id = s.id
-                     WHERE po.id = ?",
-                    [$result['po_id']]
-                )->first();
-                
-                if ($po) {
-                    // Get current user info
-                    $currentUser = getCurrentUser();
-                    $user_name = $currentUser['display_name'] ?? 'System User';
-                    
-                    // Prepare PO data
-                    $poData = [
-                        'po_number' => $po->po_number,
-                        'po_date' => date('d M Y', strtotime($po->po_date)),
-                        'supplier_name' => $po->supplier_name,
-                        'supplier_phone' => $po->supplier_phone ?: '',
-                        'supplier_email' => $po->supplier_email ?: '',
-                        'wheat_origin' => $po->wheat_origin,
-                        'quantity_kg' => floatval($po->quantity_kg),
-                        'unit_price_per_kg' => floatval($po->unit_price_per_kg),
-                        'total_amount' => floatval($po->total_order_value),
-                        'expected_delivery_date' => $po->expected_delivery_date ? date('d M Y', strtotime($po->expected_delivery_date)) : '',
-                        'remarks' => $po->remarks ?: '',
-                        'status' => ucfirst($po->po_status),
-                        'created_by' => $user_name
-                    ];
-                    
-                    // Send notification
-                    $notif_result = $telegram->sendPurchaseOrderNotification($poData);
-                    
-                    if ($notif_result['success']) {
-                        error_log("✓ Telegram purchase order notification sent: " . $po->po_number);
-                    } else {
-                        error_log("✗ Telegram purchase order notification failed: " . json_encode($notif_result['response']));
-                    }
-                }
-            }
-        } catch (Exception $e) {
-            error_log("✗ Telegram purchase order notification error: " . $e->getMessage());
-        }
-        // END TELEGRAM NOTIFICATION
-        
         $_SESSION['success_message'] = $result['message'] . " (PO #" . $result['po_number'] . ")";
-        header('Location: purchase_adnan_view_po.php?id=' . $result['po_id']);
+        header('Location: view_po.php?id=' . $result['po_id']);
         exit;
     } else {
         $error_message = $result['message'];

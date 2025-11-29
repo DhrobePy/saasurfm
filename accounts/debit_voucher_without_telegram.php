@@ -98,68 +98,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             
             $db->getPdo()->commit();
             
-            // ============================================
-            // TELEGRAM NOTIFICATION - EXPENSE VOUCHER
-            // ============================================
-            try {
-                if (defined('TELEGRAM_NOTIFICATIONS_ENABLED') && TELEGRAM_NOTIFICATIONS_ENABLED) {
-                    require_once '../core/classes/TelegramNotifier.php';
-                    $telegram = new TelegramNotifier(TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID);
-                    
-                    // Get account names
-                    $expense_acc = $db->query("SELECT name FROM chart_of_accounts WHERE id = ?", [$expense_account_id])->first();
-                    $payment_acc = $db->query("SELECT name FROM chart_of_accounts WHERE id = ?", [$payment_account_id])->first();
-                    
-                    // Get employee name if provided
-                    $employee_name = '';
-                    if ($employee_id) {
-                        $emp = $db->query("SELECT CONCAT(first_name, ' ', last_name) as full_name FROM employees WHERE id = ?", [$employee_id])->first();
-                        $employee_name = $emp ? $emp->full_name : '';
-                    }
-                    
-                    // Get branch name if provided
-                    $branch_name = 'Head Office';
-                    if ($branch_id) {
-                        $branch = $db->query("SELECT name FROM branches WHERE id = ?", [$branch_id])->first();
-                        $branch_name = $branch ? $branch->name : 'Head Office';
-                    }
-                    
-                    // Get user name
-                    $user_name = 'System User';
-                    if ($user_id) {
-                        $user_info = $db->query("SELECT display_name FROM users WHERE id = ?", [$user_id])->first();
-                        $user_name = $user_info ? $user_info->display_name : 'System User';
-                    }
-                    
-                    // Prepare expense data
-                    $expenseData = [
-                        'voucher_number' => $voucher_number,
-                        'voucher_date' => date('d M Y', strtotime($voucher_date)),
-                        'amount' => floatval($amount),
-                        'paid_to' => $paid_to,
-                        'expense_account' => $expense_acc ? $expense_acc->name : 'Unknown',
-                        'payment_account' => $payment_acc ? $payment_acc->name : 'Unknown',
-                        'description' => $description,
-                        'reference_number' => $reference_number ?: '',
-                        'employee_name' => $employee_name,
-                        'branch_name' => $branch_name,
-                        'created_by' => $user_name
-                    ];
-                    
-                    // Send notification
-                    $result = $telegram->sendExpenseVoucherNotification($expenseData);
-                    
-                    if ($result['success']) {
-                        error_log("✓ Telegram expense voucher notification sent: $voucher_number");
-                    } else {
-                        error_log("✗ Telegram expense notification failed: " . json_encode($result['response']));
-                    }
-                }
-            } catch (Exception $e) {
-                error_log("✗ Telegram expense notification error: " . $e->getMessage());
-            }
-            // END TELEGRAM NOTIFICATION
-            
             $_SESSION['success_flash'] = "Debit voucher created successfully!";
             header('Location: debit_voucher_print.php?id=' . $voucher_id);
             exit();
@@ -225,14 +163,9 @@ require_once '../templates/header.php';
 
 <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
 
-<div class="mb-6 flex justify-between items-center">
-    <div>
-        <h1 class="text-3xl font-bold text-gray-900"><?php echo $pageTitle; ?></h1>
-        <p class="text-lg text-gray-600 mt-1">Issue payment vouchers for expenses with proper accounting</p>
-    </div>
-    <a href="expense_history.php" class="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 shadow-md transition-colors">
-        <i class="fas fa-history mr-2"></i>View Expense History
-    </a>
+<div class="mb-6">
+    <h1 class="text-3xl font-bold text-gray-900"><?php echo $pageTitle; ?></h1>
+    <p class="text-lg text-gray-600 mt-1">Issue payment vouchers for expenses with proper accounting</p>
 </div>
 
 <?php if ($error): ?>

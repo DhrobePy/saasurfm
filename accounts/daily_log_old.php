@@ -118,8 +118,7 @@ $purchase_query = "
         s.phone as supplier_phone,
         b.name as branch_name,
         u.display_name as created_by,
-        pi.created_at,
-        'invoice' as purchase_source
+        pi.created_at
     FROM purchase_invoices pi
     LEFT JOIN suppliers s ON pi.supplier_id = s.id
     LEFT JOIN branches b ON pi.branch_id = b.id
@@ -130,33 +129,6 @@ $purchase_query = "
 ";
 $db->query($purchase_query, $purchase_params);
 $purchase_invoices = $db->results();
-
-// Add goods received (wheat GRN)
-$grn_query = "
-    SELECT 
-        grn.id,
-        grn.grn_number as invoice_number,
-        grn.grn_date as invoice_date,
-        grn.total_value as total_amount,
-        'received' as payment_status,
-        grn.supplier_name,
-        s.phone as supplier_phone,
-        b.name as branch_name,
-        u.display_name as created_by,
-        grn.created_at,
-        'grn' as purchase_source
-    FROM goods_received_adnan grn
-    LEFT JOIN suppliers s ON grn.supplier_id = s.id
-    LEFT JOIN branches b ON grn.unload_point_branch_id = b.id
-    LEFT JOIN users u ON grn.receiver_user_id = u.id
-    WHERE DATE(grn.grn_date) = :selected_date
-    ORDER BY grn.created_at DESC
-";
-$db->query($grn_query, ['selected_date' => $selected_date]);
-$grn_records = $db->results();
-
-// Merge invoices and GRNs
-$purchase_invoices = array_merge($purchase_invoices, $grn_records);
 
 // 5. Get Customer Payments
 $customer_payments_params = array_merge(['selected_date' => $selected_date], $branch_params);
@@ -199,14 +171,13 @@ $supplier_payments_query = "
         s.company_name as supplier_name,
         s.phone as supplier_phone,
         b.name as branch_name,
-        coa.name as payment_account,
+        ba.account_name as payment_account,
         u.display_name as paid_by,
-        sp.created_at,
-        'general' as payment_source
+        sp.created_at
     FROM supplier_payments sp
     LEFT JOIN suppliers s ON sp.supplier_id = s.id
     LEFT JOIN branches b ON sp.branch_id = b.id
-    LEFT JOIN chart_of_accounts coa ON sp.payment_account_id = coa.id
+    LEFT JOIN bank_accounts ba ON sp.bank_account_id = ba.id
     LEFT JOIN users u ON sp.created_by_user_id = u.id
     WHERE DATE(sp.payment_date) = :selected_date
     " . str_replace('branch_id', 'sp.branch_id', $branch_filter) . "
@@ -214,33 +185,6 @@ $supplier_payments_query = "
 ";
 $db->query($supplier_payments_query, $supplier_payments_params);
 $supplier_payments = $db->results();
-
-// Add wheat purchase payments (Adnan module)
-$wheat_payments_query = "
-    SELECT 
-        pp.id,
-        pp.payment_voucher_number as payment_number,
-        pp.payment_date,
-        pp.amount_paid as amount,
-        pp.payment_method,
-        pp.supplier_name,
-        s.phone as supplier_phone,
-        NULL as branch_name,
-        pp.bank_name as payment_account,
-        u.display_name as paid_by,
-        pp.created_at,
-        'wheat' as payment_source
-    FROM purchase_payments_adnan pp
-    LEFT JOIN suppliers s ON pp.supplier_id = s.id
-    LEFT JOIN users u ON pp.created_by_user_id = u.id
-    WHERE DATE(pp.payment_date) = :selected_date
-    ORDER BY pp.created_at DESC
-";
-$db->query($wheat_payments_query, ['selected_date' => $selected_date]);
-$wheat_payments = $db->results();
-
-// Merge both payment types
-$supplier_payments = array_merge($supplier_payments, $wheat_payments);
 
 // 7. Get Transport Expenses
 $transport_expenses_query = "
@@ -250,51 +194,21 @@ $transport_expenses_query = "
         te.expense_type,
         te.amount,
         te.description,
-        v.vehicle_number as vehicle,
-        d.driver_name as driver_name,
-        ta.id as trip_number,
+        v.registration_number as vehicle,
+        d.name as driver_name,
+        ta.trip_number,
         u.display_name as created_by,
-        te.created_at,
-        'transport' as expense_source
+        te.created_at
     FROM transport_expenses te
     LEFT JOIN vehicles v ON te.vehicle_id = v.id
+    LEFT JOIN drivers d ON te.driver_id = d.id
     LEFT JOIN trip_assignments ta ON te.trip_id = ta.id
-    LEFT JOIN drivers d ON ta.driver_id = d.id
     LEFT JOIN users u ON te.created_by_user_id = u.id
     WHERE DATE(te.expense_date) = :selected_date
     ORDER BY te.created_at DESC
 ";
 $db->query($transport_expenses_query, ['selected_date' => $selected_date]);
 $transport_expenses = $db->results();
-
-// Add fuel logs
-$fuel_logs_query = "
-    SELECT 
-        fl.id,
-        fl.fuel_date as expense_date,
-        CONCAT('Fuel - ', COALESCE(fl.fuel_type, 'Unknown')) as expense_type,
-        fl.total_cost as amount,
-        CONCAT(fl.quantity_liters, 'L @ ৳', fl.price_per_liter, '/L', 
-               CASE WHEN fl.station_name IS NOT NULL THEN CONCAT(' from ', fl.station_name) ELSE '' END) as description,
-        v.vehicle_number as vehicle,
-        d.driver_name as driver_name,
-        ta.id as trip_number,
-        u.display_name as created_by,
-        fl.created_at,
-        'fuel' as expense_source
-    FROM fuel_logs fl
-    LEFT JOIN vehicles v ON fl.vehicle_id = v.id
-    LEFT JOIN trip_assignments ta ON fl.trip_id = ta.id
-    LEFT JOIN drivers d ON ta.driver_id = d.id
-    LEFT JOIN users u ON fl.created_by_user_id = u.id
-    WHERE DATE(fl.fuel_date) = :selected_date
-    ORDER BY fl.created_at DESC
-";
-$db->query($fuel_logs_query, ['selected_date' => $selected_date]);
-$fuel_logs = $db->results();
-
-// Merge transport expenses and fuel logs
-$transport_expenses = array_merge($transport_expenses, $fuel_logs);
 
 // 8. Get Debit Vouchers (Other Expenses)
 $debit_vouchers_params = array_merge(['selected_date' => $selected_date], $branch_params);
@@ -312,7 +226,7 @@ $debit_vouchers_query = "
         dv.created_at
     FROM debit_vouchers dv
     LEFT JOIN branches b ON dv.branch_id = b.id
-    LEFT JOIN chart_of_accounts coa ON dv.expense_account_id = coa.id
+    LEFT JOIN chart_of_accounts coa ON dv.account_id = coa.id
     LEFT JOIN users u ON dv.created_by_user_id = u.id
     WHERE DATE(dv.voucher_date) = :selected_date
     " . str_replace('branch_id', 'dv.branch_id', $branch_filter) . "
@@ -571,10 +485,6 @@ require_once '../templates/header.php';
                                 <div class="flex flex-wrap gap-4 text-xs text-gray-600 mt-3 pt-3 border-t border-gray-300">
                                     <span><i class="fas fa-user mr-1"></i><?php echo htmlspecialchars($entry->posted_by ?? 'System'); ?></span>
                                     <span><i class="fas fa-clock mr-1"></i><?php echo date('g:i A', strtotime($entry->created_at)); ?></span>
-                                    <a href="journal_entry_view.php?id=<?php echo $entry->id; ?>" 
-                                       class="ml-auto px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-xs">
-                                        <i class="fas fa-eye mr-1"></i>View
-                                    </a>
                                 </div>
                             </div>
                         <?php endforeach; ?>
@@ -639,10 +549,6 @@ require_once '../templates/header.php';
                                     <?php endif; ?>
                                     <span><i class="fas fa-user mr-1"></i><?php echo htmlspecialchars($order->created_by ?? 'Unknown'); ?></span>
                                     <span><i class="fas fa-clock mr-1"></i><?php echo date('g:i A', strtotime($order->created_at)); ?></span>
-                                    <a href="../cr/order_details.php?id=<?php echo $order->id; ?>" 
-                                       class="ml-auto px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-xs">
-                                        <i class="fas fa-eye mr-1"></i>View
-                                    </a>
                                 </div>
                             </div>
                         <?php endforeach; ?>
@@ -700,10 +606,6 @@ require_once '../templates/header.php';
                                     <?php endif; ?>
                                     <span><i class="fas fa-user mr-1"></i><?php echo htmlspecialchars($sale->cashier ?? 'Unknown'); ?></span>
                                     <span><i class="fas fa-clock mr-1"></i><?php echo date('g:i A', strtotime($sale->order_date)); ?></span>
-                                    <a href="../pos/receipt_view.php?id=<?php echo $sale->id; ?>" 
-                                       class="ml-auto px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-xs">
-                                        <i class="fas fa-eye mr-1"></i>View
-                                    </a>
                                 </div>
                             </div>
                         <?php endforeach; ?>
@@ -729,17 +631,11 @@ require_once '../templates/header.php';
                                     <div>
                                         <h3 class="font-semibold text-gray-900">
                                             <?php echo htmlspecialchars($invoice->invoice_number); ?>
-                                            <?php if (isset($invoice->purchase_source)): ?>
-                                                <span class="ml-2 px-2 py-1 text-xs rounded-full <?php echo $invoice->purchase_source === 'grn' ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800'; ?>">
-                                                    <?php echo $invoice->purchase_source === 'grn' ? '🌾 Wheat GRN' : '📄 Invoice'; ?>
-                                                </span>
-                                            <?php endif; ?>
                                             <span class="ml-2 px-2 py-1 text-xs rounded-full <?php 
                                                 echo match($invoice->payment_status) {
                                                     'paid' => 'bg-green-100 text-green-800',
                                                     'partially_paid' => 'bg-yellow-100 text-yellow-800',
                                                     'unpaid' => 'bg-red-100 text-red-800',
-                                                    'received' => 'bg-green-100 text-green-800',
                                                     default => 'bg-gray-100 text-gray-800'
                                                 };
                                             ?>">
@@ -765,10 +661,6 @@ require_once '../templates/header.php';
                                     <?php endif; ?>
                                     <span><i class="fas fa-user mr-1"></i><?php echo htmlspecialchars($invoice->created_by ?? 'Unknown'); ?></span>
                                     <span><i class="fas fa-clock mr-1"></i><?php echo date('g:i A', strtotime($invoice->created_at)); ?></span>
-                                    <a href="../purchases/invoice_view.php?id=<?php echo $invoice->id; ?>" 
-                                       class="ml-auto px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-xs">
-                                        <i class="fas fa-eye mr-1"></i>View
-                                    </a>
                                 </div>
                             </div>
                         <?php endforeach; ?>
@@ -839,10 +731,6 @@ require_once '../templates/header.php';
                                     <?php endif; ?>
                                     <span><i class="fas fa-user mr-1"></i><?php echo htmlspecialchars($payment->received_by ?? 'Unknown'); ?></span>
                                     <span><i class="fas fa-clock mr-1"></i><?php echo date('g:i A', strtotime($payment->created_at)); ?></span>
-                                    <a href="payment_view.php?id=<?php echo $payment->id; ?>" 
-                                       class="ml-auto px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-xs">
-                                        <i class="fas fa-eye mr-1"></i>View
-                                    </a>
                                 </div>
                             </div>
                         <?php endforeach; ?>
@@ -903,10 +791,6 @@ require_once '../templates/header.php';
                                     <?php endif; ?>
                                     <span><i class="fas fa-user mr-1"></i><?php echo htmlspecialchars($payment->paid_by ?? 'Unknown'); ?></span>
                                     <span><i class="fas fa-clock mr-1"></i><?php echo date('g:i A', strtotime($payment->created_at)); ?></span>
-                                    <a href="../purchase/supplier_payment_view.php?id=<?php echo $payment->id; ?>" 
-                                       class="ml-auto px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-xs">
-                                        <i class="fas fa-eye mr-1"></i>View
-                                    </a>
                                 </div>
                             </div>
                         <?php endforeach; ?>
@@ -959,10 +843,6 @@ require_once '../templates/header.php';
                                 <div class="flex flex-wrap gap-4 text-xs text-gray-600 mt-3 pt-3 border-t border-gray-300">
                                     <span><i class="fas fa-user mr-1"></i><?php echo htmlspecialchars($expense->created_by ?? 'Unknown'); ?></span>
                                     <span><i class="fas fa-clock mr-1"></i><?php echo date('g:i A', strtotime($expense->created_at)); ?></span>
-                                    <a href="../logistics/expense_view.php?id=<?php echo $expense->id; ?>" 
-                                       class="ml-auto px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-xs">
-                                        <i class="fas fa-eye mr-1"></i>View
-                                    </a>
                                 </div>
                             </div>
                         <?php endforeach; ?>
@@ -1013,10 +893,6 @@ require_once '../templates/header.php';
                                     <?php endif; ?>
                                     <span><i class="fas fa-user mr-1"></i><?php echo htmlspecialchars($voucher->created_by ?? 'Unknown'); ?></span>
                                     <span><i class="fas fa-clock mr-1"></i><?php echo date('g:i A', strtotime($voucher->created_at)); ?></span>
-                                    <a href="debit_voucher_view.php?id=<?php echo $voucher->id; ?>" 
-                                       class="ml-auto px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-xs">
-                                        <i class="fas fa-eye mr-1"></i>View
-                                    </a>
                                 </div>
                             </div>
                         <?php endforeach; ?>

@@ -319,3 +319,53 @@ Stack trace:
 Stack trace:
 #0 {main}
   thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php on line 673
+[29-Nov-2025 12:20:08 Asia/Dhaka] PHP Warning:  require_once(../includes/footer.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php on line 673
+[29-Nov-2025 12:20:08 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Failed opening required '../includes/footer.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php:673
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php on line 673
+[29-Nov-2025 12:20:16 Asia/Dhaka] PHP Warning:  require_once(../includes/footer.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php on line 673
+[29-Nov-2025 12:20:16 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Failed opening required '../includes/footer.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php:673
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php on line 673
+[29-Nov-2025 12:20:24 Asia/Dhaka] PHP Warning:  require_once(../includes/footer.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php on line 673
+[29-Nov-2025 12:20:24 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Failed opening required '../includes/footer.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php:673
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php on line 673
+[29-Nov-2025 12:20:32 Asia/Dhaka] PHP Warning:  require_once(../includes/footer.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php on line 673
+[29-Nov-2025 12:20:32 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Failed opening required '../includes/footer.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php:673
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php on line 673
+[29-Nov-2025 12:20:38 Asia/Dhaka] PHP Warning:  require_once(../includes/footer.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php on line 673
+[29-Nov-2025 12:20:38 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Failed opening required '../includes/footer.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php:673
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php on line 673
+[29-Nov-2025 15:22:07 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 's.name' in 'SELECT' in query: SELECT po.*, s.name as supplier_name, s.phone as supplier_phone, s.email as supplier_email
+                     FROM purchase_orders_adnan po
+                     LEFT JOIN suppliers s ON po.supplier_id = s.id
+                     WHERE po.id = ? | Params: Array
+(
+    [0] => 5
+)
+
+[29-Nov-2025 15:28:09 Asia/Dhaka] ✓ Telegram purchase order notification sent: 447
+[29-Nov-2025 15:43:39 Asia/Dhaka] PHP Warning:  Array to string conversion in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Database.php on line 64
+[29-Nov-2025 15:43:39 Asia/Dhaka] PHP Warning:  Array to string conversion in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_record_grn.php on line 108
+[29-Nov-2025 18:40:07 Asia/Dhaka] PHP Warning:  Array to string conversion in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Database.php on line 64
+[29-Nov-2025 18:40:07 Asia/Dhaka] PHP Warning:  Array to string conversion in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_record_grn.php on line 113
+[29-Nov-2025 18:49:06 Asia/Dhaka] ✗ Telegram GRN notification: Invalid GRN ID - Array
+(
+    [success] => 1
+    [message] => Goods received recorded successfully
+    [grn_id] => 7
+    [grn_number] => GRN-20251129-0003
+    [variance_alert] => 1
+)
+
+[29-Nov-2025 18:49:06 Asia/Dhaka] ✗ Telegram GRN notification error: Invalid GRN ID returned
+[29-Nov-2025 18:52:21 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20251129-0004
+[29-Nov-2025 18:53:50 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20251129-0001

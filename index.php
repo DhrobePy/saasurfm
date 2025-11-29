@@ -45,6 +45,14 @@ switch ($role) {
     case 'dispatchpos-srg':
         header('Location: dispatch/index.php');
         exit();
+        
+        
+    // --- Logistics Roles ---- 
+    // --- Dispatch Roles ---
+    case 'Transport Manager':
+    case 'driver':
+        header('Location: logistics/index.php');
+        exit();
     
     // --- Other Roles ---
     case 'sales-srg':

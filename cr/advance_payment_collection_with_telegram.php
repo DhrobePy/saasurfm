@@ -101,9 +101,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             throw new Exception("Total allocated amount (৳" . number_format($total_allocated, 2) . ") cannot exceed payment amount (৳" . number_format($total_payment_amount, 2) . ")");
         }
         
-        // MODIFICATION: Allow advance payment WITHOUT order allocation
-        // Customer can pay advance to account credit without specific orders
-        // $total_allocated can be 0 (pure advance on account)
+        if ($total_allocated < 0.01) {
+            throw new Exception("You must allocate the payment to at least one order");
+        }
         
         // --- 1. Determine Deposit Account ID ---
         $deposit_chart_of_account_id = null;
@@ -144,9 +144,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             'bank_account_id' => $bank_account_id,
             'reference_number' => $reference_number,
             'notes' => $notes,
-            'allocation_status' => ($total_allocated > 0) ? 'allocated' : 'unallocated',
+            'allocation_status' => 'allocated',
             'allocated_amount' => $total_allocated,
-            'allocated_to_invoices' => !empty($allocations) ? json_encode($allocations) : null,
+            'allocated_to_invoices' => json_encode($allocations),
             'created_by_user_id' => $user_id
         ]);
         
@@ -190,12 +190,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             }
         }
         
-        // Description based on allocation
-        if (!empty($order_numbers_list)) {
-            $description = "Advance payment received (Receipt #$payment_number) allocated to orders: " . implode(', ', $order_numbers_list);
-        } else {
-            $description = "Advance payment received (Receipt #$payment_number) - Account credit (no specific order allocation)";
-        }
+        $description = "Advance payment received (Receipt #$payment_number) allocated to orders: " . implode(', ', $order_numbers_list);
         
         $ledger_id = $db->insert('customer_ledger', [
             'customer_id' => $customer_id,
@@ -443,7 +438,7 @@ require_once '../templates/header.php';
 
 <div class="mb-6">
     <h1 class="text-3xl font-bold text-gray-900"><?php echo $pageTitle; ?></h1>
-    <p class="text-lg text-gray-600 mt-1">Collect advance payments from customers - allocate to specific orders or keep as account credit for future use.</p>
+    <p class="text-lg text-gray-600 mt-1">Collect advance payments from customers for their pending credit orders before dispatch.</p>
 </div>
 
 <?php if ($error): ?>
@@ -633,15 +628,10 @@ require_once '../templates/header.php';
                 
                 <!-- No Orders State -->
                 <div x-show="!isLoadingOrders && pendingOrders.length === 0 && customer.id" 
-                     class="text-center p-8 bg-blue-50 rounded-lg border-2 border-dashed border-blue-300">
-                    <i class="fas fa-info-circle text-4xl text-blue-500 mb-3"></i>
+                     class="text-center p-8 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+                    <i class="fas fa-inbox text-4xl text-gray-400 mb-3"></i>
                     <p class="font-medium text-gray-700">No pending orders found for this customer</p>
-                    <p class="text-sm text-gray-600 mt-1">This customer has no orders requiring advance payment.</p>
-                    <p class="text-sm text-blue-700 font-semibold mt-3">
-                        <i class="fas fa-check-circle mr-1"></i>
-                        You can still collect advance payment as account credit for future orders.
-                    </p>
-                    <p class="text-xs text-gray-500 mt-2">Simply enter the payment amount below and submit without allocating to any orders.</p>
+                    <p class="text-sm text-gray-500 mt-1">This customer has no orders in draft, pending approval, approved, or in production status.</p>
                 </div>
 
                 <!-- Orders Grid -->
@@ -894,13 +884,10 @@ function advancePaymentForm() {
         totalAllocated: 0,
         
         get canSubmit() {
-            // Allow submission if:
-            // 1. Payment amount is entered (> 0)
-            // 2. If there are allocations, total allocated cannot exceed payment
-            // 3. No individual order allocation exceeds its balance due
             return this.totalPaymentAmount > 0 && 
+                   this.totalAllocated > 0 && 
                    this.totalAllocated <= (this.totalPaymentAmount + 0.01) &&
-                   this.pendingOrders.every(o => (o.advanceAmount || 0) <= (o.balance_due + 0.01));
+                   this.pendingOrders.every(o => o.advanceAmount <= o.balance_due + 0.01);
         },
         
         selectCustomer(customerData) {
@@ -993,9 +980,10 @@ function advancePaymentForm() {
                 alert('Error: Total Payment Amount must be greater than zero.');
             }
             
-            // MODIFICATION: Allow advance payment WITHOUT order allocation
-            // Removed: if (this.totalAllocated <= 0) validation
-            // Customer can pay pure advance to account credit
+            if (this.totalAllocated <= 0) {
+                invalid = true;
+                alert('Error: You must allocate payment to at least one order.');
+            }
             
             if (this.totalAllocated > (this.totalPaymentAmount + 0.01)) {
                 invalid = true;

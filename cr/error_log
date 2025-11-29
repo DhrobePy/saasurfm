@@ -119,3 +119,403 @@ Stack trace:
 
 [29-Nov-2025 00:34:57 Asia/Dhaka] Database insert failed for table 'production_schedule'.
 [29-Nov-2025 01:13:50 Asia/Dhaka] Order 38 final status after commit: shipped
+[29-Nov-2025 08:42:58 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 1
+)
+
+[29-Nov-2025 08:43:48 Asia/Dhaka] === PAYMENT SUBMISSION START ===
+[29-Nov-2025 08:43:48 Asia/Dhaka] POST data: Array
+(
+    [action] => collect_payment
+    [customer_id] => 1
+    [payment_date] => 2025-11-29
+    [payment_amount] => 999
+    [payment_method] => Cash
+    [collected_by_employee_id] => 1
+    [cash_account_id] => 28
+    [bank_account_id] => 
+    [cheque_number] => 
+    [cheque_date] => 
+    [bank_transaction_type] => 
+    [reference_number] => Trial Ref
+    [notes] => Trial martesi apatoto
+)
+
+[29-Nov-2025 08:43:48 Asia/Dhaka] Attempting payment insert with data: Array
+(
+    [payment_number] => PAY-20251129-1931
+    [receipt_number] => RCP-20251129-1348
+    [customer_id] => 1
+    [amount] => 999
+)
+
+[29-Nov-2025 08:43:48 Asia/Dhaka] ✓✓✓ Payment inserted successfully! ID: 32
+[29-Nov-2025 08:43:48 Asia/Dhaka] ✓ Transaction committed successfully
+[29-Nov-2025 08:43:48 Asia/Dhaka] Payment ID: 32, Receipt: RCP-20251129-1348
+[29-Nov-2025 08:54:44 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 14
+)
+
+[29-Nov-2025 08:55:24 Asia/Dhaka] === PAYMENT SUBMISSION START ===
+[29-Nov-2025 08:55:24 Asia/Dhaka] POST data: Array
+(
+    [action] => collect_payment
+    [customer_id] => 14
+    [payment_date] => 2025-11-29
+    [payment_amount] => 3000.00
+    [payment_method] => Cash
+    [collected_by_employee_id] => 1
+    [cash_account_id] => 21
+    [bank_account_id] => 
+    [cheque_number] => 
+    [cheque_date] => 
+    [bank_transaction_type] => 
+    [reference_number] => dilam
+    [notes] => trial ar ki!!!
+    [invoice_allocation] => Array
+        (
+            [24] => 1000
+            [30] => 2000
+        )
+
+)
+
+[29-Nov-2025 08:55:24 Asia/Dhaka] Attempting payment insert with data: Array
+(
+    [payment_number] => PAY-20251129-6774
+    [receipt_number] => RCP-20251129-8515
+    [customer_id] => 14
+    [amount] => 3000
+)
+
+[29-Nov-2025 08:55:24 Asia/Dhaka] ✓✓✓ Payment inserted successfully! ID: 33
+[29-Nov-2025 08:55:24 Asia/Dhaka] ✓ Transaction committed successfully
+[29-Nov-2025 08:55:24 Asia/Dhaka] Payment ID: 33, Receipt: RCP-20251129-8515
+[29-Nov-2025 09:03:27 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 14
+)
+
+[29-Nov-2025 09:03:54 Asia/Dhaka] === PAYMENT SUBMISSION START ===
+[29-Nov-2025 09:03:54 Asia/Dhaka] POST data: Array
+(
+    [action] => collect_payment
+    [customer_id] => 14
+    [payment_date] => 2025-11-29
+    [payment_amount] => 30000.00
+    [payment_method] => Cash
+    [collected_by_employee_id] => 1
+    [cash_account_id] => 21
+    [bank_account_id] => 
+    [cheque_number] => 
+    [cheque_date] => 
+    [bank_transaction_type] => 
+    [reference_number] => Dilam abar
+    [notes] => Trial
+    [invoice_allocation] => Array
+        (
+            [24] => 10000
+            [30] => 20000
+        )
+
+)
+
+[29-Nov-2025 09:03:54 Asia/Dhaka] Attempting payment insert with data: Array
+(
+    [payment_number] => PAY-20251129-3152
+    [receipt_number] => RCP-20251129-0104
+    [customer_id] => 14
+    [amount] => 30000
+)
+
+[29-Nov-2025 09:03:54 Asia/Dhaka] ✓✓✓ Payment inserted successfully! ID: 34
+[29-Nov-2025 09:03:54 Asia/Dhaka] ✓ Transaction committed successfully
+[29-Nov-2025 09:03:54 Asia/Dhaka] Payment ID: 34, Receipt: RCP-20251129-0104
+[29-Nov-2025 09:03:55 Asia/Dhaka] ✓ Telegram payment notification sent for receipt: RCP-20251129-0104
+[29-Nov-2025 09:11:18 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 14
+[29-Nov-2025 09:11:18 Asia/Dhaka] Found 0 pending orders for customer 14
+[29-Nov-2025 09:11:50 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 22
+[29-Nov-2025 09:11:50 Asia/Dhaka] Found 1 pending orders for customer 22
+[29-Nov-2025 09:12:49 Asia/Dhaka] ✓ Telegram advance payment notification sent for receipt: ADVPAY-20251129-5190
+[29-Nov-2025 11:15:04 Asia/Dhaka] Total variants fetched: 8
+[29-Nov-2025 11:15:04 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"1","weight_variant":"34","unit_of_measure":"kg","sku":"JORAKOBUTOR-34-1","price_id":"2","branch_id":"1","unit_price":"3410.00","branch_name":"Sirajgonj","branch_code":"SRG","stock_usable":"2474"}
+[29-Nov-2025 11:16:21 Asia/Dhaka] Total variants fetched: 8
+[29-Nov-2025 11:16:21 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"1","weight_variant":"34","unit_of_measure":"kg","sku":"JORAKOBUTOR-34-1","price_id":"2","branch_id":"1","unit_price":"3410.00","branch_name":"Sirajgonj","branch_code":"SRG","stock_usable":"2474"}
+[29-Nov-2025 11:16:22 Asia/Dhaka] Telegram notification sent for Order CR-20251129-9241 by Azmain Ziead
+[29-Nov-2025 11:17:23 Asia/Dhaka] SQL Error [HY000]: SQLSTATE[HY000]: General error: 1364 Field 'branch_id' doesn't have a default value in query: INSERT INTO `production_schedule` (`order_id`, `production_started_at`, `status`) VALUES (?, ?, ?) | Params: Array
+(
+    [0] => 45
+    [1] => 2025-11-29 11:17:23
+    [2] => in_progress
+)
+
+[29-Nov-2025 11:17:23 Asia/Dhaka] Database insert failed for table 'production_schedule'.
+[29-Nov-2025 11:17:50 Asia/Dhaka] Order 45 final status after commit: shipped
+[29-Nov-2025 11:18:21 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 20
+)
+
+[29-Nov-2025 11:19:04 Asia/Dhaka] === PAYMENT SUBMISSION START ===
+[29-Nov-2025 11:19:04 Asia/Dhaka] POST data: Array
+(
+    [action] => collect_payment
+    [customer_id] => 20
+    [payment_date] => 2025-11-29
+    [payment_amount] => 21500.00
+    [payment_method] => Bank Transfer
+    [collected_by_employee_id] => 
+    [cash_account_id] => 
+    [bank_account_id] => 13
+    [cheque_number] => 
+    [cheque_date] => 
+    [bank_transaction_type] => Deposit
+    [reference_number] => 6564546
+    [notes] => 
+    [invoice_allocation] => Array
+        (
+            [45] => 21500.00
+        )
+
+)
+
+[29-Nov-2025 11:19:04 Asia/Dhaka] Attempting payment insert with data: Array
+(
+    [payment_number] => PAY-20251129-8886
+    [receipt_number] => RCP-20251129-8209
+    [customer_id] => 20
+    [amount] => 21500
+)
+
+[29-Nov-2025 11:19:04 Asia/Dhaka] ✓✓✓ Payment inserted successfully! ID: 36
+[29-Nov-2025 11:19:04 Asia/Dhaka] ✓ Transaction committed successfully
+[29-Nov-2025 11:19:04 Asia/Dhaka] Payment ID: 36, Receipt: RCP-20251129-8209
+[29-Nov-2025 11:19:05 Asia/Dhaka] ✓ Telegram payment notification sent for receipt: RCP-20251129-8209
+[29-Nov-2025 11:19:53 Asia/Dhaka] SQL Error [HY000]: SQLSTATE[HY000]: General error: 1364 Field 'branch_id' doesn't have a default value in query: INSERT INTO `production_schedule` (`order_id`, `production_started_at`, `status`) VALUES (?, ?, ?) | Params: Array
+(
+    [0] => 37
+    [1] => 2025-11-29 11:19:53
+    [2] => in_progress
+)
+
+[29-Nov-2025 11:19:53 Asia/Dhaka] Database insert failed for table 'production_schedule'.
+[29-Nov-2025 11:19:59 Asia/Dhaka] SQL Error [HY000]: SQLSTATE[HY000]: General error: 1364 Field 'branch_id' doesn't have a default value in query: INSERT INTO `production_schedule` (`order_id`, `production_started_at`, `status`) VALUES (?, ?, ?) | Params: Array
+(
+    [0] => 41
+    [1] => 2025-11-29 11:19:59
+    [2] => in_progress
+)
+
+[29-Nov-2025 11:19:59 Asia/Dhaka] Database insert failed for table 'production_schedule'.
+[29-Nov-2025 11:20:28 Asia/Dhaka] Order 37 final status after commit: shipped
+[29-Nov-2025 11:20:40 Asia/Dhaka] Order 41 final status after commit: shipped
+[29-Nov-2025 11:20:58 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 7
+)
+
+[29-Nov-2025 11:24:33 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 7
+)
+
+[29-Nov-2025 11:26:37 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 20
+[29-Nov-2025 11:26:37 Asia/Dhaka] Found 0 pending orders for customer 20
+[29-Nov-2025 11:27:50 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 14
+[29-Nov-2025 11:27:50 Asia/Dhaka] Found 0 pending orders for customer 14
+[29-Nov-2025 11:29:01 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 15
+[29-Nov-2025 11:29:01 Asia/Dhaka] Found 0 pending orders for customer 15
+[29-Nov-2025 11:30:35 Asia/Dhaka] SQL Error [HY000]: SQLSTATE[HY000]: General error: 1364 Field 'branch_id' doesn't have a default value in query: INSERT INTO `production_schedule` (`order_id`, `production_started_at`, `status`) VALUES (?, ?, ?) | Params: Array
+(
+    [0] => 44
+    [1] => 2025-11-29 11:30:35
+    [2] => in_progress
+)
+
+[29-Nov-2025 11:30:35 Asia/Dhaka] Database insert failed for table 'production_schedule'.
+[29-Nov-2025 11:30:53 Asia/Dhaka] SQL Error [HY000]: SQLSTATE[HY000]: General error: 1364 Field 'branch_id' doesn't have a default value in query: INSERT INTO `production_schedule` (`order_id`, `production_started_at`, `status`) VALUES (?, ?, ?) | Params: Array
+(
+    [0] => 43
+    [1] => 2025-11-29 11:30:53
+    [2] => in_progress
+)
+
+[29-Nov-2025 11:30:53 Asia/Dhaka] Database insert failed for table 'production_schedule'.
+[29-Nov-2025 11:31:31 Asia/Dhaka] Order 44 final status after commit: shipped
+[29-Nov-2025 11:31:49 Asia/Dhaka] Order 43 final status after commit: shipped
+[29-Nov-2025 11:45:29 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 1
+[29-Nov-2025 11:45:29 Asia/Dhaka] Found 0 pending orders for customer 1
+[29-Nov-2025 11:45:49 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 17
+[29-Nov-2025 11:45:49 Asia/Dhaka] Found 0 pending orders for customer 17
+[29-Nov-2025 11:49:39 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 14
+)
+
+[29-Nov-2025 12:05:28 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 22
+[29-Nov-2025 12:05:28 Asia/Dhaka] Found 0 pending orders for customer 22
+[29-Nov-2025 12:08:45 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 12
+)
+
+[29-Nov-2025 13:23:26 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 22
+[29-Nov-2025 13:23:26 Asia/Dhaka] Found 0 pending orders for customer 22
+[29-Nov-2025 13:23:34 Asia/Dhaka] Total variants fetched: 8
+[29-Nov-2025 13:23:34 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"1","weight_variant":"34","unit_of_measure":"kg","sku":"JORAKOBUTOR-34-1","price_id":"2","branch_id":"1","unit_price":"3410.00","branch_name":"Sirajgonj","branch_code":"SRG","stock_usable":"2474"}
+[29-Nov-2025 13:23:44 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$payment_amount in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 457
+[29-Nov-2025 13:23:44 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$payment_amount in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 457
+[29-Nov-2025 13:23:44 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$payment_amount in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 457
+[29-Nov-2025 13:23:44 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$payment_amount in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 457
+[29-Nov-2025 13:23:44 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$payment_amount in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 457
+[29-Nov-2025 13:23:44 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$payment_amount in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 457
+[29-Nov-2025 13:23:44 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$payment_amount in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 457
+[29-Nov-2025 13:23:44 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$payment_amount in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 457
+[29-Nov-2025 13:23:44 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$payment_amount in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 457
+[29-Nov-2025 13:23:44 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$payment_amount in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 457
+[29-Nov-2025 13:23:44 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$payment_amount in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 457
+[29-Nov-2025 13:23:44 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$payment_amount in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 457
+[29-Nov-2025 13:23:44 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$payment_amount in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 457
+[29-Nov-2025 13:23:44 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$payment_amount in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 457
+[29-Nov-2025 13:23:44 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$payment_amount in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 457
+[29-Nov-2025 13:23:44 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$payment_amount in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 457
+[29-Nov-2025 13:23:44 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$payment_amount in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 457
+[29-Nov-2025 13:23:44 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$payment_amount in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 457
+[29-Nov-2025 13:23:44 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$payment_amount in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 457
+[29-Nov-2025 13:23:44 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$payment_amount in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 457
+[29-Nov-2025 13:23:49 Asia/Dhaka] Total variants fetched: 8
+[29-Nov-2025 13:23:49 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"1","weight_variant":"34","unit_of_measure":"kg","sku":"JORAKOBUTOR-34-1","price_id":"2","branch_id":"1","unit_price":"3410.00","branch_name":"Sirajgonj","branch_code":"SRG","stock_usable":"2474"}
+[29-Nov-2025 13:23:53 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 1
+)
+
+[29-Nov-2025 13:25:20 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 15
+[29-Nov-2025 13:25:20 Asia/Dhaka] Found 0 pending orders for customer 15
+[29-Nov-2025 13:47:33 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 22
+[29-Nov-2025 13:47:33 Asia/Dhaka] Found 0 pending orders for customer 22
+[29-Nov-2025 13:48:45 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 15
+[29-Nov-2025 13:48:45 Asia/Dhaka] Found 0 pending orders for customer 15
+[29-Nov-2025 13:53:54 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 22
+[29-Nov-2025 13:53:54 Asia/Dhaka] Found 0 pending orders for customer 22
+[29-Nov-2025 13:54:32 Asia/Dhaka] ✓ Telegram advance payment notification sent for receipt: ADVPAY-20251129-8313
+[29-Nov-2025 13:55:25 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 15
+[29-Nov-2025 13:55:25 Asia/Dhaka] Found 0 pending orders for customer 15
+[29-Nov-2025 13:55:31 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 1
+[29-Nov-2025 13:55:31 Asia/Dhaka] Found 0 pending orders for customer 1
+[29-Nov-2025 13:55:35 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 17
+[29-Nov-2025 13:55:35 Asia/Dhaka] Found 0 pending orders for customer 17
+[29-Nov-2025 13:55:44 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 1
+[29-Nov-2025 13:55:44 Asia/Dhaka] Found 0 pending orders for customer 1
+[29-Nov-2025 13:55:51 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 17
+[29-Nov-2025 13:55:51 Asia/Dhaka] Found 0 pending orders for customer 17
+[29-Nov-2025 13:55:55 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 19
+[29-Nov-2025 13:55:55 Asia/Dhaka] Found 0 pending orders for customer 19
+[29-Nov-2025 13:56:48 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$payment_amount in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/ajax_handler.php on line 314
+[29-Nov-2025 14:44:44 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 7
+)
+

@@ -177,6 +177,60 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         $pdo->commit();
         
+        // ============================================
+        // TELEGRAM NOTIFICATION - FUEL PURCHASE
+        // ============================================
+        try {
+            if (defined('TELEGRAM_NOTIFICATIONS_ENABLED') && TELEGRAM_NOTIFICATIONS_ENABLED) {
+                require_once '../../core/classes/TelegramNotifier.php';
+                $telegram = new TelegramNotifier(TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID);
+                
+                // Get user name
+                $user_name = 'System User';
+                if ($user_id) {
+                    $user_info = $db->query("SELECT display_name FROM users WHERE id = ?", [$user_id])->first();
+                    $user_name = $user_info ? $user_info->display_name : 'System User';
+                }
+                
+                // Get trip info if available
+                $trip_info = '';
+                if ($trip_id) {
+                    $trip = $db->query("SELECT id FROM trip_assignments WHERE id = ?", [$trip_id])->first();
+                    $trip_info = $trip ? "Trip #" . $trip->id : '';
+                }
+                
+                // Prepare fuel data
+                $fuelData = [
+                    'vehicle_number' => $vehicle->vehicle_number,
+                    'fuel_type' => $_POST['fuel_type'],
+                    'quantity' => floatval($quantity),
+                    'price_per_liter' => floatval($price_per_liter),
+                    'total_cost' => floatval($total_cost),
+                    'fuel_date' => date('d M Y', strtotime($fuel_date)),
+                    'odometer_reading' => floatval($_POST['odometer_reading'] ?? 0),
+                    'fuel_station' => trim($_POST['fuel_station']) ?: 'N/A',
+                    'receipt_number' => trim($_POST['receipt_number']) ?: '',
+                    'payment_method' => $selected_account->name,
+                    'handled_by' => $filled_by_name,
+                    'trip_info' => $trip_info,
+                    'notes' => trim($_POST['notes']) ?: '',
+                    'logged_by' => $user_name
+                ];
+                
+                // Send notification
+                $result = $telegram->sendFuelPurchaseNotification($fuelData);
+                
+                if ($result['success']) {
+                    error_log("✓ Telegram fuel purchase notification sent for vehicle: " . $vehicle->vehicle_number);
+                } else {
+                    error_log("✗ Telegram fuel notification failed: " . json_encode($result['response']));
+                }
+            }
+        } catch (Exception $e) {
+            error_log("✗ Telegram fuel notification error: " . $e->getMessage());
+        }
+        // END TELEGRAM NOTIFICATION
+        
         $_SESSION['success_flash'] = "Fuel log added successfully! Cost: ৳" . number_format($total_cost, 2) . 
                                      " paid from " . $selected_account->name;
         header('Location: index.php'); // Redirect to a listing page

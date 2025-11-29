@@ -101,9 +101,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             throw new Exception("Total allocated amount (৳" . number_format($total_allocated, 2) . ") cannot exceed payment amount (৳" . number_format($total_payment_amount, 2) . ")");
         }
         
-        // MODIFICATION: Allow advance payment WITHOUT order allocation
-        // Customer can pay advance to account credit without specific orders
-        // $total_allocated can be 0 (pure advance on account)
+        if ($total_allocated < 0.01) {
+            throw new Exception("You must allocate the payment to at least one order");
+        }
         
         // --- 1. Determine Deposit Account ID ---
         $deposit_chart_of_account_id = null;
@@ -144,9 +144,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             'bank_account_id' => $bank_account_id,
             'reference_number' => $reference_number,
             'notes' => $notes,
-            'allocation_status' => ($total_allocated > 0) ? 'allocated' : 'unallocated',
+            'allocation_status' => 'allocated',
             'allocated_amount' => $total_allocated,
-            'allocated_to_invoices' => !empty($allocations) ? json_encode($allocations) : null,
+            'allocated_to_invoices' => json_encode($allocations),
             'created_by_user_id' => $user_id
         ]);
         
@@ -190,12 +190,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             }
         }
         
-        // Description based on allocation
-        if (!empty($order_numbers_list)) {
-            $description = "Advance payment received (Receipt #$payment_number) allocated to orders: " . implode(', ', $order_numbers_list);
-        } else {
-            $description = "Advance payment received (Receipt #$payment_number) - Account credit (no specific order allocation)";
-        }
+        $description = "Advance payment received (Receipt #$payment_number) allocated to orders: " . implode(', ', $order_numbers_list);
         
         $ledger_id = $db->insert('customer_ledger', [
             'customer_id' => $customer_id,
@@ -294,83 +289,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         // --- 11. Commit Transaction ---
         $pdo->commit();
         
-        // ============================================
-        // TELEGRAM NOTIFICATION - ADVANCE PAYMENT
-        // ============================================
-        try {
-            if (defined('TELEGRAM_NOTIFICATIONS_ENABLED') && TELEGRAM_NOTIFICATIONS_ENABLED) {
-                require_once '../core/classes/TelegramNotifier.php';
-                $telegram = new TelegramNotifier(TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID);
-                
-                // Get customer details
-                $customer_info = $db->query("SELECT name, phone_number FROM customers WHERE id = ?", [$customer_id])->first();
-                
-                // Get collector name
-                $collector_name = 'System User';
-                if ($user_id) {
-                    $user_info = $db->query("SELECT display_name FROM users WHERE id = ?", [$user_id])->first();
-                    $collector_name = $user_info ? $user_info->display_name : 'System User';
-                }
-                
-                // Determine branch from user role
-                $user_role = isset($_SESSION['user_role']) ? $_SESSION['user_role'] : '';
-                $branch_name = 'Head Office';
-                
-                if (strpos($user_role, 'srg') !== false) {
-                    $branch_name = 'Sirajgonj Branch';
-                } elseif (strpos($user_role, 'demra') !== false) {
-                    $branch_name = 'Demra Branch';
-                } elseif (strpos($user_role, 'rampura') !== false) {
-                    $branch_name = 'Rampura Branch';
-                }
-                
-                // Build allocated orders list
-                $allocated_invoices = [];
-                foreach ($allocations as $order_id => $amount) {
-                    $alloc_amount = floatval($amount);
-                    if ($alloc_amount > 0) {
-                        $order_info = $db->query("SELECT order_number FROM credit_orders WHERE id = ?", [(int)$order_id])->first();
-                        if ($order_info) {
-                            $allocated_invoices[] = [
-                                'order_number' => $order_info->order_number,
-                                'amount' => $alloc_amount
-                            ];
-                        }
-                    }
-                }
-                
-                // Prepare payment data
-                $paymentData = [
-                    'receipt_no' => $payment_number,
-                    'payment_date' => date('d M Y, h:i A', strtotime($payment_date)),
-                    'amount' => floatval($total_payment_amount),
-                    'payment_method' => $payment_method,
-                    'customer_name' => $customer_info ? $customer_info->name : 'Unknown Customer',
-                    'customer_phone' => $customer_info ? ($customer_info->phone_number ?: 'N/A') : 'N/A',
-                    'payment_type' => 'Advance Payment on Credit Orders',
-                    'reference_number' => $reference_number ?: '',
-                    'notes' => $notes ?: '',
-                    'branch_name' => $branch_name,
-                    'collected_by' => $collector_name,
-                    'new_balance' => floatval($new_balance),
-                    'allocated_invoices' => $allocated_invoices,
-                    'unallocated_amount' => floatval($unallocated_amount)
-                ];
-                
-                // Send notification
-                $result = $telegram->sendAdvancePaymentNotification($paymentData);
-                
-                if ($result['success']) {
-                    error_log("✓ Telegram advance payment notification sent for receipt: $payment_number");
-                } else {
-                    error_log("✗ Telegram advance payment notification failed: " . json_encode($result['response']));
-                }
-            }
-        } catch (Exception $e) {
-            error_log("✗ Telegram advance payment notification error: " . $e->getMessage());
-        }
-        // END TELEGRAM NOTIFICATION
-        
         $_SESSION['success_flash'] = "Advance payment of ৳" . number_format($total_payment_amount, 2) . " recorded successfully. Receipt #$payment_number";
         header('Location: advance_payment_collection.php');
         exit();
@@ -423,6 +341,8 @@ require_once '../templates/header.php';
     .select2-container--disabled .select2-selection--single {
         background-color: #f3f4f6 !important;
     }
+
+```
 /* Order Cards Styling */
 .order-card {
     transition: all 0.2s;
@@ -436,6 +356,7 @@ require_once '../templates/header.php';
     border-color: #10b981;
     background-color: #f0fdf4;
 }
+```
 
 </style>
 
@@ -443,7 +364,7 @@ require_once '../templates/header.php';
 
 <div class="mb-6">
     <h1 class="text-3xl font-bold text-gray-900"><?php echo $pageTitle; ?></h1>
-    <p class="text-lg text-gray-600 mt-1">Collect advance payments from customers - allocate to specific orders or keep as account credit for future use.</p>
+    <p class="text-lg text-gray-600 mt-1">Collect advance payments from customers for their pending credit orders before dispatch.</p>
 </div>
 
 <?php if ($error): ?>
@@ -462,11 +383,13 @@ require_once '../templates/header.php';
     <p><?php echo htmlspecialchars($_SESSION['success_flash']); ?></p>
 </div>
 <?php unset($_SESSION['success_flash']); ?>
+```
 
 <?php endif; ?>
 
 <div x-data="advancePaymentForm()" @customer-selected.window="selectCustomer($event.detail)" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
+```
 <!-- Main Form Section -->
 <div class="lg:col-span-2">
     <form method="POST" id="advance_payment_form" x-ref="payment_form" @submit.prevent="validateAndSubmit">
@@ -633,15 +556,10 @@ require_once '../templates/header.php';
                 
                 <!-- No Orders State -->
                 <div x-show="!isLoadingOrders && pendingOrders.length === 0 && customer.id" 
-                     class="text-center p-8 bg-blue-50 rounded-lg border-2 border-dashed border-blue-300">
-                    <i class="fas fa-info-circle text-4xl text-blue-500 mb-3"></i>
+                     class="text-center p-8 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+                    <i class="fas fa-inbox text-4xl text-gray-400 mb-3"></i>
                     <p class="font-medium text-gray-700">No pending orders found for this customer</p>
-                    <p class="text-sm text-gray-600 mt-1">This customer has no orders requiring advance payment.</p>
-                    <p class="text-sm text-blue-700 font-semibold mt-3">
-                        <i class="fas fa-check-circle mr-1"></i>
-                        You can still collect advance payment as account credit for future orders.
-                    </p>
-                    <p class="text-xs text-gray-500 mt-2">Simply enter the payment amount below and submit without allocating to any orders.</p>
+                    <p class="text-sm text-gray-500 mt-1">This customer has no orders in draft, pending approval, approved, or in production status.</p>
                 </div>
 
                 <!-- Orders Grid -->
@@ -782,6 +700,7 @@ require_once '../templates/header.php';
         </div>
     </div>
 </div>
+```
 
 </div>
 
@@ -894,13 +813,10 @@ function advancePaymentForm() {
         totalAllocated: 0,
         
         get canSubmit() {
-            // Allow submission if:
-            // 1. Payment amount is entered (> 0)
-            // 2. If there are allocations, total allocated cannot exceed payment
-            // 3. No individual order allocation exceeds its balance due
             return this.totalPaymentAmount > 0 && 
+                   this.totalAllocated > 0 && 
                    this.totalAllocated <= (this.totalPaymentAmount + 0.01) &&
-                   this.pendingOrders.every(o => (o.advanceAmount || 0) <= (o.balance_due + 0.01));
+                   this.pendingOrders.every(o => o.advanceAmount <= o.balance_due + 0.01);
         },
         
         selectCustomer(customerData) {
@@ -993,9 +909,10 @@ function advancePaymentForm() {
                 alert('Error: Total Payment Amount must be greater than zero.');
             }
             
-            // MODIFICATION: Allow advance payment WITHOUT order allocation
-            // Removed: if (this.totalAllocated <= 0) validation
-            // Customer can pay pure advance to account credit
+            if (this.totalAllocated <= 0) {
+                invalid = true;
+                alert('Error: You must allocate payment to at least one order.');
+            }
             
             if (this.totalAllocated > (this.totalPaymentAmount + 0.01)) {
                 invalid = true;
