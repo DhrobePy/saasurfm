@@ -1,0 +1,444 @@
+[02-Dec-2025 01:21:33 Asia/Dhaka] SQL Error [42000]: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''20' OFFSET '0'' at line 18 in query: 
+    SELECT 
+        co.*,
+        c.name as customer_name,
+        c.phone_number,
+        c.business_name,
+        c.customer_type,
+        b.name as branch_name,
+        b.code as branch_code,
+        u.display_name as created_by_name,
+        approver.display_name as approved_by_name
+    FROM credit_orders co
+    LEFT JOIN customers c ON co.customer_id = c.id
+    LEFT JOIN branches b ON co.assigned_branch_id = b.id
+    LEFT JOIN users u ON co.created_by_user_id = u.id
+    LEFT JOIN users approver ON co.approved_by_user_id = approver.id
+    WHERE co.order_date BETWEEN ? AND ? AND co.created_by_user_id = ?
+    ORDER BY co.order_date DESC, co.created_at DESC
+    LIMIT ? OFFSET ?
+ | Params: Array
+(
+    [0] => 2025-11-02
+    [1] => 2025-12-02
+    [2] => 6
+    [3] => 20
+    [4] => 0
+)
+
+[02-Dec-2025 01:21:56 Asia/Dhaka] SQL Error [42000]: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''20' OFFSET '0'' at line 18 in query: 
+    SELECT 
+        co.*,
+        c.name as customer_name,
+        c.phone_number,
+        c.business_name,
+        c.customer_type,
+        b.name as branch_name,
+        b.code as branch_code,
+        u.display_name as created_by_name,
+        approver.display_name as approved_by_name
+    FROM credit_orders co
+    LEFT JOIN customers c ON co.customer_id = c.id
+    LEFT JOIN branches b ON co.assigned_branch_id = b.id
+    LEFT JOIN users u ON co.created_by_user_id = u.id
+    LEFT JOIN users approver ON co.approved_by_user_id = approver.id
+    WHERE co.order_date BETWEEN ? AND ? AND co.created_by_user_id = ?
+    ORDER BY co.order_date DESC, co.created_at DESC
+    LIMIT ? OFFSET ?
+ | Params: Array
+(
+    [0] => 2025-11-01
+    [1] => 2025-12-02
+    [2] => 6
+    [3] => 20
+    [4] => 0
+)
+
+[02-Dec-2025 01:22:30 Asia/Dhaka] SQL Error [42000]: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''20' OFFSET '0'' at line 18 in query: 
+    SELECT 
+        co.*,
+        c.name as customer_name,
+        c.phone_number,
+        c.business_name,
+        c.customer_type,
+        b.name as branch_name,
+        b.code as branch_code,
+        u.display_name as created_by_name,
+        approver.display_name as approved_by_name
+    FROM credit_orders co
+    LEFT JOIN customers c ON co.customer_id = c.id
+    LEFT JOIN branches b ON co.assigned_branch_id = b.id
+    LEFT JOIN users u ON co.created_by_user_id = u.id
+    LEFT JOIN users approver ON co.approved_by_user_id = approver.id
+    WHERE co.order_date BETWEEN ? AND ? AND co.created_by_user_id = ?
+    ORDER BY co.order_date DESC, co.created_at DESC
+    LIMIT ? OFFSET ?
+ | Params: Array
+(
+    [0] => 2025-09-01
+    [1] => 2025-12-02
+    [2] => 6
+    [3] => 20
+    [4] => 0
+)
+
+[02-Dec-2025 01:32:29 Asia/Dhaka] SQL Error [42000]: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''20' OFFSET '0'' at line 18 in query: 
+    SELECT 
+        co.*,
+        c.name as customer_name,
+        c.phone_number,
+        c.business_name,
+        c.customer_type,
+        b.name as branch_name,
+        b.code as branch_code,
+        u.display_name as created_by_name,
+        approver.display_name as approved_by_name
+    FROM credit_orders co
+    LEFT JOIN customers c ON co.customer_id = c.id
+    LEFT JOIN branches b ON co.assigned_branch_id = b.id
+    LEFT JOIN users u ON co.created_by_user_id = u.id
+    LEFT JOIN users approver ON co.approved_by_user_id = approver.id
+    WHERE co.order_date BETWEEN ? AND ? AND co.created_by_user_id = ?
+    ORDER BY co.order_date DESC, co.created_at DESC
+    LIMIT ? OFFSET ?
+ | Params: Array
+(
+    [0] => 2025-09-01
+    [1] => 2025-12-02
+    [2] => 6
+    [3] => 20
+    [4] => 0
+)
+
+[02-Dec-2025 01:32:37 Asia/Dhaka] SQL Error [42000]: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''20' OFFSET '0'' at line 18 in query: 
+    SELECT 
+        co.*,
+        c.name as customer_name,
+        c.phone_number,
+        c.business_name,
+        c.customer_type,
+        b.name as branch_name,
+        b.code as branch_code,
+        u.display_name as created_by_name,
+        approver.display_name as approved_by_name
+    FROM credit_orders co
+    LEFT JOIN customers c ON co.customer_id = c.id
+    LEFT JOIN branches b ON co.assigned_branch_id = b.id
+    LEFT JOIN users u ON co.created_by_user_id = u.id
+    LEFT JOIN users approver ON co.approved_by_user_id = approver.id
+    WHERE co.order_date BETWEEN ? AND ? AND co.created_by_user_id = ?
+    ORDER BY co.order_date DESC, co.created_at DESC
+    LIMIT ? OFFSET ?
+ | Params: Array
+(
+    [0] => 2025-09-01
+    [1] => 2025-12-02
+    [2] => 6
+    [3] => 20
+    [4] => 0
+)
+
+[02-Dec-2025 01:37:04 Asia/Dhaka] SQL Error [42000]: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''20' OFFSET '0'' at line 18 in query: 
+    SELECT 
+        co.*,
+        c.name as customer_name,
+        c.phone_number,
+        c.business_name,
+        c.customer_type,
+        b.name as branch_name,
+        b.code as branch_code,
+        u.display_name as created_by_name,
+        approver.display_name as approved_by_name
+    FROM credit_orders co
+    LEFT JOIN customers c ON co.customer_id = c.id
+    LEFT JOIN branches b ON co.assigned_branch_id = b.id
+    LEFT JOIN users u ON co.created_by_user_id = u.id
+    LEFT JOIN users approver ON co.approved_by_user_id = approver.id
+    WHERE co.order_date BETWEEN ? AND ? AND co.created_by_user_id = ?
+    ORDER BY co.order_date DESC, co.created_at DESC
+    LIMIT ? OFFSET ?
+ | Params: Array
+(
+    [0] => 2025-09-01
+    [1] => 2025-12-02
+    [2] => 6
+    [3] => 20
+    [4] => 0
+)
+
+[02-Dec-2025 01:37:07 Asia/Dhaka] SQL Error [42000]: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''20' OFFSET '0'' at line 18 in query: 
+    SELECT 
+        co.*,
+        c.name as customer_name,
+        c.phone_number,
+        c.business_name,
+        c.customer_type,
+        b.name as branch_name,
+        b.code as branch_code,
+        u.display_name as created_by_name,
+        approver.display_name as approved_by_name
+    FROM credit_orders co
+    LEFT JOIN customers c ON co.customer_id = c.id
+    LEFT JOIN branches b ON co.assigned_branch_id = b.id
+    LEFT JOIN users u ON co.created_by_user_id = u.id
+    LEFT JOIN users approver ON co.approved_by_user_id = approver.id
+    WHERE co.order_date BETWEEN ? AND ? AND co.created_by_user_id = ?
+    ORDER BY co.order_date DESC, co.created_at DESC
+    LIMIT ? OFFSET ?
+ | Params: Array
+(
+    [0] => 2025-09-01
+    [1] => 2025-12-02
+    [2] => 6
+    [3] => 20
+    [4] => 0
+)
+
+[01-Dec-2025 19:37:42 UTC] PHP Parse error:  Unmatched '}' in /home/ujjalfmc/public_html/saas.ujjalfm.com/sales/order_history.php on line 52
+[02-Dec-2025 01:37:57 Asia/Dhaka] SQL Error [42000]: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''20' OFFSET '0'' at line 18 in query: 
+    SELECT 
+        co.*,
+        c.name as customer_name,
+        c.phone_number,
+        c.business_name,
+        c.customer_type,
+        b.name as branch_name,
+        b.code as branch_code,
+        u.display_name as created_by_name,
+        approver.display_name as approved_by_name
+    FROM credit_orders co
+    LEFT JOIN customers c ON co.customer_id = c.id
+    LEFT JOIN branches b ON co.assigned_branch_id = b.id
+    LEFT JOIN users u ON co.created_by_user_id = u.id
+    LEFT JOIN users approver ON co.approved_by_user_id = approver.id
+    WHERE co.order_date BETWEEN ? AND ? AND co.created_by_user_id = ?
+    ORDER BY co.order_date DESC, co.created_at DESC
+    LIMIT ? OFFSET ?
+ | Params: Array
+(
+    [0] => 2025-09-01
+    [1] => 2025-12-02
+    [2] => 6
+    [3] => 20
+    [4] => 0
+)
+
+[02-Dec-2025 01:38:40 Asia/Dhaka] SQL Error [42000]: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''20' OFFSET '0'' at line 18 in query: 
+    SELECT 
+        co.*,
+        c.name as customer_name,
+        c.phone_number,
+        c.business_name,
+        c.customer_type,
+        b.name as branch_name,
+        b.code as branch_code,
+        u.display_name as created_by_name,
+        approver.display_name as approved_by_name
+    FROM credit_orders co
+    LEFT JOIN customers c ON co.customer_id = c.id
+    LEFT JOIN branches b ON co.assigned_branch_id = b.id
+    LEFT JOIN users u ON co.created_by_user_id = u.id
+    LEFT JOIN users approver ON co.approved_by_user_id = approver.id
+    WHERE co.order_date BETWEEN ? AND ? AND co.created_by_user_id = ?
+    ORDER BY co.order_date DESC, co.created_at DESC
+    LIMIT ? OFFSET ?
+ | Params: Array
+(
+    [0] => 2025-09-01
+    [1] => 2025-12-02
+    [2] => 6
+    [3] => 20
+    [4] => 0
+)
+
+[02-Dec-2025 01:39:58 Asia/Dhaka] SQL Error [42000]: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''20' OFFSET '0'' at line 18 in query: 
+    SELECT 
+        co.*,
+        c.name as customer_name,
+        c.phone_number,
+        c.business_name,
+        c.customer_type,
+        b.name as branch_name,
+        b.code as branch_code,
+        u.display_name as created_by_name,
+        approver.display_name as approved_by_name
+    FROM credit_orders co
+    LEFT JOIN customers c ON co.customer_id = c.id
+    LEFT JOIN branches b ON co.assigned_branch_id = b.id
+    LEFT JOIN users u ON co.created_by_user_id = u.id
+    LEFT JOIN users approver ON co.approved_by_user_id = approver.id
+    WHERE co.order_date BETWEEN ? AND ? AND co.created_by_user_id = ?
+    ORDER BY co.order_date DESC, co.created_at DESC
+    LIMIT ? OFFSET ?
+ | Params: Array
+(
+    [0] => 2025-09-01
+    [1] => 2025-12-02
+    [2] => 6
+    [3] => 20
+    [4] => 0
+)
+
+[02-Dec-2025 01:41:51 Asia/Dhaka] SQL Error [42000]: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''20' OFFSET '0'' at line 18 in query: 
+    SELECT 
+        co.*,
+        c.name as customer_name,
+        c.phone_number,
+        c.business_name,
+        c.customer_type,
+        b.name as branch_name,
+        b.code as branch_code,
+        u.display_name as created_by_name,
+        approver.display_name as approved_by_name
+    FROM credit_orders co
+    LEFT JOIN customers c ON co.customer_id = c.id
+    LEFT JOIN branches b ON co.assigned_branch_id = b.id
+    LEFT JOIN users u ON co.created_by_user_id = u.id
+    LEFT JOIN users approver ON co.approved_by_user_id = approver.id
+    WHERE co.order_date BETWEEN ? AND ? AND co.created_by_user_id = ?
+    ORDER BY co.order_date DESC, co.created_at DESC
+    LIMIT ? OFFSET ?
+ | Params: Array
+(
+    [0] => 2025-09-01
+    [1] => 2025-12-02
+    [2] => 6
+    [3] => 20
+    [4] => 0
+)
+
+[02-Dec-2025 01:42:01 Asia/Dhaka] SQL Error [42000]: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''20' OFFSET '0'' at line 18 in query: 
+    SELECT 
+        co.*,
+        c.name as customer_name,
+        c.phone_number,
+        c.business_name,
+        c.customer_type,
+        b.name as branch_name,
+        b.code as branch_code,
+        u.display_name as created_by_name,
+        approver.display_name as approved_by_name
+    FROM credit_orders co
+    LEFT JOIN customers c ON co.customer_id = c.id
+    LEFT JOIN branches b ON co.assigned_branch_id = b.id
+    LEFT JOIN users u ON co.created_by_user_id = u.id
+    LEFT JOIN users approver ON co.approved_by_user_id = approver.id
+    WHERE co.order_date BETWEEN ? AND ? AND co.created_by_user_id = ?
+    ORDER BY co.order_date DESC, co.created_at DESC
+    LIMIT ? OFFSET ?
+ | Params: Array
+(
+    [0] => 2025-09-01
+    [1] => 2025-12-02
+    [2] => 6
+    [3] => 20
+    [4] => 0
+)
+
+[02-Dec-2025 01:42:03 Asia/Dhaka] SQL Error [42000]: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''20' OFFSET '0'' at line 18 in query: 
+    SELECT 
+        co.*,
+        c.name as customer_name,
+        c.phone_number,
+        c.business_name,
+        c.customer_type,
+        b.name as branch_name,
+        b.code as branch_code,
+        u.display_name as created_by_name,
+        approver.display_name as approved_by_name
+    FROM credit_orders co
+    LEFT JOIN customers c ON co.customer_id = c.id
+    LEFT JOIN branches b ON co.assigned_branch_id = b.id
+    LEFT JOIN users u ON co.created_by_user_id = u.id
+    LEFT JOIN users approver ON co.approved_by_user_id = approver.id
+    WHERE co.order_date BETWEEN ? AND ? AND co.created_by_user_id = ?
+    ORDER BY co.order_date DESC, co.created_at DESC
+    LIMIT ? OFFSET ?
+ | Params: Array
+(
+    [0] => 2025-09-01
+    [1] => 2025-12-02
+    [2] => 6
+    [3] => 20
+    [4] => 0
+)
+
+[02-Dec-2025 01:42:19 Asia/Dhaka] SQL Error [42000]: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''20' OFFSET '0'' at line 18 in query: 
+    SELECT 
+        co.*,
+        c.name as customer_name,
+        c.phone_number,
+        c.business_name,
+        c.customer_type,
+        b.name as branch_name,
+        b.code as branch_code,
+        u.display_name as created_by_name,
+        approver.display_name as approved_by_name
+    FROM credit_orders co
+    LEFT JOIN customers c ON co.customer_id = c.id
+    LEFT JOIN branches b ON co.assigned_branch_id = b.id
+    LEFT JOIN users u ON co.created_by_user_id = u.id
+    LEFT JOIN users approver ON co.approved_by_user_id = approver.id
+    WHERE co.order_date BETWEEN ? AND ? AND co.created_by_user_id = ?
+    ORDER BY co.order_date DESC, co.created_at DESC
+    LIMIT ? OFFSET ?
+ | Params: Array
+(
+    [0] => 2025-06-01
+    [1] => 2025-12-01
+    [2] => 6
+    [3] => 20
+    [4] => 0
+)
+
+[02-Dec-2025 01:45:02 Asia/Dhaka] SQL Error [HY093]: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in query: 
+    SELECT 
+        COUNT(*) as total_orders,
+        SUM(co.total_amount) as total_value,
+        SUM(co.amount_paid) as total_paid,
+        SUM(co.balance_due) as total_outstanding,
+        SUM(CASE WHEN co.status = 'delivered' THEN 1 ELSE 0 END) as delivered_count,
+        SUM(CASE WHEN co.status IN ('draft', 'pending_approval') THEN 1 ELSE 0 END) as pending_count,
+        SUM(CASE WHEN co.status = 'cancelled' THEN 1 ELSE 0 END) as cancelled_count
+    FROM credit_orders co
+    LEFT JOIN customers c ON co.customer_id = c.id
+    WHERE co.order_date BETWEEN ? AND ? AND co.created_by_user_id = ?
+ | Params: Array
+(
+    [0] => 2025-06-01
+)
+
+[02-Dec-2025 01:45:15 Asia/Dhaka] SQL Error [HY093]: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in query: 
+    SELECT 
+        COUNT(*) as total_orders,
+        SUM(co.total_amount) as total_value,
+        SUM(co.amount_paid) as total_paid,
+        SUM(co.balance_due) as total_outstanding,
+        SUM(CASE WHEN co.status = 'delivered' THEN 1 ELSE 0 END) as delivered_count,
+        SUM(CASE WHEN co.status IN ('draft', 'pending_approval') THEN 1 ELSE 0 END) as pending_count,
+        SUM(CASE WHEN co.status = 'cancelled' THEN 1 ELSE 0 END) as cancelled_count
+    FROM credit_orders co
+    LEFT JOIN customers c ON co.customer_id = c.id
+    WHERE co.order_date BETWEEN ? AND ? AND co.created_by_user_id = ?
+ | Params: Array
+(
+    [0] => 2025-06-01
+)
+
+[02-Dec-2025 01:45:18 Asia/Dhaka] SQL Error [HY093]: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in query: 
+    SELECT 
+        COUNT(*) as total_orders,
+        SUM(co.total_amount) as total_value,
+        SUM(co.amount_paid) as total_paid,
+        SUM(co.balance_due) as total_outstanding,
+        SUM(CASE WHEN co.status = 'delivered' THEN 1 ELSE 0 END) as delivered_count,
+        SUM(CASE WHEN co.status IN ('draft', 'pending_approval') THEN 1 ELSE 0 END) as pending_count,
+        SUM(CASE WHEN co.status = 'cancelled' THEN 1 ELSE 0 END) as cancelled_count
+    FROM credit_orders co
+    LEFT JOIN customers c ON co.customer_id = c.id
+    WHERE co.order_date BETWEEN ? AND ? AND co.created_by_user_id = ?
+ | Params: Array
+(
+    [0] => 2025-06-01
+)
+

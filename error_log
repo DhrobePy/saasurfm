@@ -16,3 +16,168 @@ Stack trace:
   thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/index.php on line 9
 [05-Nov-2025 07:48:21 UTC] PHP Warning:  session_start(): open(/opt/alt/php84/var/lib/php/session/sess_913f1050a6a55f4f4e08e76aad54ab04, O_RDWR) failed: Disk quota exceeded (122) in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/init.php on line 6
 [05-Nov-2025 07:48:21 UTC] PHP Warning:  session_start(): Failed to read session data: files (path: /opt/alt/php84/var/lib/php/session) in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/init.php on line 6
+[03-Dec-2025 18:50:40 UTC] PHP Warning:  require_once(init.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/migrate_to_pricing_rules.php on line 11
+[03-Dec-2025 18:50:40 UTC] PHP Fatal error:  Uncaught Error: Failed opening required 'init.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/migrate_to_pricing_rules.php:11
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/migrate_to_pricing_rules.php on line 11
+[04-Dec-2025 00:51:11 Asia/Dhaka] PHP Warning:  require_once(classes/PricingRuleManager.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/migrate_to_pricing_rules.php on line 12
+[04-Dec-2025 00:51:11 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Failed opening required 'classes/PricingRuleManager.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/migrate_to_pricing_rules.php:12
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/migrate_to_pricing_rules.php on line 12
+[04-Dec-2025 00:52:03 Asia/Dhaka] PHP Warning:  Undefined array key "role" in /home/ujjalfmc/public_html/saas.ujjalfm.com/migrate_to_pricing_rules.php on line 15
+[04-Dec-2025 00:58:40 Asia/Dhaka] PHP Fatal error:  Uncaught PDOException: There is no active transaction in /home/ujjalfmc/public_html/saas.ujjalfm.com/migrate_to_pricing_rules.php:171
+Stack trace:
+#0 /home/ujjalfmc/public_html/saas.ujjalfm.com/migrate_to_pricing_rules.php(171): PDO->rollBack()
+#1 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/migrate_to_pricing_rules.php on line 171
+[03-Dec-2025 19:02:08 UTC] PHP Warning:  require_once(init.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/test_pricing_rules.php on line 10
+[03-Dec-2025 19:02:08 UTC] PHP Fatal error:  Uncaught Error: Failed opening required 'init.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/test_pricing_rules.php:10
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/test_pricing_rules.php on line 10
+[04-Dec-2025 01:02:50 Asia/Dhaka] SQL Error [42000]: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'JSON), '$'))
+                OR
+                -- Weight match
+             ...' at line 14 in query: 
+            SELECT pr.*
+            FROM pricing_rules pr
+            WHERE pr.is_active = 1
+              AND (pr.valid_from IS NULL OR pr.valid_from <= CURDATE())
+              AND (pr.valid_to IS NULL OR pr.valid_to >= CURDATE())
+              AND (
+                -- Apply to all
+                (pr.applies_to_grades IS NULL AND pr.applies_to_branches IS NULL AND pr.applies_to_weights IS NULL)
+                OR
+                -- Grade match
+                (pr.applies_to_grades IS NOT NULL AND JSON_CONTAINS(pr.applies_to_grades, ?, '$'))
+                OR
+                -- Branch match
+                (pr.applies_to_branches IS NOT NULL AND JSON_CONTAINS(pr.applies_to_branches, CAST(? AS JSON), '$'))
+                OR
+                -- Weight match
+                (pr.applies_to_weights IS NOT NULL AND JSON_CONTAINS(pr.applies_to_weights, ?, '$'))
+                OR
+                -- Variant match
+                (pr.applies_to_variants IS NOT NULL AND JSON_CONTAINS(pr.applies_to_variants, CAST(? AS JSON), '$'))
+              )
+            ORDER BY pr.priority DESC
+         | Params: Array
+(
+    [0] => "1"
+    [1] => 1
+    [2] => 50
+    [3] => "3"
+)
+
+[04-Dec-2025 01:02:50 Asia/Dhaka] SQL Error [42000]: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'JSON), '$'))
+                OR
+                -- Weight match
+             ...' at line 14 in query: 
+            SELECT pr.*
+            FROM pricing_rules pr
+            WHERE pr.is_active = 1
+              AND (pr.valid_from IS NULL OR pr.valid_from <= CURDATE())
+              AND (pr.valid_to IS NULL OR pr.valid_to >= CURDATE())
+              AND (
+                -- Apply to all
+                (pr.applies_to_grades IS NULL AND pr.applies_to_branches IS NULL AND pr.applies_to_weights IS NULL)
+                OR
+                -- Grade match
+                (pr.applies_to_grades IS NOT NULL AND JSON_CONTAINS(pr.applies_to_grades, ?, '$'))
+                OR
+                -- Branch match
+                (pr.applies_to_branches IS NOT NULL AND JSON_CONTAINS(pr.applies_to_branches, CAST(? AS JSON), '$'))
+                OR
+                -- Weight match
+                (pr.applies_to_weights IS NOT NULL AND JSON_CONTAINS(pr.applies_to_weights, ?, '$'))
+                OR
+                -- Variant match
+                (pr.applies_to_variants IS NOT NULL AND JSON_CONTAINS(pr.applies_to_variants, CAST(? AS JSON), '$'))
+              )
+            ORDER BY pr.priority DESC
+         | Params: Array
+(
+    [0] => "1"
+    [1] => 2
+    [2] => 50
+    [3] => "3"
+)
+
+[04-Dec-2025 01:04:35 Asia/Dhaka] SQL Error [42000]: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'JSON), '$'))
+                OR
+                -- Weight match
+             ...' at line 14 in query: 
+            SELECT pr.*
+            FROM pricing_rules pr
+            WHERE pr.is_active = 1
+              AND (pr.valid_from IS NULL OR pr.valid_from <= CURDATE())
+              AND (pr.valid_to IS NULL OR pr.valid_to >= CURDATE())
+              AND (
+                -- Apply to all
+                (pr.applies_to_grades IS NULL AND pr.applies_to_branches IS NULL AND pr.applies_to_weights IS NULL)
+                OR
+                -- Grade match
+                (pr.applies_to_grades IS NOT NULL AND JSON_CONTAINS(pr.applies_to_grades, ?, '$'))
+                OR
+                -- Branch match
+                (pr.applies_to_branches IS NOT NULL AND JSON_CONTAINS(pr.applies_to_branches, CAST(? AS JSON), '$'))
+                OR
+                -- Weight match
+                (pr.applies_to_weights IS NOT NULL AND JSON_CONTAINS(pr.applies_to_weights, ?, '$'))
+                OR
+                -- Variant match
+                (pr.applies_to_variants IS NOT NULL AND JSON_CONTAINS(pr.applies_to_variants, CAST(? AS JSON), '$'))
+              )
+            ORDER BY pr.priority DESC
+         | Params: Array
+(
+    [0] => "1"
+    [1] => 1
+    [2] => 50
+    [3] => "3"
+)
+
+[04-Dec-2025 01:04:35 Asia/Dhaka] SQL Error [42000]: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'JSON), '$'))
+                OR
+                -- Weight match
+             ...' at line 14 in query: 
+            SELECT pr.*
+            FROM pricing_rules pr
+            WHERE pr.is_active = 1
+              AND (pr.valid_from IS NULL OR pr.valid_from <= CURDATE())
+              AND (pr.valid_to IS NULL OR pr.valid_to >= CURDATE())
+              AND (
+                -- Apply to all
+                (pr.applies_to_grades IS NULL AND pr.applies_to_branches IS NULL AND pr.applies_to_weights IS NULL)
+                OR
+                -- Grade match
+                (pr.applies_to_grades IS NOT NULL AND JSON_CONTAINS(pr.applies_to_grades, ?, '$'))
+                OR
+                -- Branch match
+                (pr.applies_to_branches IS NOT NULL AND JSON_CONTAINS(pr.applies_to_branches, CAST(? AS JSON), '$'))
+                OR
+                -- Weight match
+                (pr.applies_to_weights IS NOT NULL AND JSON_CONTAINS(pr.applies_to_weights, ?, '$'))
+                OR
+                -- Variant match
+                (pr.applies_to_variants IS NOT NULL AND JSON_CONTAINS(pr.applies_to_variants, CAST(? AS JSON), '$'))
+              )
+            ORDER BY pr.priority DESC
+         | Params: Array
+(
+    [0] => "1"
+    [1] => 2
+    [2] => 50
+    [3] => "3"
+)
+
+[04-Dec-2025 01:08:48 Asia/Dhaka] PHP Parse error:  syntax error, unexpected token ")" in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/PricingRulesEngine.php(460) : eval()'d code on line 1
+[04-Dec-2025 01:15:40 Asia/Dhaka] Evaluating formula: ((2000/50)*74+30)
+[04-Dec-2025 01:15:40 Asia/Dhaka] Evaluating formula: (((3010-20)/50)*74+30)
+[04-Dec-2025 01:15:40 Asia/Dhaka] Evaluating formula: ((2000/50)*74+30)
+[04-Dec-2025 01:15:40 Asia/Dhaka] Evaluating formula: (((3010-20)/50)*74+30)
+[04-Dec-2025 14:17:27 Asia/Dhaka] PHP Warning:  Undefined array key "user_id" in /home/ujjalfmc/public_html/saas.ujjalfm.com/migrate_to_pricing_rules.php on line 16
+[06-Dec-2025 15:32:02 Asia/Dhaka] PHP Warning:  Undefined array key "user_id" in /home/ujjalfmc/public_html/saas.ujjalfm.com/migrate_to_pricing_rules.php on line 16
+[06-Dec-2025 18:01:08 Asia/Dhaka] PHP Warning:  Undefined array key "user_id" in /home/ujjalfmc/public_html/saas.ujjalfm.com/migrate_to_pricing_rules.php on line 16

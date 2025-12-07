@@ -145,7 +145,7 @@ require_once '../templates/header.php';
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6 mb-8">
 
     <?php if ($is_sales || $is_admin): ?>
-    <a href="create_order.php" class="block p-6 bg-primary-600 hover:bg-primary-700 rounded-lg shadow-lg text-white transition-colors group">
+    <a href="../cr/create_order.php" class="block p-6 bg-primary-600 hover:bg-primary-700 rounded-lg shadow-lg text-white transition-colors group">
         <div class="flex items-center justify-between">
             <div>
                 <p class="text-sm opacity-90 uppercase tracking-wider">Action</p>
@@ -225,7 +225,7 @@ require_once '../templates/header.php';
     <div class="flex flex-wrap gap-4 justify-center md:justify-start">
 
         <?php if ($is_sales || $is_admin): ?>
-        <a href="create_order.php" class="flex flex-col items-center p-3 text-gray-600 hover:bg-primary-50 hover:text-primary-700 rounded-lg transition-colors" title="Create Order">
+        <a href="../cr/create_order.php" class="flex flex-col items-center p-3 text-gray-600 hover:bg-primary-50 hover:text-primary-700 rounded-lg transition-colors" title="Create Order">
             <i class="fas fa-plus-circle text-2xl mb-1"></i>
             <span class="text-xs font-medium">Create</span>
         </a>
@@ -269,7 +269,7 @@ require_once '../templates/header.php';
         <?php endif; ?>
 
         <!-- Common link -->
-        <a href="order_status.php" class="flex flex-col items-center p-3 text-gray-600 hover:bg-gray-100 hover:text-gray-800 rounded-lg transition-colors" title="Track Order Status">
+        <a href="../cr/order_status.php" class="flex flex-col items-center p-3 text-gray-600 hover:bg-gray-100 hover:text-gray-800 rounded-lg transition-colors" title="Track Order Status">
             <i class="fas fa-tasks text-2xl mb-1"></i>
             <span class="text-xs font-medium">Status</span>
         </a>
@@ -344,7 +344,7 @@ require_once '../templates/header.php';
                             </span>
                         </td>
                         <td class="px-6 py-4 text-center text-sm font-medium">
-                            <a href="credit_order_view.php?id=<?php echo $order->id; ?>" class="text-primary-600 hover:text-primary-900" title="View Details">
+                            <a href="../cr/credit_order_view.php?id=<?php echo $order->id; ?>" class="text-primary-600 hover:text-primary-900" title="View Details">
                                 <i class="fas fa-eye fa-fw"></i>
                             </a>
                         </td>
@@ -362,7 +362,7 @@ require_once '../templates/header.php';
 
     <?php if (!empty($recent_orders)): ?>
     <div class="p-4 border-t bg-gray-50 text-right">
-        <a href="#" class="text-sm text-primary-600 hover:underline font-medium">
+        <a href="order_history.php" class="text-sm text-primary-600 hover:underline font-medium">
             View All Orders <i class="fas fa-arrow-right ml-1"></i>
         </a>
     </div>

@@ -369,3 +369,104 @@ Stack trace:
 [29-Nov-2025 18:49:06 Asia/Dhaka] ✗ Telegram GRN notification error: Invalid GRN ID returned
 [29-Nov-2025 18:52:21 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20251129-0004
 [29-Nov-2025 18:53:50 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20251129-0001
+[30-Nov-2025 10:32:14 Asia/Dhaka] ✓ Telegram purchase order notification sent: 448
+[30-Nov-2025 10:34:15 Asia/Dhaka] Error recording GRN: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect decimal value: '' for column `ujjalfmc_saas`.`goods_received_adnan`.`expected_quantity` at row 1
+[30-Nov-2025 10:34:15 Asia/Dhaka] ✗ Telegram GRN notification: Invalid GRN ID - Array
+(
+    [success] => 
+    [message] => Error recording goods received: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect decimal value: '' for column `ujjalfmc_saas`.`goods_received_adnan`.`expected_quantity` at row 1
+)
+
+[30-Nov-2025 10:34:15 Asia/Dhaka] ✗ Telegram GRN notification error: Invalid GRN ID returned
+[30-Nov-2025 10:34:50 Asia/Dhaka] Error recording GRN: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect decimal value: '' for column `ujjalfmc_saas`.`goods_received_adnan`.`expected_quantity` at row 1
+[30-Nov-2025 10:34:50 Asia/Dhaka] ✗ Telegram GRN notification: Invalid GRN ID - Array
+(
+    [success] => 
+    [message] => Error recording goods received: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect decimal value: '' for column `ujjalfmc_saas`.`goods_received_adnan`.`expected_quantity` at row 1
+)
+
+[30-Nov-2025 10:34:50 Asia/Dhaka] ✗ Telegram GRN notification error: Invalid GRN ID returned
+[30-Nov-2025 10:37:07 Asia/Dhaka] Error closing PO: SQLSTATE[01000]: Warning: 1265 Data truncated for column 'delivery_status' at row 1
+[30-Nov-2025 10:37:21 Asia/Dhaka] Error closing PO: SQLSTATE[01000]: Warning: 1265 Data truncated for column 'delivery_status' at row 1
+[30-Nov-2025 10:37:42 Asia/Dhaka] Error closing PO: SQLSTATE[01000]: Warning: 1265 Data truncated for column 'delivery_status' at row 1
+[30-Nov-2025 10:41:53 Asia/Dhaka] Error closing PO: SQLSTATE[01000]: Warning: 1265 Data truncated for column 'delivery_status' at row 1
+[30-Nov-2025 10:42:05 Asia/Dhaka] Error closing PO: SQLSTATE[01000]: Warning: 1265 Data truncated for column 'delivery_status' at row 1
+[30-Nov-2025 10:49:39 Asia/Dhaka] ✓ Telegram purchase order notification sent: 449
+[30-Nov-2025 10:50:18 Asia/Dhaka] Error recording GRN: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect decimal value: '' for column `ujjalfmc_saas`.`goods_received_adnan`.`expected_quantity` at row 1
+[30-Nov-2025 10:50:18 Asia/Dhaka] ✗ Telegram GRN notification: Invalid GRN ID - Array
+(
+    [success] => 
+    [message] => Error recording goods received: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect decimal value: '' for column `ujjalfmc_saas`.`goods_received_adnan`.`expected_quantity` at row 1
+)
+
+[30-Nov-2025 10:50:18 Asia/Dhaka] ✗ Telegram GRN notification error: Invalid GRN ID returned
+[30-Nov-2025 10:50:48 Asia/Dhaka] Error recording payment: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect integer value: '' for column `ujjalfmc_saas`.`purchase_payments_adnan`.`bank_account_id` at row 1
+[30-Nov-2025 10:51:39 Asia/Dhaka] Error closing PO: SQLSTATE[01000]: Warning: 1265 Data truncated for column 'delivery_status' at row 1
+[30-Nov-2025 11:20:55 Asia/Dhaka] PHP Warning:  require_once(../includes/footer.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php on line 673
+[30-Nov-2025 11:20:55 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Failed opening required '../includes/footer.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php:673
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php on line 673
+[30-Nov-2025 11:23:01 Asia/Dhaka] PHP Warning:  require_once(../includes/footer.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php on line 673
+[30-Nov-2025 11:23:01 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Failed opening required '../includes/footer.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php:673
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php on line 673
+[30-Nov-2025 11:24:19 Asia/Dhaka] PHP Warning:  require_once(../includes/footer.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php on line 673
+[30-Nov-2025 11:24:19 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Failed opening required '../includes/footer.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php:673
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php on line 673
+[30-Nov-2025 11:24:53 Asia/Dhaka] PHP Warning:  require_once(../includes/footer.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php on line 673
+[30-Nov-2025 11:24:53 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Failed opening required '../includes/footer.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php:673
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php on line 673
+[30-Nov-2025 11:25:17 Asia/Dhaka] PHP Warning:  require_once(../includes/footer.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php on line 673
+[30-Nov-2025 11:25:17 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Failed opening required '../includes/footer.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php:673
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php on line 673
+[30-Nov-2025 11:46:46 Asia/Dhaka] ✓ Telegram purchase order notification sent: 450
+[30-Nov-2025 11:47:35 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20251130-0001
+[30-Nov-2025 11:48:28 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20251130-0002
+[30-Nov-2025 11:53:38 Asia/Dhaka] Error recording payment: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect integer value: '' for column `ujjalfmc_saas`.`purchase_payments_adnan`.`bank_account_id` at row 1
+[30-Nov-2025 11:56:39 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20251130-0001
+[30-Nov-2025 11:58:24 Asia/Dhaka] Error recording payment: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect integer value: '' for column `ujjalfmc_saas`.`purchase_payments_adnan`.`bank_account_id` at row 1
+[30-Nov-2025 11:58:36 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20251130-0002
+[30-Nov-2025 12:05:47 Asia/Dhaka] Error recording payment: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect integer value: '' for column `ujjalfmc_saas`.`purchase_payments_adnan`.`bank_account_id` at row 1
+[30-Nov-2025 12:21:57 Asia/Dhaka] Error recording payment: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect integer value: '' for column `ujjalfmc_saas`.`purchase_payments_adnan`.`bank_account_id` at row 1
+[30-Nov-2025 16:46:43 Asia/Dhaka] Error recording payment: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect integer value: '' for column `ujjalfmc_saas`.`purchase_payments_adnan`.`bank_account_id` at row 1
+[07-Dec-2025 10:19:52 Asia/Dhaka] ✓ Telegram purchase order notification sent: 451
+[07-Dec-2025 10:23:17 Asia/Dhaka] Error recording GRN: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect decimal value: '' for column `ujjalfmc_saas`.`goods_received_adnan`.`expected_quantity` at row 1
+[07-Dec-2025 10:23:17 Asia/Dhaka] ✗ Telegram GRN notification: Invalid GRN ID - Array
+(
+    [success] => 
+    [message] => Error recording goods received: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect decimal value: '' for column `ujjalfmc_saas`.`goods_received_adnan`.`expected_quantity` at row 1
+)
+
+[07-Dec-2025 10:23:17 Asia/Dhaka] ✗ Telegram GRN notification error: Invalid GRN ID returned
+[07-Dec-2025 11:57:13 Asia/Dhaka] ✓ Telegram purchase order notification sent: 452
+[07-Dec-2025 11:59:38 Asia/Dhaka] Error recording payment: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect integer value: '' for column `ujjalfmc_saas`.`purchase_payments_adnan`.`bank_account_id` at row 1
+[07-Dec-2025 12:00:43 Asia/Dhaka] Error recording payment: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect integer value: '' for column `ujjalfmc_saas`.`purchase_payments_adnan`.`bank_account_id` at row 1
+[07-Dec-2025 12:02:37 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20251207-0001
+[07-Dec-2025 12:03:09 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20251207-0002
+[07-Dec-2025 12:04:14 Asia/Dhaka] Error recording payment: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect integer value: '' for column `ujjalfmc_saas`.`purchase_payments_adnan`.`bank_account_id` at row 1
+[07-Dec-2025 12:05:13 Asia/Dhaka] Error recording payment: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect integer value: '' for column `ujjalfmc_saas`.`purchase_payments_adnan`.`bank_account_id` at row 1
+[07-Dec-2025 12:06:47 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20251207-0001
+[07-Dec-2025 12:28:46 Asia/Dhaka] ✓ Telegram purchase order notification sent: 453
+[07-Dec-2025 12:30:31 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20251207-0003
+[07-Dec-2025 12:31:12 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20251207-0004
+[07-Dec-2025 12:35:32 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20251207-0005
+[07-Dec-2025 12:36:11 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20251207-0006
+[07-Dec-2025 12:36:43 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20251207-0007
+[07-Dec-2025 12:37:22 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20251207-0008
+[07-Dec-2025 12:37:57 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20251207-0009
+[07-Dec-2025 12:38:28 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20251207-0010
+[07-Dec-2025 12:39:03 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20251207-0011
+[07-Dec-2025 12:41:17 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20251207-0012
+[07-Dec-2025 12:44:37 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20251207-0013
+[07-Dec-2025 12:46:30 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20251207-0014
+[07-Dec-2025 12:50:00 Asia/Dhaka] Error recording payment: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect integer value: '' for column `ujjalfmc_saas`.`purchase_payments_adnan`.`bank_account_id` at row 1
+[07-Dec-2025 13:03:39 Asia/Dhaka] Error recording payment: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect integer value: '' for column `ujjalfmc_saas`.`purchase_payments_adnan`.`bank_account_id` at row 1
+[07-Dec-2025 13:04:06 Asia/Dhaka] Error recording payment: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect integer value: '' for column `ujjalfmc_saas`.`purchase_payments_adnan`.`bank_account_id` at row 1

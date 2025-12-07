@@ -50,102 +50,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     try {
         switch ($_POST['action']) {
             
-            
             case 'update_priority':
                 if (!$is_admin) {
                     throw new Exception('Unauthorized action');
                 }
                 
                 $order_ids = json_decode($_POST['order_ids'], true);
-                if (!is_array($order_ids) || empty($order_ids)) {
+                if (!is_array($order_ids)) {
                     throw new Exception('Invalid order list');
                 }
                 
-                // Start transaction
-                $db->getPdo()->beginTransaction();
+                // Use stored procedure for efficient reordering
+                $stmt = $db->getPdo()->prepare("CALL sp_reorder_credit_orders(?, ?)");
+                $stmt->execute([
+                    json_encode($order_ids),
+                    $user_id
+                ]);
                 
-                try {
-                    // Call stored procedure to update priorities
-                    $stmt = $db->getPdo()->prepare("CALL sp_reorder_credit_orders(?, ?)");
-                    $stmt->execute([
-                        json_encode($order_ids),
-                        $user_id
-                    ]);
-                    $stmt->closeCursor();
-                    
-                    // Fetch the updated orders to send notification
-                    $placeholders = str_repeat('?,', count($order_ids) - 1) . '?';
-                    $updated_orders = $db->query(
-                        "SELECT 
-                            co.id,
-                            co.order_number,
-                            co.total_amount,
-                            co.sort_order,
-                            co.priority,
-                            co.required_date,
-                            c.name as customer_name,
-                            b.name as branch_name
-                        FROM credit_orders co
-                        LEFT JOIN customers c ON co.customer_id = c.id
-                        LEFT JOIN branches b ON co.assigned_branch_id = b.id
-                        WHERE co.id IN ($placeholders)
-                        ORDER BY co.sort_order ASC",
-                        $order_ids
-                    )->results();
-                    
-                    // Commit transaction
-                    $db->getPdo()->commit();
-                    
-                    // Prepare data for Telegram notification (optional - will work even without Telegram)
-                    $orders_array = [];
-                    $branch_name = '';
-                    foreach ($updated_orders as $order) {
-                        $orders_array[] = [
-                            'order_number' => $order->order_number,
-                            'customer_name' => $order->customer_name,
-                            'total_amount' => $order->total_amount,
-                            'sort_order' => $order->sort_order,
-                            'priority' => $order->priority,
-                            'required_date' => $order->required_date ? date('M j, Y', strtotime($order->required_date)) : ''
-                        ];
-                        if (empty($branch_name)) {
-                            $branch_name = $order->branch_name ?? 'Multiple Branches';
-                        }
-                    }
-                    
-                    // Send Telegram notification if available
-                    try {
-                        if (defined('TELEGRAM_BOT_TOKEN') && defined('TELEGRAM_CHAT_ID')) {
-                            require_once '../classes/TelegramNotifier.php';
-                            $telegram = new TelegramNotifier(TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID);
-                            
-                            $notificationData = [
-                                'total_orders' => count($orders_array),
-                                'updated_at' => date('M j, Y g:i A'),
-                                'branch_name' => $branch_name,
-                                'orders' => $orders_array,
-                                'updated_by' => $currentUser['display_name'] ?? 'Admin'
-                            ];
-                            
-                            $telegram->sendProductionPriorityListNotification($notificationData);
-                        }
-                    } catch (Exception $telegram_error) {
-                        // Log telegram error but don't fail the main operation
-                        error_log("Telegram notification failed: " . $telegram_error->getMessage());
-                    }
-                    
-                    echo json_encode([
-                        'success' => true, 
-                        'message' => 'Order priority updated successfully',
-                        'orders_updated' => count($order_ids)
-                    ]);
-                    
-                } catch (Exception $e) {
-                    $db->getPdo()->rollBack();
-                    throw $e;
-                }
+                echo json_encode(['success' => true, 'message' => 'Order priority updated successfully']);
                 break;
-                
                 
             case 'update_status':
                 if (!$is_admin) {

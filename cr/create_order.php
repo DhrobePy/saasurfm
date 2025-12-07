@@ -583,7 +583,9 @@ function loadVariants() {
         
         const stockClass = v.stock_usable > 0 ? '' : ' [OUT]';
         
-        opt.text = `${variantName.join(' - ')} | ${v.branch_name} | ৳${parseFloat(v.unit_price).toFixed(0)} | ${stockStatus}${stockClass}`;
+        //opt.text = `${variantName.join(' - ')} | ${v.branch_name} | ৳${parseFloat(v.unit_price).toFixed(0)} | ${stockStatus}${stockClass}`;
+        opt.text = `${variantName.join(' - ')} | ${v.branch_name} | ৳${parseFloat(v.unit_price).toFixed(0)}`;
+
         
         console.log('Creating option:', opt.text);
         
@@ -602,7 +604,7 @@ function loadVariants() {
         
         // Disable if out of stock
         if (v.stock_usable <= 0) {
-            opt.disabled = true;
+            opt.disabled = false;
             opt.style.color = '#999';
         }
         
