@@ -165,7 +165,7 @@ require_once '../templates/header.php';
             <button onclick="window.print()" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition">
                 <i class="fas fa-print mr-2"></i>Print
             </button>
-            <a href="view_supplier.php?id=<?php echo $supplier_id; ?>" class="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition">
+            <a href="supplier_view.php?id=<?php echo $supplier_id; ?>" class="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition">
                 <i class="fas fa-eye mr-2"></i>View Details
             </a>
             <a href="suppliers.php" class="text-gray-600 hover:text-gray-800">

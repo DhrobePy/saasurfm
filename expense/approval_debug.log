@@ -1,0 +1,46 @@
+[2026-01-17 13:19:43] === NEW REQUEST ===
+[2026-01-17 13:19:43] REQUEST_METHOD: GET
+[2026-01-17 13:19:43] Session user_id: 13
+[2026-01-17 13:19:43] Session user_role: Expense Approver
+[2026-01-17 13:19:43] canApproveExpense() returns: TRUE
+[2026-01-17 13:19:43] Permission check PASSED - proceeding
+[2026-01-17 13:19:57] === NEW REQUEST ===
+[2026-01-17 13:19:57] REQUEST_METHOD: POST
+[2026-01-17 13:19:57] Session user_id: 13
+[2026-01-17 13:19:57] Session user_role: Expense Approver
+[2026-01-17 13:19:57] canApproveExpense() returns: TRUE
+[2026-01-17 13:19:57] Permission check PASSED - proceeding
+[2026-01-17 13:19:57] POST Request - Action: approve, Voucher: 1
+[2026-01-17 13:19:57] Before approval - Session user_id: 13
+[2026-01-17 13:19:57] ExpenseManager instance created
+[2026-01-17 13:19:57] Calling approveExpenseVoucher(1, 13)
+[2026-01-17 13:19:57] Approval result - Success: FALSE
+[2026-01-17 13:19:57] Approval result - Message: Failed to approve expense: Voucher not found or already processed
+[2026-01-17 13:19:57] FAILURE - Error message set
+[2026-01-17 13:19:57] Would redirect to approve_expense.php
+[2026-01-17 13:19:57] Before redirect - Session user_id: 13
+[2026-01-17 13:19:57] After approval - canApproveExpense: TRUE
+[2026-01-17 13:19:57] SUCCESS: Permission still valid after approval
+[2026-01-17 13:23:56] === NEW REQUEST ===
+[2026-01-17 13:23:56] REQUEST_METHOD: GET
+[2026-01-17 13:23:56] Session user_id: 13
+[2026-01-17 13:23:56] Session user_role: Expense Approver
+[2026-01-17 13:23:56] canApproveExpense() returns: TRUE
+[2026-01-17 13:23:56] Permission check PASSED - proceeding
+[2026-01-17 13:25:17] === NEW REQUEST ===
+[2026-01-17 13:25:17] REQUEST_METHOD: POST
+[2026-01-17 13:25:17] Session user_id: 13
+[2026-01-17 13:25:17] Session user_role: Expense Approver
+[2026-01-17 13:25:17] canApproveExpense() returns: TRUE
+[2026-01-17 13:25:17] Permission check PASSED - proceeding
+[2026-01-17 13:25:17] POST Request - Action: approve, Voucher: 250
+[2026-01-17 13:25:17] Before approval - Session user_id: 13
+[2026-01-17 13:25:17] ExpenseManager instance created
+[2026-01-17 13:25:17] Calling approveExpenseVoucher(250, 13)
+[2026-01-17 13:25:17] Approval result - Success: TRUE
+[2026-01-17 13:25:17] Approval result - Message: Expense voucher EXP-20260117-0007 approved successfully
+[2026-01-17 13:25:17] SUCCESS - Flash message set
+[2026-01-17 13:25:17] Would redirect to approve_expense.php
+[2026-01-17 13:25:17] Before redirect - Session user_id: 13
+[2026-01-17 13:25:17] After approval - canApproveExpense: TRUE
+[2026-01-17 13:25:17] SUCCESS: Permission still valid after approval

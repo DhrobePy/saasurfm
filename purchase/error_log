@@ -470,3 +470,1021 @@ Stack trace:
 [07-Dec-2025 12:50:00 Asia/Dhaka] Error recording payment: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect integer value: '' for column `ujjalfmc_saas`.`purchase_payments_adnan`.`bank_account_id` at row 1
 [07-Dec-2025 13:03:39 Asia/Dhaka] Error recording payment: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect integer value: '' for column `ujjalfmc_saas`.`purchase_payments_adnan`.`bank_account_id` at row 1
 [07-Dec-2025 13:04:06 Asia/Dhaka] Error recording payment: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect integer value: '' for column `ujjalfmc_saas`.`purchase_payments_adnan`.`bank_account_id` at row 1
+[09-Dec-2025 11:37:25 Asia/Dhaka] Error recording payment: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect integer value: '' for column `ujjalfmc_saas`.`purchase_payments_adnan`.`bank_account_id` at row 1
+[09-Dec-2025 11:38:24 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20251209-0001
+[11-Dec-2025 14:35:56 Asia/Dhaka] ✓ Telegram purchase order notification sent: 454
+[11-Dec-2025 14:36:35 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20251211-0001
+[11-Dec-2025 14:37:08 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20251211-0002
+[11-Dec-2025 14:37:34 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20251211-0003
+[11-Dec-2025 14:38:24 Asia/Dhaka] Error recording payment: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect integer value: '' for column `ujjalfmc_saas`.`purchase_payments_adnan`.`bank_account_id` at row 1
+[13-Dec-2025 21:19:33 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20251213-0001
+[13-Dec-2025 22:56:28 Asia/Dhaka] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'coa.display_name' in 'SELECT' in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Purchasepaymentadnanmanager.php:557
+Stack trace:
+#0 /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Purchasepaymentadnanmanager.php(557): PDO->query()
+#1 /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_record_payment.php(18): Purchasepaymentadnanmanager->getAllBankAccounts()
+#2 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Purchasepaymentadnanmanager.php on line 557
+[13-Dec-2025 22:57:21 Asia/Dhaka] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'position' in 'SELECT' in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Purchasepaymentadnanmanager.php:584
+Stack trace:
+#0 /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Purchasepaymentadnanmanager.php(584): PDO->query()
+#1 /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_record_payment.php(21): Purchasepaymentadnanmanager->getAllEmployees()
+#2 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Purchasepaymentadnanmanager.php on line 584
+[13-Dec-2025 23:05:12 Asia/Dhaka] Error recording payment: SQLSTATE[HY000]: General error: 1906 The value specified for generated column 'balance_payable' in table 'purchase_orders_adnan' has been ignored
+[13-Dec-2025 23:12:37 Asia/Dhaka] Error recording payment: SQLSTATE[HY000]: General error: 1906 The value specified for generated column 'balance_payable' in table 'purchase_orders_adnan' has been ignored
+[13-Dec-2025 23:15:04 Asia/Dhaka] Error recording payment: SQLSTATE[HY000]: General error: 1906 The value specified for generated column 'balance_payable' in table 'purchase_orders_adnan' has been ignored
+[13-Dec-2025 23:22:26 Asia/Dhaka] Error recording payment: SQLSTATE[HY000]: General error: 1906 The value specified for generated column 'balance_payable' in table 'purchase_orders_adnan' has been ignored
+[13-Dec-2025 23:29:59 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20251213-0001
+[13-Dec-2025 23:55:16 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[13-Dec-2025 23:55:16 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[13-Dec-2025 23:55:16 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[13-Dec-2025 23:55:16 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[13-Dec-2025 23:55:16 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[13-Dec-2025 23:55:16 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[13-Dec-2025 23:55:17 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[13-Dec-2025 23:55:17 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[13-Dec-2025 23:55:17 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[13-Dec-2025 23:55:17 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[13-Dec-2025 23:55:17 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[13-Dec-2025 23:55:17 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[13-Dec-2025 23:55:17 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[13-Dec-2025 23:55:17 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[13-Dec-2025 23:55:17 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[13-Dec-2025 23:55:17 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[13-Dec-2025 23:55:17 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[13-Dec-2025 23:55:39 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[13-Dec-2025 23:55:39 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[13-Dec-2025 23:55:39 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[13-Dec-2025 23:55:39 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[13-Dec-2025 23:55:39 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[13-Dec-2025 23:55:39 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[13-Dec-2025 23:55:39 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[13-Dec-2025 23:55:39 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[13-Dec-2025 23:55:39 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[13-Dec-2025 23:55:39 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[13-Dec-2025 23:55:39 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[13-Dec-2025 23:55:39 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[13-Dec-2025 23:55:39 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[13-Dec-2025 23:55:39 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[13-Dec-2025 23:55:39 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[13-Dec-2025 23:55:39 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[13-Dec-2025 23:55:39 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[14-Dec-2025 11:40:53 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[14-Dec-2025 11:40:53 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[14-Dec-2025 11:40:53 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[14-Dec-2025 11:40:53 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[14-Dec-2025 11:40:53 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[14-Dec-2025 11:40:53 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[14-Dec-2025 11:40:53 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[14-Dec-2025 11:40:53 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[14-Dec-2025 11:40:53 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[14-Dec-2025 11:40:53 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[14-Dec-2025 11:40:53 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[14-Dec-2025 11:40:53 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[14-Dec-2025 11:40:53 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[14-Dec-2025 11:40:53 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[14-Dec-2025 11:40:53 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[14-Dec-2025 11:40:53 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[14-Dec-2025 11:40:53 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[14-Dec-2025 11:43:27 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20251214-0001
+[14-Dec-2025 11:44:13 Asia/Dhaka] Error recording payment: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect integer value: '' for column `ujjalfmc_saas`.`purchase_payments_adnan`.`bank_account_id` at row 1
+[14-Dec-2025 11:45:07 Asia/Dhaka] Error recording payment: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect integer value: '' for column `ujjalfmc_saas`.`purchase_payments_adnan`.`bank_account_id` at row 1
+[14-Dec-2025 11:45:11 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[14-Dec-2025 11:45:11 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[14-Dec-2025 11:45:11 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[14-Dec-2025 11:45:11 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[14-Dec-2025 11:45:11 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[14-Dec-2025 11:45:11 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[14-Dec-2025 11:45:11 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[14-Dec-2025 11:45:11 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[14-Dec-2025 11:45:11 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[14-Dec-2025 11:45:11 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[14-Dec-2025 11:45:11 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[14-Dec-2025 11:45:11 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[14-Dec-2025 11:45:11 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[14-Dec-2025 11:45:11 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[14-Dec-2025 11:45:11 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[14-Dec-2025 11:45:11 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[14-Dec-2025 11:45:11 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[14-Dec-2025 11:45:48 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20251214-0002
+[14-Dec-2025 11:47:24 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20251214-0001
+[14-Dec-2025 11:48:21 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20251214-0003
+[15-Dec-2025 12:48:25 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[15-Dec-2025 12:48:25 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[15-Dec-2025 12:48:25 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[15-Dec-2025 12:48:25 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[15-Dec-2025 12:48:25 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[15-Dec-2025 12:48:25 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[15-Dec-2025 12:48:25 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[15-Dec-2025 12:48:25 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[15-Dec-2025 12:48:25 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[15-Dec-2025 12:48:25 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[15-Dec-2025 12:48:25 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[15-Dec-2025 12:48:25 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[15-Dec-2025 12:48:25 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[15-Dec-2025 12:48:25 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[15-Dec-2025 12:48:25 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[15-Dec-2025 12:48:25 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[15-Dec-2025 12:48:25 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[15-Dec-2025 13:10:09 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[15-Dec-2025 13:10:09 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[15-Dec-2025 13:10:09 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[15-Dec-2025 13:10:09 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[15-Dec-2025 13:10:09 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[15-Dec-2025 13:10:09 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[15-Dec-2025 13:10:09 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[15-Dec-2025 13:10:09 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[15-Dec-2025 13:10:09 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[15-Dec-2025 13:10:09 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[15-Dec-2025 13:10:09 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[15-Dec-2025 13:10:09 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[15-Dec-2025 13:10:09 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[15-Dec-2025 13:10:09 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[15-Dec-2025 13:10:09 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[15-Dec-2025 13:10:09 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[15-Dec-2025 13:10:09 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 00:56:37 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 00:56:37 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 00:56:37 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 00:56:37 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 00:56:37 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 00:56:37 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 00:56:37 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 00:56:37 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 00:56:37 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 00:56:37 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 00:56:37 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 00:56:37 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 00:56:37 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 00:56:37 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 00:56:37 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 00:56:37 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 00:56:37 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 00:57:32 Asia/Dhaka] Error recording payment: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect integer value: '' for column `ujjalfmc_saas`.`purchase_payments_adnan`.`bank_account_id` at row 1
+[16-Dec-2025 14:05:57 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 14:05:57 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 14:05:57 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 14:05:57 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 14:05:57 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 14:05:57 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 14:05:57 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 14:05:57 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 14:05:57 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 14:05:57 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 14:05:57 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 14:05:57 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 14:05:57 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 14:05:57 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 14:05:57 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 14:05:57 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 14:05:57 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 14:06:32 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 14:06:32 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 14:06:32 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 14:06:32 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 14:06:32 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 14:06:32 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 14:06:32 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 14:06:32 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 14:06:32 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 14:06:32 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 14:06:32 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 14:06:32 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 14:06:32 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 14:06:32 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 14:06:32 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 14:06:32 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 14:06:32 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 14:08:08 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 14:08:08 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 14:08:08 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 14:08:08 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 14:08:08 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 14:08:08 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 14:08:08 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 14:08:08 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 14:08:08 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 14:08:08 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 14:08:08 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 14:08:08 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 14:08:08 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 14:08:08 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 14:08:08 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 14:08:08 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[16-Dec-2025 14:08:08 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 12:15:01 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 12:15:01 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 12:15:01 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 12:15:01 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 12:15:01 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 12:15:01 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 12:15:01 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 12:15:01 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 12:15:01 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 12:15:01 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 12:15:01 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 12:15:01 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 12:15:01 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 12:15:01 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 12:15:01 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 12:15:01 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 12:15:01 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 12:15:49 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 12:15:49 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 12:15:49 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 12:15:49 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 12:15:49 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 12:15:49 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 12:15:49 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 12:15:49 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 12:15:49 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 12:15:49 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 12:15:49 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 12:15:49 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 12:15:49 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 12:15:49 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 12:15:49 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 12:15:49 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 12:15:49 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 13:21:08 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 13:21:08 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 13:21:08 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 13:21:08 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 13:21:08 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 13:21:08 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 13:21:08 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 13:21:08 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 13:21:08 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 13:21:08 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 13:21:08 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 13:21:08 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 13:21:08 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 13:21:08 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 13:21:08 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 13:21:08 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 13:21:08 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 13:23:53 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 13:23:53 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 13:23:53 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 13:23:53 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 13:23:53 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 13:23:53 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 13:23:53 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 13:23:53 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 13:23:53 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 13:23:53 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 13:23:53 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 13:23:53 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 13:23:53 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 13:23:53 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 13:23:53 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 13:23:53 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 13:23:53 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 14:20:48 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 14:20:48 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 14:20:48 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 14:20:48 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 14:20:48 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 14:20:48 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 14:20:48 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 14:20:48 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 14:20:48 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 14:20:48 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 14:20:48 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 14:20:48 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 14:20:48 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 14:20:48 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 14:20:48 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 14:20:48 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 14:20:48 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 14:21:07 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 14:21:07 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 14:21:07 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 14:21:07 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 14:21:07 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 14:21:07 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 14:21:07 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 14:21:07 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 14:21:07 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 14:21:07 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 14:21:07 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 14:21:07 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 14:21:07 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 14:21:07 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 14:21:07 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 14:21:07 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 14:21:07 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 14:21:41 Asia/Dhaka] Error recording payment: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect integer value: '' for column `ujjalfmc_saas`.`purchase_payments_adnan`.`bank_account_id` at row 1
+[17-Dec-2025 14:45:22 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 14:45:22 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 14:45:22 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 14:45:22 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 14:45:22 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 14:45:22 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 14:45:22 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 14:45:22 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 14:45:22 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 14:45:22 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 14:45:22 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 14:45:22 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 14:45:22 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 14:45:22 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 14:45:22 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 14:45:22 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 14:45:22 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:10:33 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:10:33 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:10:33 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:10:33 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:10:33 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:10:33 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:10:33 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:10:33 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:10:33 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:10:33 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:10:33 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:10:33 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:10:33 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:10:33 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:10:33 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:10:33 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:10:33 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:16:35 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20251217-0001
+[17-Dec-2025 22:17:19 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:17:19 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:17:19 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:17:19 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:17:19 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:17:19 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:17:19 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:17:19 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:17:19 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:17:19 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:17:19 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:17:19 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:17:19 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:17:19 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:17:19 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:17:19 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:17:19 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:17:44 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:17:44 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:17:44 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:17:44 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:17:44 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:17:44 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:17:44 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:17:44 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:17:44 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:17:44 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:17:44 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:17:44 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:17:44 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:17:44 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:17:44 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:17:44 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:17:44 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:19:16 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:19:16 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:19:16 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:19:16 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:19:16 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:19:16 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:19:16 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:19:16 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:19:16 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:19:16 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:19:16 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:19:16 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:19:16 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:19:16 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:19:16 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:19:16 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 22:19:16 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 23:57:49 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 23:57:49 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 23:57:49 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 23:57:49 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 23:57:49 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 23:57:49 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 23:57:49 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 23:57:49 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 23:57:49 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 23:57:49 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 23:57:49 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 23:57:49 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 23:57:49 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 23:57:49 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 23:57:49 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 23:57:49 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 23:57:49 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 23:58:27 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 23:58:27 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 23:58:27 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 23:58:27 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 23:58:27 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 23:58:27 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 23:58:27 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 23:58:27 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 23:58:27 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 23:58:27 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 23:58:27 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 23:58:27 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 23:58:27 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 23:58:27 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 23:58:27 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 23:58:27 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 23:58:27 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 23:58:46 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 23:58:46 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 23:58:46 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 23:58:46 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 23:58:46 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 23:58:46 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 23:58:46 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 23:58:46 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 23:58:46 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 23:58:46 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 23:58:46 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 23:58:46 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 23:58:46 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 23:58:46 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 23:58:46 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 23:58:46 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[17-Dec-2025 23:58:46 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 00:01:15 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20251218-0001
+[18-Dec-2025 00:45:30 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 00:45:30 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 00:45:30 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 00:45:30 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 00:45:30 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 00:45:30 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 00:45:30 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 00:45:30 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 00:45:30 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 00:45:30 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 00:45:30 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 00:45:30 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 00:45:30 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 00:45:30 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 00:45:30 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 00:45:30 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 00:45:30 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 00:46:31 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20251218-0002
+[18-Dec-2025 01:07:24 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 01:07:24 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 01:07:24 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 01:07:24 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 01:07:24 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 01:07:24 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 01:07:24 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 01:07:24 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 01:07:24 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 01:07:24 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 01:07:24 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 01:07:24 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 01:07:24 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 01:07:24 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 01:07:24 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 01:07:24 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 01:07:24 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 01:08:34 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20251218-0003
+[18-Dec-2025 11:39:52 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:39:52 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:39:52 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:39:52 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:39:52 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:39:52 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:39:52 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:39:52 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:39:52 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:39:52 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:39:52 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:39:52 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:39:52 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:39:52 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:39:52 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:39:52 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:39:52 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:41:31 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20251218-0004
+[18-Dec-2025 11:43:45 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:43:45 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:43:45 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:43:45 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:43:45 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:43:45 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:43:45 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:43:45 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:43:45 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:43:45 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:43:45 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:43:45 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:43:45 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:43:45 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:43:45 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:43:45 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:43:45 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:44:43 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:44:43 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:44:43 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:44:43 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:44:43 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:44:43 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:44:43 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:44:43 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:44:43 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:44:43 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:44:43 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:44:43 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:44:43 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:44:43 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:44:43 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:44:43 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:44:43 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:45:35 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20251218-0005
+[18-Dec-2025 11:46:17 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20251218-0001
+[18-Dec-2025 11:52:41 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:52:41 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:52:41 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:52:41 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:52:41 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:52:41 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:52:41 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:52:41 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:52:41 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:52:41 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:52:41 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:52:41 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:52:41 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:52:41 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:52:41 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:52:41 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:52:41 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:53:25 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:53:25 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:53:25 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:53:25 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:53:25 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:53:25 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:53:25 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:53:25 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:53:25 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:53:25 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:53:25 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:53:25 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:53:25 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:53:25 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:53:25 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:53:25 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:53:25 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:54:01 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20251218-0006
+[18-Dec-2025 11:54:52 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20251218-0007
+[18-Dec-2025 11:55:10 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:55:10 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:55:10 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:55:10 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:55:10 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:55:10 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:55:10 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:55:10 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:55:10 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:55:10 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:55:10 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:55:10 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:55:10 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:55:10 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:55:10 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:55:10 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:55:10 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:55:47 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:55:47 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:55:47 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:55:47 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:55:47 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:55:47 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:55:47 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:55:47 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:55:47 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:55:47 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:55:47 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:55:47 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:55:47 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:55:47 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:55:47 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:55:47 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:55:47 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:56:27 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:56:27 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:56:27 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:56:27 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:56:27 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:56:27 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:56:27 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:56:27 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:56:27 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:56:27 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:56:27 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:56:27 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:56:27 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:56:27 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:56:27 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:56:27 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:56:27 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:56:45 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:56:45 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:56:45 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:56:45 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:56:45 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:56:45 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:56:45 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:56:45 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:56:45 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:56:45 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:56:45 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:56:45 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:56:45 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:56:45 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:56:45 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:56:45 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[18-Dec-2025 11:56:45 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[19-Dec-2025 01:35:56 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[19-Dec-2025 01:35:56 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[19-Dec-2025 01:35:56 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[19-Dec-2025 01:35:56 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[19-Dec-2025 01:35:56 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[19-Dec-2025 01:35:56 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[19-Dec-2025 01:35:56 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[19-Dec-2025 01:35:56 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[19-Dec-2025 01:35:56 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[19-Dec-2025 01:35:56 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[19-Dec-2025 01:35:56 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[19-Dec-2025 01:35:56 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[19-Dec-2025 01:35:56 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[19-Dec-2025 01:35:56 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[19-Dec-2025 01:35:56 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[19-Dec-2025 01:35:56 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[19-Dec-2025 01:35:56 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$supplier_name in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php on line 233
+[20-Dec-2025 10:56:59 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20251220-0001
+[20-Dec-2025 10:58:02 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20251220-0002
+[20-Dec-2025 10:58:57 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20251220-0001
+[20-Dec-2025 10:59:25 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20251220-0002
+[20-Dec-2025 11:00:46 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20251220-0003
+[20-Dec-2025 11:01:52 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20251220-0003
+[20-Dec-2025 11:02:59 Asia/Dhaka] ✓ Telegram purchase order notification sent: 455
+[20-Dec-2025 11:03:29 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20251220-0004
+[20-Dec-2025 11:03:50 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20251220-0005
+[20-Dec-2025 11:04:20 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20251220-0004
+[20-Dec-2025 11:04:46 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20251220-0005
+[20-Dec-2025 11:05:15 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20251220-0006
+[20-Dec-2025 11:07:08 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20251220-0006
+[08-Jan-2026 11:17:43 Asia/Dhaka] ✓ Telegram purchase order notification sent: 456
+[11-Jan-2026 11:22:08 Asia/Dhaka] PHP Warning:  require_once(../includes/footer.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php on line 673
+[11-Jan-2026 11:22:08 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Failed opening required '../includes/footer.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php:673
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php on line 673
+[11-Jan-2026 11:24:05 Asia/Dhaka] ✓ Telegram purchase order notification sent: 457
+[11-Jan-2026 11:25:49 Asia/Dhaka] Error recording GRN: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect decimal value: '' for column `ujjalfmc_saas`.`goods_received_adnan`.`expected_quantity` at row 1
+[11-Jan-2026 11:25:49 Asia/Dhaka] ✗ Telegram GRN notification: Invalid GRN ID - Array
+(
+    [success] => 
+    [message] => Error recording goods received: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect decimal value: '' for column `ujjalfmc_saas`.`goods_received_adnan`.`expected_quantity` at row 1
+)
+
+[11-Jan-2026 11:25:49 Asia/Dhaka] ✗ Telegram GRN notification error: Invalid GRN ID returned
+[11-Jan-2026 11:33:02 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260111-0001
+[11-Jan-2026 11:34:01 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20260111-0001
+[11-Jan-2026 11:34:49 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20260111-0002
+[11-Jan-2026 11:35:14 Asia/Dhaka] Error closing PO: SQLSTATE[01000]: Warning: 1265 Data truncated for column 'delivery_status' at row 1
+[11-Jan-2026 11:35:33 Asia/Dhaka] Error closing PO: SQLSTATE[01000]: Warning: 1265 Data truncated for column 'delivery_status' at row 1
+[12-Jan-2026 10:31:41 Asia/Dhaka] Error closing PO: SQLSTATE[01000]: Warning: 1265 Data truncated for column 'delivery_status' at row 1
+[12-Jan-2026 11:12:27 Asia/Dhaka] Error closing PO: SQLSTATE[01000]: Warning: 1265 Data truncated for column 'delivery_status' at row 1
+[13-Jan-2026 14:14:12 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260113-0001
+[13-Jan-2026 14:14:31 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260113-0002
+[13-Jan-2026 14:14:52 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260113-0003
+[13-Jan-2026 14:15:26 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260113-0004
+[13-Jan-2026 14:16:01 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20260113-0001
+[13-Jan-2026 14:17:48 Asia/Dhaka] Error closing PO: SQLSTATE[01000]: Warning: 1265 Data truncated for column 'delivery_status' at row 1
+[13-Jan-2026 14:20:36 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260113-0005
+[13-Jan-2026 15:05:11 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260113-0006
+[13-Jan-2026 15:07:20 Asia/Dhaka] ✓ Telegram purchase order notification sent: 458
+[13-Jan-2026 15:08:29 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260113-0007
+[13-Jan-2026 15:08:48 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260113-0008
+[13-Jan-2026 15:09:20 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260113-0009
+[13-Jan-2026 15:10:01 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20260113-0002
+[13-Jan-2026 15:11:05 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20260113-0003
+[13-Jan-2026 20:46:42 Asia/Dhaka] Error closing PO: SQLSTATE[01000]: Warning: 1265 Data truncated for column 'delivery_status' at row 1
+[17-Jan-2026 11:12:48 Asia/Dhaka] ✓ Telegram purchase order notification sent: 459
+[17-Jan-2026 11:13:56 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260117-0001
+[17-Jan-2026 11:14:39 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260117-0002
+[17-Jan-2026 14:47:36 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260117-0003
+[17-Jan-2026 14:51:03 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260117-0004
+[17-Jan-2026 14:53:57 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260117-0005
+[18-Jan-2026 10:09:15 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260118-0001
+[18-Jan-2026 15:28:36 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260118-0002
+[18-Jan-2026 15:58:23 Asia/Dhaka] ✓ Telegram purchase order notification sent: 477
+[18-Jan-2026 15:58:44 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260118-0003
+[18-Jan-2026 15:59:05 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260118-0004
+[18-Jan-2026 15:59:40 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260118-0005
+[18-Jan-2026 16:00:16 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20260118-0001
+[18-Jan-2026 16:00:37 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20260118-0002
+[18-Jan-2026 16:08:58 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260118-0006
+[18-Jan-2026 17:08:56 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260118-0007
+[18-Jan-2026 17:34:27 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260118-0008
+[19-Jan-2026 10:41:10 Asia/Dhaka] ✓ Telegram purchase order notification sent: 478
+[19-Jan-2026 10:47:30 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260119-0001
+[19-Jan-2026 10:48:18 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260119-0002
+[19-Jan-2026 10:48:56 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260119-0003
+[19-Jan-2026 10:49:54 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260119-0004
+[19-Jan-2026 12:49:37 Asia/Dhaka] PHP Warning:  require_once(../includes/footer.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php on line 673
+[19-Jan-2026 12:49:37 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Failed opening required '../includes/footer.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php:673
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/create_po.php on line 673
+[19-Jan-2026 14:24:36 Asia/Dhaka] ✓ Telegram purchase order notification sent: 478
+[19-Jan-2026 16:08:24 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260119-0005
+[20-Jan-2026 11:38:17 Asia/Dhaka] ✓ Telegram purchase order notification sent: 479
+[20-Jan-2026 11:40:11 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260120-0001
+[20-Jan-2026 11:41:16 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260120-0002
+[20-Jan-2026 11:42:15 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260120-0003
+[20-Jan-2026 11:42:51 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260120-0004
+[20-Jan-2026 11:43:47 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260120-0005
+[20-Jan-2026 12:26:49 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260120-0006
+[20-Jan-2026 12:27:47 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260120-0007
+[20-Jan-2026 14:29:31 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20260120-0001
+[20-Jan-2026 14:47:41 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260120-0008
+[20-Jan-2026 15:44:47 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260120-0009
+[21-Jan-2026 10:22:17 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260121-0001
+[21-Jan-2026 10:23:06 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260121-0002
+[21-Jan-2026 10:25:54 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260121-0003
+[21-Jan-2026 10:29:31 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260121-0004
+[21-Jan-2026 14:30:52 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260121-0005
+[21-Jan-2026 14:31:36 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260121-0006
+[21-Jan-2026 15:18:43 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260121-0007
+[21-Jan-2026 16:05:52 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260121-0008
+[21-Jan-2026 16:14:23 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260121-0009
+[21-Jan-2026 17:03:56 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260121-0010
+[22-Jan-2026 10:25:02 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260122-0001
+[22-Jan-2026 10:25:46 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260122-0002
+[22-Jan-2026 11:49:38 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20260122-0001
+[22-Jan-2026 13:38:20 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260122-0003
+[22-Jan-2026 13:39:31 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260122-0004
+[22-Jan-2026 14:49:53 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260122-0005
+[22-Jan-2026 17:37:00 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260122-0006
+[24-Jan-2026 10:09:26 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260124-0001
+[24-Jan-2026 10:12:37 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260124-0002
+[24-Jan-2026 10:23:26 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260124-0005
+[24-Jan-2026 10:25:13 Asia/Dhaka] ✗ Telegram GRN notification failed: null
+[24-Jan-2026 15:13:39 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260124-0007
+[25-Jan-2026 11:27:34 Asia/Dhaka] ✓ Telegram purchase order notification sent: 480
+[25-Jan-2026 14:21:10 Asia/Dhaka] ✓ Telegram purchase order notification sent: 481
+[25-Jan-2026 14:50:41 UTC] PHP Warning:  require_once(/home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/../../core/init.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_view_po.php on line 14
+[25-Jan-2026 14:50:41 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/../../core/init.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_view_po.php:14
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_view_po.php on line 14
+[25-Jan-2026 14:51:25 UTC] PHP Warning:  require_once(/../../core/init.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_view_po.php on line 14
+[25-Jan-2026 14:51:25 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/../../core/init.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_view_po.php:14
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_view_po.php on line 14
+[25-Jan-2026 14:51:51 UTC] PHP Warning:  require_once(../../core/init.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_view_po.php on line 14
+[25-Jan-2026 14:51:51 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '../../core/init.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_view_po.php:14
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_view_po.php on line 14
+[25-Jan-2026 20:52:40 Asia/Dhaka] PHP Warning:  require_once(../../managers/PurchaseAdnanManager.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_view_po.php on line 17
+[25-Jan-2026 20:52:40 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Failed opening required '../../managers/PurchaseAdnanManager.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_view_po.php:17
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_view_po.php on line 17
+[25-Jan-2026 20:54:12 Asia/Dhaka] PHP Warning:  require_once(/home/ujjalfmc/public_html/saas.ujjalfm.com/purchase../core/functions/PurchaseAdnanManager.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_view_po.php on line 17
+[25-Jan-2026 20:54:12 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Failed opening required '/home/ujjalfmc/public_html/saas.ujjalfm.com/purchase../core/functions/PurchaseAdnanManager.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_view_po.php:17
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_view_po.php on line 17
+[25-Jan-2026 20:55:17 Asia/Dhaka] PHP Warning:  require_once(/home/ujjalfmc/public_html/saas.ujjalfm.com/purchase../core/functions/PurchaseAdnanManager.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_view_po.php on line 17
+[25-Jan-2026 20:55:17 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Failed opening required '/home/ujjalfmc/public_html/saas.ujjalfm.com/purchase../core/functions/PurchaseAdnanManager.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_view_po.php:17
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_view_po.php on line 17
+[25-Jan-2026 20:55:44 Asia/Dhaka] PHP Warning:  require_once(/home/ujjalfmc/public_html/saas.ujjalfm.com/purchase../core/classes/PurchaseAdnanManager.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_view_po.php on line 17
+[25-Jan-2026 20:55:44 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Failed opening required '/home/ujjalfmc/public_html/saas.ujjalfm.com/purchase../core/classes/PurchaseAdnanManager.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_view_po.php:17
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_view_po.php on line 17
+[25-Jan-2026 20:57:33 Asia/Dhaka] PHP Warning:  require_once(../core/classes/PurchaseAdnanManager.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_view_po.php on line 17
+[25-Jan-2026 20:57:33 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Failed opening required '../core/classes/PurchaseAdnanManager.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_view_po.php:17
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_view_po.php on line 17
+[25-Jan-2026 20:58:19 Asia/Dhaka] PHP Warning:  require_once(../core/classes/PurchaseAdnanManager.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_view_po.php on line 17
+[25-Jan-2026 20:58:19 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Failed opening required '../core/classes/PurchaseAdnanManager.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_view_po.php:17
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_view_po.php on line 17
+[25-Jan-2026 20:59:32 Asia/Dhaka] PHP Warning:  require_once(../../templates/header.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_view_po.php on line 19
+[25-Jan-2026 20:59:32 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Failed opening required '../../templates/header.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_view_po.php:19
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_view_po.php on line 19
+[25-Jan-2026 20:59:45 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined function formatDate() in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_view_po.php:82
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_view_po.php on line 82
+[25-Jan-2026 20:59:49 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined function formatDate() in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_view_po.php:82
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_view_po.php on line 82
+[25-Jan-2026 15:36:55 UTC] PHP Warning:  require_once(/home/ujjalfmc/public_html/saas.ujjalfm.com/purchase../core/init.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_view_po.php on line 12
+[25-Jan-2026 15:36:55 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/ujjalfmc/public_html/saas.ujjalfm.com/purchase../core/init.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_view_po.php:12
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_view_po.php on line 12
+[25-Jan-2026 21:37:32 Asia/Dhaka] PHP Warning:  require_once(/home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/../../managers/PurchaseAdnanManager.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_view_po.php on line 15
+[25-Jan-2026 21:37:32 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Failed opening required '/home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/../../managers/PurchaseAdnanManager.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_view_po.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_view_po.php on line 15
+[25-Jan-2026 21:38:54 Asia/Dhaka] PHP Warning:  require_once(/home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/../../templates/header.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_view_po.php on line 16
+[25-Jan-2026 21:38:54 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Failed opening required '/home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/../../templates/header.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_view_po.php:16
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_view_po.php on line 16
+[25-Jan-2026 21:39:12 Asia/Dhaka] PHP Warning:  require_once(/home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/../../templates/footer.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_view_po.php on line 453
+[25-Jan-2026 21:39:12 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Failed opening required '/home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/../../templates/footer.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_view_po.php:453
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_view_po.php on line 453
+[25-Jan-2026 21:39:23 Asia/Dhaka] PHP Warning:  require_once(/home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/../../templates/footer.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_view_po.php on line 453
+[25-Jan-2026 21:39:23 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Failed opening required '/home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/../../templates/footer.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_view_po.php:453
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_view_po.php on line 453
+[26-Jan-2026 10:13:07 Asia/Dhaka] ✓ Telegram purchase order notification sent: 482
+[26-Jan-2026 12:10:14 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260126-0001
+[26-Jan-2026 12:12:27 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260126-0002
+[26-Jan-2026 12:13:20 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260126-0003
+[26-Jan-2026 12:14:21 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260126-0004
+[26-Jan-2026 12:15:14 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260126-0005
+[26-Jan-2026 12:23:22 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260126-0006
+[26-Jan-2026 12:24:15 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260126-0007
+[26-Jan-2026 12:30:47 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260126-0008
+[26-Jan-2026 16:55:28 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260126-0009
+[26-Jan-2026 22:06:29 Asia/Dhaka] Journal Entry Reversal Failed: There is already an active transaction
+[26-Jan-2026 22:06:29 Asia/Dhaka] PHP Fatal error:  Uncaught PDOException: There is no active transaction in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_delete_grn.php:126
+Stack trace:
+#0 /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_delete_grn.php(126): PDO->rollBack()
+#1 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_delete_grn.php on line 126
+[26-Jan-2026 22:12:46 Asia/Dhaka] Journal Entry Reversal Failed: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.journal_entry_lines' doesn't exist
+[26-Jan-2026 22:16:21 Asia/Dhaka] Journal Entry Reversal Failed: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'journal_entry_id' in 'WHERE'
+[26-Jan-2026 22:18:19 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$account_id in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/JournalEntryHelper.php on line 105
+[26-Jan-2026 22:18:19 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$credit_amount in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/JournalEntryHelper.php on line 106
+[26-Jan-2026 22:18:19 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$debit_amount in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/JournalEntryHelper.php on line 107
+[26-Jan-2026 22:18:19 Asia/Dhaka] Journal Entry Reversal Failed: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'account_id' in 'INSERT INTO'
+[26-Jan-2026 22:34:45 Asia/Dhaka] PO Totals Recalculation Failed: SQLSTATE[HY000]: General error: 1906 The value specified for generated column 'qty_yet_to_receive' in table 'purchase_orders_adnan' has been ignored
+[26-Jan-2026 22:39:42 Asia/Dhaka] Audit log failed (table may not exist): SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.audit_log' doesn't exist
+[26-Jan-2026 22:43:41 Asia/Dhaka] ✓ Telegram purchase order notification sent: 483
+[26-Jan-2026 22:45:06 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260126-0010
+[26-Jan-2026 22:45:14 Asia/Dhaka] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'department' in 'SELECT' in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Purchasepaymentadnanmanager.php:590
+Stack trace:
+#0 /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Purchasepaymentadnanmanager.php(590): PDO->query()
+#1 /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_record_payment.php(22): Purchasepaymentadnanmanager->getAllEmployees()
+#2 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Purchasepaymentadnanmanager.php on line 590
+[26-Jan-2026 22:46:51 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Class "Purchasepaymentadnanmanager" not found in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_record_payment.php:12
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_record_payment.php on line 12
+[26-Jan-2026 22:49:03 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20260126-0001
+[26-Jan-2026 23:07:50 Asia/Dhaka] Audit log failed (table may not exist): SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.audit_log' doesn't exist
+[26-Jan-2026 23:51:35 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20260126-0001
+[26-Jan-2026 23:51:45 Asia/Dhaka] Audit log failed (table may not exist): SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.audit_log' doesn't exist
+[27-Jan-2026 00:34:21 Asia/Dhaka] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'branch_name' in 'SELECT' in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_edit_grn.php:54
+Stack trace:
+#0 /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_edit_grn.php(54): PDO->query()
+#1 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_edit_grn.php on line 54
+[27-Jan-2026 00:39:10 Asia/Dhaka] GRN Update Failed: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'branch_name_bangla' in 'SELECT'
+[27-Jan-2026 00:41:27 Asia/Dhaka] Audit log failed: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.audit_log' doesn't exist
+[27-Jan-2026 00:43:02 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20260127-0001
+[27-Jan-2026 00:43:06 Asia/Dhaka] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_active' in 'WHERE' in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_edit_payment.php:47
+Stack trace:
+#0 /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_edit_payment.php(47): PDO->query()
+#1 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_edit_payment.php on line 47
+[27-Jan-2026 00:50:54 Asia/Dhaka] PHP Warning:  Undefined array key "name" in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_update_payment.php on line 69
+[27-Jan-2026 00:50:54 Asia/Dhaka] Audit log failed: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.audit_log' doesn't exist
+[27-Jan-2026 00:52:21 Asia/Dhaka] Error closing PO: SQLSTATE[01000]: Warning: 1265 Data truncated for column 'delivery_status' at row 1
+[27-Jan-2026 10:06:54 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260127-0001
+[27-Jan-2026 10:07:37 Asia/Dhaka] Audit log failed (table may not exist): SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.audit_log' doesn't exist
+[27-Jan-2026 10:08:41 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260127-0002
+[27-Jan-2026 10:09:26 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260127-0003
+[27-Jan-2026 10:10:07 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260127-0004
+[27-Jan-2026 10:11:08 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260127-0005
+[27-Jan-2026 10:12:46 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260127-0006
+[27-Jan-2026 10:13:47 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260127-0007
+[27-Jan-2026 10:14:35 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260127-0008
+[27-Jan-2026 10:15:27 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260127-0009
+[27-Jan-2026 10:24:01 Asia/Dhaka] Audit log failed (table may not exist): SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.audit_log' doesn't exist
+[27-Jan-2026 11:14:50 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260127-0010
+[27-Jan-2026 13:49:30 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260127-0011
+[27-Jan-2026 13:50:20 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260127-0012
+[27-Jan-2026 15:05:16 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260127-0013
+[28-Jan-2026 10:37:25 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260128-0001
+[28-Jan-2026 10:38:33 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260128-0002
+[28-Jan-2026 10:39:25 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260128-0003
+[28-Jan-2026 15:21:09 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260128-0004
+[28-Jan-2026 15:44:37 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260128-0005
+[28-Jan-2026 17:38:11 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260128-0006
+[28-Jan-2026 17:39:04 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260128-0007
+[29-Jan-2026 10:20:13 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260129-0001
+[29-Jan-2026 10:20:47 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260129-0002
+[31-Jan-2026 10:31:44 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260131-0001
+[31-Jan-2026 10:32:41 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260131-0002
+[31-Jan-2026 10:33:20 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260131-0003
+[31-Jan-2026 10:36:58 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260131-0004
+[01-Feb-2026 10:32:29 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260201-0001
+[01-Feb-2026 10:33:18 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260201-0002
+[01-Feb-2026 10:34:10 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260201-0003
+[01-Feb-2026 10:34:59 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260201-0004
+[01-Feb-2026 10:35:34 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260201-0005
+[01-Feb-2026 10:36:38 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260201-0006
+[01-Feb-2026 10:37:50 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260201-0007
+[01-Feb-2026 14:15:14 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260201-0008
+[01-Feb-2026 14:15:48 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260201-0009
+[01-Feb-2026 14:16:17 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260201-0010
+[01-Feb-2026 14:17:04 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260201-0011
+[01-Feb-2026 14:17:50 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260201-0012
+[01-Feb-2026 15:41:00 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260201-0013
+[01-Feb-2026 15:41:34 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260201-0014
+[01-Feb-2026 15:42:29 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260201-0015
+[01-Feb-2026 15:43:12 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260201-0016
+[01-Feb-2026 17:57:23 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260201-0017
+[02-Feb-2026 10:01:03 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260202-0001
+[02-Feb-2026 10:01:54 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260202-0002
+[02-Feb-2026 11:27:36 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260202-0003
+[02-Feb-2026 12:16:18 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260202-0004
+[02-Feb-2026 12:17:04 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260202-0005
+[02-Feb-2026 12:26:16 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260202-0006
+[03-Feb-2026 10:35:05 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260203-0001
+[03-Feb-2026 10:35:48 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260203-0002
+[03-Feb-2026 10:36:40 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260203-0003
+[03-Feb-2026 10:37:28 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260203-0004
+[03-Feb-2026 10:38:13 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260203-0005
+[03-Feb-2026 10:38:50 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260203-0006
+[03-Feb-2026 10:39:32 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260203-0007
+[03-Feb-2026 10:40:49 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260203-0008
+[03-Feb-2026 12:20:30 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260203-0009
+[03-Feb-2026 13:30:33 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260203-0010
+[03-Feb-2026 14:50:01 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260203-0011
+[03-Feb-2026 14:51:06 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260203-0012
+[03-Feb-2026 14:51:44 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260203-0013
+[03-Feb-2026 15:58:23 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260203-0014
+[03-Feb-2026 16:24:17 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260203-0015
+[03-Feb-2026 17:07:01 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260203-0016
+[03-Feb-2026 17:30:19 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260203-0017
+[03-Feb-2026 17:30:55 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260203-0018
+[03-Feb-2026 18:08:00 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260203-0019
+[03-Feb-2026 23:03:58 Asia/Dhaka] ✓ Telegram purchase order notification sent: 484
+[05-Feb-2026 10:03:45 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260205-0001
+[05-Feb-2026 10:07:03 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260205-0002
+[05-Feb-2026 10:07:38 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260205-0003
+[05-Feb-2026 10:09:58 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260205-0004
+[05-Feb-2026 10:11:22 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260205-0005
+[05-Feb-2026 10:12:11 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260205-0006
+[05-Feb-2026 10:13:01 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260205-0007
+[05-Feb-2026 10:14:04 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260205-0008
+[05-Feb-2026 10:14:57 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260205-0009
+[05-Feb-2026 10:15:45 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260205-0010
+[05-Feb-2026 10:16:27 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260205-0011
+[05-Feb-2026 10:17:00 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260205-0012
+[05-Feb-2026 10:19:17 Asia/Dhaka] ✓ Telegram purchase order notification sent: 485
+[05-Feb-2026 10:34:18 Asia/Dhaka] ✓ Telegram purchase order notification sent: 486
+[05-Feb-2026 11:09:24 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260205-0013
+[05-Feb-2026 11:21:31 Asia/Dhaka] ✓ Telegram purchase order notification sent: 484
+[05-Feb-2026 11:22:52 Asia/Dhaka] ✓ Telegram purchase order notification sent: 485
+[05-Feb-2026 11:24:59 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260205-0014
+[05-Feb-2026 11:25:26 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260205-0015
+[05-Feb-2026 11:27:13 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260205-0016
+[05-Feb-2026 11:27:49 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260205-0017
+[05-Feb-2026 11:28:17 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260205-0018
+[05-Feb-2026 11:28:49 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260205-0019
+[05-Feb-2026 11:29:20 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260205-0020
+[05-Feb-2026 12:21:54 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260205-0021
+[05-Feb-2026 12:50:24 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260205-0022
+[06-Feb-2026 16:34:40 Asia/Dhaka] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'supplier_id' in 'WHERE' in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Purchaseadnanmanager.php:190
+Stack trace:
+#0 /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Purchaseadnanmanager.php(190): PDOStatement->execute()
+#1 /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php(58): PurchaseAdnanManager->listPurchaseOrders()
+#2 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Purchaseadnanmanager.php on line 190
+[06-Feb-2026 16:34:53 Asia/Dhaka] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'supplier_id' in 'WHERE' in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Purchaseadnanmanager.php:190
+Stack trace:
+#0 /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Purchaseadnanmanager.php(190): PDOStatement->execute()
+#1 /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_index.php(58): PurchaseAdnanManager->listPurchaseOrders()
+#2 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/Purchaseadnanmanager.php on line 190
+[06-Feb-2026 16:47:49 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260206-0001
+[06-Feb-2026 18:44:11 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$total_expected_value in /home/ujjalfmc/public_html/saas.ujjalfm.com/purchase/purchase_adnan_view_po.php on line 250

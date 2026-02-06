@@ -175,3 +175,133 @@
     [0] => 38
 )
 
+[09-Dec-2025 11:12:53 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'SELECT' in query: SELECT CONCAT(from_status, ' → ', to_status, ' (', action, ') at ', 
+                    DATE_FORMAT(created_at, '%Y-%m-%d %H:%i'), ' by user_id:', performed_by_user_id, 
+                    IF(comments != '', CONCAT(' - ', comments), '')) as event
+             FROM credit_order_workflow 
+             WHERE order_id = ? 
+             ORDER BY created_at | Params: Array
+(
+    [0] => 55
+)
+
+[09-Dec-2025 11:12:53 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'SELECT' in query: SELECT CONCAT(from_status, ' → ', to_status, ' (', action, ') at ', 
+                    DATE_FORMAT(created_at, '%Y-%m-%d %H:%i'), ' by user_id:', performed_by_user_id, 
+                    IF(comments != '', CONCAT(' - ', comments), '')) as event
+             FROM credit_order_workflow 
+             WHERE order_id = ? 
+             ORDER BY created_at | Params: Array
+(
+    [0] => 51
+)
+
+[09-Dec-2025 11:12:53 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'SELECT' in query: SELECT CONCAT(from_status, ' → ', to_status, ' (', action, ') at ', 
+                    DATE_FORMAT(created_at, '%Y-%m-%d %H:%i'), ' by user_id:', performed_by_user_id, 
+                    IF(comments != '', CONCAT(' - ', comments), '')) as event
+             FROM credit_order_workflow 
+             WHERE order_id = ? 
+             ORDER BY created_at | Params: Array
+(
+    [0] => 49
+)
+
+[09-Dec-2025 11:12:53 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'SELECT' in query: SELECT CONCAT(from_status, ' → ', to_status, ' (', action, ') at ', 
+                    DATE_FORMAT(created_at, '%Y-%m-%d %H:%i'), ' by user_id:', performed_by_user_id, 
+                    IF(comments != '', CONCAT(' - ', comments), '')) as event
+             FROM credit_order_workflow 
+             WHERE order_id = ? 
+             ORDER BY created_at | Params: Array
+(
+    [0] => 48
+)
+
+[09-Dec-2025 11:12:53 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'SELECT' in query: SELECT CONCAT(from_status, ' → ', to_status, ' (', action, ') at ', 
+                    DATE_FORMAT(created_at, '%Y-%m-%d %H:%i'), ' by user_id:', performed_by_user_id, 
+                    IF(comments != '', CONCAT(' - ', comments), '')) as event
+             FROM credit_order_workflow 
+             WHERE order_id = ? 
+             ORDER BY created_at | Params: Array
+(
+    [0] => 56
+)
+
+[09-Dec-2025 11:12:53 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'SELECT' in query: SELECT CONCAT(from_status, ' → ', to_status, ' (', action, ') at ', 
+                    DATE_FORMAT(created_at, '%Y-%m-%d %H:%i'), ' by user_id:', performed_by_user_id, 
+                    IF(comments != '', CONCAT(' - ', comments), '')) as event
+             FROM credit_order_workflow 
+             WHERE order_id = ? 
+             ORDER BY created_at | Params: Array
+(
+    [0] => 47
+)
+
+[09-Dec-2025 11:12:53 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'SELECT' in query: SELECT CONCAT(from_status, ' → ', to_status, ' (', action, ') at ', 
+                    DATE_FORMAT(created_at, '%Y-%m-%d %H:%i'), ' by user_id:', performed_by_user_id, 
+                    IF(comments != '', CONCAT(' - ', comments), '')) as event
+             FROM credit_order_workflow 
+             WHERE order_id = ? 
+             ORDER BY created_at | Params: Array
+(
+    [0] => 45
+)
+
+[09-Dec-2025 11:12:53 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'SELECT' in query: SELECT CONCAT(from_status, ' → ', to_status, ' (', action, ') at ', 
+                    DATE_FORMAT(created_at, '%Y-%m-%d %H:%i'), ' by user_id:', performed_by_user_id, 
+                    IF(comments != '', CONCAT(' - ', comments), '')) as event
+             FROM credit_order_workflow 
+             WHERE order_id = ? 
+             ORDER BY created_at | Params: Array
+(
+    [0] => 43
+)
+
+[09-Dec-2025 11:12:53 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'SELECT' in query: SELECT CONCAT(from_status, ' → ', to_status, ' (', action, ') at ', 
+                    DATE_FORMAT(created_at, '%Y-%m-%d %H:%i'), ' by user_id:', performed_by_user_id, 
+                    IF(comments != '', CONCAT(' - ', comments), '')) as event
+             FROM credit_order_workflow 
+             WHERE order_id = ? 
+             ORDER BY created_at | Params: Array
+(
+    [0] => 60
+)
+
+[09-Dec-2025 11:12:53 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'SELECT' in query: SELECT CONCAT(from_status, ' → ', to_status, ' (', action, ') at ', 
+                    DATE_FORMAT(created_at, '%Y-%m-%d %H:%i'), ' by user_id:', performed_by_user_id, 
+                    IF(comments != '', CONCAT(' - ', comments), '')) as event
+             FROM credit_order_workflow 
+             WHERE order_id = ? 
+             ORDER BY created_at | Params: Array
+(
+    [0] => 46
+)
+
+[09-Dec-2025 11:12:53 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'SELECT' in query: SELECT CONCAT(from_status, ' → ', to_status, ' (', action, ') at ', 
+                    DATE_FORMAT(created_at, '%Y-%m-%d %H:%i'), ' by user_id:', performed_by_user_id, 
+                    IF(comments != '', CONCAT(' - ', comments), '')) as event
+             FROM credit_order_workflow 
+             WHERE order_id = ? 
+             ORDER BY created_at | Params: Array
+(
+    [0] => 37
+)
+
+[09-Dec-2025 11:12:53 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'SELECT' in query: SELECT CONCAT(from_status, ' → ', to_status, ' (', action, ') at ', 
+                    DATE_FORMAT(created_at, '%Y-%m-%d %H:%i'), ' by user_id:', performed_by_user_id, 
+                    IF(comments != '', CONCAT(' - ', comments), '')) as event
+             FROM credit_order_workflow 
+             WHERE order_id = ? 
+             ORDER BY created_at | Params: Array
+(
+    [0] => 61
+)
+
+[15-Jan-2026 15:25:04 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'SELECT' in query: SELECT CONCAT(from_status, ' → ', to_status, ' (', action, ') at ', 
+                    DATE_FORMAT(created_at, '%Y-%m-%d %H:%i'), ' by user_id:', performed_by_user_id, 
+                    IF(comments != '', CONCAT(' - ', comments), '')) as event
+             FROM credit_order_workflow 
+             WHERE order_id = ? 
+             ORDER BY created_at | Params: Array
+(
+    [0] => 98
+)
+

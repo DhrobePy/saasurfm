@@ -137,6 +137,7 @@ require_once '../templates/header.php';
     </div>
 
     <!-- Quantity Details -->
+   <!-- Quantity Details -->
     <div class="bg-gray-50 border border-gray-300 rounded-lg p-6 mb-6">
         <h3 class="text-lg font-bold text-gray-900 mb-4">Quantity Details</h3>
         <table class="w-full">
@@ -162,7 +163,7 @@ require_once '../templates/header.php';
                 </tr>
                 <?php if ($grn->expected_quantity > 0): ?>
                 <tr class="<?php echo $variance > 0 ? 'text-green-700' : ($variance < 0 ? 'text-red-700' : 'text-gray-700'); ?>">
-                    <td class="py-2 font-semibold">Variance</td>
+                    <td class="py-2 font-semibold">Variance (Quantity)</td>
                     <td class="text-right font-semibold">
                         <?php echo $variance > 0 ? '+' : ''; ?><?php echo number_format($variance, 2); ?>
                         (<?php echo $variance > 0 ? '+' : ''; ?><?php echo number_format($variance_percent, 2); ?>%)
@@ -171,18 +172,37 @@ require_once '../templates/header.php';
                         <?php echo $variance > 0 ? '+' : ''; ?>৳<?php echo number_format($variance * $po->unit_price_per_kg, 2); ?>
                     </td>
                 </tr>
+                <!-- NEW ROW: Expected Payable -->
+                <tr class="border-t-2 border-gray-400 bg-purple-50 font-bold">
+                    <td class="py-3">EXPECTED PAYABLE</td>
+                    <td class="text-right"><?php echo number_format($grn->expected_quantity, 2); ?> KG</td>
+                    <td class="text-right text-purple-700">৳<?php echo number_format($grn->expected_quantity * $po->unit_price_per_kg, 2); ?></td>
+                </tr>
                 <?php endif; ?>
             </tbody>
         </table>
     </div>
-
     <!-- Total Value -->
     <div class="bg-primary-50 border-2 border-primary-600 rounded-lg p-4 mb-6">
-        <div class="flex justify-between items-center">
-            <span class="text-lg font-bold text-gray-900">TOTAL RECEIVED VALUE:</span>
-            <span class="text-2xl font-bold text-primary-600">৳<?php echo number_format($grn->total_value, 2); ?></span>
-        </div>
+    <div class="flex justify-between items-center">
+        <span class="text-lg font-bold text-gray-900">EXPECTED PAYABLE (Amount Due):</span>
+        <span class="text-2xl font-bold text-primary-600">৳<?php 
+            $expected_payable = ($grn->expected_quantity > 0) 
+                ? ($grn->expected_quantity * $po->unit_price_per_kg) 
+                : $grn->total_value;
+            echo number_format($expected_payable, 2); 
+        ?></span>
     </div>
+</div>
+
+    <?php if ($grn->expected_quantity > 0): ?>
+        <div class="bg-gray-100 border border-gray-300 rounded-lg p-4 mb-6">
+            <div class="flex justify-between items-center">
+                <span class="text-sm font-semibold text-gray-700">Actual Received Value (for reference):</span>
+                <span class="text-lg font-semibold text-gray-700">৳<?php echo number_format($grn->total_value, 2); ?></span>
+            </div>
+        </div>
+        <?php endif; ?>
 
     <?php if ($grn->remarks): ?>
     <!-- Remarks -->

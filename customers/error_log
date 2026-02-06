@@ -115,3 +115,58 @@ Stack trace:
 Stack trace:
 #0 {main}
   thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/customers/view.php on line 180
+[15-Dec-2025 15:58:29 Asia/Dhaka] SQL Error [23000]: SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails (`ujjalfmc_saas`.`vehicle_rentals`, CONSTRAINT `vehicle_rentals_ibfk_2` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`)) in query: DELETE FROM customers WHERE id = ? | Params: Array
+(
+    [0] => 10
+)
+
+[17-Dec-2025 15:31:20 Asia/Dhaka] SQL Error [23000]: SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails (`ujjalfmc_saas`.`vehicle_rentals`, CONSTRAINT `vehicle_rentals_ibfk_2` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`)) in query: DELETE FROM customers WHERE id = ? | Params: Array
+(
+    [0] => 10
+)
+
+[17-Dec-2025 15:31:25 Asia/Dhaka] SQL Error [23000]: SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails (`ujjalfmc_saas`.`vehicle_rentals`, CONSTRAINT `vehicle_rentals_ibfk_2` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`)) in query: DELETE FROM customers WHERE id = ? | Params: Array
+(
+    [0] => 10
+)
+
+[17-Dec-2025 15:31:33 Asia/Dhaka] SQL Error [23000]: SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails (`ujjalfmc_saas`.`vehicle_rentals`, CONSTRAINT `vehicle_rentals_ibfk_2` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`)) in query: DELETE FROM customers WHERE id = ? | Params: Array
+(
+    [0] => 10
+)
+
+[17-Dec-2025 15:34:06 Asia/Dhaka] SQL Error [23000]: SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails (`ujjalfmc_saas`.`vehicle_rentals`, CONSTRAINT `vehicle_rentals_ibfk_2` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`)) in query: DELETE FROM customers WHERE id = ? | Params: Array
+(
+    [0] => 10
+)
+
+[24-Dec-2025 11:24:34 Asia/Dhaka] SQL Error [23000]: SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails (`ujjalfmc_saas`.`vehicle_rentals`, CONSTRAINT `vehicle_rentals_ibfk_2` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`)) in query: DELETE FROM customers WHERE id = ? | Params: Array
+(
+    [0] => 10
+)
+
+[24-Dec-2025 11:24:36 Asia/Dhaka] SQL Error [23000]: SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails (`ujjalfmc_saas`.`vehicle_rentals`, CONSTRAINT `vehicle_rentals_ibfk_2` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`)) in query: DELETE FROM customers WHERE id = ? | Params: Array
+(
+    [0] => 10
+)
+
+[24-Dec-2025 11:24:38 Asia/Dhaka] SQL Error [23000]: SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails (`ujjalfmc_saas`.`vehicle_rentals`, CONSTRAINT `vehicle_rentals_ibfk_2` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`)) in query: DELETE FROM customers WHERE id = ? | Params: Array
+(
+    [0] => 10
+)
+
+[24-Dec-2025 11:25:27 Asia/Dhaka] SQL Error [23000]: SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails (`ujjalfmc_saas`.`vehicle_rentals`, CONSTRAINT `vehicle_rentals_ibfk_2` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`)) in query: DELETE FROM customers WHERE id = ? | Params: Array
+(
+    [0] => 10
+)
+
+[24-Dec-2025 11:26:19 Asia/Dhaka] SQL Error [23000]: SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails (`ujjalfmc_saas`.`vehicle_rentals`, CONSTRAINT `vehicle_rentals_ibfk_2` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`)) in query: DELETE FROM customers WHERE id = ? | Params: Array
+(
+    [0] => 10
+)
+
+[24-Dec-2025 11:26:22 Asia/Dhaka] SQL Error [23000]: SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails (`ujjalfmc_saas`.`vehicle_rentals`, CONSTRAINT `vehicle_rentals_ibfk_2` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`)) in query: DELETE FROM customers WHERE id = ? | Params: Array
+(
+    [0] => 10
+)
+

@@ -115,7 +115,7 @@ require_once '../templates/header.php';
             <h1 class="text-3xl font-bold text-gray-900">Suppliers</h1>
             <p class="mt-2 text-gray-600">Manage your supplier relationships and track balances</p>
         </div>
-        <a href="supplier_create.php" class="bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-lg shadow-md flex items-center gap-2 transition">
+        <a href="supplier_form.php" class="bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-lg shadow-md flex items-center gap-2 transition">
             <i class="fas fa-plus-circle"></i>
             <span>Add New Supplier</span>
         </a>
@@ -428,7 +428,7 @@ require_once '../templates/header.php';
                 <?php endif; ?>
             </p>
             <?php if (empty($search) && empty($supplier_type) && empty($status)): ?>
-            <a href="supplier_create.php" class="inline-block bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-lg">
+            <a href="supplier_form.php" class="inline-block bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-lg">
                 <i class="fas fa-plus-circle mr-2"></i>Add Your First Supplier
             </a>
             <?php else: ?>

@@ -43,6 +43,12 @@
     $pos_roles = ['Superadmin', 'admin', 'accountspos-demra', 'accountspos-srg', 'dispatchpos-demra', 'dispatchpos-srg'];
     $logistics_roles = ['Superadmin', 'admin', 'Accounts', 'Transport Manager', 'dispatch-demra', 'dispatch-srg', 'dispatchpos-demra', 'dispatchpos-srg'];
     $purchase_roles = ['Superadmin', 'admin', 'Accounts', 'accounts-demra', 'accounts-srg', 'production manager-srg', 'production manager-demra'];
+    $expense_roles = ['Superadmin', 'admin', 'Accounts', 'Expense Initiator', 'Expense Approver'];
+    $expense_category_roles = ['Superadmin', 'admin', 'Accounts']; // Only these can access categories
+    $expense_approver_roles = ['Superadmin', 'admin', 'Accounts', 'Expense Approver']; // Can approve expenses
+
+    // Check if user is expense-only role (should ONLY see Dashboard and Expense menu)
+    $is_expense_only = in_array($user_role, ['Expense Initiator', 'Expense Approver']);
 
     ?>
 
@@ -69,7 +75,7 @@
                         </a>
 
                         <!-- Credit Sales -->
-                        <?php if (in_array($user_role, $credit_sales_roles)): ?>
+                        <?php if (in_array($user_role, $credit_sales_roles) && !$is_expense_only): ?>
                         <div class="relative" x-data="{ open: false }">
                             <button @click="open = !open" class="text-gray-600 hover:text-primary-600 inline-flex items-center px-1 pt-1 text-sm font-medium h-full">
                                 Credit Sales <i class="fas fa-chevron-down text-xs ml-1"></i>
@@ -92,7 +98,7 @@
                         <?php endif; ?>
 
                         <!-- POS -->
-                        <?php if (in_array($user_role, $pos_roles)): ?>
+                        <?php if (in_array($user_role, $pos_roles) && !$is_expense_only): ?>
                         <div class="relative" x-data="{ open: false }">
                             <button @click="open = !open" class="text-gray-600 hover:text-primary-600 inline-flex items-center px-1 pt-1 text-sm font-medium h-full">
                                 POS <i class="fas fa-chevron-down text-xs ml-1"></i>
@@ -109,7 +115,7 @@
                         <?php endif; ?>
 
                         <!-- Logistics -->
-                        <?php if (in_array($user_role, $logistics_roles)): ?>
+                        <?php if (in_array($user_role, $logistics_roles) && !$is_expense_only): ?>
                         <div class="relative" x-data="{ open: false }">
                             <button @click="open = !open" class="text-gray-600 hover:text-primary-600 inline-flex items-center px-1 pt-1 text-sm font-medium h-full">
                                 Logistics <i class="fas fa-chevron-down text-xs ml-1"></i>
@@ -129,6 +135,7 @@
                         <?php endif; ?>
 
                         <!-- Products -->
+                        <?php if (!$is_expense_only): ?>
                         <div class="relative" x-data="{ open: false }">
                             <button @click="open = !open" class="text-gray-600 hover:text-primary-600 inline-flex items-center px-1 pt-1 text-sm font-medium h-full">
                                 Products <i class="fas fa-chevron-down text-xs ml-1"></i>
@@ -142,14 +149,17 @@
                                 </div>
                             </div>
                         </div>
+                        <?php endif; ?>
 
                         <!-- Customers -->
+                        <?php if (!$is_expense_only): ?>
                         <a href="<?php echo url('customers/index.php'); ?>" class="text-gray-600 hover:text-primary-600 inline-flex items-center px-1 pt-1 text-sm font-medium">
                             Customers
                         </a>
+                        <?php endif; ?>
 
                         <!-- Accounts -->
-                        <?php if (in_array($user_role, $accounts_roles)): ?>
+                        <?php if (in_array($user_role, $accounts_roles) && !$is_expense_only): ?>
                         <div class="relative" x-data="{ open: false }">
                             <button @click="open = !open" class="text-gray-600 hover:text-primary-600 inline-flex items-center px-1 pt-1 text-sm font-medium h-full">
                                 Accounts <i class="fas fa-chevron-down text-xs ml-1"></i>
@@ -171,7 +181,7 @@
                        <!---- Purchase Module----->
                         
                         <!-- Purchase Module -->
-                    <?php if (in_array($user_role, $accounts_roles)): ?>
+                    <?php if (in_array($user_role, $accounts_roles) && !$is_expense_only): ?>
                     <div class="relative" x-data="{ open: false }">
                         <button @click="open = !open" class="text-gray-600 hover:text-primary-600 inline-flex items-center px-1 pt-1 text-sm font-medium h-full">
                             Purchase <i class="fas fa-chevron-down text-xs ml-1"></i>
@@ -263,8 +273,39 @@
                                 
                                 
 
+                        <!-- Expense -->
+                        <?php if (in_array($user_role, $expense_roles)): ?>
+                        <div class="relative" x-data="{ open: false }">
+                            <button @click="open = !open" class="text-gray-600 hover:text-primary-600 inline-flex items-center px-1 pt-1 text-sm font-medium h-full">
+                                Expense <i class="fas fa-chevron-down text-xs ml-1"></i>
+                            </button>
+                            <div x-show="open" @click.away="open = false" x-transition class="absolute left-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
+                                <div class="py-1">
+                                    <?php if (in_array($user_role, $expense_category_roles)): ?>
+                                    <a href="<?php echo url('expense/expense_categories.php'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                        <i class="fas fa-tags mr-2 text-gray-500"></i>Expense Categories
+                                    </a>
+                                    <div class="border-t border-gray-100 my-1"></div>
+                                    <?php endif; ?>
+                                    <a href="<?php echo url('expense/create_expense.php'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                        <i class="fas fa-plus-circle mr-2 text-gray-500"></i>Create Expense Voucher
+                                    </a>
+                                    <?php if (in_array($user_role, $expense_approver_roles)): ?>
+                                    <a href="<?php echo url('expense/approve_expense.php'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                        <i class="fas fa-check-circle mr-2 text-gray-500"></i>Approve Expense Voucher
+                                    </a>
+                                    <?php endif; ?>
+                                    <div class="border-t border-gray-100 my-1"></div>
+                                    <a href="<?php echo url('expense/expense_history.php'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                        <i class="fas fa-history mr-2 text-gray-500"></i>Expense History
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <?php endif; ?>
+
                         <!-- Admin -->
-                        <?php if (in_array($user_role, $admin_roles)): ?>
+                        <?php if (in_array($user_role, $admin_roles) && !$is_expense_only): ?>
                         <div class="relative" x-data="{ open: false }">
                             <button @click="open = !open" class="text-gray-600 hover:text-primary-600 inline-flex items-center px-1 pt-1 text-sm font-medium h-full">
                                 Admin <i class="fas fa-chevron-down text-xs ml-1"></i>
@@ -273,6 +314,7 @@
                                 <div class="py-1">
                                     <a href="<?php echo url('admin/users.php'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Users</a>
                                     <a href="<?php echo url('admin/employees.php'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Employees</a>
+                                    <a href="<?php echo url('admin/user_activity.php'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Audit Trail</a>
                                     <a href="<?php echo url('admin/settings.php'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</a>
                                 </div>
                             </div>
@@ -320,26 +362,48 @@
                 <div class="pt-2 pb-3 space-y-1">
                     <a href="<?php echo url('index.php'); ?>" class="block pl-3 pr-4 py-2 text-base font-medium text-gray-700 hover:bg-gray-50">Dashboard</a>
                     
-                    <?php if (in_array($user_role, $credit_sales_roles)): ?>
+                    <?php if (in_array($user_role, $credit_sales_roles) && !$is_expense_only): ?>
                     <div class="px-3 py-1 text-xs font-semibold text-gray-500 uppercase">Credit Sales</div>
                     <a href="<?php echo url('cr/create_order.php'); ?>" class="block pl-6 pr-4 py-2 text-sm text-gray-600 hover:bg-gray-50">Create Order</a>
                     <a href="<?php echo url('cr/credit_dispatch.php'); ?>" class="block pl-6 pr-4 py-2 text-sm text-gray-600 hover:bg-gray-50">Dispatch</a>
                     <?php endif; ?>
                     
-                    <?php if (in_array($user_role, $pos_roles)): ?>
+                    <?php if (in_array($user_role, $pos_roles) && !$is_expense_only): ?>
                     <div class="px-3 py-1 text-xs font-semibold text-gray-500 uppercase">POS</div>
                     <a href="<?php echo url('pos/index.php'); ?>" class="block pl-6 pr-4 py-2 text-sm text-gray-600 hover:bg-gray-50">POS Terminal</a>
                     <?php endif; ?>
                     
-                    <?php if (in_array($user_role, $logistics_roles)): ?>
+                    <?php if (in_array($user_role, $logistics_roles) && !$is_expense_only): ?>
                     <div class="px-3 py-1 text-xs font-semibold text-gray-500 uppercase">Logistics</div>
                     <a href="<?php echo url('logistics/vehicles/'); ?>" class="block pl-6 pr-4 py-2 text-sm text-gray-600 hover:bg-gray-50">Vehicles</a>
                     <a href="<?php echo url('logistics/drivers/'); ?>" class="block pl-6 pr-4 py-2 text-sm text-gray-600 hover:bg-gray-50">Drivers</a>
                     <?php endif; ?>
                     
+                    <?php if (in_array($user_role, $expense_roles)): ?>
+                    <div class="px-3 py-1 text-xs font-semibold text-gray-500 uppercase">Expense</div>
+                    <?php if (in_array($user_role, $expense_category_roles)): ?>
+                    <a href="<?php echo url('expense/expense_categories.php'); ?>" class="block pl-6 pr-4 py-2 text-sm text-gray-600 hover:bg-gray-50">
+                        <i class="fas fa-tags mr-2"></i>Expense Categories
+                    </a>
+                    <?php endif; ?>
+                    <a href="<?php echo url('expense/create_expense.php'); ?>" class="block pl-6 pr-4 py-2 text-sm text-gray-600 hover:bg-gray-50">
+                        <i class="fas fa-plus-circle mr-2"></i>Create Expense Voucher
+                    </a>
+                    <?php if (in_array($user_role, $expense_approver_roles)): ?>
+                    <a href="<?php echo url('expense/approve_expense.php'); ?>" class="block pl-6 pr-4 py-2 text-sm text-gray-600 hover:bg-gray-50">
+                        <i class="fas fa-check-circle mr-2"></i>Approve Expense Voucher
+                    </a>
+                    <?php endif; ?>
+                    <a href="<?php echo url('expense/expense_history.php'); ?>" class="block pl-6 pr-4 py-2 text-sm text-gray-600 hover:bg-gray-50">
+                        <i class="fas fa-history mr-2"></i>Expense History
+                    </a>
+                    <?php endif; ?>
+                    
+                    <?php if (!$is_expense_only): ?>
                     <div class="px-3 py-1 text-xs font-semibold text-gray-500 uppercase">Other</div>
                     <a href="<?php echo url('customers/index.php'); ?>" class="block pl-6 pr-4 py-2 text-sm text-gray-600 hover:bg-gray-50">Customers</a>
                     <a href="<?php echo url('product/products.php'); ?>" class="block pl-6 pr-4 py-2 text-sm text-gray-600 hover:bg-gray-50">Products</a>
+                    <?php endif; ?>
                 </div>
                 
                 <!-- Mobile User Section -->

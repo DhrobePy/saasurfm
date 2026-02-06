@@ -1,0 +1,1098 @@
+[18-Dec-2025 02:15:50 Asia/Dhaka] PHP Warning:  require_once(../core/classes/ExpenseManager.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_categories.php on line 3
+[18-Dec-2025 02:15:50 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Failed opening required '../core/classes/ExpenseManager.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_categories.php:3
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_categories.php on line 3
+[18-Dec-2025 07:58:28 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.expense_categories' doesn't exist in query: SELECT 
+                    ec.*,
+                    coa.name as chart_account_name,
+                    coa.account_number as chart_account_number,
+                    u.display_name as created_by_name,
+                    (SELECT COUNT(*) FROM expense_subcategories 
+                     WHERE category_id = ec.id AND is_active = 1) as subcategory_count
+                FROM expense_categories ec
+                LEFT JOIN chart_of_accounts coa ON ec.chart_of_account_id = coa.id
+                LEFT JOIN users u ON ec.created_by_user_id = u.id
+                
+                ORDER BY ec.category_name ASC | Params: Array
+(
+)
+
+[18-Dec-2025 07:58:28 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined method Database::fetchAll() in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/ExpenseManager.php:50
+Stack trace:
+#0 /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_categories.php(109): ExpenseManager->getAllCategories()
+#1 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/ExpenseManager.php on line 50
+[18-Dec-2025 08:01:59 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined method Database::fetchAll() in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/ExpenseManager.php:50
+Stack trace:
+#0 /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_categories.php(109): ExpenseManager->getAllCategories()
+#1 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/ExpenseManager.php on line 50
+[18-Dec-2025 08:05:48 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined method Database::fetchAll() in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/ExpenseManager.php:50
+Stack trace:
+#0 /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_categories.php(109): ExpenseManager->getAllCategories()
+#1 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/ExpenseManager.php on line 50
+[18-Dec-2025 08:49:35 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined method Database::fetchAll() in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/ExpenseManager.php:50
+Stack trace:
+#0 /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_categories.php(109): ExpenseManager->getAllCategories()
+#1 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/ExpenseManager.php on line 50
+[18-Dec-2025 08:58:27 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined method Database::fetchAll() in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/ExpenseManager.php:50
+Stack trace:
+#0 /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_categories.php(109): ExpenseManager->getAllCategories()
+#1 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/ExpenseManager.php on line 50
+[18-Dec-2025 09:05:55 Asia/Dhaka] PHP Warning:  require_once(../includes/header.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_categories.php on line 79
+[18-Dec-2025 09:05:55 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Failed opening required '../includes/header.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_categories.php:79
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_categories.php on line 79
+[18-Dec-2025 09:06:19 Asia/Dhaka] PHP Warning:  require_once(../includes/footer.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_categories.php on line 510
+[18-Dec-2025 09:06:19 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Failed opening required '../includes/footer.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_categories.php:510
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_categories.php on line 510
+[18-Dec-2025 09:06:25 Asia/Dhaka] PHP Warning:  require_once(../includes/footer.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_categories.php on line 510
+[18-Dec-2025 09:06:25 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Failed opening required '../includes/footer.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_categories.php:510
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_categories.php on line 510
+[18-Dec-2025 11:28:42 Asia/Dhaka] Error fetching branches: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_active' in 'WHERE'
+[18-Dec-2025 11:28:42 Asia/Dhaka] PHP Warning:  require_once(../includes/footer.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_voucher_create.php on line 562
+[18-Dec-2025 11:28:42 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Failed opening required '../includes/footer.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_voucher_create.php:562
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_voucher_create.php on line 562
+[18-Dec-2025 11:28:44 Asia/Dhaka] Error fetching branches: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_active' in 'WHERE'
+[18-Dec-2025 11:28:44 Asia/Dhaka] PHP Warning:  require_once(../includes/footer.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_voucher_create.php on line 562
+[18-Dec-2025 11:28:44 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Failed opening required '../includes/footer.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_voucher_create.php:562
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_voucher_create.php on line 562
+[18-Dec-2025 11:53:34 Asia/Dhaka] Error fetching branches: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_active' in 'WHERE'
+[18-Dec-2025 11:53:34 Asia/Dhaka] PHP Warning:  require_once(../includes/footer.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_voucher_create.php on line 562
+[18-Dec-2025 11:53:34 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Failed opening required '../includes/footer.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_voucher_create.php:562
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_voucher_create.php on line 562
+[18-Dec-2025 21:04:58 Asia/Dhaka] Error fetching branches: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_active' in 'WHERE'
+[18-Dec-2025 21:04:58 Asia/Dhaka] PHP Warning:  require_once(../includes/header.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 107
+[18-Dec-2025 21:04:58 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Failed opening required '../includes/header.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php:107
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 107
+[18-Dec-2025 21:05:32 Asia/Dhaka] Error fetching branches: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_active' in 'WHERE'
+[18-Dec-2025 21:05:32 Asia/Dhaka] PHP Warning:  require_once(../includes/footer.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 651
+[18-Dec-2025 21:05:32 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Failed opening required '../includes/footer.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php:651
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 651
+[18-Dec-2025 21:05:35 Asia/Dhaka] Error fetching branches: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_active' in 'WHERE'
+[18-Dec-2025 21:05:35 Asia/Dhaka] PHP Warning:  require_once(../includes/footer.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 651
+[18-Dec-2025 21:05:35 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Failed opening required '../includes/footer.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php:651
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 651
+[18-Dec-2025 21:08:17 Asia/Dhaka] Error fetching branches: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_active' in 'WHERE'
+[18-Dec-2025 21:08:17 Asia/Dhaka] PHP Warning:  require_once(../includes/footer.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 651
+[18-Dec-2025 21:08:17 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Failed opening required '../includes/footer.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php:651
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 651
+[18-Dec-2025 21:12:52 Asia/Dhaka] Error fetching branches: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_active' in 'WHERE'
+[18-Dec-2025 21:12:52 Asia/Dhaka] PHP Warning:  require_once(../includes/footer.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 655
+[18-Dec-2025 21:12:52 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Failed opening required '../includes/footer.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php:655
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 655
+[18-Dec-2025 21:18:23 Asia/Dhaka] Error fetching branches: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_active' in 'WHERE'
+[18-Dec-2025 21:18:23 Asia/Dhaka] PHP Warning:  require_once(../includes/footer.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 651
+[18-Dec-2025 21:18:23 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Failed opening required '../includes/footer.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php:651
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 651
+[18-Dec-2025 21:18:40 Asia/Dhaka] Error fetching branches: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_active' in 'WHERE'
+[18-Dec-2025 21:19:31 Asia/Dhaka] Error fetching branches: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_active' in 'WHERE'
+[18-Dec-2025 21:19:31 Asia/Dhaka] PHP Warning:  require_once(../includes/footer.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_voucher_create.php on line 562
+[18-Dec-2025 21:19:31 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Failed opening required '../includes/footer.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_voucher_create.php:562
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_voucher_create.php on line 562
+[18-Dec-2025 21:20:17 Asia/Dhaka] Error creating expense voucher: SQLSTATE[22007]: Invalid datetime format: 1366 Incorrect decimal value: '' for column `ujjalfmc_saas`.`expense_vouchers`.`unit_quantity` at row 1
+[18-Dec-2025 21:20:17 Asia/Dhaka] Error fetching branches: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_active' in 'WHERE'
+[18-Dec-2025 21:20:17 Asia/Dhaka] PHP Warning:  require_once(../includes/footer.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_voucher_create.php on line 562
+[18-Dec-2025 21:20:17 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Failed opening required '../includes/footer.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_voucher_create.php:562
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_voucher_create.php on line 562
+[18-Dec-2025 21:56:00 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20251218-0001
+[18-Dec-2025 21:56:12 Asia/Dhaka] Error fetching branches: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_active' in 'WHERE'
+[18-Dec-2025 21:59:21 Asia/Dhaka] Error fetching branches: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_active' in 'WHERE'
+[18-Dec-2025 22:00:23 Asia/Dhaka] Error fetching branches: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_active' in 'WHERE'
+[18-Dec-2025 22:01:46 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20251218-0002
+[18-Dec-2025 22:01:46 Asia/Dhaka] Error fetching branches: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_active' in 'WHERE'
+[18-Dec-2025 22:03:51 Asia/Dhaka] Error fetching branches: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_active' in 'WHERE'
+[18-Dec-2025 22:04:00 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'ec.code' in 'SELECT' in query: SELECT ev.*, 
+            ec.category_name,
+            ec.code as category_code,
+            es.subcategory_name,
+            es.unit_of_measurement,
+            ea.name as expense_account_name,
+            ea.account_number as expense_account_number,
+            b.name as branch_name,
+            u.display_name as created_by_name,
+            approver.display_name as approved_by_name,
+            CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+            e.email as employee_email
+     FROM expense_vouchers ev
+     LEFT JOIN expense_categories ec ON ev.category_id = ec.id
+     LEFT JOIN expense_subcategories es ON ev.subcategory_id = es.id
+     LEFT JOIN chart_of_accounts ea ON ev.expense_account_id = ea.id
+     LEFT JOIN branches b ON ev.branch_id = b.id
+     LEFT JOIN users u ON ev.created_by_user_id = u.id
+     LEFT JOIN users approver ON ev.approved_by_user_id = approver.id
+     LEFT JOIN employees e ON ev.employee_id = e.id
+     WHERE ev.id = ? | Params: Array
+(
+    [0] => 1
+)
+
+[18-Dec-2025 22:22:51 Asia/Dhaka] Error fetching branches: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_active' in 'WHERE'
+[18-Dec-2025 22:23:10 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'ec.code' in 'SELECT' in query: SELECT ev.*, 
+            ec.category_name,
+            ec.code as category_code,
+            es.subcategory_name,
+            es.unit_of_measurement,
+            ea.name as expense_account_name,
+            ea.account_number as expense_account_number,
+            b.name as branch_name,
+            u.display_name as created_by_name,
+            approver.display_name as approved_by_name,
+            CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+            e.email as employee_email
+     FROM expense_vouchers ev
+     LEFT JOIN expense_categories ec ON ev.category_id = ec.id
+     LEFT JOIN expense_subcategories es ON ev.subcategory_id = es.id
+     LEFT JOIN chart_of_accounts ea ON ev.expense_account_id = ea.id
+     LEFT JOIN branches b ON ev.branch_id = b.id
+     LEFT JOIN users u ON ev.created_by_user_id = u.id
+     LEFT JOIN users approver ON ev.approved_by_user_id = approver.id
+     LEFT JOIN employees e ON ev.employee_id = e.id
+     WHERE ev.id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[18-Dec-2025 22:23:23 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'ec.code' in 'SELECT' in query: SELECT ev.*, 
+            ec.category_name,
+            ec.code as category_code,
+            es.subcategory_name,
+            es.unit_of_measurement,
+            ea.name as expense_account_name,
+            ea.account_number as expense_account_number,
+            b.name as branch_name,
+            u.display_name as created_by_name,
+            approver.display_name as approved_by_name,
+            CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+            e.email as employee_email
+     FROM expense_vouchers ev
+     LEFT JOIN expense_categories ec ON ev.category_id = ec.id
+     LEFT JOIN expense_subcategories es ON ev.subcategory_id = es.id
+     LEFT JOIN chart_of_accounts ea ON ev.expense_account_id = ea.id
+     LEFT JOIN branches b ON ev.branch_id = b.id
+     LEFT JOIN users u ON ev.created_by_user_id = u.id
+     LEFT JOIN users approver ON ev.approved_by_user_id = approver.id
+     LEFT JOIN employees e ON ev.employee_id = e.id
+     WHERE ev.id = ? | Params: Array
+(
+    [0] => 1
+)
+
+[19-Dec-2025 00:34:44 Asia/Dhaka] Error fetching branches: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_active' in 'WHERE'
+[19-Dec-2025 00:34:47 Asia/Dhaka] Error fetching branches: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_active' in 'WHERE'
+[19-Dec-2025 00:36:03 Asia/Dhaka] Error fetching branches: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_active' in 'WHERE'
+[19-Dec-2025 00:36:36 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'ec.code' in 'SELECT' in query: SELECT ev.*, 
+            ec.category_name,
+            ec.code as category_code,
+            es.subcategory_name,
+            es.unit_of_measurement,
+            ea.name as expense_account_name,
+            ea.account_number as expense_account_number,
+            b.name as branch_name,
+            u.display_name as created_by_name,
+            approver.display_name as approved_by_name,
+            CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+            e.email as employee_email
+     FROM expense_vouchers ev
+     LEFT JOIN expense_categories ec ON ev.category_id = ec.id
+     LEFT JOIN expense_subcategories es ON ev.subcategory_id = es.id
+     LEFT JOIN chart_of_accounts ea ON ev.expense_account_id = ea.id
+     LEFT JOIN branches b ON ev.branch_id = b.id
+     LEFT JOIN users u ON ev.created_by_user_id = u.id
+     LEFT JOIN users approver ON ev.approved_by_user_id = approver.id
+     LEFT JOIN employees e ON ev.employee_id = e.id
+     WHERE ev.id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[19-Dec-2025 00:37:24 Asia/Dhaka] Error fetching branches: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_active' in 'WHERE'
+[19-Dec-2025 00:37:27 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'ec.code' in 'SELECT' in query: SELECT ev.*, 
+            ec.category_name,
+            ec.code as category_code,
+            es.subcategory_name,
+            es.unit_of_measurement,
+            ea.name as expense_account_name,
+            ea.account_number as expense_account_number,
+            b.name as branch_name,
+            u.display_name as created_by_name,
+            approver.display_name as approved_by_name,
+            CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+            e.email as employee_email
+     FROM expense_vouchers ev
+     LEFT JOIN expense_categories ec ON ev.category_id = ec.id
+     LEFT JOIN expense_subcategories es ON ev.subcategory_id = es.id
+     LEFT JOIN chart_of_accounts ea ON ev.expense_account_id = ea.id
+     LEFT JOIN branches b ON ev.branch_id = b.id
+     LEFT JOIN users u ON ev.created_by_user_id = u.id
+     LEFT JOIN users approver ON ev.approved_by_user_id = approver.id
+     LEFT JOIN employees e ON ev.employee_id = e.id
+     WHERE ev.id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[19-Dec-2025 01:13:43 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'ec.code' in 'SELECT' in query: SELECT ev.*, 
+            ec.category_name,
+            ec.code as category_code,
+            es.subcategory_name,
+            es.unit_of_measurement,
+            ea.name as expense_account_name,
+            ea.account_number as expense_account_number,
+            b.name as branch_name,
+            u.display_name as created_by_name,
+            approver.display_name as approved_by_name,
+            CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+            e.email as employee_email
+     FROM expense_vouchers ev
+     LEFT JOIN expense_categories ec ON ev.category_id = ec.id
+     LEFT JOIN expense_subcategories es ON ev.subcategory_id = es.id
+     LEFT JOIN chart_of_accounts ea ON ev.expense_account_id = ea.id
+     LEFT JOIN branches b ON ev.branch_id = b.id
+     LEFT JOIN users u ON ev.created_by_user_id = u.id
+     LEFT JOIN users approver ON ev.approved_by_user_id = approver.id
+     LEFT JOIN employees e ON ev.employee_id = e.id
+     WHERE ev.id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[19-Dec-2025 01:14:38 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20251219-0001
+[19-Dec-2025 01:14:55 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'ec.code' in 'SELECT' in query: SELECT ev.*, 
+            ec.category_name,
+            ec.code as category_code,
+            es.subcategory_name,
+            es.unit_of_measurement,
+            ea.name as expense_account_name,
+            ea.account_number as expense_account_number,
+            b.name as branch_name,
+            u.display_name as created_by_name,
+            approver.display_name as approved_by_name,
+            CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+            e.email as employee_email
+     FROM expense_vouchers ev
+     LEFT JOIN expense_categories ec ON ev.category_id = ec.id
+     LEFT JOIN expense_subcategories es ON ev.subcategory_id = es.id
+     LEFT JOIN chart_of_accounts ea ON ev.expense_account_id = ea.id
+     LEFT JOIN branches b ON ev.branch_id = b.id
+     LEFT JOIN users u ON ev.created_by_user_id = u.id
+     LEFT JOIN users approver ON ev.approved_by_user_id = approver.id
+     LEFT JOIN employees e ON ev.employee_id = e.id
+     WHERE ev.id = ? | Params: Array
+(
+    [0] => 3
+)
+
+[19-Dec-2025 01:18:29 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$category_code in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/print_expense_voucher.php on line 387
+[19-Dec-2025 01:18:52 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$category_code in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/print_expense_voucher.php on line 387
+[08-Jan-2026 13:29:59 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260108-0001
+[08-Jan-2026 13:33:05 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260108-0002
+[08-Jan-2026 15:33:49 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260108-0003
+[12-Jan-2026 13:07:08 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0001
+[12-Jan-2026 13:40:31 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0002
+[12-Jan-2026 13:42:37 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0003
+[12-Jan-2026 13:43:47 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0004
+[12-Jan-2026 13:46:14 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0005
+[12-Jan-2026 13:49:03 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0006
+[12-Jan-2026 13:50:28 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0007
+[12-Jan-2026 13:51:27 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0008
+[12-Jan-2026 13:52:27 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0009
+[12-Jan-2026 13:53:44 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0010
+[12-Jan-2026 13:55:18 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0011
+[12-Jan-2026 13:56:44 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0012
+[12-Jan-2026 13:58:15 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0013
+[12-Jan-2026 14:01:14 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0014
+[12-Jan-2026 14:02:24 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0015
+[12-Jan-2026 14:03:34 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0016
+[12-Jan-2026 14:05:48 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0017
+[12-Jan-2026 14:06:56 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0018
+[12-Jan-2026 14:08:07 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0019
+[12-Jan-2026 14:09:18 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0020
+[12-Jan-2026 14:10:18 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0021
+[12-Jan-2026 14:12:28 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0022
+[12-Jan-2026 14:13:35 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0023
+[12-Jan-2026 14:14:27 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0024
+[12-Jan-2026 14:15:58 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0025
+[12-Jan-2026 14:17:31 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0026
+[12-Jan-2026 14:18:38 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0027
+[12-Jan-2026 14:19:43 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0028
+[12-Jan-2026 14:20:29 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0029
+[12-Jan-2026 14:21:25 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0030
+[12-Jan-2026 14:22:17 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0031
+[12-Jan-2026 14:23:21 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0032
+[12-Jan-2026 14:24:38 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0033
+[12-Jan-2026 14:26:01 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0034
+[12-Jan-2026 14:27:14 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0035
+[12-Jan-2026 14:28:37 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0036
+[12-Jan-2026 14:29:30 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0037
+[12-Jan-2026 14:30:24 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0038
+[12-Jan-2026 14:31:13 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0039
+[12-Jan-2026 14:32:10 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0040
+[12-Jan-2026 14:33:42 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0041
+[12-Jan-2026 14:34:44 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0042
+[12-Jan-2026 14:35:38 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0043
+[12-Jan-2026 14:36:30 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0044
+[12-Jan-2026 14:37:28 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0045
+[12-Jan-2026 14:38:44 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0046
+[12-Jan-2026 14:40:24 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0047
+[12-Jan-2026 14:41:04 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0048
+[12-Jan-2026 14:41:51 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0049
+[12-Jan-2026 14:42:46 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0050
+[12-Jan-2026 14:43:36 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0051
+[12-Jan-2026 14:44:23 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0052
+[12-Jan-2026 14:45:29 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0053
+[12-Jan-2026 14:46:40 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0054
+[12-Jan-2026 14:47:37 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0055
+[12-Jan-2026 14:48:29 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0056
+[12-Jan-2026 14:49:35 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0057
+[12-Jan-2026 14:52:15 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0058
+[12-Jan-2026 14:53:43 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0059
+[12-Jan-2026 14:56:15 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0060
+[12-Jan-2026 14:57:27 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0061
+[12-Jan-2026 14:58:22 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0062
+[12-Jan-2026 14:59:47 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0063
+[12-Jan-2026 15:00:45 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0064
+[12-Jan-2026 15:01:38 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0065
+[12-Jan-2026 15:02:28 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0066
+[12-Jan-2026 15:03:09 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0067
+[12-Jan-2026 15:03:49 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0068
+[12-Jan-2026 15:05:08 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0069
+[12-Jan-2026 15:06:00 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0070
+[12-Jan-2026 15:07:41 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0071
+[12-Jan-2026 15:08:43 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0072
+[12-Jan-2026 15:09:51 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0073
+[12-Jan-2026 15:10:37 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0074
+[12-Jan-2026 15:12:25 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0075
+[12-Jan-2026 15:14:11 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0076
+[12-Jan-2026 15:16:02 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0077
+[12-Jan-2026 15:17:03 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0078
+[12-Jan-2026 15:17:55 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0079
+[12-Jan-2026 15:18:49 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0080
+[12-Jan-2026 15:21:08 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0081
+[12-Jan-2026 15:23:07 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0082
+[12-Jan-2026 15:24:08 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0083
+[12-Jan-2026 15:24:56 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0084
+[12-Jan-2026 15:26:00 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0085
+[12-Jan-2026 15:26:50 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0086
+[12-Jan-2026 15:31:14 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0087
+[12-Jan-2026 15:32:30 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0088
+[12-Jan-2026 15:34:00 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0089
+[12-Jan-2026 15:35:01 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0090
+[12-Jan-2026 15:35:53 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0091
+[12-Jan-2026 15:36:57 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0092
+[12-Jan-2026 15:37:44 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0093
+[12-Jan-2026 15:38:44 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0094
+[12-Jan-2026 15:39:38 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0095
+[12-Jan-2026 15:40:23 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0096
+[12-Jan-2026 15:41:14 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0097
+[12-Jan-2026 15:42:11 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0098
+[12-Jan-2026 15:43:15 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0099
+[12-Jan-2026 15:44:56 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0100
+[12-Jan-2026 15:45:42 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0101
+[12-Jan-2026 15:46:27 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0102
+[12-Jan-2026 15:47:14 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0103
+[12-Jan-2026 15:48:28 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0104
+[12-Jan-2026 15:49:13 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0105
+[12-Jan-2026 15:49:58 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0106
+[12-Jan-2026 15:51:14 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0107
+[12-Jan-2026 15:52:40 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0108
+[12-Jan-2026 15:53:24 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0109
+[12-Jan-2026 15:54:18 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0110
+[12-Jan-2026 15:55:04 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0111
+[12-Jan-2026 15:55:40 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0112
+[12-Jan-2026 15:56:59 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0113
+[12-Jan-2026 15:58:03 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0114
+[12-Jan-2026 15:58:47 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0115
+[12-Jan-2026 15:59:56 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0116
+[12-Jan-2026 16:03:24 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0117
+[12-Jan-2026 16:04:08 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0118
+[12-Jan-2026 16:04:54 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0119
+[12-Jan-2026 16:05:46 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0120
+[12-Jan-2026 16:07:02 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0121
+[12-Jan-2026 16:08:00 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0122
+[12-Jan-2026 16:08:50 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0123
+[12-Jan-2026 16:09:33 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0124
+[12-Jan-2026 16:10:23 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0125
+[12-Jan-2026 16:12:00 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0126
+[12-Jan-2026 16:12:48 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0127
+[12-Jan-2026 16:15:17 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0128
+[12-Jan-2026 16:15:59 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0129
+[12-Jan-2026 16:17:05 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0130
+[12-Jan-2026 16:18:27 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0131
+[12-Jan-2026 16:21:58 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0132
+[12-Jan-2026 16:22:52 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0133
+[12-Jan-2026 16:24:02 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0134
+[12-Jan-2026 16:25:13 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0135
+[12-Jan-2026 16:25:53 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0136
+[12-Jan-2026 16:27:29 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0137
+[12-Jan-2026 16:28:40 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0138
+[12-Jan-2026 16:29:26 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0139
+[12-Jan-2026 16:35:06 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0140
+[12-Jan-2026 16:36:00 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0141
+[12-Jan-2026 18:04:25 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0142
+[12-Jan-2026 18:05:24 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0143
+[12-Jan-2026 18:06:18 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0144
+[12-Jan-2026 18:07:09 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0145
+[12-Jan-2026 18:08:10 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0146
+[12-Jan-2026 18:08:46 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0147
+[12-Jan-2026 18:09:39 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0148
+[12-Jan-2026 18:10:42 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0149
+[12-Jan-2026 18:11:52 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0150
+[12-Jan-2026 18:12:33 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0151
+[12-Jan-2026 18:13:21 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0152
+[12-Jan-2026 18:14:31 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0153
+[12-Jan-2026 18:15:31 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0154
+[12-Jan-2026 18:16:23 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0155
+[12-Jan-2026 18:17:10 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0156
+[12-Jan-2026 18:18:16 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0157
+[12-Jan-2026 18:19:12 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0158
+[12-Jan-2026 18:20:08 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0159
+[12-Jan-2026 18:21:13 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0160
+[12-Jan-2026 18:22:09 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0161
+[12-Jan-2026 18:23:05 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260112-0162
+[13-Jan-2026 10:51:52 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260113-0001
+[13-Jan-2026 10:52:48 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260113-0002
+[13-Jan-2026 10:53:47 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260113-0003
+[13-Jan-2026 10:57:51 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260113-0004
+[13-Jan-2026 10:59:02 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260113-0005
+[13-Jan-2026 11:00:23 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260113-0006
+[13-Jan-2026 11:01:15 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260113-0007
+[13-Jan-2026 11:02:06 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260113-0008
+[13-Jan-2026 11:02:54 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260113-0009
+[13-Jan-2026 11:03:36 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260113-0010
+[13-Jan-2026 11:04:20 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260113-0011
+[13-Jan-2026 11:05:14 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260113-0012
+[13-Jan-2026 11:06:04 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260113-0013
+[13-Jan-2026 11:29:11 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260113-0014
+[13-Jan-2026 12:00:21 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260113-0015
+[13-Jan-2026 14:23:31 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260113-0016
+[14-Jan-2026 09:53:28 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260114-0001
+[14-Jan-2026 09:54:29 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260114-0002
+[14-Jan-2026 09:55:13 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260114-0003
+[14-Jan-2026 09:56:11 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260114-0004
+[14-Jan-2026 09:57:25 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260114-0005
+[14-Jan-2026 09:59:46 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260114-0006
+[14-Jan-2026 10:00:39 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260114-0007
+[14-Jan-2026 10:01:34 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260114-0008
+[14-Jan-2026 10:02:21 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260114-0009
+[14-Jan-2026 10:03:08 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260114-0010
+[14-Jan-2026 10:03:52 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260114-0011
+[14-Jan-2026 10:04:39 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260114-0012
+[14-Jan-2026 10:05:34 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260114-0013
+[14-Jan-2026 10:06:41 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260114-0014
+[14-Jan-2026 10:08:24 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260114-0015
+[14-Jan-2026 10:09:10 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260114-0016
+[14-Jan-2026 11:37:26 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260114-0017
+[14-Jan-2026 11:38:18 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260114-0018
+[14-Jan-2026 11:38:58 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260114-0019
+[14-Jan-2026 11:39:57 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260114-0020
+[14-Jan-2026 11:41:10 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260114-0021
+[14-Jan-2026 11:54:57 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260114-0022
+[14-Jan-2026 12:01:02 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260114-0023
+[14-Jan-2026 12:38:20 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260114-0024
+[15-Jan-2026 08:48:45 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260115-0001
+[15-Jan-2026 08:49:52 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260115-0002
+[15-Jan-2026 08:50:39 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260115-0003
+[15-Jan-2026 08:51:33 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260115-0004
+[15-Jan-2026 08:52:26 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260115-0005
+[15-Jan-2026 08:53:11 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260115-0006
+[15-Jan-2026 08:54:14 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260115-0007
+[15-Jan-2026 08:55:07 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260115-0008
+[15-Jan-2026 08:55:58 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260115-0009
+[15-Jan-2026 08:56:35 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260115-0010
+[15-Jan-2026 08:58:07 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260115-0011
+[15-Jan-2026 09:00:03 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260115-0012
+[15-Jan-2026 12:13:02 Asia/Dhaka] ✓ Telegram expense voucher notification sent: EXP-20260115-0013
+[15-Jan-2026 15:37:47 UTC] PHP Warning:  require_once(../init.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/index.php on line 7
+[15-Jan-2026 15:37:47 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '../init.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/index.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/index.php on line 7
+[15-Jan-2026 21:38:53 Asia/Dhaka] PHP Warning:  require_once(../helpers/permission_helpers.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/index.php on line 8
+[15-Jan-2026 21:38:53 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Failed opening required '../helpers/permission_helpers.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/index.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/index.php on line 8
+[15-Jan-2026 21:41:25 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined function canAccessExpense() in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/index.php:11
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/index.php on line 11
+[15-Jan-2026 21:43:44 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined method Database::getConnection() in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/index.php:16
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/index.php on line 16
+[15-Jan-2026 21:45:00 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined method Database::getConnection() in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/index.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/index.php on line 15
+[15-Jan-2026 21:49:04 Asia/Dhaka] PHP Warning:  Undefined array key "user_display_name" in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/index.php on line 21
+[15-Jan-2026 21:49:04 Asia/Dhaka] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'ec.name' in 'SELECT' in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/index.php:78
+Stack trace:
+#0 /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/index.php(78): PDOStatement->execute()
+#1 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/index.php on line 78
+[15-Jan-2026 21:50:42 Asia/Dhaka] PHP Warning:  Undefined array key "display_name" in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/index.php on line 21
+[15-Jan-2026 21:50:42 Asia/Dhaka] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'ec.name' in 'SELECT' in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/index.php:78
+Stack trace:
+#0 /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/index.php(78): PDOStatement->execute()
+#1 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/index.php on line 78
+[15-Jan-2026 21:51:43 Asia/Dhaka] PHP Warning:  include(/home/ujjalfmc/public_html/saas.ujjalfm.com/expense/../header.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/index.php on line 82
+[15-Jan-2026 21:51:43 Asia/Dhaka] PHP Warning:  include(): Failed opening '/home/ujjalfmc/public_html/saas.ujjalfm.com/expense/../header.php' for inclusion (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/index.php on line 82
+[15-Jan-2026 21:51:43 Asia/Dhaka] PHP Warning:  include(/home/ujjalfmc/public_html/saas.ujjalfm.com/expense/../footer.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/index.php on line 293
+[15-Jan-2026 21:51:43 Asia/Dhaka] PHP Warning:  include(): Failed opening '/home/ujjalfmc/public_html/saas.ujjalfm.com/expense/../footer.php' for inclusion (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/index.php on line 293
+[15-Jan-2026 21:52:54 Asia/Dhaka] PHP Warning:  include(/home/ujjalfmc/public_html/saas.ujjalfm.com/expense../templates/header.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/index.php on line 82
+[15-Jan-2026 21:52:54 Asia/Dhaka] PHP Warning:  include(): Failed opening '/home/ujjalfmc/public_html/saas.ujjalfm.com/expense../templates/header.php' for inclusion (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/index.php on line 82
+[15-Jan-2026 21:52:54 Asia/Dhaka] PHP Warning:  include(/home/ujjalfmc/public_html/saas.ujjalfm.com/expense/../footer.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/index.php on line 293
+[15-Jan-2026 21:52:54 Asia/Dhaka] PHP Warning:  include(): Failed opening '/home/ujjalfmc/public_html/saas.ujjalfm.com/expense/../footer.php' for inclusion (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/index.php on line 293
+[16-Jan-2026 01:29:31 Asia/Dhaka] PHP Warning:  include(/home/ujjalfmc/public_html/saas.ujjalfm.com/expense/../header.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/index.php on line 82
+[16-Jan-2026 01:29:31 Asia/Dhaka] PHP Warning:  include(): Failed opening '/home/ujjalfmc/public_html/saas.ujjalfm.com/expense/../header.php' for inclusion (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/index.php on line 82
+[16-Jan-2026 01:30:35 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined method Database::fetchAll() in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/create_expense.php:51
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/create_expense.php on line 51
+[16-Jan-2026 01:44:27 Asia/Dhaka] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'account_name' in 'SELECT' in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/create_expense.php:59
+Stack trace:
+#0 /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/create_expense.php(59): PDO->query()
+#1 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/create_expense.php on line 59
+[16-Jan-2026 01:44:49 Asia/Dhaka] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'account_name' in 'SELECT' in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/create_expense.php:59
+Stack trace:
+#0 /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/create_expense.php(59): PDO->query()
+#1 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/create_expense.php on line 59
+[16-Jan-2026 01:47:51 Asia/Dhaka] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'name' in 'SELECT' in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/create_expense.php:71
+Stack trace:
+#0 /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/create_expense.php(71): PDO->query()
+#1 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/create_expense.php on line 71
+[16-Jan-2026 01:50:15 Asia/Dhaka] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'display_name' in 'SELECT' in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/create_expense.php:71
+Stack trace:
+#0 /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/create_expense.php(71): PDO->query()
+#1 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/create_expense.php on line 71
+[16-Jan-2026 01:51:17 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$name in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/create_expense.php on line 276
+[16-Jan-2026 01:51:17 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$name in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/create_expense.php on line 276
+[16-Jan-2026 01:51:17 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$name in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/create_expense.php on line 276
+[16-Jan-2026 01:51:17 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$name in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/create_expense.php on line 276
+[16-Jan-2026 01:51:17 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$name in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/create_expense.php on line 276
+[16-Jan-2026 01:51:17 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$name in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/create_expense.php on line 276
+[16-Jan-2026 01:51:17 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$name in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/create_expense.php on line 276
+[16-Jan-2026 01:51:17 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$name in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/create_expense.php on line 276
+[16-Jan-2026 01:51:17 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$name in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/create_expense.php on line 276
+[16-Jan-2026 01:51:38 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$name in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/create_expense.php on line 276
+[16-Jan-2026 01:51:38 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$name in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/create_expense.php on line 276
+[16-Jan-2026 01:51:38 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$name in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/create_expense.php on line 276
+[16-Jan-2026 01:51:38 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$name in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/create_expense.php on line 276
+[16-Jan-2026 01:51:38 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$name in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/create_expense.php on line 276
+[16-Jan-2026 01:51:38 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$name in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/create_expense.php on line 276
+[16-Jan-2026 01:51:38 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$name in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/create_expense.php on line 276
+[16-Jan-2026 01:51:38 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$name in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/create_expense.php on line 276
+[16-Jan-2026 01:51:38 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$name in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/create_expense.php on line 276
+[16-Jan-2026 03:53:12 UTC] PHP Warning:  require_once(../init.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/approve_expense.php on line 15
+[16-Jan-2026 03:53:12 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '../init.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/approve_expense.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/approve_expense.php on line 15
+[16-Jan-2026 10:03:50 Asia/Dhaka] PHP Warning:  require_once(../footer.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/create_expense.php on line 449
+[16-Jan-2026 10:03:50 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Failed opening required '../footer.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/create_expense.php:449
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/create_expense.php on line 449
+[16-Jan-2026 04:13:17 UTC] PHP Warning:  require_once(../init.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/approve_expense.php on line 15
+[16-Jan-2026 04:13:17 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '../init.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/approve_expense.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/approve_expense.php on line 15
+[16-Jan-2026 10:18:12 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined method ExpenseManager::getPendingExpenses() in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/approve_expense.php:40
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/approve_expense.php on line 40
+[16-Jan-2026 10:26:40 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined method ExpenseManager::getAllCategories() in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_voucher_list.php:128
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_voucher_list.php on line 128
+[16-Jan-2026 10:27:00 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined method ExpenseManager::getAllCategories() in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/create_expense.php:61
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/create_expense.php on line 61
+[16-Jan-2026 10:27:18 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined method ExpenseManager::getAllCategories() in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/create_expense.php:61
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/create_expense.php on line 61
+[16-Jan-2026 04:40:50 UTC] PHP Warning:  require_once(../init.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 15
+[16-Jan-2026 04:40:50 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '../init.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 15
+[16-Jan-2026 04:41:50 UTC] PHP Warning:  require_once(../init.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 15
+[16-Jan-2026 04:41:50 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '../init.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 15
+[16-Jan-2026 04:46:24 UTC] PHP Warning:  require_once(../init.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 15
+[16-Jan-2026 04:46:24 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '../init.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 15
+[16-Jan-2026 04:46:37 UTC] PHP Warning:  require_once(../init.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 15
+[16-Jan-2026 04:46:37 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '../init.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 15
+[16-Jan-2026 04:48:14 UTC] PHP Warning:  require_once(../init.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 15
+[16-Jan-2026 04:48:14 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '../init.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 15
+[16-Jan-2026 04:50:50 UTC] PHP Warning:  require_once(../init.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 15
+[16-Jan-2026 04:50:50 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '../init.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 15
+[16-Jan-2026 22:27:35 Asia/Dhaka] PHP Fatal error:  Uncaught ArgumentCountError: Too few arguments to function TelegramNotifier::__construct(), 0 passed in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/ExpenseManager.php on line 961 and exactly 2 expected in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/TelegramNotifier.php:11
+Stack trace:
+#0 /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/ExpenseManager.php(961): TelegramNotifier->__construct()
+#1 /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/ExpenseManager.php(389): ExpenseManager->sendTelegramNotification()
+#2 /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/create_expense.php(45): ExpenseManager->createExpenseVoucher()
+#3 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/TelegramNotifier.php on line 11
+[17-Jan-2026 02:22:46 UTC] PHP Warning:  require_once(../init.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 15
+[17-Jan-2026 02:22:46 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '../init.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 15
+[17-Jan-2026 05:32:39 UTC] PHP Warning:  require_once(../init.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 15
+[17-Jan-2026 05:32:39 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '../init.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 15
+[17-Jan-2026 05:32:42 UTC] PHP Warning:  require_once(../init.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 15
+[17-Jan-2026 05:32:42 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '../init.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 15
+[17-Jan-2026 05:33:14 UTC] PHP Warning:  require_once(../init.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 15
+[17-Jan-2026 05:33:14 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '../init.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 15
+[17-Jan-2026 05:35:03 UTC] PHP Warning:  require_once(../init.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 15
+[17-Jan-2026 05:35:03 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '../init.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 15
+[17-Jan-2026 05:35:35 UTC] PHP Warning:  require_once(../init.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 15
+[17-Jan-2026 05:35:35 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '../init.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 15
+[17-Jan-2026 05:35:42 UTC] PHP Warning:  require_once(../init.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 15
+[17-Jan-2026 05:35:42 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '../init.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 15
+[17-Jan-2026 05:35:57 UTC] PHP Warning:  require_once(../init.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 15
+[17-Jan-2026 05:35:57 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '../init.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 15
+[17-Jan-2026 05:37:11 UTC] PHP Warning:  require_once(../init.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 15
+[17-Jan-2026 05:37:11 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '../init.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 15
+[17-Jan-2026 05:46:27 UTC] PHP Warning:  require_once(../init.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 15
+[17-Jan-2026 05:46:27 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '../init.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 15
+[17-Jan-2026 05:46:45 UTC] PHP Warning:  require_once(../init.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 15
+[17-Jan-2026 05:46:45 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '../init.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 15
+[17-Jan-2026 05:47:04 UTC] PHP Warning:  require_once(../init.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 15
+[17-Jan-2026 05:47:04 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '../init.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 15
+[17-Jan-2026 05:47:55 UTC] PHP Warning:  require_once(../init.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 15
+[17-Jan-2026 05:47:55 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '../init.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 15
+[17-Jan-2026 06:24:39 UTC] PHP Warning:  require_once(../init.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 15
+[17-Jan-2026 06:24:39 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '../init.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 15
+[17-Jan-2026 06:26:43 UTC] PHP Warning:  require_once(../init.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 15
+[17-Jan-2026 06:26:43 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '../init.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 15
+[17-Jan-2026 13:19:57 Asia/Dhaka] Error approving expense: Voucher not found or already processed
+[17-Jan-2026 07:40:29 UTC] PHP Warning:  require_once(../init.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 15
+[17-Jan-2026 07:40:29 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '../init.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 15
+[17-Jan-2026 13:41:32 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined method ExpenseManager::getExpenseHistory() in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php:43
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 43
+[17-Jan-2026 08:03:36 UTC] PHP Parse error:  syntax error, unexpected token "%" in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 531
+[17-Jan-2026 08:03:37 UTC] PHP Parse error:  syntax error, unexpected token "%" in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 531
+[17-Jan-2026 14:04:41 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'ev.rejected_by_user_id' in 'ON' in query: SELECT ev.*, 
+               ec.category_name,
+               es.subcategory_name,
+               b.name as branch_name,
+               creator.display_name as created_by_name,
+               approver.display_name as approved_by_name,
+               rejecter.display_name as rejected_by_name
+        FROM expense_vouchers ev
+        LEFT JOIN expense_categories ec ON ev.category_id = ec.id
+        LEFT JOIN expense_subcategories es ON ev.subcategory_id = es.id
+        LEFT JOIN branches b ON ev.branch_id = b.id
+        LEFT JOIN users creator ON ev.created_by_user_id = creator.id
+        LEFT JOIN users approver ON ev.approved_by_user_id = approver.id
+        LEFT JOIN users rejecter ON ev.rejected_by_user_id = rejecter.id
+        WHERE 1=1 AND ev.status = 'approved' AND ev.expense_date >= ? AND ev.expense_date <= ? ORDER BY ev.expense_date DESC, ev.created_at DESC | Params: Array
+(
+    [0] => 2026-01-01
+    [1] => 2026-01-17
+)
+
+[17-Jan-2026 14:04:46 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'ev.rejected_by_user_id' in 'ON' in query: SELECT ev.*, 
+               ec.category_name,
+               es.subcategory_name,
+               b.name as branch_name,
+               creator.display_name as created_by_name,
+               approver.display_name as approved_by_name,
+               rejecter.display_name as rejected_by_name
+        FROM expense_vouchers ev
+        LEFT JOIN expense_categories ec ON ev.category_id = ec.id
+        LEFT JOIN expense_subcategories es ON ev.subcategory_id = es.id
+        LEFT JOIN branches b ON ev.branch_id = b.id
+        LEFT JOIN users creator ON ev.created_by_user_id = creator.id
+        LEFT JOIN users approver ON ev.approved_by_user_id = approver.id
+        LEFT JOIN users rejecter ON ev.rejected_by_user_id = rejecter.id
+        WHERE 1=1 AND ev.status = 'approved' AND ev.expense_date >= ? AND ev.expense_date <= ? ORDER BY ev.expense_date DESC, ev.created_at DESC | Params: Array
+(
+    [0] => 2026-01-01
+    [1] => 2026-01-17
+)
+
+[17-Jan-2026 14:04:59 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'ev.rejected_by_user_id' in 'ON' in query: SELECT ev.*, 
+               ec.category_name,
+               es.subcategory_name,
+               b.name as branch_name,
+               creator.display_name as created_by_name,
+               approver.display_name as approved_by_name,
+               rejecter.display_name as rejected_by_name
+        FROM expense_vouchers ev
+        LEFT JOIN expense_categories ec ON ev.category_id = ec.id
+        LEFT JOIN expense_subcategories es ON ev.subcategory_id = es.id
+        LEFT JOIN branches b ON ev.branch_id = b.id
+        LEFT JOIN users creator ON ev.created_by_user_id = creator.id
+        LEFT JOIN users approver ON ev.approved_by_user_id = approver.id
+        LEFT JOIN users rejecter ON ev.rejected_by_user_id = rejecter.id
+        WHERE 1=1 AND ev.status = 'approved' AND ev.expense_date >= ? AND ev.expense_date <= ? ORDER BY ev.expense_date DESC, ev.created_at DESC | Params: Array
+(
+    [0] => 2026-01-01
+    [1] => 2026-01-17
+)
+
+[17-Jan-2026 14:08:59 Asia/Dhaka] SQL Error [42000]: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'FROM expense_vouchers ev
+        LEFT JOIN expense_categories ec ON ev.catego...' at line 8 in query: SELECT ev.*, 
+               ec.category_name,
+               es.subcategory_name,
+               b.name as branch_name,
+               creator.display_name as created_by_name,
+               approver.display_name as approved_by_name,
+               
+        FROM expense_vouchers ev
+        LEFT JOIN expense_categories ec ON ev.category_id = ec.id
+        LEFT JOIN expense_subcategories es ON ev.subcategory_id = es.id
+        LEFT JOIN branches b ON ev.branch_id = b.id
+        LEFT JOIN users creator ON ev.created_by_user_id = creator.id
+        LEFT JOIN users approver ON ev.approved_by_user_id = approver.id
+        
+        WHERE 1=1 AND ev.status = 'approved' AND ev.expense_date >= ? AND ev.expense_date <= ? ORDER BY ev.expense_date DESC, ev.created_at DESC | Params: Array
+(
+    [0] => 2026-01-01
+    [1] => 2026-01-17
+)
+
+[17-Jan-2026 08:18:54 UTC] PHP Parse error:  syntax error, unexpected token "%" in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 567
+[17-Jan-2026 08:59:06 UTC] PHP Parse error:  syntax error, unexpected token "%" in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 497
+[17-Jan-2026 09:00:47 UTC] PHP Warning:  require_once(../init.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/print_expense_voucher.php on line 7
+[17-Jan-2026 09:00:47 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '../init.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/print_expense_voucher.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/print_expense_voucher.php on line 7
+[17-Jan-2026 15:14:54 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'b.phone' in 'SELECT' in query: SELECT 
+        ev.*,
+        ec.category_name,
+        es.subcategory_name,
+        b.name as branch_name,
+        b.address as branch_address,
+        b.phone as branch_phone,
+        creator.display_name as created_by_name,
+        approver.display_name as approved_by_name,
+        emp.display_name as employee_name,
+        ba.account_number as bank_account_number,
+        ba.account_name as bank_account_name,
+        ba.bank_name,
+        bpc.account_name as cash_account_name
+    FROM expense_vouchers ev
+    LEFT JOIN expense_categories ec ON ev.category_id = ec.id
+    LEFT JOIN expense_subcategories es ON ev.subcategory_id = es.id
+    LEFT JOIN branches b ON ev.branch_id = b.id
+    LEFT JOIN users creator ON ev.created_by_user_id = creator.id
+    LEFT JOIN users approver ON ev.approved_by_user_id = approver.id
+    LEFT JOIN users emp ON ev.employee_id = emp.id
+    LEFT JOIN bank_accounts ba ON ev.bank_account_id = ba.id
+    LEFT JOIN branch_petty_cash_accounts bpc ON ev.cash_account_id = bpc.id
+    WHERE ev.id = ? | Params: Array
+(
+    [0] => 250
+)
+
+[17-Jan-2026 15:15:12 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'b.phone' in 'SELECT' in query: SELECT 
+        ev.*,
+        ec.category_name,
+        es.subcategory_name,
+        b.name as branch_name,
+        b.address as branch_address,
+        b.phone as branch_phone,
+        creator.display_name as created_by_name,
+        approver.display_name as approved_by_name,
+        emp.display_name as employee_name,
+        ba.account_number as bank_account_number,
+        ba.account_name as bank_account_name,
+        ba.bank_name,
+        bpc.account_name as cash_account_name
+    FROM expense_vouchers ev
+    LEFT JOIN expense_categories ec ON ev.category_id = ec.id
+    LEFT JOIN expense_subcategories es ON ev.subcategory_id = es.id
+    LEFT JOIN branches b ON ev.branch_id = b.id
+    LEFT JOIN users creator ON ev.created_by_user_id = creator.id
+    LEFT JOIN users approver ON ev.approved_by_user_id = approver.id
+    LEFT JOIN users emp ON ev.employee_id = emp.id
+    LEFT JOIN bank_accounts ba ON ev.bank_account_id = ba.id
+    LEFT JOIN branch_petty_cash_accounts bpc ON ev.cash_account_id = bpc.id
+    WHERE ev.id = ? | Params: Array
+(
+    [0] => 250
+)
+
+[17-Jan-2026 15:17:40 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'b.phone' in 'SELECT' in query: SELECT 
+        ev.*,
+        ec.category_name,
+        es.subcategory_name,
+        b.name as branch_name,
+        b.address as branch_address,
+        b.phone as branch_phone,
+        creator.display_name as created_by_name,
+        approver.display_name as approved_by_name,
+        emp.display_name as employee_name,
+        ba.account_number as bank_account_number,
+        ba.account_name as bank_account_name,
+        ba.bank_name,
+        bpc.account_name as cash_account_name
+    FROM expense_vouchers ev
+    LEFT JOIN expense_categories ec ON ev.category_id = ec.id
+    LEFT JOIN expense_subcategories es ON ev.subcategory_id = es.id
+    LEFT JOIN branches b ON ev.branch_id = b.id
+    LEFT JOIN users creator ON ev.created_by_user_id = creator.id
+    LEFT JOIN users approver ON ev.approved_by_user_id = approver.id
+    LEFT JOIN users emp ON ev.employee_id = emp.id
+    LEFT JOIN bank_accounts ba ON ev.bank_account_id = ba.id
+    LEFT JOIN branch_petty_cash_accounts bpc ON ev.cash_account_id = bpc.id
+    WHERE ev.id = ? | Params: Array
+(
+    [0] => 250
+)
+
+[17-Jan-2026 15:17:46 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'b.phone' in 'SELECT' in query: SELECT 
+        ev.*,
+        ec.category_name,
+        es.subcategory_name,
+        b.name as branch_name,
+        b.address as branch_address,
+        b.phone as branch_phone,
+        creator.display_name as created_by_name,
+        approver.display_name as approved_by_name,
+        emp.display_name as employee_name,
+        ba.account_number as bank_account_number,
+        ba.account_name as bank_account_name,
+        ba.bank_name,
+        bpc.account_name as cash_account_name
+    FROM expense_vouchers ev
+    LEFT JOIN expense_categories ec ON ev.category_id = ec.id
+    LEFT JOIN expense_subcategories es ON ev.subcategory_id = es.id
+    LEFT JOIN branches b ON ev.branch_id = b.id
+    LEFT JOIN users creator ON ev.created_by_user_id = creator.id
+    LEFT JOIN users approver ON ev.approved_by_user_id = approver.id
+    LEFT JOIN users emp ON ev.employee_id = emp.id
+    LEFT JOIN bank_accounts ba ON ev.bank_account_id = ba.id
+    LEFT JOIN branch_petty_cash_accounts bpc ON ev.cash_account_id = bpc.id
+    WHERE ev.id = ? | Params: Array
+(
+    [0] => 250
+)
+
+[17-Jan-2026 15:42:20 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined method ExpenseManager::deleteExpenseVoucher() in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php:46
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 46
+[17-Jan-2026 20:35:01 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'b.phone' in 'SELECT' in query: SELECT 
+        ev.*,
+        ec.category_name,
+        es.subcategory_name,
+        b.name as branch_name,
+        b.address as branch_address,
+        b.phone as branch_phone,
+        creator.display_name as created_by_name,
+        approver.display_name as approved_by_name,
+        emp.display_name as employee_name,
+        ba.account_number as bank_account_number,
+        ba.account_name as bank_account_name,
+        ba.bank_name,
+        bpc.account_name as cash_account_name
+    FROM expense_vouchers ev
+    LEFT JOIN expense_categories ec ON ev.category_id = ec.id
+    LEFT JOIN expense_subcategories es ON ev.subcategory_id = es.id
+    LEFT JOIN branches b ON ev.branch_id = b.id
+    LEFT JOIN users creator ON ev.created_by_user_id = creator.id
+    LEFT JOIN users approver ON ev.approved_by_user_id = approver.id
+    LEFT JOIN users emp ON ev.employee_id = emp.id
+    LEFT JOIN bank_accounts ba ON ev.bank_account_id = ba.id
+    LEFT JOIN branch_petty_cash_accounts bpc ON ev.cash_account_id = bpc.id
+    WHERE ev.id = ? | Params: Array
+(
+    [0] => 250
+)
+
+[17-Jan-2026 20:35:10 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'b.phone' in 'SELECT' in query: SELECT 
+        ev.*,
+        ec.category_name,
+        es.subcategory_name,
+        b.name as branch_name,
+        b.address as branch_address,
+        b.phone as branch_phone,
+        creator.display_name as created_by_name,
+        approver.display_name as approved_by_name,
+        emp.display_name as employee_name,
+        ba.account_number as bank_account_number,
+        ba.account_name as bank_account_name,
+        ba.bank_name,
+        bpc.account_name as cash_account_name
+    FROM expense_vouchers ev
+    LEFT JOIN expense_categories ec ON ev.category_id = ec.id
+    LEFT JOIN expense_subcategories es ON ev.subcategory_id = es.id
+    LEFT JOIN branches b ON ev.branch_id = b.id
+    LEFT JOIN users creator ON ev.created_by_user_id = creator.id
+    LEFT JOIN users approver ON ev.approved_by_user_id = approver.id
+    LEFT JOIN users emp ON ev.employee_id = emp.id
+    LEFT JOIN bank_accounts ba ON ev.bank_account_id = ba.id
+    LEFT JOIN branch_petty_cash_accounts bpc ON ev.cash_account_id = bpc.id
+    WHERE ev.id = ? | Params: Array
+(
+    [0] => 2
+)
+
+[17-Jan-2026 20:35:13 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'b.phone' in 'SELECT' in query: SELECT 
+        ev.*,
+        ec.category_name,
+        es.subcategory_name,
+        b.name as branch_name,
+        b.address as branch_address,
+        b.phone as branch_phone,
+        creator.display_name as created_by_name,
+        approver.display_name as approved_by_name,
+        emp.display_name as employee_name,
+        ba.account_number as bank_account_number,
+        ba.account_name as bank_account_name,
+        ba.bank_name,
+        bpc.account_name as cash_account_name
+    FROM expense_vouchers ev
+    LEFT JOIN expense_categories ec ON ev.category_id = ec.id
+    LEFT JOIN expense_subcategories es ON ev.subcategory_id = es.id
+    LEFT JOIN branches b ON ev.branch_id = b.id
+    LEFT JOIN users creator ON ev.created_by_user_id = creator.id
+    LEFT JOIN users approver ON ev.approved_by_user_id = approver.id
+    LEFT JOIN users emp ON ev.employee_id = emp.id
+    LEFT JOIN bank_accounts ba ON ev.bank_account_id = ba.id
+    LEFT JOIN branch_petty_cash_accounts bpc ON ev.cash_account_id = bpc.id
+    WHERE ev.id = ? | Params: Array
+(
+    [0] => 249
+)
+
+[17-Jan-2026 20:37:58 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$branch_phone in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/print_expense_voucher.php on line 357
+[17-Jan-2026 20:37:59 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$branch_phone in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/print_expense_voucher.php on line 357
+[17-Jan-2026 21:04:57 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined method ExpenseManager::deleteExpenseVoucher() in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php:46
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php on line 46
+[17-Jan-2026 22:14:28 Asia/Dhaka] PHP Warning:  Undefined array key "expense_id" in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/create_expense.php on line 56
+[22-Jan-2026 00:22:37 Asia/Dhaka] PHP Fatal error:  Uncaught TypeError: Cannot access offset of type string on string in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/ExpenseManager.php:587
+Stack trace:
+#0 /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/ExpenseManager.php(997): ExpenseManager->getPaymentAccountData()
+#1 /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php(46): ExpenseManager->deleteExpenseVoucher()
+#2 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/ExpenseManager.php on line 587
+[22-Jan-2026 00:26:40 Asia/Dhaka] PHP Fatal error:  Cannot redeclare function canSeeExpenseDashboard() (previously declared in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/functions/helpers.php:357) in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/functions/helpers.php on line 402
+[22-Jan-2026 00:28:03 Asia/Dhaka] PHP Fatal error:  Cannot redeclare function canDeleteExpense() (previously declared in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/functions/helpers.php:323) in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/functions/helpers.php on line 408
+[22-Jan-2026 00:28:35 Asia/Dhaka] PHP Fatal error:  Cannot redeclare function canEditExpense() (previously declared in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/functions/helpers.php:310) in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/functions/helpers.php on line 414
+[22-Jan-2026 00:28:48 Asia/Dhaka] PHP Fatal error:  Uncaught TypeError: Cannot access offset of type string on string in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/ExpenseManager.php:587
+Stack trace:
+#0 /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/ExpenseManager.php(997): ExpenseManager->getPaymentAccountData()
+#1 /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php(46): ExpenseManager->deleteExpenseVoucher()
+#2 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/ExpenseManager.php on line 587
+[22-Jan-2026 00:30:32 Asia/Dhaka] PHP Fatal error:  Uncaught TypeError: Cannot access offset of type string on string in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/ExpenseManager.php:587
+Stack trace:
+#0 /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/ExpenseManager.php(997): ExpenseManager->getPaymentAccountData()
+#1 /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/expense_history.php(46): ExpenseManager->deleteExpenseVoucher()
+#2 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/core/classes/ExpenseManager.php on line 587
+[22-Jan-2026 01:10:28 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined method Database::getConnection() in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/edit_expense.php:31
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/edit_expense.php on line 31
+[24-Jan-2026 16:25:54 Asia/Dhaka] Error approving expense: Voucher not found or already processed

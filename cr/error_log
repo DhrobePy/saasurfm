@@ -1260,3 +1260,1515 @@ Stack trace:
 [07-Dec-2025 12:08:29 Asia/Dhaka] ✓ Telegram advance payment notification sent for receipt: ADVPAY-20251207-7900
 [07-Dec-2025 12:08:33 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 15
 [07-Dec-2025 12:08:33 Asia/Dhaka] Found 0 pending orders for customer 15
+[08-Dec-2025 12:57:43 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 17
+)
+
+[08-Dec-2025 12:58:07 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 7
+[08-Dec-2025 12:58:07 Asia/Dhaka] Found 1 pending orders for customer 7
+[08-Dec-2025 12:58:18 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 14
+)
+
+[08-Dec-2025 16:10:42 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 7
+[08-Dec-2025 16:10:42 Asia/Dhaka] Found 1 pending orders for customer 7
+[09-Dec-2025 10:44:34 Asia/Dhaka] Total variants fetched: 8
+[09-Dec-2025 10:44:34 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"1","weight_variant":"34","unit_of_measure":"kg","sku":"JORAKOBUTOR-34-1","price_id":"2","branch_id":"1","unit_price":"3410.00","branch_name":"Sirajgonj","branch_code":"SRG","stock_usable":"2474"}
+[09-Dec-2025 10:44:54 Asia/Dhaka] Total variants fetched: 8
+[09-Dec-2025 10:44:54 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"1","weight_variant":"34","unit_of_measure":"kg","sku":"JORAKOBUTOR-34-1","price_id":"2","branch_id":"1","unit_price":"3410.00","branch_name":"Sirajgonj","branch_code":"SRG","stock_usable":"2474"}
+[09-Dec-2025 10:45:53 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 7
+[09-Dec-2025 10:45:53 Asia/Dhaka] Found 1 pending orders for customer 7
+[09-Dec-2025 10:46:01 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 15
+[09-Dec-2025 10:46:01 Asia/Dhaka] Found 0 pending orders for customer 15
+[09-Dec-2025 10:46:04 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 1
+[09-Dec-2025 10:46:04 Asia/Dhaka] Found 0 pending orders for customer 1
+[09-Dec-2025 10:46:15 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 15
+[09-Dec-2025 10:46:15 Asia/Dhaka] Found 0 pending orders for customer 15
+[09-Dec-2025 10:46:18 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 1
+[09-Dec-2025 10:46:18 Asia/Dhaka] Found 0 pending orders for customer 1
+[09-Dec-2025 10:46:26 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 19
+[09-Dec-2025 10:46:26 Asia/Dhaka] Found 1 pending orders for customer 19
+[09-Dec-2025 10:46:35 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 7
+[09-Dec-2025 10:46:35 Asia/Dhaka] Found 1 pending orders for customer 7
+[09-Dec-2025 10:46:56 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 7
+[09-Dec-2025 10:46:56 Asia/Dhaka] Found 1 pending orders for customer 7
+[09-Dec-2025 10:47:20 Asia/Dhaka] ✓ Telegram advance payment notification sent for receipt: ADVPAY-20251209-7914
+[09-Dec-2025 10:47:23 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 7
+[09-Dec-2025 10:47:23 Asia/Dhaka] Found 1 pending orders for customer 7
+[09-Dec-2025 10:47:56 Asia/Dhaka] Total variants fetched: 8
+[09-Dec-2025 10:47:56 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"1","weight_variant":"34","unit_of_measure":"kg","sku":"JORAKOBUTOR-34-1","price_id":"2","branch_id":"1","unit_price":"3410.00","branch_name":"Sirajgonj","branch_code":"SRG","stock_usable":"2474"}
+[09-Dec-2025 10:48:44 Asia/Dhaka] Total variants fetched: 8
+[09-Dec-2025 10:48:44 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"1","weight_variant":"34","unit_of_measure":"kg","sku":"JORAKOBUTOR-34-1","price_id":"2","branch_id":"1","unit_price":"3410.00","branch_name":"Sirajgonj","branch_code":"SRG","stock_usable":"2474"}
+[09-Dec-2025 10:48:44 Asia/Dhaka] Telegram notification sent for Order CR-20251209-5579 by Adnan Illius Siddique
+[09-Dec-2025 10:49:25 Asia/Dhaka] SQL Error [HY000]: SQLSTATE[HY000]: General error: 1364 Field 'branch_id' doesn't have a default value in query: INSERT INTO `production_schedule` (`order_id`, `production_started_at`, `status`) VALUES (?, ?, ?) | Params: Array
+(
+    [0] => 61
+    [1] => 2025-12-09 10:49:25
+    [2] => in_progress
+)
+
+[09-Dec-2025 10:49:25 Asia/Dhaka] Database insert failed for table 'production_schedule'.
+[09-Dec-2025 10:52:39 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cow.created_at' in 'ORDER BY' in query: SELECT cow.*, u.display_name as performed_by_name
+     FROM credit_order_workflow cow
+     LEFT JOIN users u ON cow.performed_by_user_id = u.id
+     WHERE cow.order_id = ?
+     ORDER BY cow.created_at DESC | Params: Array
+(
+    [0] => 61
+)
+
+[09-Dec-2025 10:53:28 Asia/Dhaka] Order 61 final status after commit: shipped
+[09-Dec-2025 11:00:08 Asia/Dhaka] SQL Error [HY000]: SQLSTATE[HY000]: General error: 1364 Field 'branch_id' doesn't have a default value in query: INSERT INTO `production_schedule` (`order_id`, `production_started_at`, `status`) VALUES (?, ?, ?) | Params: Array
+(
+    [0] => 49
+    [1] => 2025-12-09 11:00:08
+    [2] => in_progress
+)
+
+[09-Dec-2025 11:00:08 Asia/Dhaka] Database insert failed for table 'production_schedule'.
+[09-Dec-2025 11:00:23 Asia/Dhaka] SQL Error [HY000]: SQLSTATE[HY000]: General error: 1364 Field 'branch_id' doesn't have a default value in query: INSERT INTO `production_schedule` (`order_id`, `production_started_at`, `status`) VALUES (?, ?, ?) | Params: Array
+(
+    [0] => 55
+    [1] => 2025-12-09 11:00:23
+    [2] => in_progress
+)
+
+[09-Dec-2025 11:00:23 Asia/Dhaka] Database insert failed for table 'production_schedule'.
+[09-Dec-2025 11:00:26 Asia/Dhaka] SQL Error [HY000]: SQLSTATE[HY000]: General error: 1364 Field 'branch_id' doesn't have a default value in query: INSERT INTO `production_schedule` (`order_id`, `production_started_at`, `status`) VALUES (?, ?, ?) | Params: Array
+(
+    [0] => 51
+    [1] => 2025-12-09 11:00:26
+    [2] => in_progress
+)
+
+[09-Dec-2025 11:00:26 Asia/Dhaka] Database insert failed for table 'production_schedule'.
+[09-Dec-2025 11:01:03 Asia/Dhaka] Order 49 final status after commit: shipped
+[09-Dec-2025 11:01:11 Asia/Dhaka] Order 51 final status after commit: shipped
+[09-Dec-2025 11:01:43 Asia/Dhaka] SQL Error [23000]: SQLSTATE[23000]: Integrity constraint violation: 4025 CONSTRAINT `chk_debit_credit` failed for `ujjalfmc_saas`.`transaction_lines` in query: INSERT INTO `transaction_lines` (`journal_entry_id`, `account_id`, `debit_amount`, `credit_amount`, `description`) VALUES (?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 161
+    [1] => 23
+    [2] => 0
+    [3] => 0
+    [4] => Credit Sale Invoice #CR-20251202-6271 to Babul Mia
+)
+
+[09-Dec-2025 11:01:43 Asia/Dhaka] Database insert failed for table 'transaction_lines'.
+[09-Dec-2025 11:01:43 Asia/Dhaka] SQL Error [23000]: SQLSTATE[23000]: Integrity constraint violation: 4025 CONSTRAINT `chk_debit_credit` failed for `ujjalfmc_saas`.`transaction_lines` in query: INSERT INTO `transaction_lines` (`journal_entry_id`, `account_id`, `debit_amount`, `credit_amount`, `description`) VALUES (?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 161
+    [1] => 27
+    [2] => 0
+    [3] => 0
+    [4] => Credit Sale Invoice #CR-20251202-6271 to Babul Mia
+)
+
+[09-Dec-2025 11:01:43 Asia/Dhaka] Database insert failed for table 'transaction_lines'.
+[09-Dec-2025 11:01:43 Asia/Dhaka] Order 55 final status after commit: shipped
+[10-Dec-2025 12:53:02 Asia/Dhaka] Total variants fetched: 8
+[10-Dec-2025 12:53:02 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"1","weight_variant":"34","unit_of_measure":"kg","sku":"JORAKOBUTOR-34-1","price_id":"2","branch_id":"1","unit_price":"3410.00","branch_name":"Sirajgonj","branch_code":"SRG","stock_usable":"2474"}
+[10-Dec-2025 12:53:19 Asia/Dhaka] Total variants fetched: 8
+[10-Dec-2025 12:53:19 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"1","weight_variant":"34","unit_of_measure":"kg","sku":"JORAKOBUTOR-34-1","price_id":"2","branch_id":"1","unit_price":"3410.00","branch_name":"Sirajgonj","branch_code":"SRG","stock_usable":"2474"}
+[10-Dec-2025 12:53:22 Asia/Dhaka] Total variants fetched: 8
+[10-Dec-2025 12:53:22 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"1","weight_variant":"34","unit_of_measure":"kg","sku":"JORAKOBUTOR-34-1","price_id":"2","branch_id":"1","unit_price":"3410.00","branch_name":"Sirajgonj","branch_code":"SRG","stock_usable":"2474"}
+[15-Dec-2025 15:16:02 Asia/Dhaka] Total variants fetched: 8
+[15-Dec-2025 15:16:02 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"1","weight_variant":"34","unit_of_measure":"kg","sku":"JORAKOBUTOR-34-1","price_id":"2","branch_id":"1","unit_price":"3410.00","branch_name":"Sirajgonj","branch_code":"SRG","stock_usable":"2474"}
+[15-Dec-2025 15:48:30 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 29
+[15-Dec-2025 15:48:30 Asia/Dhaka] Found 0 pending orders for customer 29
+[15-Dec-2025 15:48:46 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 28
+[15-Dec-2025 15:48:46 Asia/Dhaka] Found 0 pending orders for customer 28
+[15-Dec-2025 15:49:09 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 7
+[15-Dec-2025 15:49:09 Asia/Dhaka] Found 0 pending orders for customer 7
+[15-Dec-2025 15:49:17 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 29
+[15-Dec-2025 15:49:17 Asia/Dhaka] Found 0 pending orders for customer 29
+[15-Dec-2025 15:49:55 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 7
+[15-Dec-2025 15:49:55 Asia/Dhaka] Found 0 pending orders for customer 7
+[15-Dec-2025 15:53:41 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 30
+[15-Dec-2025 15:53:41 Asia/Dhaka] Found 0 pending orders for customer 30
+[15-Dec-2025 15:59:03 Asia/Dhaka] Total variants fetched: 8
+[15-Dec-2025 15:59:03 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"1","weight_variant":"34","unit_of_measure":"kg","sku":"JORAKOBUTOR-34-1","price_id":"2","branch_id":"1","unit_price":"3410.00","branch_name":"Sirajgonj","branch_code":"SRG","stock_usable":"2474"}
+[15-Dec-2025 15:59:35 Asia/Dhaka] Total variants fetched: 8
+[15-Dec-2025 15:59:35 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"1","weight_variant":"34","unit_of_measure":"kg","sku":"JORAKOBUTOR-34-1","price_id":"2","branch_id":"1","unit_price":"3410.00","branch_name":"Sirajgonj","branch_code":"SRG","stock_usable":"2474"}
+[15-Dec-2025 16:00:26 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 31
+[15-Dec-2025 16:00:26 Asia/Dhaka] Found 0 pending orders for customer 31
+[15-Dec-2025 16:01:09 Asia/Dhaka] ✓ Telegram advance payment notification sent for receipt: ADVPAY-20251211-9142
+[15-Dec-2025 16:01:16 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 31
+[15-Dec-2025 16:01:16 Asia/Dhaka] Found 0 pending orders for customer 31
+[15-Dec-2025 16:02:12 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 27
+[15-Dec-2025 16:02:12 Asia/Dhaka] Found 0 pending orders for customer 27
+[15-Dec-2025 16:03:41 Asia/Dhaka] ✓ Telegram advance payment notification sent for receipt: ADVPAY-20251215-4816
+[15-Dec-2025 16:03:51 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 27
+[15-Dec-2025 16:03:51 Asia/Dhaka] Found 0 pending orders for customer 27
+[15-Dec-2025 16:05:00 Asia/Dhaka] Total variants fetched: 8
+[15-Dec-2025 16:05:00 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"1","weight_variant":"34","unit_of_measure":"kg","sku":"JORAKOBUTOR-34-1","price_id":"2","branch_id":"1","unit_price":"3410.00","branch_name":"Sirajgonj","branch_code":"SRG","stock_usable":"2474"}
+[15-Dec-2025 16:07:18 Asia/Dhaka] Total variants fetched: 8
+[15-Dec-2025 16:07:18 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"1","weight_variant":"34","unit_of_measure":"kg","sku":"JORAKOBUTOR-34-1","price_id":"2","branch_id":"1","unit_price":"3410.00","branch_name":"Sirajgonj","branch_code":"SRG","stock_usable":"2474"}
+[15-Dec-2025 16:07:19 Asia/Dhaka] Telegram notification sent for Order CR-20251215-6633 by Azmain Ziead
+[15-Dec-2025 16:07:44 Asia/Dhaka] SQL Error [HY000]: SQLSTATE[HY000]: General error: 1364 Field 'branch_id' doesn't have a default value in query: INSERT INTO `production_schedule` (`order_id`, `production_started_at`, `status`) VALUES (?, ?, ?) | Params: Array
+(
+    [0] => 65
+    [1] => 2025-12-15 16:07:44
+    [2] => in_progress
+)
+
+[15-Dec-2025 16:07:44 Asia/Dhaka] Database insert failed for table 'production_schedule'.
+[15-Dec-2025 16:08:06 Asia/Dhaka] Order 65 final status after commit: shipped
+[15-Dec-2025 16:08:21 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 27
+[15-Dec-2025 16:08:21 Asia/Dhaka] Found 0 pending orders for customer 27
+[15-Dec-2025 16:09:04 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 27
+[15-Dec-2025 16:09:04 Asia/Dhaka] Found 0 pending orders for customer 27
+[15-Dec-2025 16:09:46 Asia/Dhaka] ✓ Telegram advance payment notification sent for receipt: ADVPAY-20251211-0309
+[15-Dec-2025 16:09:56 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 27
+[15-Dec-2025 16:09:56 Asia/Dhaka] Found 0 pending orders for customer 27
+[15-Dec-2025 16:10:30 Asia/Dhaka] Total variants fetched: 8
+[15-Dec-2025 16:10:30 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"1","weight_variant":"34","unit_of_measure":"kg","sku":"JORAKOBUTOR-34-1","price_id":"2","branch_id":"1","unit_price":"3410.00","branch_name":"Sirajgonj","branch_code":"SRG","stock_usable":"2474"}
+[15-Dec-2025 16:12:10 Asia/Dhaka] Total variants fetched: 8
+[15-Dec-2025 16:12:10 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"1","weight_variant":"34","unit_of_measure":"kg","sku":"JORAKOBUTOR-34-1","price_id":"2","branch_id":"1","unit_price":"3410.00","branch_name":"Sirajgonj","branch_code":"SRG","stock_usable":"2474"}
+[15-Dec-2025 16:12:11 Asia/Dhaka] Telegram notification sent for Order CR-20251215-5776 by Azmain Ziead
+[15-Dec-2025 16:12:13 Asia/Dhaka] Total variants fetched: 8
+[15-Dec-2025 16:12:13 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"1","weight_variant":"34","unit_of_measure":"kg","sku":"JORAKOBUTOR-34-1","price_id":"2","branch_id":"1","unit_price":"3410.00","branch_name":"Sirajgonj","branch_code":"SRG","stock_usable":"2474"}
+[15-Dec-2025 16:14:20 Asia/Dhaka] Total variants fetched: 8
+[15-Dec-2025 16:14:20 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"1","weight_variant":"34","unit_of_measure":"kg","sku":"JORAKOBUTOR-34-1","price_id":"2","branch_id":"1","unit_price":"3410.00","branch_name":"Sirajgonj","branch_code":"SRG","stock_usable":"2474"}
+[15-Dec-2025 16:14:21 Asia/Dhaka] Telegram notification sent for Order CR-20251215-6913 by Azmain Ziead
+[15-Dec-2025 16:14:30 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 27
+[15-Dec-2025 16:14:30 Asia/Dhaka] Found 2 pending orders for customer 27
+[15-Dec-2025 16:17:17 Asia/Dhaka] SQL Error [HY000]: SQLSTATE[HY000]: General error: 1364 Field 'branch_id' doesn't have a default value in query: INSERT INTO `production_schedule` (`order_id`, `production_started_at`, `status`) VALUES (?, ?, ?) | Params: Array
+(
+    [0] => 66
+    [1] => 2025-12-15 16:17:17
+    [2] => in_progress
+)
+
+[15-Dec-2025 16:17:17 Asia/Dhaka] Database insert failed for table 'production_schedule'.
+[15-Dec-2025 16:17:23 Asia/Dhaka] SQL Error [HY000]: SQLSTATE[HY000]: General error: 1364 Field 'branch_id' doesn't have a default value in query: INSERT INTO `production_schedule` (`order_id`, `production_started_at`, `status`) VALUES (?, ?, ?) | Params: Array
+(
+    [0] => 67
+    [1] => 2025-12-15 16:17:23
+    [2] => in_progress
+)
+
+[15-Dec-2025 16:17:23 Asia/Dhaka] Database insert failed for table 'production_schedule'.
+[15-Dec-2025 16:17:49 Asia/Dhaka] Order 66 final status after commit: shipped
+[15-Dec-2025 16:17:57 Asia/Dhaka] Order 67 final status after commit: shipped
+[15-Dec-2025 16:18:22 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 27
+[15-Dec-2025 16:18:22 Asia/Dhaka] Found 0 pending orders for customer 27
+[15-Dec-2025 16:21:58 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 27
+[15-Dec-2025 16:21:58 Asia/Dhaka] Found 0 pending orders for customer 27
+[15-Dec-2025 16:22:05 Asia/Dhaka] Total variants fetched: 8
+[15-Dec-2025 16:22:05 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"1","weight_variant":"34","unit_of_measure":"kg","sku":"JORAKOBUTOR-34-1","price_id":"2","branch_id":"1","unit_price":"3410.00","branch_name":"Sirajgonj","branch_code":"SRG","stock_usable":"2474"}
+[15-Dec-2025 16:25:00 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 27
+[15-Dec-2025 16:25:00 Asia/Dhaka] Found 0 pending orders for customer 27
+[15-Dec-2025 16:52:25 Asia/Dhaka] Total variants fetched: 8
+[15-Dec-2025 16:52:25 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"1","weight_variant":"34","unit_of_measure":"kg","sku":"JORAKOBUTOR-34-1","price_id":"2","branch_id":"1","unit_price":"3410.00","branch_name":"Sirajgonj","branch_code":"SRG","stock_usable":"2474"}
+[15-Dec-2025 16:53:56 Asia/Dhaka] Total variants fetched: 8
+[15-Dec-2025 16:53:56 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"1","weight_variant":"34","unit_of_measure":"kg","sku":"JORAKOBUTOR-34-1","price_id":"2","branch_id":"1","unit_price":"3410.00","branch_name":"Sirajgonj","branch_code":"SRG","stock_usable":"2474"}
+[15-Dec-2025 16:53:57 Asia/Dhaka] Telegram notification sent for Order CR-20251215-3990 by Azmain Ziead
+[15-Dec-2025 16:54:00 Asia/Dhaka] Total variants fetched: 8
+[15-Dec-2025 16:54:00 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"1","weight_variant":"34","unit_of_measure":"kg","sku":"JORAKOBUTOR-34-1","price_id":"2","branch_id":"1","unit_price":"3410.00","branch_name":"Sirajgonj","branch_code":"SRG","stock_usable":"2474"}
+[15-Dec-2025 16:55:25 Asia/Dhaka] Total variants fetched: 8
+[15-Dec-2025 16:55:25 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"1","weight_variant":"34","unit_of_measure":"kg","sku":"JORAKOBUTOR-34-1","price_id":"2","branch_id":"1","unit_price":"3410.00","branch_name":"Sirajgonj","branch_code":"SRG","stock_usable":"2474"}
+[15-Dec-2025 16:55:25 Asia/Dhaka] Telegram notification sent for Order CR-20251215-8645 by Azmain Ziead
+[15-Dec-2025 16:55:27 Asia/Dhaka] Total variants fetched: 8
+[15-Dec-2025 16:55:27 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"1","weight_variant":"34","unit_of_measure":"kg","sku":"JORAKOBUTOR-34-1","price_id":"2","branch_id":"1","unit_price":"3410.00","branch_name":"Sirajgonj","branch_code":"SRG","stock_usable":"2474"}
+[15-Dec-2025 16:56:21 Asia/Dhaka] Total variants fetched: 8
+[15-Dec-2025 16:56:21 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"1","weight_variant":"34","unit_of_measure":"kg","sku":"JORAKOBUTOR-34-1","price_id":"2","branch_id":"1","unit_price":"3410.00","branch_name":"Sirajgonj","branch_code":"SRG","stock_usable":"2474"}
+[15-Dec-2025 16:56:22 Asia/Dhaka] Telegram notification sent for Order CR-20251215-1619 by Azmain Ziead
+[15-Dec-2025 16:56:23 Asia/Dhaka] Total variants fetched: 8
+[15-Dec-2025 16:56:23 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"1","weight_variant":"34","unit_of_measure":"kg","sku":"JORAKOBUTOR-34-1","price_id":"2","branch_id":"1","unit_price":"3410.00","branch_name":"Sirajgonj","branch_code":"SRG","stock_usable":"2474"}
+[15-Dec-2025 16:57:07 Asia/Dhaka] Total variants fetched: 8
+[15-Dec-2025 16:57:07 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"1","weight_variant":"34","unit_of_measure":"kg","sku":"JORAKOBUTOR-34-1","price_id":"2","branch_id":"1","unit_price":"3410.00","branch_name":"Sirajgonj","branch_code":"SRG","stock_usable":"2474"}
+[15-Dec-2025 16:57:08 Asia/Dhaka] Telegram notification sent for Order CR-20251215-9937 by Azmain Ziead
+[15-Dec-2025 16:58:59 Asia/Dhaka] SQL Error [HY000]: SQLSTATE[HY000]: General error: 1364 Field 'branch_id' doesn't have a default value in query: INSERT INTO `production_schedule` (`order_id`, `production_started_at`, `status`) VALUES (?, ?, ?) | Params: Array
+(
+    [0] => 71
+    [1] => 2025-12-15 16:58:59
+    [2] => in_progress
+)
+
+[15-Dec-2025 16:58:59 Asia/Dhaka] Database insert failed for table 'production_schedule'.
+[15-Dec-2025 16:59:11 Asia/Dhaka] SQL Error [HY000]: SQLSTATE[HY000]: General error: 1364 Field 'branch_id' doesn't have a default value in query: INSERT INTO `production_schedule` (`order_id`, `production_started_at`, `status`) VALUES (?, ?, ?) | Params: Array
+(
+    [0] => 70
+    [1] => 2025-12-15 16:59:11
+    [2] => in_progress
+)
+
+[15-Dec-2025 16:59:11 Asia/Dhaka] Database insert failed for table 'production_schedule'.
+[15-Dec-2025 16:59:13 Asia/Dhaka] SQL Error [HY000]: SQLSTATE[HY000]: General error: 1364 Field 'branch_id' doesn't have a default value in query: INSERT INTO `production_schedule` (`order_id`, `production_started_at`, `status`) VALUES (?, ?, ?) | Params: Array
+(
+    [0] => 69
+    [1] => 2025-12-15 16:59:13
+    [2] => in_progress
+)
+
+[15-Dec-2025 16:59:13 Asia/Dhaka] Database insert failed for table 'production_schedule'.
+[15-Dec-2025 17:00:01 Asia/Dhaka] SQL Error [HY000]: SQLSTATE[HY000]: General error: 1364 Field 'branch_id' doesn't have a default value in query: INSERT INTO `production_schedule` (`order_id`, `production_started_at`, `status`) VALUES (?, ?, ?) | Params: Array
+(
+    [0] => 68
+    [1] => 2025-12-15 17:00:01
+    [2] => in_progress
+)
+
+[15-Dec-2025 17:00:01 Asia/Dhaka] Database insert failed for table 'production_schedule'.
+[15-Dec-2025 17:00:48 Asia/Dhaka] Order 68 final status after commit: shipped
+[15-Dec-2025 17:01:01 Asia/Dhaka] Order 69 final status after commit: shipped
+[15-Dec-2025 17:01:10 Asia/Dhaka] Order 70 final status after commit: shipped
+[15-Dec-2025 17:01:20 Asia/Dhaka] Order 71 final status after commit: shipped
+[15-Dec-2025 17:14:31 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 29
+[15-Dec-2025 17:14:31 Asia/Dhaka] Found 0 pending orders for customer 29
+[15-Dec-2025 17:16:47 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 29
+[15-Dec-2025 17:16:47 Asia/Dhaka] Found 0 pending orders for customer 29
+[15-Dec-2025 17:39:47 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 32
+[15-Dec-2025 17:39:47 Asia/Dhaka] Found 0 pending orders for customer 32
+[15-Dec-2025 17:40:16 Asia/Dhaka] ✓ Telegram advance payment notification sent for receipt: ADVPAY-20251215-5453
+[15-Dec-2025 17:43:39 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 32
+[15-Dec-2025 17:43:39 Asia/Dhaka] Found 0 pending orders for customer 32
+[17-Dec-2025 15:30:59 Asia/Dhaka] Total variants fetched: 8
+[17-Dec-2025 15:30:59 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"1","weight_variant":"34","unit_of_measure":"kg","sku":"JORAKOBUTOR-34-1","price_id":"2","branch_id":"1","unit_price":"3410.00","branch_name":"Sirajgonj","branch_code":"SRG","stock_usable":"2474"}
+[17-Dec-2025 15:34:16 Asia/Dhaka] Total variants fetched: 8
+[17-Dec-2025 15:34:16 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"1","weight_variant":"34","unit_of_measure":"kg","sku":"JORAKOBUTOR-34-1","price_id":"2","branch_id":"1","unit_price":"3410.00","branch_name":"Sirajgonj","branch_code":"SRG","stock_usable":"2474"}
+[17-Dec-2025 15:35:39 Asia/Dhaka] Total variants fetched: 8
+[17-Dec-2025 15:35:39 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"1","weight_variant":"34","unit_of_measure":"kg","sku":"JORAKOBUTOR-34-1","price_id":"2","branch_id":"1","unit_price":"3410.00","branch_name":"Sirajgonj","branch_code":"SRG","stock_usable":"2474"}
+[17-Dec-2025 15:35:40 Asia/Dhaka] Telegram notification sent for Order CR-20251217-1766 by Azmain Ziead
+[17-Dec-2025 15:36:36 Asia/Dhaka] SQL Error [HY000]: SQLSTATE[HY000]: General error: 1364 Field 'branch_id' doesn't have a default value in query: INSERT INTO `production_schedule` (`order_id`, `production_started_at`, `status`) VALUES (?, ?, ?) | Params: Array
+(
+    [0] => 73
+    [1] => 2025-12-17 15:36:36
+    [2] => in_progress
+)
+
+[17-Dec-2025 15:36:36 Asia/Dhaka] Database insert failed for table 'production_schedule'.
+[17-Dec-2025 15:37:37 Asia/Dhaka] Order 73 final status after commit: shipped
+[17-Dec-2025 15:38:24 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 33
+)
+
+[17-Dec-2025 15:40:23 Asia/Dhaka] Total variants fetched: 8
+[17-Dec-2025 15:40:23 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"1","weight_variant":"34","unit_of_measure":"kg","sku":"JORAKOBUTOR-34-1","price_id":"2","branch_id":"1","unit_price":"3410.00","branch_name":"Sirajgonj","branch_code":"SRG","stock_usable":"2474"}
+[17-Dec-2025 15:42:28 Asia/Dhaka] Total variants fetched: 8
+[17-Dec-2025 15:42:28 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"1","weight_variant":"34","unit_of_measure":"kg","sku":"JORAKOBUTOR-34-1","price_id":"2","branch_id":"1","unit_price":"3410.00","branch_name":"Sirajgonj","branch_code":"SRG","stock_usable":"2474"}
+[17-Dec-2025 15:42:29 Asia/Dhaka] Telegram notification sent for Order CR-20251217-7835 by Azmain Ziead
+[17-Dec-2025 16:34:56 Asia/Dhaka] SQL Error [HY000]: SQLSTATE[HY000]: General error: 1364 Field 'branch_id' doesn't have a default value in query: INSERT INTO `production_schedule` (`order_id`, `production_started_at`, `status`) VALUES (?, ?, ?) | Params: Array
+(
+    [0] => 74
+    [1] => 2025-12-17 16:34:56
+    [2] => in_progress
+)
+
+[17-Dec-2025 16:34:56 Asia/Dhaka] Database insert failed for table 'production_schedule'.
+[17-Dec-2025 16:35:26 Asia/Dhaka] Order 74 final status after commit: shipped
+[17-Dec-2025 16:35:52 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 33
+)
+
+[17-Dec-2025 16:36:15 Asia/Dhaka] === PAYMENT SUBMISSION START ===
+[17-Dec-2025 16:36:15 Asia/Dhaka] POST data: Array
+(
+    [action] => collect_payment
+    [customer_id] => 33
+    [payment_date] => 2025-12-17
+    [payment_amount] => 50000
+    [payment_method] => Cash
+    [collected_by_employee_id] => 1
+    [cash_account_id] => 26
+    [bank_account_id] => 
+    [cheque_number] => 
+    [cheque_date] => 
+    [bank_transaction_type] => 
+    [reference_number] => 652652
+    [notes] => 
+)
+
+[17-Dec-2025 16:36:15 Asia/Dhaka] Attempting payment insert with data: Array
+(
+    [payment_number] => PAY-20251217-9199
+    [receipt_number] => RCP-20251217-9932
+    [customer_id] => 33
+    [amount] => 50000
+)
+
+[17-Dec-2025 16:36:15 Asia/Dhaka] ✓✓✓ Payment inserted successfully! ID: 51
+[17-Dec-2025 16:36:15 Asia/Dhaka] ✓ Transaction committed successfully
+[17-Dec-2025 16:36:15 Asia/Dhaka] Payment ID: 51, Receipt: RCP-20251217-9932
+[17-Dec-2025 16:36:15 Asia/Dhaka] ✓ Telegram payment notification sent for receipt: RCP-20251217-9932
+[17-Dec-2025 16:36:26 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 33
+)
+
+[20-Dec-2025 13:10:36 Asia/Dhaka] Total variants fetched: 8
+[20-Dec-2025 13:10:36 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"1","weight_variant":"34","unit_of_measure":"kg","sku":"JORAKOBUTOR-34-1","price_id":"2","branch_id":"1","unit_price":"3410.00","branch_name":"Sirajgonj","branch_code":"SRG","stock_usable":"2474"}
+[20-Dec-2025 13:11:23 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 28
+)
+
+[20-Dec-2025 13:11:26 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 27
+)
+
+[20-Dec-2025 13:11:29 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 18
+)
+
+[20-Dec-2025 13:11:31 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 17
+)
+
+[20-Dec-2025 13:11:40 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 30
+[20-Dec-2025 13:11:40 Asia/Dhaka] Found 0 pending orders for customer 30
+[20-Dec-2025 13:11:44 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 7
+[20-Dec-2025 13:11:44 Asia/Dhaka] Found 0 pending orders for customer 7
+[20-Dec-2025 13:11:55 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 19
+[20-Dec-2025 13:11:55 Asia/Dhaka] Found 1 pending orders for customer 19
+[20-Dec-2025 13:11:58 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 20
+[20-Dec-2025 13:11:58 Asia/Dhaka] Found 0 pending orders for customer 20
+[20-Dec-2025 13:12:21 Asia/Dhaka] Total variants fetched: 8
+[20-Dec-2025 13:12:21 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"1","weight_variant":"34","unit_of_measure":"kg","sku":"JORAKOBUTOR-34-1","price_id":"2","branch_id":"1","unit_price":"3410.00","branch_name":"Sirajgonj","branch_code":"SRG","stock_usable":"2474"}
+[20-Dec-2025 13:13:15 Asia/Dhaka] Total variants fetched: 8
+[20-Dec-2025 13:13:15 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"1","weight_variant":"34","unit_of_measure":"kg","sku":"JORAKOBUTOR-34-1","price_id":"2","branch_id":"1","unit_price":"3410.00","branch_name":"Sirajgonj","branch_code":"SRG","stock_usable":"2474"}
+[20-Dec-2025 13:13:16 Asia/Dhaka] Telegram notification sent for Order CR-20251220-5494 by Azmain Ziead
+[20-Dec-2025 13:13:38 Asia/Dhaka] SQL Error [HY000]: SQLSTATE[HY000]: General error: 1364 Field 'branch_id' doesn't have a default value in query: INSERT INTO `production_schedule` (`order_id`, `production_started_at`, `status`) VALUES (?, ?, ?) | Params: Array
+(
+    [0] => 75
+    [1] => 2025-12-20 13:13:38
+    [2] => in_progress
+)
+
+[20-Dec-2025 13:13:38 Asia/Dhaka] Database insert failed for table 'production_schedule'.
+[20-Dec-2025 13:13:57 Asia/Dhaka] SQL Error [HY000]: SQLSTATE[HY000]: General error: 1364 Field 'branch_id' doesn't have a default value in query: INSERT INTO `production_schedule` (`order_id`, `priority_order`) VALUES (?, ?) | Params: Array
+(
+    [0] => 75
+    [1] => 1
+)
+
+[20-Dec-2025 13:13:57 Asia/Dhaka] Database insert failed for table 'production_schedule'.
+[20-Dec-2025 13:14:07 Asia/Dhaka] SQL Error [HY000]: SQLSTATE[HY000]: General error: 1364 Field 'branch_id' doesn't have a default value in query: INSERT INTO `production_schedule` (`order_id`, `priority_order`) VALUES (?, ?) | Params: Array
+(
+    [0] => 75
+    [1] => 1
+)
+
+[20-Dec-2025 13:14:07 Asia/Dhaka] Database insert failed for table 'production_schedule'.
+[20-Dec-2025 13:14:22 Asia/Dhaka] SQL Error [HY000]: SQLSTATE[HY000]: General error: 1364 Field 'branch_id' doesn't have a default value in query: INSERT INTO `production_schedule` (`order_id`, `priority_order`) VALUES (?, ?) | Params: Array
+(
+    [0] => 54
+    [1] => 1
+)
+
+[20-Dec-2025 13:14:22 Asia/Dhaka] Database insert failed for table 'production_schedule'.
+[20-Dec-2025 13:14:55 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 20
+[20-Dec-2025 13:14:55 Asia/Dhaka] Found 0 pending orders for customer 20
+[20-Dec-2025 13:15:10 Asia/Dhaka] ✓ Telegram advance payment notification sent for receipt: ADVPAY-20251220-4168
+[20-Dec-2025 13:15:31 Asia/Dhaka] Order 75 final status after commit: shipped
+[20-Dec-2025 13:15:50 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 20
+)
+
+[20-Dec-2025 13:19:10 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 20
+)
+
+[20-Dec-2025 13:19:35 Asia/Dhaka] === PAYMENT SUBMISSION START ===
+[20-Dec-2025 13:19:35 Asia/Dhaka] POST data: Array
+(
+    [action] => collect_payment
+    [customer_id] => 20
+    [payment_date] => 2025-12-20
+    [payment_amount] => 150000
+    [payment_method] => Bank Transfer
+    [collected_by_employee_id] => 
+    [cash_account_id] => 
+    [bank_account_id] => 60
+    [cheque_number] => 
+    [cheque_date] => 
+    [bank_transaction_type] => Deposit
+    [reference_number] => 54546514
+    [notes] => 
+)
+
+[20-Dec-2025 13:19:35 Asia/Dhaka] Attempting payment insert with data: Array
+(
+    [payment_number] => PAY-20251220-2577
+    [receipt_number] => RCP-20251220-5001
+    [customer_id] => 20
+    [amount] => 150000
+)
+
+[20-Dec-2025 13:19:35 Asia/Dhaka] ✓✓✓ Payment inserted successfully! ID: 53
+[20-Dec-2025 13:19:35 Asia/Dhaka] ✓ Transaction committed successfully
+[20-Dec-2025 13:19:35 Asia/Dhaka] Payment ID: 53, Receipt: RCP-20251220-5001
+[20-Dec-2025 13:19:36 Asia/Dhaka] ✓ Telegram payment notification sent for receipt: RCP-20251220-5001
+[20-Dec-2025 13:19:41 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 20
+)
+
+[20-Dec-2025 13:20:05 Asia/Dhaka] === PAYMENT SUBMISSION START ===
+[20-Dec-2025 13:20:05 Asia/Dhaka] POST data: Array
+(
+    [action] => collect_payment
+    [customer_id] => 20
+    [payment_date] => 2025-12-20
+    [payment_amount] => 50000
+    [payment_method] => Cash
+    [collected_by_employee_id] => 1
+    [cash_account_id] => 15
+    [bank_account_id] => 
+    [cheque_number] => 
+    [cheque_date] => 
+    [bank_transaction_type] => 
+    [reference_number] => 65464
+    [notes] => 
+)
+
+[20-Dec-2025 13:20:05 Asia/Dhaka] Attempting payment insert with data: Array
+(
+    [payment_number] => PAY-20251220-0689
+    [receipt_number] => RCP-20251220-2913
+    [customer_id] => 20
+    [amount] => 50000
+)
+
+[20-Dec-2025 13:20:05 Asia/Dhaka] ✓✓✓ Payment inserted successfully! ID: 54
+[20-Dec-2025 13:20:05 Asia/Dhaka] ✓ Transaction committed successfully
+[20-Dec-2025 13:20:05 Asia/Dhaka] Payment ID: 54, Receipt: RCP-20251220-2913
+[20-Dec-2025 13:20:05 Asia/Dhaka] ✓ Telegram payment notification sent for receipt: RCP-20251220-2913
+[20-Dec-2025 16:56:55 Asia/Dhaka] Total variants fetched: 8
+[20-Dec-2025 16:56:55 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"1","weight_variant":"34","unit_of_measure":"kg","sku":"JORAKOBUTOR-34-1","price_id":"2","branch_id":"1","unit_price":"3410.00","branch_name":"Sirajgonj","branch_code":"SRG","stock_usable":"2474"}
+[20-Dec-2025 17:01:47 Asia/Dhaka] Total variants fetched: 8
+[20-Dec-2025 17:01:47 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"1","weight_variant":"34","unit_of_measure":"kg","sku":"JORAKOBUTOR-34-1","price_id":"2","branch_id":"1","unit_price":"3410.00","branch_name":"Sirajgonj","branch_code":"SRG","stock_usable":"2474"}
+[20-Dec-2025 17:01:50 Asia/Dhaka] Telegram notification sent for Order CR-20251220-6126 by Sales Officer Demra
+[20-Dec-2025 17:04:42 Asia/Dhaka] SQL Error [HY000]: SQLSTATE[HY000]: General error: 1364 Field 'branch_id' doesn't have a default value in query: INSERT INTO `production_schedule` (`order_id`, `production_started_at`, `status`) VALUES (?, ?, ?) | Params: Array
+(
+    [0] => 76
+    [1] => 2025-12-20 17:04:42
+    [2] => in_progress
+)
+
+[20-Dec-2025 17:04:42 Asia/Dhaka] Database insert failed for table 'production_schedule'.
+[20-Dec-2025 17:06:24 Asia/Dhaka] Order 76 final status after commit: shipped
+[21-Dec-2025 12:32:55 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$payment_amount in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 457
+[21-Dec-2025 12:32:55 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$payment_amount in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 457
+[21-Dec-2025 12:32:55 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$payment_amount in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 457
+[21-Dec-2025 12:32:55 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$payment_amount in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 457
+[21-Dec-2025 12:32:55 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$payment_amount in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 457
+[21-Dec-2025 12:32:55 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$payment_amount in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 457
+[21-Dec-2025 12:32:55 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$payment_amount in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 457
+[21-Dec-2025 12:32:55 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$payment_amount in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 457
+[21-Dec-2025 12:32:55 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$payment_amount in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 457
+[21-Dec-2025 12:32:55 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$payment_amount in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 457
+[21-Dec-2025 12:32:55 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$payment_amount in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 457
+[21-Dec-2025 12:32:55 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$payment_amount in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 457
+[21-Dec-2025 12:32:55 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$payment_amount in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 457
+[21-Dec-2025 12:32:55 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$payment_amount in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 457
+[21-Dec-2025 12:32:55 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$payment_amount in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 457
+[21-Dec-2025 12:32:55 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$payment_amount in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 457
+[21-Dec-2025 12:32:55 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$payment_amount in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 457
+[21-Dec-2025 12:32:55 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$payment_amount in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 457
+[21-Dec-2025 12:32:55 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$payment_amount in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 457
+[21-Dec-2025 12:32:55 Asia/Dhaka] PHP Warning:  Undefined property: stdClass::$payment_amount in /home/ujjalfmc/public_html/saas.ujjalfm.com/cr/customer_payment.php on line 457
+[21-Dec-2025 12:38:51 Asia/Dhaka] Total variants fetched: 8
+[21-Dec-2025 12:38:51 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"1","weight_variant":"34","unit_of_measure":"kg","sku":"JORAKOBUTOR-34-1","price_id":"2","branch_id":"1","unit_price":"3410.00","branch_name":"Sirajgonj","branch_code":"SRG","stock_usable":"2474"}
+[21-Dec-2025 12:43:04 Asia/Dhaka] Total variants fetched: 8
+[21-Dec-2025 12:43:04 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"1","weight_variant":"34","unit_of_measure":"kg","sku":"JORAKOBUTOR-34-1","price_id":"2","branch_id":"1","unit_price":"3410.00","branch_name":"Sirajgonj","branch_code":"SRG","stock_usable":"2474"}
+[21-Dec-2025 12:57:43 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 34
+[21-Dec-2025 12:57:43 Asia/Dhaka] Found 0 pending orders for customer 34
+[21-Dec-2025 12:58:19 Asia/Dhaka] Total variants fetched: 8
+[21-Dec-2025 12:58:19 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"1","weight_variant":"34","unit_of_measure":"kg","sku":"JORAKOBUTOR-34-1","price_id":"2","branch_id":"1","unit_price":"3410.00","branch_name":"Sirajgonj","branch_code":"SRG","stock_usable":"2474"}
+[22-Dec-2025 15:48:00 Asia/Dhaka] Total variants fetched: 11
+[22-Dec-2025 15:48:00 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"1","weight_variant":"34","unit_of_measure":"kg","sku":"JORAKOBUTOR-34-1","price_id":"2","branch_id":"1","unit_price":"3410.00","branch_name":"Sirajgonj","branch_code":"SRG","stock_usable":"2474"}
+[22-Dec-2025 16:00:20 Asia/Dhaka] Total variants fetched: 11
+[22-Dec-2025 16:00:20 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"1","weight_variant":"34","unit_of_measure":"kg","sku":"JORAKOBUTOR-34-1","price_id":"2","branch_id":"1","unit_price":"3410.00","branch_name":"Sirajgonj","branch_code":"SRG","stock_usable":"2474"}
+[24-Dec-2025 11:39:07 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 10
+[24-Dec-2025 11:39:07 Asia/Dhaka] Found 0 pending orders for customer 10
+[24-Dec-2025 11:39:20 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 10
+[24-Dec-2025 11:39:20 Asia/Dhaka] Found 0 pending orders for customer 10
+[12-Jan-2026 10:32:18 Asia/Dhaka] Total variants fetched: 37
+[12-Jan-2026 10:32:18 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"A","weight_variant":"50","unit_of_measure":"kg","sku":"2HATI MOIDA (50KG)-50-A","price_id":"29","branch_id":"2","unit_price":"2060.00","branch_name":"Demra","branch_code":"DEMRA","stock_usable":"0"}
+[12-Jan-2026 11:38:46 Asia/Dhaka] Total variants fetched: 37
+[12-Jan-2026 11:38:46 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"A","weight_variant":"50","unit_of_measure":"kg","sku":"2HATI MOIDA (50KG)-50-A","price_id":"29","branch_id":"2","unit_price":"2060.00","branch_name":"Demra","branch_code":"DEMRA","stock_usable":"0"}
+[12-Jan-2026 11:42:04 Asia/Dhaka] Total variants fetched: 37
+[12-Jan-2026 11:42:04 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"A","weight_variant":"50","unit_of_measure":"kg","sku":"2HATI MOIDA (50KG)-50-A","price_id":"29","branch_id":"2","unit_price":"2060.00","branch_name":"Demra","branch_code":"DEMRA","stock_usable":"0"}
+[12-Jan-2026 11:42:05 Asia/Dhaka] Telegram notification sent for Order CR-20260112-7249 by Azmain Ziead
+[12-Jan-2026 11:42:44 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cow.created_at' in 'ORDER BY' in query: SELECT cow.*, u.display_name as performed_by_name
+     FROM credit_order_workflow cow
+     LEFT JOIN users u ON cow.performed_by_user_id = u.id
+     WHERE cow.order_id = ?
+     ORDER BY cow.created_at DESC | Params: Array
+(
+    [0] => 78
+)
+
+[12-Jan-2026 11:44:29 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 10
+[12-Jan-2026 11:44:29 Asia/Dhaka] Found 1 pending orders for customer 10
+[12-Jan-2026 11:45:44 Asia/Dhaka] ✓ Telegram advance payment notification sent for receipt: ADVPAY-20260112-5833
+[12-Jan-2026 11:46:09 Asia/Dhaka] SQL Error [HY000]: SQLSTATE[HY000]: General error: 1364 Field 'branch_id' doesn't have a default value in query: INSERT INTO `production_schedule` (`order_id`, `production_started_at`, `status`) VALUES (?, ?, ?) | Params: Array
+(
+    [0] => 78
+    [1] => 2026-01-12 11:46:09
+    [2] => in_progress
+)
+
+[12-Jan-2026 11:46:09 Asia/Dhaka] Database insert failed for table 'production_schedule'.
+[12-Jan-2026 11:46:29 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cow.created_at' in 'ORDER BY' in query: SELECT cow.*, u.display_name as performed_by_name
+     FROM credit_order_workflow cow
+     LEFT JOIN users u ON cow.performed_by_user_id = u.id
+     WHERE cow.order_id = ?
+     ORDER BY cow.created_at DESC | Params: Array
+(
+    [0] => 78
+)
+
+[12-Jan-2026 11:54:15 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cow.created_at' in 'ORDER BY' in query: SELECT cow.*, u.display_name as performed_by_name
+     FROM credit_order_workflow cow
+     LEFT JOIN users u ON cow.performed_by_user_id = u.id
+     WHERE cow.order_id = ?
+     ORDER BY cow.created_at DESC | Params: Array
+(
+    [0] => 78
+)
+
+[12-Jan-2026 11:54:42 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cow.created_at' in 'ORDER BY' in query: SELECT cow.*, u.display_name as performed_by_name
+     FROM credit_order_workflow cow
+     LEFT JOIN users u ON cow.performed_by_user_id = u.id
+     WHERE cow.order_id = ?
+     ORDER BY cow.created_at DESC | Params: Array
+(
+    [0] => 78
+)
+
+[12-Jan-2026 11:55:16 Asia/Dhaka] Order 78 final status after commit: shipped
+[12-Jan-2026 11:56:57 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 10
+[12-Jan-2026 11:56:57 Asia/Dhaka] Found 0 pending orders for customer 10
+[12-Jan-2026 12:12:18 Asia/Dhaka] Total variants fetched: 37
+[12-Jan-2026 12:12:18 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"A","weight_variant":"50","unit_of_measure":"kg","sku":"2HATI MOIDA (50KG)-50-A","price_id":"29","branch_id":"2","unit_price":"2060.00","branch_name":"Demra","branch_code":"DEMRA","stock_usable":"0"}
+[12-Jan-2026 12:28:57 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 45
+[12-Jan-2026 12:28:57 Asia/Dhaka] Found 0 pending orders for customer 45
+[12-Jan-2026 15:42:49 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 52
+[12-Jan-2026 15:42:49 Asia/Dhaka] Found 0 pending orders for customer 52
+[12-Jan-2026 15:43:26 Asia/Dhaka] ✓ Telegram advance payment notification sent for receipt: ADVPAY-20260112-9448
+[12-Jan-2026 17:01:39 Asia/Dhaka] Total variants fetched: 37
+[12-Jan-2026 17:01:39 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"A","weight_variant":"50","unit_of_measure":"kg","sku":"2HATI MOIDA (50KG)-50-A","price_id":"29","branch_id":"2","unit_price":"2060.00","branch_name":"Demra","branch_code":"DEMRA","stock_usable":"0"}
+[12-Jan-2026 17:03:59 Asia/Dhaka] Total variants fetched: 37
+[12-Jan-2026 17:03:59 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"A","weight_variant":"50","unit_of_measure":"kg","sku":"2HATI MOIDA (50KG)-50-A","price_id":"29","branch_id":"2","unit_price":"2060.00","branch_name":"Demra","branch_code":"DEMRA","stock_usable":"0"}
+[12-Jan-2026 17:05:05 Asia/Dhaka] Total variants fetched: 37
+[12-Jan-2026 17:05:05 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"A","weight_variant":"50","unit_of_measure":"kg","sku":"2HATI MOIDA (50KG)-50-A","price_id":"29","branch_id":"2","unit_price":"2060.00","branch_name":"Demra","branch_code":"DEMRA","stock_usable":"0"}
+[12-Jan-2026 17:05:06 Asia/Dhaka] Telegram notification sent for Order CR-20260112-5718 by Sales Officer Demra
+[12-Jan-2026 17:07:06 Asia/Dhaka] SQL Error [HY000]: SQLSTATE[HY000]: General error: 1364 Field 'branch_id' doesn't have a default value in query: INSERT INTO `production_schedule` (`order_id`, `production_started_at`, `status`) VALUES (?, ?, ?) | Params: Array
+(
+    [0] => 83
+    [1] => 2026-01-12 17:07:06
+    [2] => in_progress
+)
+
+[12-Jan-2026 17:07:06 Asia/Dhaka] Database insert failed for table 'production_schedule'.
+[12-Jan-2026 17:11:34 Asia/Dhaka] Order 83 final status after commit: shipped
+[12-Jan-2026 17:12:31 Asia/Dhaka] Total variants fetched: 37
+[12-Jan-2026 17:12:31 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"A","weight_variant":"50","unit_of_measure":"kg","sku":"2HATI MOIDA (50KG)-50-A","price_id":"29","branch_id":"2","unit_price":"2060.00","branch_name":"Demra","branch_code":"DEMRA","stock_usable":"0"}
+[12-Jan-2026 17:17:08 Asia/Dhaka] Total variants fetched: 37
+[12-Jan-2026 17:17:08 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"A","weight_variant":"50","unit_of_measure":"kg","sku":"2HATI MOIDA (50KG)-50-A","price_id":"29","branch_id":"2","unit_price":"2060.00","branch_name":"Demra","branch_code":"DEMRA","stock_usable":"0"}
+[12-Jan-2026 17:18:21 Asia/Dhaka] Total variants fetched: 37
+[12-Jan-2026 17:18:21 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"A","weight_variant":"50","unit_of_measure":"kg","sku":"2HATI MOIDA (50KG)-50-A","price_id":"29","branch_id":"2","unit_price":"2060.00","branch_name":"Demra","branch_code":"DEMRA","stock_usable":"0"}
+[12-Jan-2026 17:18:22 Asia/Dhaka] Telegram notification sent for Order CR-20260112-3403 by Sales Officer Demra
+[12-Jan-2026 17:20:12 Asia/Dhaka] SQL Error [HY000]: SQLSTATE[HY000]: General error: 1364 Field 'branch_id' doesn't have a default value in query: INSERT INTO `production_schedule` (`order_id`, `production_started_at`, `status`) VALUES (?, ?, ?) | Params: Array
+(
+    [0] => 84
+    [1] => 2026-01-12 17:20:12
+    [2] => in_progress
+)
+
+[12-Jan-2026 17:20:12 Asia/Dhaka] Database insert failed for table 'production_schedule'.
+[12-Jan-2026 17:20:57 Asia/Dhaka] Order 84 final status after commit: shipped
+[13-Jan-2026 12:05:13 Asia/Dhaka] Total variants fetched: 37
+[13-Jan-2026 12:05:13 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"A","weight_variant":"50","unit_of_measure":"kg","sku":"2HATI MOIDA (50KG)-50-A","price_id":"29","branch_id":"2","unit_price":"2060.00","branch_name":"Demra","branch_code":"DEMRA","stock_usable":"0"}
+[13-Jan-2026 12:06:14 Asia/Dhaka] Total variants fetched: 37
+[13-Jan-2026 12:06:14 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"A","weight_variant":"50","unit_of_measure":"kg","sku":"2HATI MOIDA (50KG)-50-A","price_id":"29","branch_id":"2","unit_price":"2060.00","branch_name":"Demra","branch_code":"DEMRA","stock_usable":"0"}
+[13-Jan-2026 12:06:17 Asia/Dhaka] Total variants fetched: 37
+[13-Jan-2026 12:06:17 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"A","weight_variant":"50","unit_of_measure":"kg","sku":"2HATI MOIDA (50KG)-50-A","price_id":"29","branch_id":"2","unit_price":"2060.00","branch_name":"Demra","branch_code":"DEMRA","stock_usable":"0"}
+[13-Jan-2026 12:06:19 Asia/Dhaka] Total variants fetched: 37
+[13-Jan-2026 12:06:19 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"A","weight_variant":"50","unit_of_measure":"kg","sku":"2HATI MOIDA (50KG)-50-A","price_id":"29","branch_id":"2","unit_price":"2060.00","branch_name":"Demra","branch_code":"DEMRA","stock_usable":"0"}
+[13-Jan-2026 12:06:20 Asia/Dhaka] Total variants fetched: 37
+[13-Jan-2026 12:06:20 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"A","weight_variant":"50","unit_of_measure":"kg","sku":"2HATI MOIDA (50KG)-50-A","price_id":"29","branch_id":"2","unit_price":"2060.00","branch_name":"Demra","branch_code":"DEMRA","stock_usable":"0"}
+[13-Jan-2026 12:06:48 Asia/Dhaka] Total variants fetched: 37
+[13-Jan-2026 12:06:48 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"A","weight_variant":"50","unit_of_measure":"kg","sku":"2HATI MOIDA (50KG)-50-A","price_id":"29","branch_id":"2","unit_price":"2060.00","branch_name":"Demra","branch_code":"DEMRA","stock_usable":"0"}
+[13-Jan-2026 12:55:04 Asia/Dhaka] Total variants fetched: 37
+[13-Jan-2026 12:55:04 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"A","weight_variant":"50","unit_of_measure":"kg","sku":"2HATI MOIDA (50KG)-50-A","price_id":"29","branch_id":"2","unit_price":"2060.00","branch_name":"Demra","branch_code":"DEMRA","stock_usable":"0"}
+[13-Jan-2026 12:58:12 Asia/Dhaka] Total variants fetched: 37
+[13-Jan-2026 12:58:12 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"A","weight_variant":"50","unit_of_measure":"kg","sku":"2HATI MOIDA (50KG)-50-A","price_id":"29","branch_id":"2","unit_price":"2060.00","branch_name":"Demra","branch_code":"DEMRA","stock_usable":"0"}
+[13-Jan-2026 12:58:13 Asia/Dhaka] Telegram notification sent for Order CR-20260113-1606 by Sales Officer Demra
+[13-Jan-2026 12:58:21 Asia/Dhaka] Total variants fetched: 37
+[13-Jan-2026 12:58:21 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"A","weight_variant":"50","unit_of_measure":"kg","sku":"2HATI MOIDA (50KG)-50-A","price_id":"29","branch_id":"2","unit_price":"2060.00","branch_name":"Demra","branch_code":"DEMRA","stock_usable":"0"}
+[13-Jan-2026 12:59:40 Asia/Dhaka] Total variants fetched: 37
+[13-Jan-2026 12:59:40 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"A","weight_variant":"50","unit_of_measure":"kg","sku":"2HATI MOIDA (50KG)-50-A","price_id":"29","branch_id":"2","unit_price":"2060.00","branch_name":"Demra","branch_code":"DEMRA","stock_usable":"0"}
+[13-Jan-2026 12:59:41 Asia/Dhaka] Telegram notification sent for Order CR-20260113-5673 by Sales Officer Demra
+[13-Jan-2026 13:00:59 Asia/Dhaka] SQL Error [HY000]: SQLSTATE[HY000]: General error: 1364 Field 'branch_id' doesn't have a default value in query: INSERT INTO `production_schedule` (`order_id`, `production_started_at`, `status`) VALUES (?, ?, ?) | Params: Array
+(
+    [0] => 85
+    [1] => 2026-01-13 13:00:59
+    [2] => in_progress
+)
+
+[13-Jan-2026 13:00:59 Asia/Dhaka] Database insert failed for table 'production_schedule'.
+[13-Jan-2026 13:01:04 Asia/Dhaka] SQL Error [HY000]: SQLSTATE[HY000]: General error: 1364 Field 'branch_id' doesn't have a default value in query: INSERT INTO `production_schedule` (`order_id`, `production_started_at`, `status`) VALUES (?, ?, ?) | Params: Array
+(
+    [0] => 86
+    [1] => 2026-01-13 13:01:04
+    [2] => in_progress
+)
+
+[13-Jan-2026 13:01:04 Asia/Dhaka] Database insert failed for table 'production_schedule'.
+[13-Jan-2026 13:01:37 Asia/Dhaka] Order 85 final status after commit: shipped
+[13-Jan-2026 13:01:44 Asia/Dhaka] Order 86 final status after commit: shipped
+[13-Jan-2026 13:02:29 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 55
+)
+
+[13-Jan-2026 13:03:16 Asia/Dhaka] === PAYMENT SUBMISSION START ===
+[13-Jan-2026 13:03:16 Asia/Dhaka] POST data: Array
+(
+    [action] => collect_payment
+    [customer_id] => 55
+    [payment_date] => 2026-01-13
+    [payment_amount] => 103000
+    [payment_method] => Cash
+    [collected_by_employee_id] => 1
+    [cash_account_id] => 15
+    [bank_account_id] => 
+    [cheque_number] => 
+    [cheque_date] => 
+    [bank_transaction_type] => 
+    [reference_number] => 76879090
+    [notes] => 
+)
+
+[13-Jan-2026 13:03:16 Asia/Dhaka] Attempting payment insert with data: Array
+(
+    [payment_number] => PAY-20260113-3459
+    [receipt_number] => RCP-20260113-2105
+    [customer_id] => 55
+    [amount] => 103000
+)
+
+[13-Jan-2026 13:03:16 Asia/Dhaka] ✓✓✓ Payment inserted successfully! ID: 57
+[13-Jan-2026 13:03:16 Asia/Dhaka] ✓ Transaction committed successfully
+[13-Jan-2026 13:03:16 Asia/Dhaka] Payment ID: 57, Receipt: RCP-20260113-2105
+[13-Jan-2026 13:03:16 Asia/Dhaka] ✓ Telegram payment notification sent for receipt: RCP-20260113-2105
+[13-Jan-2026 13:03:38 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 55
+)
+
+[13-Jan-2026 13:04:06 Asia/Dhaka] === PAYMENT SUBMISSION START ===
+[13-Jan-2026 13:04:06 Asia/Dhaka] POST data: Array
+(
+    [action] => collect_payment
+    [customer_id] => 55
+    [payment_date] => 2026-01-13
+    [payment_amount] => 203500
+    [payment_method] => Cash
+    [collected_by_employee_id] => 1
+    [cash_account_id] => 26
+    [bank_account_id] => 
+    [cheque_number] => 
+    [cheque_date] => 
+    [bank_transaction_type] => 
+    [reference_number] => 76879090
+    [notes] => 
+)
+
+[13-Jan-2026 13:04:06 Asia/Dhaka] Attempting payment insert with data: Array
+(
+    [payment_number] => PAY-20260113-4775
+    [receipt_number] => RCP-20260113-4144
+    [customer_id] => 55
+    [amount] => 203500
+)
+
+[13-Jan-2026 13:04:06 Asia/Dhaka] ✓✓✓ Payment inserted successfully! ID: 58
+[13-Jan-2026 13:04:06 Asia/Dhaka] ✓ Transaction committed successfully
+[13-Jan-2026 13:04:06 Asia/Dhaka] Payment ID: 58, Receipt: RCP-20260113-4144
+[13-Jan-2026 13:04:07 Asia/Dhaka] ✓ Telegram payment notification sent for receipt: RCP-20260113-4144
+[13-Jan-2026 13:04:21 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 55
+)
+
+[13-Jan-2026 13:07:15 Asia/Dhaka] Total variants fetched: 37
+[13-Jan-2026 13:07:15 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"A","weight_variant":"50","unit_of_measure":"kg","sku":"2HATI MOIDA (50KG)-50-A","price_id":"29","branch_id":"2","unit_price":"2060.00","branch_name":"Demra","branch_code":"DEMRA","stock_usable":"0"}
+[13-Jan-2026 13:08:50 Asia/Dhaka] Total variants fetched: 37
+[13-Jan-2026 13:08:50 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"A","weight_variant":"50","unit_of_measure":"kg","sku":"2HATI MOIDA (50KG)-50-A","price_id":"29","branch_id":"2","unit_price":"2060.00","branch_name":"Demra","branch_code":"DEMRA","stock_usable":"0"}
+[13-Jan-2026 13:08:51 Asia/Dhaka] Telegram notification sent for Order CR-20260113-5070 by Sales Officer Demra
+[13-Jan-2026 13:08:56 Asia/Dhaka] Total variants fetched: 37
+[13-Jan-2026 13:08:56 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"A","weight_variant":"50","unit_of_measure":"kg","sku":"2HATI MOIDA (50KG)-50-A","price_id":"29","branch_id":"2","unit_price":"2060.00","branch_name":"Demra","branch_code":"DEMRA","stock_usable":"0"}
+[13-Jan-2026 13:09:52 Asia/Dhaka] Total variants fetched: 37
+[13-Jan-2026 13:09:52 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"A","weight_variant":"50","unit_of_measure":"kg","sku":"2HATI MOIDA (50KG)-50-A","price_id":"29","branch_id":"2","unit_price":"2060.00","branch_name":"Demra","branch_code":"DEMRA","stock_usable":"0"}
+[13-Jan-2026 13:09:53 Asia/Dhaka] Telegram notification sent for Order CR-20260113-0077 by Sales Officer Demra
+[13-Jan-2026 13:10:14 Asia/Dhaka] Total variants fetched: 37
+[13-Jan-2026 13:10:14 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"A","weight_variant":"50","unit_of_measure":"kg","sku":"2HATI MOIDA (50KG)-50-A","price_id":"29","branch_id":"2","unit_price":"2060.00","branch_name":"Demra","branch_code":"DEMRA","stock_usable":"0"}
+[13-Jan-2026 13:11:23 Asia/Dhaka] Total variants fetched: 37
+[13-Jan-2026 13:11:23 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"A","weight_variant":"50","unit_of_measure":"kg","sku":"2HATI MOIDA (50KG)-50-A","price_id":"29","branch_id":"2","unit_price":"2060.00","branch_name":"Demra","branch_code":"DEMRA","stock_usable":"0"}
+[13-Jan-2026 13:11:24 Asia/Dhaka] Telegram notification sent for Order CR-20260113-6012 by Sales Officer Demra
+[13-Jan-2026 13:11:29 Asia/Dhaka] Total variants fetched: 37
+[13-Jan-2026 13:11:29 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"A","weight_variant":"50","unit_of_measure":"kg","sku":"2HATI MOIDA (50KG)-50-A","price_id":"29","branch_id":"2","unit_price":"2060.00","branch_name":"Demra","branch_code":"DEMRA","stock_usable":"0"}
+[13-Jan-2026 13:12:53 Asia/Dhaka] Total variants fetched: 37
+[13-Jan-2026 13:12:53 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"A","weight_variant":"50","unit_of_measure":"kg","sku":"2HATI MOIDA (50KG)-50-A","price_id":"29","branch_id":"2","unit_price":"2060.00","branch_name":"Demra","branch_code":"DEMRA","stock_usable":"0"}
+[13-Jan-2026 13:13:38 Asia/Dhaka] Total variants fetched: 37
+[13-Jan-2026 13:13:38 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"A","weight_variant":"50","unit_of_measure":"kg","sku":"2HATI MOIDA (50KG)-50-A","price_id":"29","branch_id":"2","unit_price":"2060.00","branch_name":"Demra","branch_code":"DEMRA","stock_usable":"0"}
+[13-Jan-2026 13:13:39 Asia/Dhaka] Telegram notification sent for Order CR-20260113-3045 by Sales Officer Demra
+[13-Jan-2026 13:14:38 Asia/Dhaka] Total variants fetched: 37
+[13-Jan-2026 13:14:38 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"A","weight_variant":"50","unit_of_measure":"kg","sku":"2HATI MOIDA (50KG)-50-A","price_id":"29","branch_id":"2","unit_price":"2060.00","branch_name":"Demra","branch_code":"DEMRA","stock_usable":"0"}
+[13-Jan-2026 13:15:28 Asia/Dhaka] Total variants fetched: 37
+[13-Jan-2026 13:15:28 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"A","weight_variant":"50","unit_of_measure":"kg","sku":"2HATI MOIDA (50KG)-50-A","price_id":"29","branch_id":"2","unit_price":"2060.00","branch_name":"Demra","branch_code":"DEMRA","stock_usable":"0"}
+[13-Jan-2026 13:15:28 Asia/Dhaka] Total variants fetched: 37
+[13-Jan-2026 13:15:28 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"A","weight_variant":"50","unit_of_measure":"kg","sku":"2HATI MOIDA (50KG)-50-A","price_id":"29","branch_id":"2","unit_price":"2060.00","branch_name":"Demra","branch_code":"DEMRA","stock_usable":"0"}
+[13-Jan-2026 13:15:29 Asia/Dhaka] Telegram notification sent for Order CR-20260113-7512 by Sales Officer Demra
+[13-Jan-2026 14:54:22 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cow.created_at' in 'ORDER BY' in query: SELECT cow.*, u.display_name as performed_by_name
+     FROM credit_order_workflow cow
+     LEFT JOIN users u ON cow.performed_by_user_id = u.id
+     WHERE cow.order_id = ?
+     ORDER BY cow.created_at DESC | Params: Array
+(
+    [0] => 87
+)
+
+[13-Jan-2026 14:55:30 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cow.created_at' in 'ORDER BY' in query: SELECT cow.*, u.display_name as performed_by_name
+     FROM credit_order_workflow cow
+     LEFT JOIN users u ON cow.performed_by_user_id = u.id
+     WHERE cow.order_id = ?
+     ORDER BY cow.created_at DESC | Params: Array
+(
+    [0] => 87
+)
+
+[13-Jan-2026 15:14:30 Asia/Dhaka] Total variants fetched: 37
+[13-Jan-2026 15:14:30 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"A","weight_variant":"50","unit_of_measure":"kg","sku":"2HATI MOIDA (50KG)-50-A","price_id":"29","branch_id":"2","unit_price":"2060.00","branch_name":"Demra","branch_code":"DEMRA","stock_usable":"0"}
+[13-Jan-2026 15:14:48 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cow.created_at' in 'ORDER BY' in query: SELECT cow.*, u.display_name as performed_by_name
+     FROM credit_order_workflow cow
+     LEFT JOIN users u ON cow.performed_by_user_id = u.id
+     WHERE cow.order_id = ?
+     ORDER BY cow.created_at DESC | Params: Array
+(
+    [0] => 87
+)
+
+[13-Jan-2026 15:37:27 Asia/Dhaka] SQL Error [HY000]: SQLSTATE[HY000]: General error: 1364 Field 'branch_id' doesn't have a default value in query: INSERT INTO `production_schedule` (`order_id`, `production_started_at`, `status`) VALUES (?, ?, ?) | Params: Array
+(
+    [0] => 87
+    [1] => 2026-01-13 15:37:27
+    [2] => in_progress
+)
+
+[13-Jan-2026 15:37:27 Asia/Dhaka] Database insert failed for table 'production_schedule'.
+[13-Jan-2026 15:38:20 Asia/Dhaka] Order 87 final status after commit: shipped
+[13-Jan-2026 15:40:20 Asia/Dhaka] SQL Error [HY000]: SQLSTATE[HY000]: General error: 1364 Field 'branch_id' doesn't have a default value in query: INSERT INTO `production_schedule` (`order_id`, `production_started_at`, `status`) VALUES (?, ?, ?) | Params: Array
+(
+    [0] => 89
+    [1] => 2026-01-13 15:40:20
+    [2] => in_progress
+)
+
+[13-Jan-2026 15:40:20 Asia/Dhaka] Database insert failed for table 'production_schedule'.
+[13-Jan-2026 15:41:00 Asia/Dhaka] Order 89 final status after commit: shipped
+[13-Jan-2026 20:14:29 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cow.created_at' in 'ORDER BY' in query: SELECT cow.*, u.display_name as performed_by_name
+     FROM credit_order_workflow cow
+     LEFT JOIN users u ON cow.performed_by_user_id = u.id
+     WHERE cow.order_id = ?
+     ORDER BY cow.created_at DESC | Params: Array
+(
+    [0] => 92
+)
+
+[13-Jan-2026 20:14:37 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cow.created_at' in 'ORDER BY' in query: SELECT cow.*, u.display_name as performed_by_name
+     FROM credit_order_workflow cow
+     LEFT JOIN users u ON cow.performed_by_user_id = u.id
+     WHERE cow.order_id = ?
+     ORDER BY cow.created_at DESC | Params: Array
+(
+    [0] => 91
+)
+
+[13-Jan-2026 20:14:57 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 55
+)
+
+[13-Jan-2026 20:15:22 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 52
+)
+
+[13-Jan-2026 20:18:44 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 52
+)
+
+[13-Jan-2026 20:19:51 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 52
+[13-Jan-2026 20:19:51 Asia/Dhaka] Found 1 pending orders for customer 52
+[13-Jan-2026 20:20:22 Asia/Dhaka] ✓ Telegram advance payment notification sent for receipt: ADVPAY-20260113-0429
+[13-Jan-2026 20:20:35 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 52
+)
+
+[13-Jan-2026 20:21:43 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 51
+)
+
+[13-Jan-2026 20:22:07 Asia/Dhaka] === PAYMENT SUBMISSION START ===
+[13-Jan-2026 20:22:07 Asia/Dhaka] POST data: Array
+(
+    [action] => collect_payment
+    [customer_id] => 51
+    [payment_date] => 2026-01-13
+    [payment_amount] => 10000.00
+    [payment_method] => Cash
+    [collected_by_employee_id] => 3
+    [cash_account_id] => 22
+    [bank_account_id] => 
+    [cheque_number] => 
+    [cheque_date] => 
+    [bank_transaction_type] => 
+    [reference_number] => 
+    [notes] => 
+    [invoice_allocation] => Array
+        (
+            [79] => 10000
+        )
+
+)
+
+[13-Jan-2026 20:22:07 Asia/Dhaka] Attempting payment insert with data: Array
+(
+    [payment_number] => PAY-20260113-1942
+    [receipt_number] => RCP-20260113-9380
+    [customer_id] => 51
+    [amount] => 10000
+)
+
+[13-Jan-2026 20:22:07 Asia/Dhaka] ✓✓✓ Payment inserted successfully! ID: 60
+[13-Jan-2026 20:22:07 Asia/Dhaka] ✓ Transaction committed successfully
+[13-Jan-2026 20:22:07 Asia/Dhaka] Payment ID: 60, Receipt: RCP-20260113-9380
+[13-Jan-2026 20:22:07 Asia/Dhaka] ✓ Telegram payment notification sent for receipt: RCP-20260113-9380
+[13-Jan-2026 20:23:16 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 52
+)
+
+[13-Jan-2026 20:23:45 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 52
+[13-Jan-2026 20:23:45 Asia/Dhaka] Found 1 pending orders for customer 52
+[13-Jan-2026 20:26:22 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 52
+)
+
+[13-Jan-2026 20:26:39 Asia/Dhaka] === PAYMENT SUBMISSION START ===
+[13-Jan-2026 20:26:39 Asia/Dhaka] POST data: Array
+(
+    [action] => collect_payment
+    [customer_id] => 52
+    [payment_date] => 2026-01-13
+    [payment_amount] => 1000
+    [payment_method] => Cash
+    [collected_by_employee_id] => 1
+    [cash_account_id] => 22
+    [bank_account_id] => 
+    [cheque_number] => 
+    [cheque_date] => 
+    [bank_transaction_type] => 
+    [reference_number] => 
+    [notes] => 
+)
+
+[13-Jan-2026 20:26:39 Asia/Dhaka] Attempting payment insert with data: Array
+(
+    [payment_number] => PAY-20260113-0830
+    [receipt_number] => RCP-20260113-2231
+    [customer_id] => 52
+    [amount] => 1000
+)
+
+[13-Jan-2026 20:26:39 Asia/Dhaka] ✓✓✓ Payment inserted successfully! ID: 61
+[13-Jan-2026 20:26:39 Asia/Dhaka] ✓ Transaction committed successfully
+[13-Jan-2026 20:26:39 Asia/Dhaka] Payment ID: 61, Receipt: RCP-20260113-2231
+[13-Jan-2026 20:26:40 Asia/Dhaka] ✓ Telegram payment notification sent for receipt: RCP-20260113-2231
+[13-Jan-2026 20:26:59 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 52
+)
+
+[13-Jan-2026 20:27:16 Asia/Dhaka] === PAYMENT SUBMISSION START ===
+[13-Jan-2026 20:27:16 Asia/Dhaka] POST data: Array
+(
+    [action] => collect_payment
+    [customer_id] => 52
+    [payment_date] => 2026-01-13
+    [payment_amount] => 2000.00
+    [payment_method] => Cash
+    [collected_by_employee_id] => 2
+    [cash_account_id] => 22
+    [bank_account_id] => 
+    [cheque_number] => 
+    [cheque_date] => 
+    [bank_transaction_type] => 
+    [reference_number] => 
+    [notes] => 
+    [invoice_allocation] => Array
+        (
+            [83] => 2000
+        )
+
+)
+
+[13-Jan-2026 20:27:16 Asia/Dhaka] Attempting payment insert with data: Array
+(
+    [payment_number] => PAY-20260113-5812
+    [receipt_number] => RCP-20260113-6633
+    [customer_id] => 52
+    [amount] => 2000
+)
+
+[13-Jan-2026 20:27:16 Asia/Dhaka] ✓✓✓ Payment inserted successfully! ID: 62
+[13-Jan-2026 20:27:16 Asia/Dhaka] ✓ Transaction committed successfully
+[13-Jan-2026 20:27:16 Asia/Dhaka] Payment ID: 62, Receipt: RCP-20260113-6633
+[13-Jan-2026 20:27:17 Asia/Dhaka] ✓ Telegram payment notification sent for receipt: RCP-20260113-6633
+[13-Jan-2026 20:27:45 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 52
+)
+
+[13-Jan-2026 20:28:16 Asia/Dhaka] === PAYMENT SUBMISSION START ===
+[13-Jan-2026 20:28:16 Asia/Dhaka] POST data: Array
+(
+    [action] => collect_payment
+    [customer_id] => 52
+    [payment_date] => 2026-01-13
+    [payment_amount] => 74080.00
+    [payment_method] => Cash
+    [collected_by_employee_id] => 7
+    [cash_account_id] => 22
+    [bank_account_id] => 
+    [cheque_number] => 
+    [cheque_date] => 
+    [bank_transaction_type] => 
+    [reference_number] => 
+    [notes] => 
+    [invoice_allocation] => Array
+        (
+            [83] => 74080
+        )
+
+)
+
+[13-Jan-2026 20:28:16 Asia/Dhaka] Attempting payment insert with data: Array
+(
+    [payment_number] => PAY-20260113-8592
+    [receipt_number] => RCP-20260113-7824
+    [customer_id] => 52
+    [amount] => 74080
+)
+
+[13-Jan-2026 20:28:16 Asia/Dhaka] ✓✓✓ Payment inserted successfully! ID: 63
+[13-Jan-2026 20:28:16 Asia/Dhaka] ✓ Transaction committed successfully
+[13-Jan-2026 20:28:16 Asia/Dhaka] Payment ID: 63, Receipt: RCP-20260113-7824
+[13-Jan-2026 20:28:17 Asia/Dhaka] ✓ Telegram payment notification sent for receipt: RCP-20260113-7824
+[14-Jan-2026 14:49:18 Asia/Dhaka] Total variants fetched: 37
+[14-Jan-2026 14:49:18 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"A","weight_variant":"50","unit_of_measure":"kg","sku":"2HATI MOIDA (50KG)-50-A","price_id":"29","branch_id":"2","unit_price":"2060.00","branch_name":"Demra","branch_code":"DEMRA","stock_usable":"0"}
+[14-Jan-2026 14:50:06 Asia/Dhaka] Total variants fetched: 37
+[14-Jan-2026 14:50:06 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"A","weight_variant":"50","unit_of_measure":"kg","sku":"2HATI MOIDA (50KG)-50-A","price_id":"29","branch_id":"2","unit_price":"2060.00","branch_name":"Demra","branch_code":"DEMRA","stock_usable":"0"}
+[14-Jan-2026 14:50:06 Asia/Dhaka] Total variants fetched: 37
+[14-Jan-2026 14:50:06 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"A","weight_variant":"50","unit_of_measure":"kg","sku":"2HATI MOIDA (50KG)-50-A","price_id":"29","branch_id":"2","unit_price":"2060.00","branch_name":"Demra","branch_code":"DEMRA","stock_usable":"0"}
+[14-Jan-2026 14:50:07 Asia/Dhaka] Telegram notification sent for Order CR-20260114-8627 by Sales Officer Demra
+[14-Jan-2026 14:50:10 Asia/Dhaka] Total variants fetched: 37
+[14-Jan-2026 14:50:10 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"A","weight_variant":"50","unit_of_measure":"kg","sku":"2HATI MOIDA (50KG)-50-A","price_id":"29","branch_id":"2","unit_price":"2060.00","branch_name":"Demra","branch_code":"DEMRA","stock_usable":"0"}
+[14-Jan-2026 14:52:15 Asia/Dhaka] Total variants fetched: 37
+[14-Jan-2026 14:52:15 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"A","weight_variant":"50","unit_of_measure":"kg","sku":"2HATI MOIDA (50KG)-50-A","price_id":"29","branch_id":"2","unit_price":"2060.00","branch_name":"Demra","branch_code":"DEMRA","stock_usable":"0"}
+[14-Jan-2026 14:53:17 Asia/Dhaka] Total variants fetched: 37
+[14-Jan-2026 14:53:17 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"A","weight_variant":"50","unit_of_measure":"kg","sku":"2HATI MOIDA (50KG)-50-A","price_id":"29","branch_id":"2","unit_price":"2060.00","branch_name":"Demra","branch_code":"DEMRA","stock_usable":"0"}
+[14-Jan-2026 14:53:18 Asia/Dhaka] Telegram notification sent for Order CR-20260114-5539 by Sales Officer Demra
+[14-Jan-2026 14:53:20 Asia/Dhaka] Total variants fetched: 37
+[14-Jan-2026 14:53:20 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"A","weight_variant":"50","unit_of_measure":"kg","sku":"2HATI MOIDA (50KG)-50-A","price_id":"29","branch_id":"2","unit_price":"2060.00","branch_name":"Demra","branch_code":"DEMRA","stock_usable":"0"}
+[14-Jan-2026 15:00:23 Asia/Dhaka] Total variants fetched: 39
+[14-Jan-2026 15:00:23 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"A","weight_variant":"50","unit_of_measure":"kg","sku":"2HATI MOIDA (50KG)-50-A","price_id":"29","branch_id":"2","unit_price":"2060.00","branch_name":"Demra","branch_code":"DEMRA","stock_usable":"0"}
+[14-Jan-2026 15:02:57 Asia/Dhaka] Total variants fetched: 39
+[14-Jan-2026 15:02:57 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"A","weight_variant":"50","unit_of_measure":"kg","sku":"2HATI MOIDA (50KG)-50-A","price_id":"29","branch_id":"2","unit_price":"2060.00","branch_name":"Demra","branch_code":"DEMRA","stock_usable":"0"}
+[14-Jan-2026 15:02:58 Asia/Dhaka] Telegram notification sent for Order CR-20260114-4037 by Sales Officer Demra
+[14-Jan-2026 15:04:07 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cow.created_at' in 'ORDER BY' in query: SELECT cow.*, u.display_name as performed_by_name
+     FROM credit_order_workflow cow
+     LEFT JOIN users u ON cow.performed_by_user_id = u.id
+     WHERE cow.order_id = ?
+     ORDER BY cow.created_at DESC | Params: Array
+(
+    [0] => 88
+)
+
+[14-Jan-2026 15:08:34 Asia/Dhaka] SQL Error [HY000]: SQLSTATE[HY000]: General error: 1364 Field 'branch_id' doesn't have a default value in query: INSERT INTO `production_schedule` (`order_id`, `production_started_at`, `status`) VALUES (?, ?, ?) | Params: Array
+(
+    [0] => 94
+    [1] => 2026-01-14 15:08:34
+    [2] => in_progress
+)
+
+[14-Jan-2026 15:08:34 Asia/Dhaka] Database insert failed for table 'production_schedule'.
+[14-Jan-2026 15:09:30 Asia/Dhaka] SQL Error [HY000]: SQLSTATE[HY000]: General error: 1364 Field 'branch_id' doesn't have a default value in query: INSERT INTO `production_schedule` (`order_id`, `production_started_at`, `status`) VALUES (?, ?, ?) | Params: Array
+(
+    [0] => 95
+    [1] => 2026-01-14 15:09:30
+    [2] => in_progress
+)
+
+[14-Jan-2026 15:09:30 Asia/Dhaka] Database insert failed for table 'production_schedule'.
+[14-Jan-2026 15:10:07 Asia/Dhaka] Order 94 final status after commit: shipped
+[14-Jan-2026 15:10:55 Asia/Dhaka] SQL Error [HY000]: SQLSTATE[HY000]: General error: 1364 Field 'branch_id' doesn't have a default value in query: INSERT INTO `production_schedule` (`order_id`, `production_started_at`, `status`) VALUES (?, ?, ?) | Params: Array
+(
+    [0] => 96
+    [1] => 2026-01-14 15:10:55
+    [2] => in_progress
+)
+
+[14-Jan-2026 15:10:55 Asia/Dhaka] Database insert failed for table 'production_schedule'.
+[14-Jan-2026 15:11:31 Asia/Dhaka] Order 96 final status after commit: shipped
+[14-Jan-2026 15:11:53 Asia/Dhaka] Total variants fetched: 39
+[14-Jan-2026 15:11:53 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"A","weight_variant":"50","unit_of_measure":"kg","sku":"2HATI MOIDA (50KG)-50-A","price_id":"29","branch_id":"2","unit_price":"2060.00","branch_name":"Demra","branch_code":"DEMRA","stock_usable":"0"}
+[14-Jan-2026 15:13:40 Asia/Dhaka] Total variants fetched: 39
+[14-Jan-2026 15:13:40 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"A","weight_variant":"50","unit_of_measure":"kg","sku":"2HATI MOIDA (50KG)-50-A","price_id":"29","branch_id":"2","unit_price":"2060.00","branch_name":"Demra","branch_code":"DEMRA","stock_usable":"0"}
+[14-Jan-2026 15:13:42 Asia/Dhaka] Telegram notification sent for Order CR-20260114-5994 by Sales Officer Demra
+[14-Jan-2026 15:14:46 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 55
+)
+
+[14-Jan-2026 15:15:11 Asia/Dhaka] === PAYMENT SUBMISSION START ===
+[14-Jan-2026 15:15:11 Asia/Dhaka] POST data: Array
+(
+    [action] => collect_payment
+    [customer_id] => 55
+    [payment_date] => 2026-01-14
+    [payment_amount] => 105000
+    [payment_method] => Cash
+    [collected_by_employee_id] => 1
+    [cash_account_id] => 28
+    [bank_account_id] => 
+    [cheque_number] => 
+    [cheque_date] => 
+    [bank_transaction_type] => 
+    [reference_number] => 76879090
+    [notes] => 
+)
+
+[14-Jan-2026 15:15:11 Asia/Dhaka] Attempting payment insert with data: Array
+(
+    [payment_number] => PAY-20260114-6407
+    [receipt_number] => RCP-20260114-0810
+    [customer_id] => 55
+    [amount] => 105000
+)
+
+[14-Jan-2026 15:15:11 Asia/Dhaka] ✓✓✓ Payment inserted successfully! ID: 64
+[14-Jan-2026 15:15:11 Asia/Dhaka] ✓ Transaction committed successfully
+[14-Jan-2026 15:15:11 Asia/Dhaka] Payment ID: 64, Receipt: RCP-20260114-0810
+[14-Jan-2026 15:15:11 Asia/Dhaka] ✓ Telegram payment notification sent for receipt: RCP-20260114-0810
+[14-Jan-2026 15:15:40 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 54
+)
+
+[14-Jan-2026 15:16:08 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 54
+[14-Jan-2026 15:16:08 Asia/Dhaka] Found 1 pending orders for customer 54
+[14-Jan-2026 15:16:51 Asia/Dhaka] ✓ Telegram advance payment notification sent for receipt: ADVPAY-20260114-9537
+[14-Jan-2026 16:22:40 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 53
+[14-Jan-2026 16:22:40 Asia/Dhaka] Found 0 pending orders for customer 53
+[14-Jan-2026 16:24:00 Asia/Dhaka] ✓ Telegram advance payment notification sent for receipt: ADVPAY-20260114-6523
+[14-Jan-2026 16:24:18 Asia/Dhaka] AJAX Payment Handler - Action: get_pending_orders_for_advance | Customer ID: 53
+[14-Jan-2026 16:24:18 Asia/Dhaka] Found 0 pending orders for customer 53
+[15-Jan-2026 15:21:18 Asia/Dhaka] Total variants fetched: 39
+[15-Jan-2026 15:21:18 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"A","weight_variant":"50","unit_of_measure":"kg","sku":"2HATI MOIDA (50KG)-50-A","price_id":"29","branch_id":"2","unit_price":"2060.00","branch_name":"Demra","branch_code":"DEMRA","stock_usable":"0"}
+[15-Jan-2026 15:22:28 Asia/Dhaka] Total variants fetched: 39
+[15-Jan-2026 15:22:28 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"A","weight_variant":"50","unit_of_measure":"kg","sku":"2HATI MOIDA (50KG)-50-A","price_id":"29","branch_id":"2","unit_price":"2060.00","branch_name":"Demra","branch_code":"DEMRA","stock_usable":"0"}
+[15-Jan-2026 15:22:29 Asia/Dhaka] Telegram notification sent for Order CR-20260115-7432 by Sales Officer Demra
+[15-Jan-2026 15:24:00 Asia/Dhaka] SQL Error [HY000]: SQLSTATE[HY000]: General error: 1364 Field 'branch_id' doesn't have a default value in query: INSERT INTO `production_schedule` (`order_id`, `production_started_at`, `status`) VALUES (?, ?, ?) | Params: Array
+(
+    [0] => 98
+    [1] => 2026-01-15 15:24:00
+    [2] => in_progress
+)
+
+[15-Jan-2026 15:24:00 Asia/Dhaka] Database insert failed for table 'production_schedule'.
+[15-Jan-2026 21:06:26 Asia/Dhaka] Total variants fetched: 39
+[15-Jan-2026 21:06:26 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"A","weight_variant":"50","unit_of_measure":"kg","sku":"2HATI MOIDA (50KG)-50-A","price_id":"29","branch_id":"2","unit_price":"2060.00","branch_name":"Demra","branch_code":"DEMRA","stock_usable":"0"}
+[17-Jan-2026 11:36:21 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 10
+)
+
+[19-Jan-2026 11:27:11 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 53
+)
+
+[19-Jan-2026 11:36:21 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cp.collected_by_user_id' in 'ON' in query: SELECT cp.*, 
+                    u.display_name as collected_by_name,
+                    CONCAT(e.first_name, ' ', e.last_name) as employee_name,
+                    b.name as branch_name
+             FROM customer_payments cp
+             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
+             LEFT JOIN branches b ON cp.branch_id = b.id
+             WHERE cp.customer_id = ?
+             ORDER BY cp.payment_date DESC, cp.created_at DESC
+             LIMIT 10 | Params: Array
+(
+    [0] => 53
+)
+
+[22-Jan-2026 15:29:59 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cow.created_at' in 'ORDER BY' in query: SELECT cow.*, u.display_name as performed_by_name
+     FROM credit_order_workflow cow
+     LEFT JOIN users u ON cow.performed_by_user_id = u.id
+     WHERE cow.order_id = ?
+     ORDER BY cow.created_at DESC | Params: Array
+(
+    [0] => 98
+)
+
+[22-Jan-2026 16:25:38 Asia/Dhaka] Total variants fetched: 39
+[22-Jan-2026 16:25:38 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"A","weight_variant":"50","unit_of_measure":"kg","sku":"2HATI MOIDA (50KG)-50-A","price_id":"29","branch_id":"2","unit_price":"2060.00","branch_name":"Demra","branch_code":"DEMRA","stock_usable":"0"}
+[22-Jan-2026 16:36:54 Asia/Dhaka] Total variants fetched: 39
+[22-Jan-2026 16:36:54 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"A","weight_variant":"50","unit_of_measure":"kg","sku":"2HATI MOIDA (50KG)-50-A","price_id":"29","branch_id":"2","unit_price":"2060.00","branch_name":"Demra","branch_code":"DEMRA","stock_usable":"0"}
+[22-Jan-2026 17:00:58 Asia/Dhaka] Total variants fetched: 39
+[22-Jan-2026 17:00:58 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"A","weight_variant":"50","unit_of_measure":"kg","sku":"2HATI MOIDA (50KG)-50-A","price_id":"29","branch_id":"2","unit_price":"2060.00","branch_name":"Demra","branch_code":"DEMRA","stock_usable":"0"}
+[25-Jan-2026 15:37:42 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cow.created_at' in 'ORDER BY' in query: SELECT cow.*, u.display_name as performed_by_name
+     FROM credit_order_workflow cow
+     LEFT JOIN users u ON cow.performed_by_user_id = u.id
+     WHERE cow.order_id = ?
+     ORDER BY cow.created_at DESC | Params: Array
+(
+    [0] => 95
+)
+
+[25-Jan-2026 15:37:56 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cow.created_at' in 'ORDER BY' in query: SELECT cow.*, u.display_name as performed_by_name
+     FROM credit_order_workflow cow
+     LEFT JOIN users u ON cow.performed_by_user_id = u.id
+     WHERE cow.order_id = ?
+     ORDER BY cow.created_at DESC | Params: Array
+(
+    [0] => 98
+)
+
+[25-Jan-2026 15:38:29 Asia/Dhaka] Total variants fetched: 39
+[25-Jan-2026 15:38:29 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"A","weight_variant":"50","unit_of_measure":"kg","sku":"2HATI MOIDA (50KG)-50-A","price_id":"29","branch_id":"2","unit_price":"2060.00","branch_name":"Demra","branch_code":"DEMRA","stock_usable":"0"}
+[25-Jan-2026 15:38:37 Asia/Dhaka] Total variants fetched: 39
+[25-Jan-2026 15:38:37 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"A","weight_variant":"50","unit_of_measure":"kg","sku":"2HATI MOIDA (50KG)-50-A","price_id":"29","branch_id":"2","unit_price":"2060.00","branch_name":"Demra","branch_code":"DEMRA","stock_usable":"0"}
+[25-Jan-2026 15:39:07 Asia/Dhaka] Total variants fetched: 39
+[25-Jan-2026 15:39:07 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"A","weight_variant":"50","unit_of_measure":"kg","sku":"2HATI MOIDA (50KG)-50-A","price_id":"29","branch_id":"2","unit_price":"2060.00","branch_name":"Demra","branch_code":"DEMRA","stock_usable":"0"}
+[25-Jan-2026 15:39:09 Asia/Dhaka] Telegram notification sent for Order CR-20260125-3777 by Azmain Ziead
+[25-Jan-2026 15:41:45 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cow.created_at' in 'ORDER BY' in query: SELECT cow.*, u.display_name as performed_by_name
+     FROM credit_order_workflow cow
+     LEFT JOIN users u ON cow.performed_by_user_id = u.id
+     WHERE cow.order_id = ?
+     ORDER BY cow.created_at DESC | Params: Array
+(
+    [0] => 99
+)
+
+[25-Jan-2026 15:41:50 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'cow.created_at' in 'ORDER BY' in query: SELECT cow.*, u.display_name as performed_by_name
+     FROM credit_order_workflow cow
+     LEFT JOIN users u ON cow.performed_by_user_id = u.id
+     WHERE cow.order_id = ?
+     ORDER BY cow.created_at DESC | Params: Array
+(
+    [0] => 99
+)
+
+[25-Jan-2026 15:47:25 Asia/Dhaka] Total variants fetched: 39
+[25-Jan-2026 15:47:25 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"A","weight_variant":"50","unit_of_measure":"kg","sku":"2HATI MOIDA (50KG)-50-A","price_id":"29","branch_id":"2","unit_price":"2060.00","branch_name":"Demra","branch_code":"DEMRA","stock_usable":"0"}

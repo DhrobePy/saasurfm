@@ -181,3 +181,10 @@ Stack trace:
 [04-Dec-2025 14:17:27 Asia/Dhaka] PHP Warning:  Undefined array key "user_id" in /home/ujjalfmc/public_html/saas.ujjalfm.com/migrate_to_pricing_rules.php on line 16
 [06-Dec-2025 15:32:02 Asia/Dhaka] PHP Warning:  Undefined array key "user_id" in /home/ujjalfmc/public_html/saas.ujjalfm.com/migrate_to_pricing_rules.php on line 16
 [06-Dec-2025 18:01:08 Asia/Dhaka] PHP Warning:  Undefined array key "user_id" in /home/ujjalfmc/public_html/saas.ujjalfm.com/migrate_to_pricing_rules.php on line 16
+[13-Dec-2025 23:14:06 Asia/Dhaka] PHP Warning:  Undefined array key "user_id" in /home/ujjalfmc/public_html/saas.ujjalfm.com/test_pricing_rules.php on line 78
+[13-Dec-2025 23:14:06 Asia/Dhaka] Failed to log execution: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'executed_by_user_id' cannot be null
+[13-Dec-2025 23:14:06 Asia/Dhaka] Failed to log execution: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'executed_by_user_id' cannot be null
+[13-Dec-2025 23:14:06 Asia/Dhaka] Failed to log execution: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'executed_by_user_id' cannot be null
+[13-Dec-2025 23:14:06 Asia/Dhaka] Failed to log execution: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'executed_by_user_id' cannot be null
+[13-Dec-2025 23:14:06 Asia/Dhaka] Failed to log execution: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'executed_by_user_id' cannot be null
+[13-Dec-2025 23:14:06 Asia/Dhaka] Failed to log execution: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'executed_by_user_id' cannot be null

@@ -85,3 +85,207 @@ Stack trace:
     [5] => active
 )
 
+[21-Dec-2025 13:09:34 Asia/Dhaka] SQL Error [01000]: SQLSTATE[01000]: Warning: 1265 Data truncated for column 'unit_of_measure' at row 1 in query: INSERT INTO product_variants (product_id, sku, weight_variant, grade, unit_of_measure, status) VALUES (?, ?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 5
+    [1] => KG-RUTIMOIDA74KG-A
+    [2] => RUTI MOIDA (74KG)
+    [3] => A
+    [4] => pcs
+    [5] => active
+)
+
+[21-Dec-2025 15:04:46 Asia/Dhaka] SQL Error [23000]: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'KG' for key 'base_sku' in query: INSERT INTO products (base_name, base_sku, description, category, status) VALUES (?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => Kobutor
+    [1] => KG
+    [2] => 
+    [3] => Moida
+    [4] => active
+)
+
+[21-Dec-2025 15:05:46 Asia/Dhaka] SQL Error [23000]: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'KG' for key 'base_sku' in query: INSERT INTO products (base_name, base_sku, description, category, status) VALUES (?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => Kobutor
+    [1] => KG
+    [2] => 
+    [3] => Moida
+    [4] => active
+)
+
+[21-Dec-2025 15:10:16 Asia/Dhaka] SQL Error [23000]: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'KG' for key 'base_sku' in query: INSERT INTO products (base_name, base_sku, description, category, status) VALUES (?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => Kobutor
+    [1] => KG
+    [2] => 
+    [3] => Moida
+    [4] => active
+)
+
+[21-Dec-2025 15:16:15 Asia/Dhaka] SQL Error [23000]: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'KG' for key 'base_sku' in query: INSERT INTO products (base_name, base_sku, description, category, status) VALUES (?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => Sun Moida (50kg)
+    [1] => KG
+    [2] => 
+    [3] => Moida
+    [4] => active
+)
+
+[21-Dec-2025 15:17:46 Asia/Dhaka] SQL Error [01000]: SQLSTATE[01000]: Warning: 1265 Data truncated for column 'unit_of_measure' at row 1 in query: INSERT INTO product_variants (product_id, sku, weight_variant, grade, unit_of_measure, status) VALUES (?, ?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 10
+    [1] => (50KG)-50-A
+    [2] => 50
+    [3] => A
+    [4] => bag
+    [5] => active
+)
+
+[21-Dec-2025 15:23:04 Asia/Dhaka] SQL Error [01000]: SQLSTATE[01000]: Warning: 1265 Data truncated for column 'unit_of_measure' at row 1 in query: INSERT INTO product_variants (product_id, sku, weight_variant, grade, unit_of_measure, status) VALUES (?, ?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 10
+    [1] => (50KG)-50-A
+    [2] => 50
+    [3] => A
+    [4] => pcs
+    [5] => active
+)
+
+[22-Dec-2025 15:48:30 Asia/Dhaka] SQL Error [01000]: SQLSTATE[01000]: Warning: 1265 Data truncated for column 'unit_of_measure' at row 1 in query: INSERT INTO product_variants (product_id, sku, weight_variant, grade, unit_of_measure, status) VALUES (?, ?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 10
+    [1] => (50KG)-50-A
+    [2] => 50
+    [3] => A
+    [4] => bag
+    [5] => active
+)
+
+[22-Dec-2025 15:48:46 Asia/Dhaka] SQL Error [01000]: SQLSTATE[01000]: Warning: 1265 Data truncated for column 'unit_of_measure' at row 1 in query: INSERT INTO product_variants (product_id, sku, weight_variant, grade, unit_of_measure, status) VALUES (?, ?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 10
+    [1] => (50KG)-50-A
+    [2] => 50
+    [3] => A
+    [4] => bag
+    [5] => active
+)
+
+[22-Dec-2025 15:50:46 Asia/Dhaka] SQL Error [23000]: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'KG' for key 'base_sku' in query: INSERT INTO products (base_name, base_sku, description, category, status) VALUES (?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => Sun Moida (50kg)
+    [1] => KG
+    [2] => 
+    [3] => Moyda
+    [4] => active
+)
+
+[22-Dec-2025 15:52:46 Asia/Dhaka] SQL Error [01000]: SQLSTATE[01000]: Warning: 1265 Data truncated for column 'unit_of_measure' at row 1 in query: INSERT INTO product_variants (product_id, sku, weight_variant, grade, unit_of_measure, status) VALUES (?, ?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 10
+    [1] => (50KG)-74-A
+    [2] => 74
+    [3] => A
+    [4] => bag
+    [5] => active
+)
+
+[22-Dec-2025 15:59:01 Asia/Dhaka] SQL Error [23000]: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'KG' for key 'base_sku' in query: INSERT INTO products (base_name, base_sku, description, category, status) VALUES (?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => Elders Moida (50kg)
+    [1] => KG
+    [2] => 
+    [3] => Moida
+    [4] => active
+)
+
+[22-Dec-2025 15:59:26 Asia/Dhaka] SQL Error [23000]: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'KG' for key 'base_sku' in query: INSERT INTO products (base_name, base_sku, description, category, status) VALUES (?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => Elders Moida (50kg)
+    [1] => KG
+    [2] => no
+    [3] => Moida
+    [4] => active
+)
+
+[22-Dec-2025 15:59:44 Asia/Dhaka] SQL Error [23000]: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'KG' for key 'base_sku' in query: INSERT INTO products (base_name, base_sku, description, category, status) VALUES (?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => Elders Moida (50kg)
+    [1] => KG
+    [2] => 
+    [3] => Moida
+    [4] => active
+)
+
+[22-Dec-2025 16:07:14 Asia/Dhaka] SQL Error [23000]: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'KG' for key 'base_sku' in query: INSERT INTO products (base_name, base_sku, description, category, status) VALUES (?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => Elders Moida (50kg)
+    [1] => KG
+    [2] => 
+    [3] => Moida
+    [4] => active
+)
+
+[22-Dec-2025 16:10:36 Asia/Dhaka] SQL Error [01000]: SQLSTATE[01000]: Warning: 1265 Data truncated for column 'unit_of_measure' at row 1 in query: INSERT INTO product_variants (product_id, sku, weight_variant, grade, unit_of_measure, status) VALUES (?, ?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 17
+    [1] => NIROB-50-A
+    [2] => 50
+    [3] => A
+    [4] => pcs
+    [5] => active
+)
+
+[22-Dec-2025 16:18:15 Asia/Dhaka] SQL Error [23000]: SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails (`ujjalfmc_saas`.`order_items`, CONSTRAINT `fk_orderitem_variant` FOREIGN KEY (`variant_id`) REFERENCES `product_variants` (`id`)) in query: DELETE FROM products WHERE id = ? | Params: Array
+(
+    [0] => 1
+)
+
+[22-Dec-2025 16:19:00 Asia/Dhaka] SQL Error [23000]: SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails (`ujjalfmc_saas`.`order_items`, CONSTRAINT `fk_orderitem_variant` FOREIGN KEY (`variant_id`) REFERENCES `product_variants` (`id`)) in query: DELETE FROM products WHERE id = ? | Params: Array
+(
+    [0] => 1
+)
+
+[22-Dec-2025 16:19:46 Asia/Dhaka] SQL Error [23000]: SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails (`ujjalfmc_saas`.`order_items`, CONSTRAINT `fk_orderitem_variant` FOREIGN KEY (`variant_id`) REFERENCES `product_variants` (`id`)) in query: DELETE FROM products WHERE id = ? | Params: Array
+(
+    [0] => 1
+)
+
+[22-Dec-2025 16:21:49 Asia/Dhaka] SQL Error [23000]: SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails (`ujjalfmc_saas`.`order_items`, CONSTRAINT `fk_orderitem_variant` FOREIGN KEY (`variant_id`) REFERENCES `product_variants` (`id`)) in query: DELETE FROM products WHERE id = ? | Params: Array
+(
+    [0] => 1
+)
+
+[22-Dec-2025 16:21:56 Asia/Dhaka] SQL Error [23000]: SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails (`ujjalfmc_saas`.`order_items`, CONSTRAINT `fk_orderitem_variant` FOREIGN KEY (`variant_id`) REFERENCES `product_variants` (`id`)) in query: DELETE FROM products WHERE id = ? | Params: Array
+(
+    [0] => 1
+)
+
+[22-Dec-2025 16:57:42 Asia/Dhaka] SQL Error [23000]: SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails (`ujjalfmc_saas`.`order_items`, CONSTRAINT `fk_orderitem_variant` FOREIGN KEY (`variant_id`) REFERENCES `product_variants` (`id`)) in query: DELETE FROM product_variants WHERE id = ? AND product_id = ? | Params: Array
+(
+    [0] => 2
+    [1] => 1
+)
+
+[22-Dec-2025 16:57:45 Asia/Dhaka] SQL Error [23000]: SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails (`ujjalfmc_saas`.`order_items`, CONSTRAINT `fk_orderitem_variant` FOREIGN KEY (`variant_id`) REFERENCES `product_variants` (`id`)) in query: DELETE FROM product_variants WHERE id = ? AND product_id = ? | Params: Array
+(
+    [0] => 2
+    [1] => 1
+)
+
+[22-Dec-2025 16:57:54 Asia/Dhaka] SQL Error [23000]: SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails (`ujjalfmc_saas`.`order_items`, CONSTRAINT `fk_orderitem_variant` FOREIGN KEY (`variant_id`) REFERENCES `product_variants` (`id`)) in query: DELETE FROM product_variants WHERE id = ? AND product_id = ? | Params: Array
+(
+    [0] => 2
+    [1] => 1
+)
+
+[14-Jan-2026 14:57:54 Asia/Dhaka] SQL Error [01000]: SQLSTATE[01000]: Warning: 1265 Data truncated for column 'unit_of_measure' at row 1 in query: INSERT INTO product_variants (product_id, sku, weight_variant, grade, unit_of_measure, status) VALUES (?, ?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 34
+    [1] => DOLFIN MOIDA ( 50KG )-50-A
+    [2] => 50
+    [3] => A
+    [4] => bag
+    [5] => active
+)
+

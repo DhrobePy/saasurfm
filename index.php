@@ -31,6 +31,12 @@ switch ($role) {
     case 'accountspos-srg':
         header('Location: accounts/index.php');
         exit();
+     
+    //--- Expense users ----    
+    case 'Expense Initiator':
+    case 'Expense Approver':
+        header('Location: expense/index.php');
+        exit();
 
     // --- Production Roles ---
     case 'production manager-srg':

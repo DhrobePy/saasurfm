@@ -412,9 +412,11 @@ document.addEventListener('DOMContentLoaded', function() {
     function calculateValue() {
         const option = poSelect.options[poSelect.selectedIndex];
         const unitPrice = parseFloat(option.dataset.unitPrice) || 0;
-        const received = parseFloat(qtyReceived.value) || 0;
+        //const received = parseFloat(qtyReceived.value) || 0;
+        const expected = parseFloat(qtyExpected.value) || 0;
         
-        const value = unitPrice * received;
+        //const value = unitPrice * received;
+        const value = unitPrice * expected;
         calculatedValue.textContent = value.toFixed(2);
     }
 
@@ -423,7 +425,11 @@ document.addEventListener('DOMContentLoaded', function() {
         calculateValue();
     });
 
-    qtyExpected.addEventListener('input', calculateVariance);
+    //qtyExpected.addEventListener('input', calculateVariance);
+    qtyExpected.addEventListener('input', function() {
+        calculateVariance();
+        calculateValue();  // Add this line
+    });
 
     // Trigger on page load if PO already selected
     if (poSelect.value) {
