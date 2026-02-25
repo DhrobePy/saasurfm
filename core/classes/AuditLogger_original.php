@@ -22,112 +22,84 @@ class AuditLogger {
      * @param array $options Additional logging options
      * @return bool Success status
      */
-    /**
- * Log a user activity
- * 
- * @param string $module Module name (expense, credit_order, etc.)
- * @param string $action Action performed (created, updated, etc.)
- * @param array $options Additional logging options
- * @return bool Success status
- */
     public static function log($module, $action, $options = []) {
-    global $db;
-    
-    // Get current user ID
-    $userId = $_SESSION['user_id'] ?? $_SESSION['id'] ?? null;
-    if (!$userId) {
-        // If no user is logged in, log as system (user_id = 0 or skip)
-        return false;
-    }
-    
-    // Extract options
-    $recordType = $options['record_type'] ?? null;
-    $recordId = $options['record_id'] ?? null;
-    $reference = $options['reference'] ?? $options['reference_number'] ?? null;
-    $description = $options['description'] ?? self::generateDescription($module, $action, $options);
-    $oldValue = $options['old_value'] ?? null;
-    $newValue = $options['new_value'] ?? null;
-    $changesJson = $options['changes'] ?? $options['data'] ?? null;
-    $severity = $options['severity'] ?? self::determineSeverity($action);
-    $status = $options['status'] ?? 'success';
-    $metadata = $options['metadata'] ?? null;
-    $errorMessage = $options['error'] ?? $options['error_message'] ?? null;
-    
-    // Get request information
-    $ipAddress = self::getClientIP();
-    $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? null;
-    $requestUri = $_SERVER['REQUEST_URI'] ?? null;
-    
-    // Convert arrays/objects to JSON
-    if (is_array($changesJson) || is_object($changesJson)) {
-        $changesJson = json_encode($changesJson, JSON_UNESCAPED_UNICODE);
-    }
-    if (is_array($metadata) || is_object($metadata)) {
-        $metadata = json_encode($metadata, JSON_UNESCAPED_UNICODE);
-    }
-    if (is_array($oldValue) || is_object($oldValue)) {
-        $oldValue = json_encode($oldValue, JSON_UNESCAPED_UNICODE);
-    }
-    if (is_array($newValue) || is_object($newValue)) {
-        $newValue = json_encode($newValue, JSON_UNESCAPED_UNICODE);
-    }
-    
-    // Insert log entry
-    try {
-        $sql = "INSERT INTO system_audit_log (
-            user_id, module, action, record_type, record_id, reference_number,
-            description, old_value, new_value, changes_json,
-            ip_address, user_agent, request_uri,
-            severity, status, metadata, error_message
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        global $db;
         
-        // Get PDO instance - handle both custom Database wrapper and direct PDO
-        if (method_exists($db, 'getPdo')) {
-            $pdo = $db->getPdo();
-        } elseif ($db instanceof PDO) {
-            $pdo = $db;
-        } else {
-            throw new Exception('Invalid database connection');
+        // Get current user ID
+        $userId = $_SESSION['user_id'] ?? $_SESSION['id'] ?? null;
+        if (!$userId) {
+            // If no user is logged in, log as system (user_id = 0 or skip)
+            return false;
         }
         
-        $stmt = $pdo->prepare($sql);
-        $result = $stmt->execute([
-            $userId,
-            $module,
-            $action,
-            $recordType,
-            $recordId,
-            $reference,
-            $description,
-            $oldValue,
-            $newValue,
-            $changesJson,
-            $ipAddress,
-            $userAgent,
-            $requestUri,
-            $severity,
-            $status,
-            $metadata,
-            $errorMessage
-        ]);
+        // Extract options
+        $recordType = $options['record_type'] ?? null;
+        $recordId = $options['record_id'] ?? null;
+        $reference = $options['reference'] ?? $options['reference_number'] ?? null;
+        $description = $options['description'] ?? self::generateDescription($module, $action, $options);
+        $oldValue = $options['old_value'] ?? null;
+        $newValue = $options['new_value'] ?? null;
+        $changesJson = $options['changes'] ?? $options['data'] ?? null;
+        $severity = $options['severity'] ?? self::determineSeverity($action);
+        $status = $options['status'] ?? 'success';
+        $metadata = $options['metadata'] ?? null;
+        $errorMessage = $options['error'] ?? $options['error_message'] ?? null;
         
-        return $result;
-    } catch (PDOException $e) {
-        // Log error but don't break the application
-        error_log("AuditLogger PDO Error: " . $e->getMessage());
-        error_log("SQL: " . $sql);
-        error_log("Params: " . json_encode([
-            'user_id' => $userId,
-            'module' => $module,
-            'action' => $action
-        ]));
-        return false;
-    } catch (Exception $e) {
-        // Log error but don't break the application
-        error_log("AuditLogger Error: " . $e->getMessage());
-        return false;
+        // Get request information
+        $ipAddress = self::getClientIP();
+        $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? null;
+        $requestUri = $_SERVER['REQUEST_URI'] ?? null;
+        
+        // Convert arrays/objects to JSON
+        if (is_array($changesJson) || is_object($changesJson)) {
+            $changesJson = json_encode($changesJson, JSON_UNESCAPED_UNICODE);
+        }
+        if (is_array($metadata) || is_object($metadata)) {
+            $metadata = json_encode($metadata, JSON_UNESCAPED_UNICODE);
+        }
+        if (is_array($oldValue) || is_object($oldValue)) {
+            $oldValue = json_encode($oldValue, JSON_UNESCAPED_UNICODE);
+        }
+        if (is_array($newValue) || is_object($newValue)) {
+            $newValue = json_encode($newValue, JSON_UNESCAPED_UNICODE);
+        }
+        
+        // Insert log entry
+        try {
+            $sql = "INSERT INTO system_audit_log (
+                user_id, module, action, record_type, record_id, reference_number,
+                description, old_value, new_value, changes_json,
+                ip_address, user_agent, request_uri,
+                severity, status, metadata, error_message
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            
+            $result = $db->query($sql, [
+                $userId,
+                $module,
+                $action,
+                $recordType,
+                $recordId,
+                $reference,
+                $description,
+                $oldValue,
+                $newValue,
+                $changesJson,
+                $ipAddress,
+                $userAgent,
+                $requestUri,
+                $severity,
+                $status,
+                $metadata,
+                $errorMessage
+            ]);
+            
+            return true;
+        } catch (Exception $e) {
+            // Log error but don't break the application
+            error_log("AuditLogger Error: " . $e->getMessage());
+            return false;
+        }
     }
-}
     
     /**
      * Log expense voucher actions

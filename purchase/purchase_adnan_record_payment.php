@@ -12,7 +12,7 @@ $po_manager = new Purchaseadnanmanager();
 $payment_manager = new Purchasepaymentadnanmanager();
 
 // Get list of POs with outstanding balance
-$outstanding_pos = $po_manager->listPurchaseOrders(['payment_status' => ['unpaid', 'partial']]);
+$outstanding_pos = $po_manager->listPurchaseOrders(['payment_status' => ['unpaid', 'partial','overpaid','paid']]);
 
 // Get bank accounts and cash accounts
 $bank_accounts = $payment_manager->getAllBankAccounts();
@@ -61,6 +61,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $result = $payment_manager->recordPayment($data);
         
         if ($result['success']) {
+            
+            try {
+                if (function_exists('auditLog')) {
+                    $currentUser = getCurrentUser();
+                    $user_name = $currentUser['display_name'] ?? 'System User';
+                    
+                    // Get PO details for audit
+                    $po = $po_manager->getPurchaseOrder($data['purchase_order_id']);
+                    
+                    auditLog(
+                        'purchase',
+                        'created',
+                        "Payment {$result['voucher_number']} created - ৳" . number_format($data['amount_paid'], 2) . " for PO #{$po->po_number} ({$po->supplier_name}) via {$data['payment_method']}",
+                        [
+                            'record_type' => 'purchase_payment',
+                            'record_id' => $result['payment_id'],
+                            'reference_number' => $result['voucher_number'],
+                            'po_id' => $po->id,
+                            'po_number' => $po->po_number,
+                            'supplier_name' => $po->supplier_name,
+                            'amount_paid' => $data['amount_paid'],
+                            'payment_method' => $data['payment_method'],
+                            'payment_type' => $data['payment_type'],
+                            'bank_account_id' => $bank_account_id,
+                            'reference_number' => $data['reference_number'],
+                            'payment_date' => $data['payment_date'],
+                            'created_by' => $user_name
+                        ]
+                    );
+                }
+            } catch (Exception $e) {
+                error_log("✗ Audit log error: " . $e->getMessage());
+            }
+            
+            
             // ============================================
             // TELEGRAM NOTIFICATION - PAYMENT RECORDED
             // ============================================

@@ -30,9 +30,30 @@ if (!$payment) {
 // Get PO details
 $po = $po_manager->getPurchaseOrder($payment->purchase_order_id);
 
+// Calculate EXPECTED payable based on expected quantities from GRNs
+$grn_sql = "SELECT 
+                COALESCE(SUM(expected_quantity), 0) as total_expected_qty
+            FROM goods_received_adnan 
+            WHERE purchase_order_id = ? 
+            AND grn_status != 'cancelled'";
+$stmt = $db->getPdo()->prepare($grn_sql);
+$stmt->execute([$payment->purchase_order_id]);
+$grn_totals = $stmt->fetch(PDO::FETCH_OBJ);
+
+// Calculate expected payable value
+$expected_payable = $grn_totals->total_expected_qty * $po->unit_price_per_kg;
+
+
+
+
+
 // Calculate balances
-$balance_before = $po->total_received_value - ($po->total_paid - $payment->amount_paid);
-$balance_after = $po->balance_payable;
+//$balance_before = $po->total_received_value - ($po->total_paid - $payment->amount_paid);
+//$balance_after = $po->balance_payable;
+
+// Calculate balances based on EXPECTED payable
+$balance_before = $expected_payable - ($po->total_paid - $payment->amount_paid);
+$balance_after = $expected_payable - $po->total_paid;
 
 // Get bank/employee details
 $payment_source = '';
@@ -517,9 +538,15 @@ $amount_in_words = convertNumberToWords($payment->amount_paid);
                 <td>৳ <?php echo number_format($po->total_order_value, 2); ?></td>
             </tr>
             <tr>
-                <td>Goods Received Value:</td>
+                <td>Goods Received Value (Actual):</td>
                 <td>৳ <?php echo number_format($po->total_received_value, 2); ?></td>
             </tr>
+            
+            <tr>
+                <td>Expected Payable:</td>
+                <td>৳ <?php echo number_format($expected_payable, 2); ?></td>
+            </tr>
+            
             <tr>
                 <td>Previous Payments:</td>
                 <td>৳ <?php echo number_format($po->total_paid - $payment->amount_paid, 2); ?></td>

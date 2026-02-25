@@ -2,17 +2,12 @@
 /**
  * Purchase Adnan Manager Class
  * Handles Purchase Order operations for Adnan's wheat procurement workflow
- * 
- * FULLY RECTIFIED VERSION 2.0
- * - Fixed cartesian product bug in listPurchaseOrders()
- * - Fixed getDashboardStats() to calculate from GRNs
- * - Only counts posted payments (is_posted = 1)
+ * FULLY RECTIFIED VERSION - Fixed cartesian product bug
  * 
  * @package Ujjal Flour Mills
  * @subpackage Purchase (Adnan) Module
  * @author SaaS Development Team
- * @version 2.0.0
- * @date 2026-02-18
+ * @version 2.0.0 - Fixed SQL joins to prevent cartesian product
  */
 
 class PurchaseAdnanManager {
@@ -45,7 +40,9 @@ class PurchaseAdnanManager {
                 }
             }
             
-            // Handle PO number - manual or auto-generate
+            // ===============================================
+            // HANDLE PO NUMBER - MANUAL OR AUTO-GENERATE
+            // ===============================================
             $po_number = trim($data['po_number'] ?? '');
             
             if (!empty($po_number)) {
@@ -62,6 +59,7 @@ class PurchaseAdnanManager {
                     ];
                 }
                 
+                // Log that manual PO number was used
                 error_log("Manual PO Number used: {$po_number} by user {$user_id}");
                 
             } else {
@@ -183,7 +181,8 @@ class PurchaseAdnanManager {
     /**
      * =====================================================
      * FIXED: Get all purchase orders with filters
-     * Uses subqueries to prevent cartesian product
+     * Prevents cartesian product between GRNs and Payments
+     * Uses subqueries to aggregate separately
      * =====================================================
      * 
      * @param array $filters Filter criteria
@@ -316,13 +315,12 @@ class PurchaseAdnanManager {
      * =====================================================
      * FIXED: Get dashboard statistics
      * Calculates expected payable from GRNs (not from DB column)
-     * Only counts posted payments (is_posted = 1)
+     * Only counts posted payments
      * =====================================================
      * 
      * @return object Dashboard KPIs
      */
     public function getDashboardStats() {
-        // Basic PO counts
         $sql = "SELECT 
             COUNT(*) as total_orders,
             SUM(total_order_value) as total_order_value,
@@ -343,7 +341,7 @@ class PurchaseAdnanManager {
         $paid_result = $paid_stmt->fetch(PDO::FETCH_OBJ);
         $stats->total_paid = $paid_result->total_paid;
         
-        // Get advance payments (only posted)
+        // Get advance payments (payments where payment_type = 'advance' and posted)
         $advance_sql = "SELECT COALESCE(SUM(amount_paid), 0) as total_advance 
                         FROM purchase_payments_adnan 
                         WHERE payment_type = 'advance'
@@ -353,7 +351,6 @@ class PurchaseAdnanManager {
         $stats->total_advance = $advance_result->total_advance;
         
         // Calculate actual expected payable (based on GRN expected quantities)
-        // THIS IS THE CORRECT METHOD - payment based on expected, not received
         $expected_sql = "SELECT 
                             COALESCE(SUM(grn.expected_quantity * po.unit_price_per_kg), 0) as expected_payable
                          FROM goods_received_adnan grn

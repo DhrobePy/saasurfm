@@ -170,3 +170,7 @@ Stack trace:
     [0] => 10
 )
 
+[24-Feb-2026 12:05:42 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined function get_initials() in /home/ujjalfmc/public_html/saas.ujjalfm.com/customers/view.php:180
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/customers/view.php on line 180

@@ -705,64 +705,40 @@ class GoodsReceivedAdnanManager {
      * @param int $po_id Purchase Order ID
      * @return void
      */
-    /**
- * Recalculate PO receipt totals after GRN changes
- * This ensures totals are accurate after edit/delete operations
- * 
- * @param int $po_id Purchase Order ID
- * @return void
- */
-private function recalculatePOReceiptTotals($po_id) {
-    try {
-        // Get PO details to calculate values
-        $po_sql = "SELECT unit_price_per_kg, total_paid 
-                   FROM purchase_orders_adnan 
-                   WHERE id = ?";
-        $stmt = $this->db->prepare($po_sql);
-        $stmt->execute([$po_id]);
-        $po = $stmt->fetch(PDO::FETCH_OBJ);
-        
-        if (!$po) {
-            return;
+    private function recalculatePOReceiptTotals($po_id) {
+        try {
+            // Recalculate total received quantity and value (excluding cancelled GRNs)
+            $sql = "SELECT 
+                        COALESCE(SUM(quantity_received_kg), 0) as total_received_qty,
+                        COALESCE(SUM(total_value), 0) as total_received_value
+                    FROM goods_received_adnan 
+                    WHERE purchase_order_id = ? 
+                    AND grn_status != 'cancelled'";
+            
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([$po_id]);
+            $totals = $stmt->fetch(PDO::FETCH_OBJ);
+            
+            // Update PO with new totals
+            $update_sql = "UPDATE purchase_orders_adnan 
+                           SET total_received_qty = ?,
+                               total_received_value = ?
+                           WHERE id = ?";
+            
+            $stmt = $this->db->prepare($update_sql);
+            $stmt->execute([
+                $totals->total_received_qty,
+                $totals->total_received_value,
+                $po_id
+            ]);
+            
+            // Update delivery status based on new totals
+            $this->updatePODeliveryStatus($po_id);
+            
+        } catch (Exception $e) {
+            error_log("Error recalculating PO totals: " . $e->getMessage());
         }
-        
-        // Recalculate total received quantity (excluding cancelled GRNs)
-        $sql = "SELECT 
-                    COALESCE(SUM(quantity_received_kg), 0) as total_received_qty
-                FROM goods_received_adnan 
-                WHERE purchase_order_id = ? 
-                AND grn_status != 'cancelled'";
-        
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([$po_id]);
-        $totals = $stmt->fetch(PDO::FETCH_OBJ);
-        
-        // Calculate values manually
-        $total_received_value = $totals->total_received_qty * $po->unit_price_per_kg;
-        $balance_payable = $total_received_value - $po->total_paid;
-        
-        // Update all calculated fields
-        $update_sql = "UPDATE purchase_orders_adnan 
-                       SET total_received_qty = ?,
-                           total_received_value = ?,
-                           balance_payable = ?
-                       WHERE id = ?";
-        
-        $stmt = $this->db->prepare($update_sql);
-        $stmt->execute([
-            $totals->total_received_qty,
-            $total_received_value,
-            $balance_payable,
-            $po_id
-        ]);
-        
-        // Update delivery status based on new totals
-        $this->updatePODeliveryStatus($po_id);
-        
-    } catch (Exception $e) {
-        error_log("Error recalculating PO totals: " . $e->getMessage());
     }
-}
     
     /**
      * Update PO delivery status based on received quantities

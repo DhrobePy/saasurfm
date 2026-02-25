@@ -64,8 +64,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $filters = [
     'branch_id' => $_GET['branch_id'] ?? '',
     'category_id' => $_GET['category_id'] ?? '',
-    'date_from' => $_GET['date_from'] ?? '',
-    'date_to' => $_GET['date_to'] ?? ''
+    'date_from' => $_GET['date_from'] ?? date('Y-m-01'),
+    'date_to' => $_GET['date_to'] ?? date('Y-m-d')
 ];
 
 $sql = "SELECT ev.*, 

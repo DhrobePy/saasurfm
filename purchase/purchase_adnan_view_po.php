@@ -198,7 +198,14 @@ require_once '../templates/header.php';
                     </a>
                 </div>
                 <div class="p-6">
-                    <?php if (count($grns) > 0): ?>
+                    <?php 
+                    
+                    $total_received_qty = 0;
+                    $total_expected_qty = 0;
+                    $total_received_value = 0;
+                    $total_expected_value = 0;
+                    
+                    if (count($grns) > 0): ?>
                         <div class="overflow-x-auto">
                             <table class="min-w-full divide-y divide-gray-200">
                                 <thead class="bg-gray-50">
@@ -217,15 +224,15 @@ require_once '../templates/header.php';
                                 </thead>
                                 <tbody class="bg-white divide-y divide-gray-200">
                                     <?php 
-                                        $total_received_qty = 0;
-                                        $total_expected_qty = 0;  // NEW
-                                        $total_received_value = 0;
-                                        $total_expected_value = 0;  // NEW
+                                        //$total_received_qty = 0;
+                                        //$total_expected_qty = 0;  // NEW
+                                        //$total_received_value = 0;
+                                        //$total_expected_value = 0;  // NEW
                                     foreach ($grns as $grn): 
                                         $total_received_qty += $grn->quantity_received_kg;
-                                        $total_expected_qty += ($grn->expected_quantity ?? 0);  // NEW
+                                        $total_expected_qty += ($grn->expected_quantity ?? 0);
                                         $total_received_value += $grn->total_value;
-                                        $total_expected_value += (($grn->expected_quantity ?? 0) * $po->unit_price_per_kg);  // NEW
+                                        $total_expected_value += (($grn->expected_quantity ?? 0) * $po->unit_price_per_kg);
                                     ?>
                                 
                                     

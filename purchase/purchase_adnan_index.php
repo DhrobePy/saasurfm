@@ -2,6 +2,7 @@
 /**
  * Purchase (Adnan) Module - Dashboard
  * Main overview page for wheat procurement system
+ * FULLY RECTIFIED VERSION - All calculations based on EXPECTED QUANTITY
  * 
  * @package Ujjal Flour Mills
  * @subpackage Purchase (Adnan) Module
@@ -35,7 +36,7 @@ $filters = [
     'payment_status' => $_GET['payment_status'] ?? '',
     'po_status' => $_GET['po_status'] ?? '',
     'search' => $_GET['search'] ?? '',
-    'limit' => 50 // Increased limit when filtering
+    'limit' => 50
 ];
 
 // Remove empty filters
@@ -50,31 +51,69 @@ $stats_by_origin = $purchaseManager->getStatsByOrigin();
 
 // Get orders with filters (chronologically - newest first)
 if (empty($filters) || (count($filters) === 1 && isset($filters['limit']))) {
-    // No filters applied - show recent 10 orders
     $filters['limit'] = 10;
     $recent_orders = $purchaseManager->listPurchaseOrders($filters);
 } else {
-    // Filters applied - show filtered results
     $recent_orders = $purchaseManager->listPurchaseOrders($filters);
 }
 
-// Calculate totals for the filtered orders
+/**
+ * =====================================================
+ * HELPER FUNCTION: Get Expected Quantity for a PO
+ * Returns the SUM of expected_quantity from all GRNs
+ * THIS IS THE CORRECT WAY TO CALCULATE PAYMENT
+ * =====================================================
+ */
+function getExpectedQuantityForPO($po_id) {
+    $db = Database::getInstance()->getPdo();
+    $sql = "SELECT COALESCE(SUM(expected_quantity), 0) as total_expected
+            FROM goods_received_adnan
+            WHERE purchase_order_id = ?
+            AND grn_status != 'cancelled'";
+    $stmt = $db->prepare($sql);
+    $stmt->execute([$po_id]);
+    $result = $stmt->fetch(PDO::FETCH_OBJ);
+    return $result->total_expected ?? 0;
+}
+
+/**
+ * =====================================================
+ * CALCULATE TOTALS FOR FILTERED ORDERS
+ * Uses EXPECTED quantities, not received quantities
+ * =====================================================
+ */
 $totals = [
     'ordered_quantity' => 0,
     'total_value' => 0,
     'goods_received' => 0,
     'paid' => 0,
-    'due' => 0
+    'due' => 0,
+    'advance' => 0
 ];
 
 if (!empty($recent_orders)) {
     foreach ($recent_orders as $order) {
+        // Get expected quantity from GRNs
+        $expected_qty = getExpectedQuantityForPO($order->id);
+        
+        // Calculate expected payable (CORRECT METHOD)
+        $expected_payable = $expected_qty * $order->unit_price_per_kg;
+        
+        // Calculate balance (positive = due, negative = advance)
+        $balance = $expected_payable - ($order->total_paid ?? 0);
+        
+        // Accumulate totals
         $totals['ordered_quantity'] += $order->quantity_kg;
         $totals['total_value'] += $order->total_order_value;
         $totals['goods_received'] += ($order->total_received_qty ?? 0);
         $totals['paid'] += ($order->total_paid ?? 0);
-        //$totals['due'] += (($order->total_received_value ?? 0) - ($order->total_paid ?? 0));
-        $totals['due'] += ($order->balance_payable ?? 0);
+        
+        // Split balance into due vs advance
+        if ($balance > 0) {
+            $totals['due'] += $balance;
+        } else {
+            $totals['advance'] += abs($balance);
+        }
     }
 }
 
@@ -93,7 +132,7 @@ include '../templates/header.php';
     <!-- Page Header -->
     <div class="flex justify-between items-center mb-6">
         <div>
-            <h1 class="text-3xl font-bold text-gray-900">Purchase (Adnan)</h1>
+            <h1 class="text-3xl font-bold text-gray-900">Purchase</h1>
             <p class="text-gray-600 mt-1">Wheat Procurement Management System</p>
         </div>
         <div class="flex gap-2">
@@ -106,411 +145,561 @@ include '../templates/header.php';
         </div>
     </div>
 
-    <!-- KPI Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <!-- Total Orders -->
-        <div class="bg-white rounded-lg shadow-md p-6">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-gray-500 text-sm font-medium">Total Orders</p>
-                    <p class="text-3xl font-bold text-gray-900 mt-2"><?php echo number_format($stats->total_orders ?? 0); ?></p>
+<!-- KPI Cards -->
+<!---<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    
+    <!-- Total Orders Card -->
+    <!----<div class="relative overflow-hidden bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
+        <div class="absolute top-0 right-0 -mt-4 -mr-4 h-24 w-24 rounded-full bg-white opacity-10"></div>
+        <div class="relative p-6">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center justify-center h-12 w-12 rounded-lg bg-white bg-opacity-20 backdrop-blur-sm">
+                    <i class="fas fa-shopping-cart text-white text-xl"></i>
                 </div>
-                <div class="bg-primary-100 rounded-full p-3">
-                    <i class="fas fa-shopping-cart text-primary-600 text-2xl"></i>
+                <div class="text-right">
+                    <p class="text-blue-100 text-xs font-semibold uppercase tracking-wider">Total Orders</p>
+                    <p class="text-white text-3xl font-bold mt-1"><?php echo number_format($stats->total_orders ?? 0); ?></p>
                 </div>
             </div>
+            <div class="flex items-center justify-between text-xs">
+                <span class="text-blue-100">
+                    <i class="fas fa-check-circle mr-1"></i><?php echo $stats->completed_deliveries ?? 0; ?> Completed
+                </span>
+                <span class="text-blue-100">
+                    <i class="fas fa-lock mr-1"></i><?php echo $stats->closed_deals ?? 0; ?> Closed
+                </span>
+            </div>
         </div>
+    </div>---->
 
-        <!-- Total Order Value -->
-        <div class="bg-white rounded-lg shadow-md p-6">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-gray-500 text-sm font-medium">Total Order Value</p>
-                    <p class="text-2xl font-bold text-gray-900 mt-2">৳<?php echo number_format($stats->total_order_value ?? 0, 0); ?></p>
+    <!-- Total Order Value Card -->
+   <!----- <div class="relative overflow-hidden bg-gradient-to-br from-purple-500 to-purple-700 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
+        <div class="absolute top-0 right-0 -mt-4 -mr-4 h-24 w-24 rounded-full bg-white opacity-10"></div>
+        <div class="relative p-6">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center justify-center h-12 w-12 rounded-lg bg-white bg-opacity-20 backdrop-blur-sm">
+                    <i class="fas fa-money-bill-wave text-white text-xl"></i>
                 </div>
-                <div class="bg-blue-100 rounded-full p-3">
-                    <i class="fas fa-money-bill-wave text-blue-600 text-2xl"></i>
+                <div class="text-right">
+                    <p class="text-purple-100 text-xs font-semibold uppercase tracking-wider">Order Value</p>
+                    <p class="text-white text-3xl font-bold mt-1">
+                        ৳<?php echo number_format(($stats->total_order_value ?? 0) / 1000000, 1); ?>M
+                    </p>
                 </div>
             </div>
+            <div class="text-xs text-purple-100">
+                <i class="fas fa-info-circle mr-1"></i>
+                Total: ৳<?php echo number_format($stats->total_order_value ?? 0, 0); ?>
+            </div>
         </div>
+    </div>
 
-        <!-- Total Paid -->
-        <div class="bg-white rounded-lg shadow-md p-6">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-gray-500 text-sm font-medium">Total Paid</p>
-                    <p class="text-2xl font-bold text-green-600 mt-2">৳<?php echo number_format($stats->total_paid ?? 0, 0); ?></p>
+    <!-- Total Paid Card -->
+   <!----- <div class="relative overflow-hidden bg-gradient-to-br from-green-500 to-green-700 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
+        <div class="absolute top-0 right-0 -mt-4 -mr-4 h-24 w-24 rounded-full bg-white opacity-10"></div>
+        <div class="relative p-6">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center justify-center h-12 w-12 rounded-lg bg-white bg-opacity-20 backdrop-blur-sm">
+                    <i class="fas fa-check-circle text-white text-xl"></i>
                 </div>
-                <div class="bg-green-100 rounded-full p-3">
-                    <i class="fas fa-check-circle text-green-600 text-2xl"></i>
+                <div class="text-right">
+                    <p class="text-green-100 text-xs font-semibold uppercase tracking-wider">Total Paid</p>
+                    <p class="text-white text-3xl font-bold mt-1">
+                        ৳<?php echo number_format(($stats->total_paid ?? 0) / 1000000, 1); ?>M
+                    </p>
                 </div>
             </div>
+            <div class="flex items-center justify-between text-xs">
+                <span class="text-green-100">
+                    <i class="fas fa-wallet mr-1"></i>Regular: ৳<?php echo number_format(($stats->regular_payments ?? 0) / 1000000, 1); ?>M
+                </span>
+                <span class="text-green-100">
+                    <?php 
+                    $payment_rate = $stats->expected_payable > 0 ? ($stats->total_paid / $stats->expected_payable * 100) : 0;
+                    echo number_format($payment_rate, 1); ?>%
+                </span>
+            </div>
         </div>
+    </div>
 
-        <!-- Balance Payable -->
-        <div class="bg-white rounded-lg shadow-md p-6">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-gray-500 text-sm font-medium">Balance Payable</p>
-                    <p class="text-2xl font-bold text-red-600 mt-2">৳<?php echo number_format($stats->balance_payable ?? 0, 0); ?></p>
+    <!-- Advance Payments Card -->
+    <!----<div class="relative overflow-hidden bg-gradient-to-br from-yellow-500 to-yellow-700 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
+        <div class="absolute top-0 right-0 -mt-4 -mr-4 h-24 w-24 rounded-full bg-white opacity-10"></div>
+        <div class="relative p-6">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center justify-center h-12 w-12 rounded-lg bg-white bg-opacity-20 backdrop-blur-sm">
+                    <i class="fas fa-hand-holding-usd text-white text-xl"></i>
                 </div>
-                <div class="bg-red-100 rounded-full p-3">
-                    <i class="fas fa-exclamation-triangle text-red-600 text-2xl"></i>
+                <div class="text-right">
+                    <p class="text-yellow-100 text-xs font-semibold uppercase tracking-wider">Advance Paid</p>
+                    <p class="text-white text-3xl font-bold mt-1">
+                        ৳<?php echo number_format(($stats->total_advance ?? 0) / 1000000, 1); ?>M
+                    </p>
                 </div>
             </div>
+            <div class="text-xs text-yellow-100">
+                <i class="fas fa-coins mr-1"></i>
+                Total: ৳<?php echo number_format($stats->total_advance ?? 0, 0); ?>
+            </div>
         </div>
+    </div>
+
+</div>
+
+<!-- Secondary KPI Row -->
+<!----<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    
+    <!-- Expected Payable Card -->
+    <!----<div class="relative overflow-hidden bg-gradient-to-br from-indigo-500 to-indigo-700 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
+        <div class="absolute top-0 right-0 -mt-4 -mr-4 h-24 w-24 rounded-full bg-white opacity-10"></div>
+        <div class="relative p-6">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center justify-center h-12 w-12 rounded-lg bg-white bg-opacity-20 backdrop-blur-sm">
+                    <i class="fas fa-calculator text-white text-xl"></i>
+                </div>
+                <div class="text-right">
+                    <p class="text-indigo-100 text-xs font-semibold uppercase tracking-wider">Expected Payable</p>
+                    <p class="text-white text-3xl font-bold mt-1">
+                        ৳<?php echo number_format(($stats->expected_payable ?? 0) / 1000000, 1); ?>M
+                    </p>
+                </div>
+            </div>
+            <div class="text-xs text-indigo-100">
+                <i class="fas fa-box mr-1"></i>
+                Based on GRN expected quantities
+            </div>
+        </div>
+    </div>
+
+    <!-- Balance Due Card -->
+    <!---<div class="relative overflow-hidden bg-gradient-to-br from-red-500 to-red-700 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
+        <div class="absolute top-0 right-0 -mt-4 -mr-4 h-24 w-24 rounded-full bg-white opacity-10"></div>
+        <div class="relative p-6">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center justify-center h-12 w-12 rounded-lg bg-white bg-opacity-20 backdrop-blur-sm">
+                    <i class="fas fa-exclamation-triangle text-white text-xl"></i>
+                </div>
+                <div class="text-right">
+                    <p class="text-red-100 text-xs font-semibold uppercase tracking-wider">Balance Due</p>
+                    <p class="text-white text-3xl font-bold mt-1">
+                        ৳<?php echo number_format(($stats->actual_balance_due ?? 0) / 1000000, 1); ?>M
+                    </p>
+                </div>
+            </div>
+            <div class="text-xs text-red-100">
+                <i class="fas fa-info-circle mr-1"></i>
+                Expected Payable - Total Paid
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Progress Card -->
+    <!----<div class="relative overflow-hidden bg-gradient-to-br from-teal-500 to-teal-700 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
+        <div class="absolute top-0 right-0 -mt-4 -mr-4 h-24 w-24 rounded-full bg-white opacity-10"></div>
+        <div class="relative p-6">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center justify-center h-12 w-12 rounded-lg bg-white bg-opacity-20 backdrop-blur-sm">
+                    <i class="fas fa-chart-pie text-white text-xl"></i>
+                </div>
+                <div class="text-right">
+                    <p class="text-teal-100 text-xs font-semibold uppercase tracking-wider">Payment Rate</p>
+                    <p class="text-white text-3xl font-bold mt-1">
+                        <?php echo number_format($payment_rate, 1); ?>%
+                    </p>
+                </div>
+            </div>
+            <div class="w-full bg-white bg-opacity-20 rounded-full h-2">
+                <div class="bg-white h-2 rounded-full transition-all duration-500" 
+                     style="width: <?php echo min(100, $payment_rate); ?>%"></div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Financial Summary Cards -->
+
+
+<!-- Quick Actions -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+    <a href="purchase_adnan_record_grn.php" class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+        <div class="flex items-center gap-4">
+            <div class="bg-purple-100 rounded-full p-3">
+                <i class="fas fa-truck text-purple-600 text-2xl"></i>
+            </div>
+            <div>
+                <h4 class="font-semibold text-gray-900">Record Goods Receipt</h4>
+                <p class="text-sm text-gray-600">Log truck delivery</p>
+            </div>
+        </div>
+    </a>
+
+    <a href="purchase_adnan_record_payment.php" class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+        <div class="flex items-center gap-4">
+            <div class="bg-yellow-100 rounded-full p-3">
+                <i class="fas fa-credit-card text-yellow-600 text-2xl"></i>
+            </div>
+            <div>
+                <h4 class="font-semibold text-gray-900">Record Payment</h4>
+                <p class="text-sm text-gray-600">Process supplier payment</p>
+            </div>
+        </div>
+    </a>
+
+    <a href="variance_report.php" class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+        <div class="flex items-center gap-4">
+            <div class="bg-orange-100 rounded-full p-3">
+                <i class="fas fa-chart-line text-orange-600 text-2xl"></i>
+            </div>
+            <div>
+                <h4 class="font-semibold text-gray-900">Variance Reports</h4>
+                <p class="text-sm text-gray-600">Quality & weight variance</p>
+            </div>
+        </div>
+    </a>
+</div>
+
+<!-- Filter Panel -->
+<div class="bg-white rounded-lg shadow-md mb-6">
+    <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+        <h3 class="text-lg font-semibold text-gray-900">
+            <i class="fas fa-filter mr-2"></i>
+            Filters
+            <?php if (!empty($active_filters)): ?>
+                <span class="ml-2 bg-primary-100 text-primary-800 px-2 py-1 rounded-full text-xs">
+                    <?php echo count($active_filters); ?> active
+                </span>
+            <?php endif; ?>
+        </h3>
+        <button onclick="toggleFilters()" class="text-primary-600 hover:text-primary-700 text-sm font-medium">
+            <span id="filterToggleText">Toggle Filters</span>
+        </button>
     </div>
     
-    <!-- Quick Actions -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        <a href="create_grn.php" class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
-            <div class="flex items-center gap-4">
-                <div class="bg-purple-100 rounded-full p-3">
-                    <i class="fas fa-truck text-purple-600 text-2xl"></i>
-                </div>
-                <div>
-                    <h4 class="font-semibold text-gray-900">Record Goods Receipt</h4>
-                    <p class="text-sm text-gray-600">Log truck delivery</p>
-                </div>
+    <div id="filterPanel" class="px-6 py-4" style="display:none;">
+        <form method="GET" action="" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Date From</label>
+                <input type="date" name="date_from" value="<?php echo htmlspecialchars($filters['date_from'] ?? ''); ?>" 
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500">
             </div>
-        </a>
 
-        <a href="create_payment.php" class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
-            <div class="flex items-center gap-4">
-                <div class="bg-yellow-100 rounded-full p-3">
-                    <i class="fas fa-credit-card text-yellow-600 text-2xl"></i>
-                </div>
-                <div>
-                    <h4 class="font-semibold text-gray-900">Record Payment</h4>
-                    <p class="text-sm text-gray-600">Process supplier payment</p>
-                </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Date To</label>
+                <input type="date" name="date_to" value="<?php echo htmlspecialchars($filters['date_to'] ?? ''); ?>" 
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500">
             </div>
-        </a>
 
-        <a href="variance_report.php" class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
-            <div class="flex items-center gap-4">
-                <div class="bg-orange-100 rounded-full p-3">
-                    <i class="fas fa-chart-line text-orange-600 text-2xl"></i>
-                </div>
-                <div>
-                    <h4 class="font-semibold text-gray-900">Variance Reports</h4>
-                    <p class="text-sm text-gray-600">Quality & weight variance</p>
-                </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Supplier</label>
+                <select name="supplier_id" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500">
+                    <option value="">All Suppliers</option>
+                    <?php foreach ($all_suppliers as $supplier): ?>
+                        <option value="<?php echo $supplier->id; ?>" <?php echo ($filters['supplier_id'] ?? '') == $supplier->id ? 'selected' : ''; ?>>
+                            <?php echo htmlspecialchars($supplier->name); ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
             </div>
-        </a>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Wheat Origin</label>
+                <select name="wheat_origin" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500">
+                    <option value="">All Origins</option>
+                    <option value="কানাডা" <?php echo ($filters['wheat_origin'] ?? '') == 'কানাডা' ? 'selected' : ''; ?>>কানাডা (Canada)</option>
+                    <option value="রাশিয়া" <?php echo ($filters['wheat_origin'] ?? '') == 'রাশিয়া' ? 'selected' : ''; ?>>রাশিয়া (Russia)</option>
+                    <option value="Australia" <?php echo ($filters['wheat_origin'] ?? '') == 'Australia' ? 'selected' : ''; ?>>Australia</option>
+                    <option value="Ukraine" <?php echo ($filters['wheat_origin'] ?? '') == 'Ukraine' ? 'selected' : ''; ?>>Ukraine</option>
+                    <option value="India" <?php echo ($filters['wheat_origin'] ?? '') == 'India' ? 'selected' : ''; ?>>India</option>
+                    <option value="Argentina" <?php echo ($filters['wheat_origin'] ?? '') == 'Argentina' ? 'selected' : ''; ?>>Argentina</option>
+                    <option value="Brazil" <?php echo ($filters['wheat_origin'] ?? '') == 'Brazil' ? 'selected' : ''; ?>>Brazil</option>
+                    <option value="Other" <?php echo ($filters['wheat_origin'] ?? '') == 'Other' ? 'selected' : ''; ?>>Other</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Delivery Status</label>
+                <select name="delivery_status" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500">
+                    <option value="">All Status</option>
+                    <option value="pending" <?php echo ($filters['delivery_status'] ?? '') == 'pending' ? 'selected' : ''; ?>>Pending</option>
+                    <option value="partial" <?php echo ($filters['delivery_status'] ?? '') == 'partial' ? 'selected' : ''; ?>>Partial</option>
+                    <option value="completed" <?php echo ($filters['delivery_status'] ?? '') == 'completed' ? 'selected' : ''; ?>>Completed</option>
+                    <option value="closed" <?php echo ($filters['delivery_status'] ?? '') == 'closed' ? 'selected' : ''; ?>>Closed</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Payment Status</label>
+                <select name="payment_status" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500">
+                    <option value="">All Status</option>
+                    <option value="unpaid" <?php echo ($filters['payment_status'] ?? '') == 'unpaid' ? 'selected' : ''; ?>>Unpaid</option>
+                    <option value="partial" <?php echo ($filters['payment_status'] ?? '') == 'partial' ? 'selected' : ''; ?>>Partial</option>
+                    <option value="paid" <?php echo ($filters['payment_status'] ?? '') == 'paid' ? 'selected' : ''; ?>>Paid</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Search</label>
+                <input type="text" name="search" value="<?php echo htmlspecialchars($filters['search'] ?? ''); ?>" 
+                       placeholder="PO Number, Supplier..." 
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500">
+            </div>
+
+            <div class="flex items-end gap-2">
+                <button type="submit" class="flex-1 bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700">
+                    <i class="fas fa-search mr-1"></i> Apply
+                </button>
+                <a href="purchase_adnan_index.php" class="flex-1 bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300 text-center">
+                    <i class="fas fa-times mr-1"></i> Clear
+                </a>
+            </div>
+        </form>
     </div>
+</div>
 
-    <!-- Filter Panel -->
-    <div class="bg-white rounded-lg shadow-md mb-6">
-        <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-            <h3 class="text-lg font-semibold text-gray-900">
-                <i class="fas fa-filter mr-2"></i>
-                Filters
-                <?php if (!empty($active_filters)): ?>
-                    <span class="ml-2 bg-primary-100 text-primary-800 px-2 py-1 rounded-full text-xs">
-                        <?php echo count($active_filters); ?> active
-                    </span>
-                <?php endif; ?>
-            </h3>
-            <button onclick="toggleFilters()" class="text-primary-600 hover:text-primary-700 text-sm font-medium">
-                <span id="filterToggleText">Toggle Filters</span>
-            </button>
-        </div>
-        
-        <div id="filterPanel" class="px-6 py-4" style="display:none;">
-            <form method="GET" action="" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <!-- Date From -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Date From</label>
-                    <input type="date" name="date_from" value="<?php echo htmlspecialchars($filters['date_from'] ?? ''); ?>" 
-                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500">
-                </div>
-
-                <!-- Date To -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Date To</label>
-                    <input type="date" name="date_to" value="<?php echo htmlspecialchars($filters['date_to'] ?? ''); ?>" 
-                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500">
-                </div>
-
-                <!-- Supplier -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Supplier</label>
-                    <select name="supplier_id" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500">
-                        <option value="">All Suppliers</option>
-                        <?php foreach ($all_suppliers as $supplier): ?>
-                            <option value="<?php echo $supplier->id; ?>" <?php echo ($filters['supplier_id'] ?? '') == $supplier->id ? 'selected' : ''; ?>>
-                                <?php echo htmlspecialchars($supplier->name); ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-
-                <!-- Wheat Origin -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Wheat Origin</label>
-                    <select name="wheat_origin" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500">
-                        <option value="">All Origins</option>
-                        <option value="কানাডা" <?php echo ($filters['wheat_origin'] ?? '') == 'কানাডা' ? 'selected' : ''; ?>>কানাডা (Canada)</option>
-                        <option value="রাশিয়া" <?php echo ($filters['wheat_origin'] ?? '') == 'রাশিয়া' ? 'selected' : ''; ?>>রাশিয়া (Russia)</option>
-                        <option value="Australia" <?php echo ($filters['wheat_origin'] ?? '') == 'Australia' ? 'selected' : ''; ?>>Australia</option>
-                        <option value="Ukraine" <?php echo ($filters['wheat_origin'] ?? '') == 'Ukraine' ? 'selected' : ''; ?>>Ukraine</option>
-                        <option value="India" <?php echo ($filters['wheat_origin'] ?? '') == 'India' ? 'selected' : ''; ?>>India</option>
-                        <option value="Local" <?php echo ($filters['wheat_origin'] ?? '') == 'Local' ? 'selected' : ''; ?>>Local</option>
-                    </select>
-                </div>
-
-                <!-- Delivery Status -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Delivery Status</label>
-                    <select name="delivery_status" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500">
-                        <option value="">All Status</option>
-                        <option value="pending" <?php echo ($filters['delivery_status'] ?? '') == 'pending' ? 'selected' : ''; ?>>Pending</option>
-                        <option value="partial" <?php echo ($filters['delivery_status'] ?? '') == 'partial' ? 'selected' : ''; ?>>Partial</option>
-                        <option value="completed" <?php echo ($filters['delivery_status'] ?? '') == 'completed' ? 'selected' : ''; ?>>Completed</option>
-                    </select>
-                </div>
-
-                <!-- Payment Status -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Payment Status</label>
-                    <select name="payment_status" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500">
-                        <option value="">All Status</option>
-                        <option value="unpaid" <?php echo ($filters['payment_status'] ?? '') == 'unpaid' ? 'selected' : ''; ?>>Unpaid</option>
-                        <option value="partial" <?php echo ($filters['payment_status'] ?? '') == 'partial' ? 'selected' : ''; ?>>Partial</option>
-                        <option value="paid" <?php echo ($filters['payment_status'] ?? '') == 'paid' ? 'selected' : ''; ?>>Paid</option>
-                    </select>
-                </div>
-
-                <!-- Search -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Search</label>
-                    <input type="text" name="search" value="<?php echo htmlspecialchars($filters['search'] ?? ''); ?>" 
-                           placeholder="PO Number, Supplier..." 
-                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500">
-                </div>
-
-                <!-- Action Buttons -->
-                <div class="flex items-end gap-2">
-                    <button type="submit" class="flex-1 bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700">
-                        <i class="fas fa-search mr-1"></i> Apply
-                    </button>
-                    <a href="purchase_adnan_index.php" class="flex-1 bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300 text-center">
-                        <i class="fas fa-times mr-1"></i> Clear
-                    </a>
-                </div>
-            </form>
-        </div>
+<!-- Purchase Orders Table -->
+<div class="bg-white rounded-lg shadow-md">
+    <div class="px-6 py-4 border-b border-gray-200">
+        <h3 class="text-lg font-semibold text-gray-900">
+            <?php if (!empty($active_filters)): ?>
+                Filtered Purchase Orders 
+                <span class="text-sm font-normal text-gray-600">(<?php echo count($recent_orders); ?> results)</span>
+            <?php else: ?>
+                Recent Purchase Orders
+            <?php endif; ?>
+        </h3>
     </div>
-
-    <!-- Purchase Orders Table -->
-    <div class="bg-white rounded-lg shadow-md">
-        <div class="px-6 py-4 border-b border-gray-200">
-            <h3 class="text-lg font-semibold text-gray-900">
-                <?php if (!empty($active_filters)): ?>
-                    Filtered Purchase Orders 
-                    <span class="text-sm font-normal text-gray-600">(<?php echo count($recent_orders); ?> results)</span>
-                <?php else: ?>
-                    Recent Purchase Orders
-                <?php endif; ?>
-            </h3>
-        </div>
-        
-        <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
+    
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order Number</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Supplier Name</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Origin</th>
+                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Ordered Quantity (KG)</th>
+                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Per Unit Cost</th>
+                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Goods Received (KG)</th>
+                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Paid (৳)</th>
+                    <th class="px-6 py-3 text-right text-xs font-medium text-red-500 uppercase tracking-wider">Due (৳)</th>
+                    <th class="px-6 py-3 text-right text-xs font-medium text-blue-500 uppercase tracking-wider">Advance Paid (৳)</th>
+                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                <?php if (empty($recent_orders)): ?>
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order Number</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Supplier Name</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Origin</th>
-                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Ordered Quantity (KG)</th>
-                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Per Unit Cost</th>
-                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Goods Received (KG)</th>
-                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Paid (৳)</th>
-                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Due (৳)</th>
-                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        <td colspan="12" class="px-6 py-8 text-center text-gray-500">
+                            <?php if (!empty($active_filters)): ?>
+                                <i class="fas fa-search text-4xl text-gray-300 mb-2"></i>
+                                <p>No purchase orders found matching your filters</p>
+                                <a href="purchase_adnan_index.php" class="text-primary-600 hover:text-primary-700 text-sm font-medium">Clear filters</a>
+                            <?php else: ?>
+                                <p>No purchase orders found</p>
+                                <a href="purchase_adnan_create_po.php" class="text-primary-600 hover:text-primary-700 text-sm font-medium">Create your first PO</a>
+                            <?php endif; ?>
+                        </td>
                     </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                    <?php if (empty($recent_orders)): ?>
-                        <tr>
-                            <td colspan="11" class="px-6 py-8 text-center text-gray-500">
-                                <?php if (!empty($active_filters)): ?>
-                                    <i class="fas fa-search text-4xl text-gray-300 mb-2"></i>
-                                    <p>No purchase orders found matching your filters</p>
-                                    <a href="purchase_adnan_index.php" class="text-primary-600 hover:text-primary-700 text-sm font-medium">Clear filters</a>
+                <?php else: ?>
+                    <?php foreach ($recent_orders as $order): 
+                        // =====================================================
+                        // CRITICAL: Get expected quantity from GRNs
+                        // This is the CORRECT way to calculate payment
+                        // =====================================================
+                        $expected_qty = getExpectedQuantityForPO($order->id);
+                        
+                        // Calculate expected payable (PAYMENT IS BASED ON EXPECTED, NOT RECEIVED)
+                        $expected_payable = $expected_qty * $order->unit_price_per_kg;
+                        
+                        // Calculate balance
+                        $balance = $expected_payable - ($order->total_paid ?? 0);
+                        
+                        // Split into due vs advance
+                        $actual_due = $balance > 0 ? $balance : 0;
+                        $advance_paid = $balance < 0 ? abs($balance) : 0;
+                        
+                        $per_unit = $order->quantity_kg > 0 ? ($order->total_order_value / $order->quantity_kg) : 0;
+                    ?>
+                        <tr class="hover:bg-gray-50">
+                            <!-- Order Number -->
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <a href="purchase_adnan_view_po.php?id=<?php echo $order->id; ?>" class="text-primary-600 hover:text-primary-800 font-medium">
+                                    #<?php echo htmlspecialchars($order->po_number); ?>
+                                </a>
+                            </td>
+                            
+                            <!-- Date -->
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                <?php echo date('d M Y', strtotime($order->po_date)); ?>
+                            </td>
+                            
+                            <!-- Supplier Name -->
+                            <td class="px-6 py-4 text-sm text-gray-900">
+                                <?php echo htmlspecialchars($order->supplier_name); ?>
+                            </td>
+                            
+                            <!-- Origin -->
+                            <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                <span class="px-2 py-1 rounded-full text-xs font-medium <?php echo $order->wheat_origin === 'কানাডা' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'; ?>">
+                                    <?php echo htmlspecialchars($order->wheat_origin); ?>
+                                </span>
+                            </td>
+                            
+                            <!-- Ordered Quantity -->
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-900 font-semibold">
+                                <?php echo number_format($order->quantity_kg, 0); ?>
+                            </td>
+                            
+                            <!-- Per Unit Cost -->
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-900">
+                                ৳<?php echo number_format($per_unit, 2); ?>
+                            </td>
+                            
+                            <!-- Goods Received -->
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-right font-semibold
+                                <?php 
+                                $received = $order->total_received_qty ?? 0;
+                                if ($received >= $order->quantity_kg) {
+                                    echo 'text-green-600';
+                                } elseif ($received > 0) {
+                                    echo 'text-yellow-600';
+                                } else {
+                                    echo 'text-gray-400';
+                                }
+                                ?>">
+                                <?php echo number_format($order->total_received_qty ?? 0, 2); ?>
+                            </td>
+                            
+                            <!-- Paid -->
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-green-600 font-semibold">
+                                ৳<?php echo number_format($order->total_paid ?? 0, 0); ?>
+                            </td>
+                            
+                            <!-- Due (only if balance is positive) -->
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-right font-semibold">
+                                <?php if ($actual_due > 0): ?>
+                                    <span class="text-red-600">৳<?php echo number_format($actual_due, 0); ?></span>
                                 <?php else: ?>
-                                    <p>No purchase orders found</p>
-                                    <a href="purchase_adnan_create_po.php" class="text-primary-600 hover:text-primary-700 text-sm font-medium">Create your first PO</a>
+                                    <span class="text-gray-300">—</span>
                                 <?php endif; ?>
                             </td>
-                        </tr>
-                    <?php else: ?>
-                        <?php foreach ($recent_orders as $order): 
-                            //$due_amount = ($order->total_received_value ?? 0) - ($order->total_paid ?? 0);
-                            $due_amount = $order->balance_payable ?? 0;
-                            $per_unit = $order->quantity_kg > 0 ? ($order->total_order_value / $order->quantity_kg) : 0;
-                        ?>
-                            <tr class="hover:bg-gray-50">
-                                <!-- Order Number -->
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <a href="purchase_adnan_view_po.php?id=<?php echo $order->id; ?>" class="text-primary-600 hover:text-primary-800 font-medium">
-                                        #<?php echo htmlspecialchars($order->po_number); ?>
-                                    </a>
-                                </td>
-                                
-                                <!-- Date -->
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                    <?php echo date('d M Y', strtotime($order->po_date)); ?>
-                                </td>
-                                
-                                <!-- Supplier Name -->
-                                <td class="px-6 py-4 text-sm text-gray-900">
-                                    <?php echo htmlspecialchars($order->supplier_name); ?>
-                                </td>
-                                
-                                <!-- Origin -->
-                                <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                    <span class="px-2 py-1 rounded-full text-xs font-medium <?php echo $order->wheat_origin === 'কানাডা' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'; ?>">
-                                        <?php echo htmlspecialchars($order->wheat_origin); ?>
+                            
+                            <!-- Advance Paid (only if overpaid / balance is negative) -->
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-right font-semibold">
+                                <?php if ($advance_paid > 0): ?>
+                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 text-xs font-bold">
+                                        <i class="fas fa-arrow-up text-[9px]"></i>৳<?php echo number_format($advance_paid, 0); ?>
                                     </span>
-                                </td>
+                                <?php else: ?>
+                                    <span class="text-gray-300">—</span>
+                                <?php endif; ?>
+                            </td>
+                            
+                            <!-- Status -->
+                            <td class="px-6 py-4 whitespace-nowrap text-center">
+                                <?php
+                                $delivery = $order->delivery_status;
+                                $payment = $order->payment_status;
                                 
-                                <!-- Ordered Quantity -->
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-900 font-semibold">
-                                    <?php echo number_format($order->quantity_kg, 0); ?>
-                                </td>
-                                
-                                <!-- Per Unit Cost -->
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-900">
-                                    ৳<?php echo number_format($per_unit, 2); ?>
-                                </td>
-                                
-                                <!-- Goods Received -->
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-right font-semibold
-                                    <?php 
-                                    $received = $order->total_received_qty ?? 0;
-                                    if ($received >= $order->quantity_kg) {
-                                        echo 'text-green-600';
-                                    } elseif ($received > 0) {
-                                        echo 'text-yellow-600';
-                                    } else {
-                                        echo 'text-gray-400';
-                                    }
-                                    ?>">
-                                    <?php echo number_format($order->total_received_qty ?? 0, 2); ?>
-                                </td>
-                                
-                                <!-- Paid -->
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-green-600 font-semibold">
-                                    ৳<?php echo number_format($order->total_paid ?? 0, 0); ?>
-                                </td>
-                                
-                                <!-- Due -->
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-right font-semibold
-                                    <?php echo $due_amount > 0 ? 'text-red-600' : 'text-gray-400'; ?>">
-                                    ৳<?php echo number_format($due_amount, 2); ?>
-                                </td>
-                                
-                                <!-- Status -->
-                                <td class="px-6 py-4 whitespace-nowrap text-center">
-    <?php
-    // 1. Determine base values
-    $delivery = $order->delivery_status;
-    $payment = $order->payment_status;
-    
-    // 2. Fajracct Style Mapping
-    if ($delivery === 'closed') {
-        $status_text = 'Closed';
-        $status_class = 'bg-purple-100 text-purple-700 border border-purple-200';
-    } elseif ($delivery === 'completed' && $payment === 'paid') {
-        $status_text = 'Complete';
-        $status_class = 'bg-emerald-100 text-emerald-700 border border-emerald-200';
-    } elseif ($delivery === 'over_received') {
-        $status_text = 'Over Delivered';
-        $status_class = 'bg-blue-100 text-blue-700 border border-blue-200';
-    } elseif ($delivery === 'partial' || $payment === 'partial' || ($delivery === 'completed' && $payment !== 'paid')) {
-        $status_text = 'In Progress';
-        $status_class = 'bg-amber-100 text-amber-700 border border-amber-200';
-    } else {
-        $status_text = 'Pending';
-        $status_class = 'bg-slate-100 text-slate-600 border border-slate-200';
-    }
-    ?>
-    <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider <?php echo $status_class; ?>">
-        <?php echo $status_text; ?>
-    </span>
-</td>
-                                
-                                <!-- Actions -->
-                                <td class="px-6 py-4 whitespace-nowrap text-center">
-                                    <div class="flex items-center justify-center gap-2">
-                                        <!-- View Button -->
-                                        <a href="purchase_adnan_view_po.php?id=<?php echo $order->id; ?>" 
-                                           class="text-primary-600 hover:text-primary-800" 
-                                           title="View">
-                                            <i class="fas fa-eye"></i>
+                                if ($delivery === 'closed') {
+                                    $status_text = 'Closed';
+                                    $status_class = 'bg-purple-100 text-purple-700 border border-purple-200';
+                                } elseif ($delivery === 'completed' && $payment === 'paid') {
+                                    $status_text = 'Complete';
+                                    $status_class = 'bg-emerald-100 text-emerald-700 border border-emerald-200';
+                                } elseif ($delivery === 'over_received') {
+                                    $status_text = 'Over Delivered';
+                                    $status_class = 'bg-blue-100 text-blue-700 border border-blue-200';
+                                } elseif ($delivery === 'partial' || $payment === 'partial' || ($delivery === 'completed' && $payment !== 'paid')) {
+                                    $status_text = 'In Progress';
+                                    $status_class = 'bg-amber-100 text-amber-700 border border-amber-200';
+                                } else {
+                                    $status_text = 'Pending';
+                                    $status_class = 'bg-slate-100 text-slate-600 border border-slate-200';
+                                }
+                                ?>
+                                <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider <?php echo $status_class; ?>">
+                                    <?php echo $status_text; ?>
+                                </span>
+                            </td>
+                            
+                            <!-- Actions -->
+                            <td class="px-6 py-4 whitespace-nowrap text-center">
+                                <div class="flex items-center justify-center gap-2">
+                                    <a href="purchase_adnan_view_po.php?id=<?php echo $order->id; ?>" 
+                                       class="text-primary-600 hover:text-primary-800" 
+                                       title="View">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    
+                                    <?php if ($is_superadmin): ?>
+                                        <a href="purchase_adnan_edit_po.php?id=<?php echo $order->id; ?>" 
+                                           class="text-blue-600 hover:text-blue-800" 
+                                           title="Edit">
+                                            <i class="fas fa-edit"></i>
                                         </a>
                                         
-                                        <?php if ($is_superadmin): ?>
-                                            <!-- Edit Button -->
-                                            <a href="purchase_adnan_edit_po.php?id=<?php echo $order->id; ?>" 
-                                               class="text-blue-600 hover:text-blue-800" 
-                                               title="Edit">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
-                                            
-                                            <!-- Close Deal Button (if not closed) -->
-                                            <?php if ($order->delivery_status !== 'closed' && $order->delivery_status !== 'completed'): ?>
-                                                <button onclick="closePO(<?php echo $order->id; ?>, '<?php echo htmlspecialchars($order->po_number); ?>')" 
-                                                        class="text-orange-600 hover:text-orange-800" 
-                                                        title="Close Deal">
-                                                    <i class="fas fa-lock"></i>
-                                                </button>
-                                            <?php endif; ?>
-                                            
-                                            <!-- Delete Button -->
-                                            <button onclick="deletePO(<?php echo $order->id; ?>, '<?php echo htmlspecialchars($order->po_number); ?>')" 
-                                                    class="text-red-600 hover:text-red-800" 
-                                                    title="Delete">
-                                                <i class="fas fa-trash"></i>
+                                        <?php if ($order->delivery_status !== 'closed' && $order->delivery_status !== 'completed'): ?>
+                                            <button onclick="closePO(<?php echo $order->id; ?>, '<?php echo htmlspecialchars($order->po_number); ?>')" 
+                                                    class="text-orange-600 hover:text-orange-800" 
+                                                    title="Close Deal">
+                                                <i class="fas fa-lock"></i>
                                             </button>
                                         <?php endif; ?>
-                                    </div>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                        
-                        <!-- Totals Row -->
-                        <tr class="bg-gray-100 font-bold">
-                            <td colspan="4" class="px-6 py-4 text-sm text-right text-gray-900">
-                                <i class="fas fa-calculator mr-2"></i>TOTALS:
+                                        
+                                        <button onclick="deletePO(<?php echo $order->id; ?>, '<?php echo htmlspecialchars($order->po_number); ?>')" 
+                                                class="text-red-600 hover:text-red-800" 
+                                                title="Delete">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    <?php endif; ?>
+                                </div>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-900">
-                                <?php echo number_format($totals['ordered_quantity'], 0); ?>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-900">
-                                <!-- Average per unit -->
-                                ৳<?php echo $totals['ordered_quantity'] > 0 ? number_format($totals['total_value'] / $totals['ordered_quantity'], 2) : '0.00'; ?>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-900">
-                                <?php echo number_format($totals['goods_received'], 0); ?>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-green-600">
-                                ৳<?php echo number_format($totals['paid'], 0); ?>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-red-600">
-                                ৳<?php echo number_format($totals['due'], 0); ?>
-                            </td>
-                            <td colspan="2" class="px-6 py-4"></td>
                         </tr>
-                    <?php endif; ?>
-                </tbody>
-            </table>
-        </div>
+                    <?php endforeach; ?>
+                    
+                    <!-- Totals Row -->
+                    <tr class="bg-gray-100 font-bold">
+                        <td colspan="4" class="px-6 py-4 text-sm text-right text-gray-900">
+                            <i class="fas fa-calculator mr-2"></i>TOTALS:
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-900">
+                            <?php echo number_format($totals['ordered_quantity'], 0); ?>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-900">
+                            ৳<?php echo $totals['ordered_quantity'] > 0 ? number_format($totals['total_value'] / $totals['ordered_quantity'], 2) : '0.00'; ?>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-900">
+                            <?php echo number_format($totals['goods_received'], 0); ?>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-green-600">
+                            ৳<?php echo number_format($totals['paid'], 0); ?>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-red-600">
+                            <?php if ($totals['due'] > 0): ?>
+                                ৳<?php echo number_format($totals['due'], 0); ?>
+                            <?php else: ?>
+                                <span class="text-gray-400">—</span>
+                            <?php endif; ?>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-blue-600">
+                            <?php if ($totals['advance'] > 0): ?>
+                                ৳<?php echo number_format($totals['advance'], 0); ?>
+                            <?php else: ?>
+                                <span class="text-gray-400">—</span>
+                            <?php endif; ?>
+                        </td>
+                        <td colspan="2" class="px-6 py-4"></td>
+                    </tr>
+                <?php endif; ?>
+            </tbody>
+        </table>
     </div>
+</div>
+```
+
 </div>
 
 <script>
@@ -527,7 +716,6 @@ function toggleFilters() {
     }
 }
 
-// Auto-show filters if any filter is active
 <?php if (!empty($active_filters)): ?>
 document.addEventListener('DOMContentLoaded', function() {
     toggleFilters();

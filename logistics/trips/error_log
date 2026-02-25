@@ -1723,3 +1723,45 @@ Stack trace:
 )
 
 [06-Dec-2025 17:32:57 Asia/Dhaka] Trip management error: Cannot complete trip. 1 order(s) not yet delivered.
+[15-Feb-2026 10:11:49 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.order_consolidation_suggestions' doesn't exist in query: 
+    SELECT 
+        ocs.*,
+        co1.order_number as order1_number,
+        co2.order_number as order2_number,
+        c1.name as customer1_name,
+        c2.name as customer2_name
+    FROM order_consolidation_suggestions ocs
+    JOIN credit_orders co1 ON ocs.order_id_1 = co1.id
+    JOIN credit_orders co2 ON ocs.order_id_2 = co2.id
+    JOIN customers c1 ON co1.customer_id = c1.id
+    JOIN customers c2 ON co2.customer_id = c2.id
+    WHERE ocs.status = 'pending'
+    AND co1.status = 'ready_to_ship'
+    AND co2.status = 'ready_to_ship'
+    ORDER BY ocs.potential_savings DESC
+    LIMIT 10
+ | Params: Array
+(
+)
+
+[15-Feb-2026 11:34:08 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.order_consolidation_suggestions' doesn't exist in query: 
+    SELECT 
+        ocs.*,
+        co1.order_number as order1_number,
+        co2.order_number as order2_number,
+        c1.name as customer1_name,
+        c2.name as customer2_name
+    FROM order_consolidation_suggestions ocs
+    JOIN credit_orders co1 ON ocs.order_id_1 = co1.id
+    JOIN credit_orders co2 ON ocs.order_id_2 = co2.id
+    JOIN customers c1 ON co1.customer_id = c1.id
+    JOIN customers c2 ON co2.customer_id = c2.id
+    WHERE ocs.status = 'pending'
+    AND co1.status = 'ready_to_ship'
+    AND co2.status = 'ready_to_ship'
+    ORDER BY ocs.potential_savings DESC
+    LIMIT 10
+ | Params: Array
+(
+)
+

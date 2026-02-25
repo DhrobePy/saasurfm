@@ -5,117 +5,7 @@ restrict_access(['Superadmin', 'admin', 'Accounts', 'accounts-demra', 'accounts-
 $pageTitle = "All Suppliers";
 
 $currentUser = getCurrentUser();
-$user_role    = $currentUser['role']         ?? '';
-$user_id      = $currentUser['id']           ?? null;
-$user_name    = $currentUser['display_name'] ?? 'System';
-
-// ===============================================
-// DELETE SUPPLIER - Superadmin only (AJAX POST)
-// ===============================================
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'delete_supplier') {
-    header('Content-Type: application/json');
-
-    if ($user_role !== 'Superadmin') {
-        echo json_encode(['success' => false, 'message' => 'Access denied. Superadmin only.']);
-        exit;
-    }
-
-    $supplier_id   = (int)($_POST['supplier_id'] ?? 0);
-    $delete_reason = trim($_POST['delete_reason'] ?? '');
-
-    if (!$supplier_id) {
-        echo json_encode(['success' => false, 'message' => 'Invalid supplier ID.']);
-        exit;
-    }
-    if (empty($delete_reason)) {
-        echo json_encode(['success' => false, 'message' => 'Deletion reason is required.']);
-        exit;
-    }
-
-    $db = Database::getInstance()->getPdo();
-
-    try {
-        // Fetch supplier before deletion
-        $fetch = $db->prepare("SELECT * FROM suppliers WHERE id = ?");
-        $fetch->execute([$supplier_id]);
-        $supplier_to_delete = $fetch->fetch(PDO::FETCH_OBJ);
-
-        if (!$supplier_to_delete) {
-            echo json_encode(['success' => false, 'message' => 'Supplier not found.']);
-            exit;
-        }
-
-        // Block if has ACTIVE (non-cancelled) purchase orders
-        $po_check = $db->prepare(
-            "SELECT COUNT(*) as cnt FROM purchase_orders_adnan
-             WHERE supplier_id = ? AND po_status NOT IN ('cancelled')"
-        );
-        $po_check->execute([$supplier_id]);
-        $po_count = $po_check->fetch(PDO::FETCH_OBJ)->cnt;
-
-        if ($po_count > 0) {
-            echo json_encode([
-                'success' => false,
-                'message' => "Cannot delete. Supplier has {$po_count} active purchase order(s). Cancel all POs first."
-            ]);
-            exit;
-        }
-
-        // Block if outstanding balance
-        if ((float)$supplier_to_delete->current_balance > 0) {
-            echo json_encode([
-                'success' => false,
-                'message' => "Cannot delete. Supplier has outstanding balance of ৳" . number_format($supplier_to_delete->current_balance, 2) . ". Clear balance first."
-            ]);
-            exit;
-        }
-
-        $db->beginTransaction();
-
-        // Soft delete
-        $del_stmt = $db->prepare(
-            "UPDATE suppliers SET
-                status     = 'inactive',
-                notes      = CONCAT(IFNULL(notes,''), '\n[DELETED by ', ?, ' on ', NOW(), '] Reason: ', ?),
-                updated_at = NOW()
-             WHERE id = ?"
-        );
-        $del_stmt->execute([$user_name, $delete_reason, $supplier_id]);
-
-        // Audit trail
-        if (function_exists('auditLog')) {
-            auditLog(
-                'supplier',
-                'deleted',
-                "Supplier '{$supplier_to_delete->company_name}' ({$supplier_to_delete->supplier_code}) deleted. Reason: {$delete_reason}",
-                [
-                    'record_type'     => 'supplier',
-                    'record_id'       => $supplier_id,
-                    'reference_number'=> $supplier_to_delete->supplier_code,
-                    'supplier_name'   => $supplier_to_delete->company_name,
-                    'supplier_code'   => $supplier_to_delete->supplier_code,
-                    'supplier_type'   => $supplier_to_delete->supplier_type,
-                    'current_balance' => $supplier_to_delete->current_balance,
-                    'delete_reason'   => $delete_reason,
-                    'deleted_by'      => $user_name,
-                    'old_status'      => $supplier_to_delete->status
-                ]
-            );
-        }
-
-        $db->commit();
-        echo json_encode([
-            'success' => true,
-            'message' => "Supplier '{$supplier_to_delete->company_name}' has been deleted successfully."
-        ]);
-
-    } catch (Exception $e) {
-        if ($db->inTransaction()) $db->rollBack();
-        error_log("Supplier delete error: " . $e->getMessage());
-        echo json_encode(['success' => false, 'message' => 'Database error: ' . $e->getMessage()]);
-    }
-    exit;
-}
+$user_role = $currentUser['role'] ?? '';
 
 // Get filter parameters
 $search = $_GET['search'] ?? '';
@@ -133,7 +23,7 @@ $offset = ($page - 1) * $per_page;
 $db = Database::getInstance()->getPdo();
 
 // Build WHERE clause
-$where_conditions = ["s.status = 'active'"];
+$where_conditions = [];
 $params = [];
 
 if (!empty($search)) {
@@ -152,7 +42,7 @@ if (!empty($supplier_type)) {
 }
 
 if (!empty($status)) {
-    $where_conditions[0] = "s.status = :status";
+    $where_conditions[] = "s.status = :status";
     $params['status'] = $status;
 }
 
@@ -181,7 +71,6 @@ $suppliers_sql = "
         s.*,
         u.display_name as created_by_name,
         COUNT(DISTINCT po.id) as total_pos,
-        COUNT(DISTINCT CASE WHEN po.po_status != 'cancelled' THEN po.id END) as active_pos,
         COALESCE(SUM(CASE WHEN po.po_status != 'cancelled' THEN po.total_order_value ELSE 0 END), 0) as total_purchases,
         COALESCE(SUM(CASE WHEN po.payment_status IN ('unpaid', 'partial') THEN po.balance_payable ELSE 0 END), 0) as outstanding_amount
     FROM suppliers s
@@ -481,18 +370,6 @@ require_once '../templates/header.php';
                                    title="Edit">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <?php if ($user_role === 'Superadmin'): ?>
-                                <button onclick="confirmDeleteSupplier(
-                                            <?php echo $supplier->id; ?>,
-                                            '<?php echo htmlspecialchars(addslashes($supplier->company_name)); ?>',
-                                            <?php echo (int)$supplier->active_pos; ?>,
-                                            <?php echo (float)$supplier->current_balance; ?>
-                                        )"
-                                        class="text-red-500 hover:text-red-700 transition-colors"
-                                        title="Delete Supplier">
-                                    <i class="fas fa-trash-alt"></i>
-                                </button>
-                                <?php endif; ?>
                             </div>
                         </td>
                     </tr>
@@ -600,166 +477,5 @@ require_once '../templates/header.php';
     </div>
 
 </div>
-
-<!-- ================================================== -->
-<!-- DELETE SUPPLIER MODAL (Superadmin only)           -->
-<!-- ================================================== -->
-<?php if ($user_role === 'Superadmin'): ?>
-<div id="deleteSupplierModal"
-     class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-xl shadow-2xl w-full max-w-md">
-
-        <div class="bg-red-600 text-white px-6 py-4 rounded-t-xl flex items-center justify-between">
-            <h3 class="text-lg font-bold flex items-center gap-2">
-                <i class="fas fa-trash-alt"></i> Delete Supplier
-            </h3>
-            <button onclick="closeDeleteModal()" class="text-white hover:text-red-200 text-xl">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-
-        <div class="p-6">
-            <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-5 rounded-r-lg">
-                <div class="flex items-start gap-3">
-                    <i class="fas fa-exclamation-triangle text-red-600 mt-0.5 text-lg"></i>
-                    <div>
-                        <p class="font-semibold text-red-800">This action cannot be undone!</p>
-                        <p class="text-sm text-red-700 mt-1">
-                            The supplier will be deactivated and hidden from all lists.
-                            All historical records (POs, GRNs, payments) will be preserved.
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-gray-50 rounded-lg p-4 mb-5">
-                <p class="text-sm text-gray-600 mb-1">Deleting supplier:</p>
-                <p class="font-bold text-gray-900 text-lg" id="deleteSupplierName">—</p>
-                <p class="text-sm text-gray-500 mt-1" id="deleteSupplierMeta">—</p>
-            </div>
-
-            <div class="mb-5">
-                <label class="block text-sm font-semibold text-gray-700 mb-2">
-                    Reason for Deletion <span class="text-red-500">*</span>
-                </label>
-                <textarea id="deleteReason" rows="3"
-                          class="w-full px-3 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-red-500 text-sm resize-none"
-                          placeholder="e.g. Duplicate entry, Supplier closed business..."></textarea>
-                <p class="text-xs text-gray-500 mt-1">Recorded in the audit trail.</p>
-            </div>
-
-            <div class="mb-2">
-                <label class="block text-sm font-semibold text-gray-700 mb-2">
-                    Type <span class="font-mono bg-red-100 text-red-700 px-1 rounded">DELETE</span> to confirm
-                </label>
-                <input type="text" id="deleteConfirmText"
-                       class="w-full px-3 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-red-500 text-sm font-mono"
-                       placeholder="Type DELETE here..."
-                       oninput="checkDeleteConfirm()">
-            </div>
-        </div>
-
-        <div class="px-6 py-4 bg-gray-50 rounded-b-xl flex justify-between items-center gap-3">
-            <button onclick="closeDeleteModal()"
-                    class="px-5 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition text-sm">
-                <i class="fas fa-times mr-1"></i> Cancel
-            </button>
-            <button id="confirmDeleteBtn" disabled
-                    onclick="executeDeleteSupplier()"
-                    class="px-6 py-2 bg-red-600 text-white rounded-lg font-semibold text-sm
-                           disabled:opacity-40 disabled:cursor-not-allowed
-                           hover:bg-red-700 transition flex items-center gap-2">
-                <i class="fas fa-trash-alt"></i> Delete Supplier
-            </button>
-        </div>
-    </div>
-</div>
-
-<script>
-let _deleteId = null;
-
-function confirmDeleteSupplier(supplierId, supplierName, activePOs, balance) {
-    // Client-side guard: only block on ACTIVE (non-cancelled) POs
-    if (activePOs > 0) {
-        alert(`⚠️ Cannot delete "${supplierName}"\n\nThis supplier has ${activePOs} active purchase order(s).\nPlease cancel all POs before deleting.`);
-        return;
-    }
-    if (balance > 0) {
-        alert(`⚠️ Cannot delete "${supplierName}"\n\nThis supplier has an outstanding balance of ৳${balance.toLocaleString()}.\nPlease clear the balance before deleting.`);
-        return;
-    }
-
-    _deleteId = supplierId;
-    document.getElementById('deleteSupplierName').textContent = supplierName;
-    document.getElementById('deleteSupplierMeta').textContent = `Supplier ID: ${supplierId}`;
-    document.getElementById('deleteReason').value = '';
-    document.getElementById('deleteConfirmText').value = '';
-    document.getElementById('confirmDeleteBtn').disabled = true;
-    document.getElementById('deleteSupplierModal').classList.remove('hidden');
-}
-
-function closeDeleteModal() {
-    _deleteId = null;
-    document.getElementById('deleteSupplierModal').classList.add('hidden');
-}
-
-function checkDeleteConfirm() {
-    const text   = document.getElementById('deleteConfirmText').value.trim();
-    const reason = document.getElementById('deleteReason').value.trim();
-    document.getElementById('confirmDeleteBtn').disabled = !(text === 'DELETE' && reason.length > 0);
-}
-
-document.addEventListener('DOMContentLoaded', function () {
-    document.getElementById('deleteReason').addEventListener('input', checkDeleteConfirm);
-    document.getElementById('deleteSupplierModal').addEventListener('click', function (e) {
-        if (e.target === this) closeDeleteModal();
-    });
-});
-
-function executeDeleteSupplier() {
-    if (!_deleteId) return;
-    const reason = document.getElementById('deleteReason').value.trim();
-    const btn    = document.getElementById('confirmDeleteBtn');
-    btn.disabled = true;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Deleting...';
-
-    const formData = new FormData();
-    formData.append('action',        'delete_supplier');
-    formData.append('supplier_id',   _deleteId);
-    formData.append('delete_reason', reason);
-
-    fetch('suppliers.php', { method: 'POST', credentials: 'same-origin', body: formData })
-        .then(res => res.json())
-        .then(data => {
-            closeDeleteModal();
-            if (data.success) {
-                showToast(data.message, 'success');
-                setTimeout(() => location.reload(), 1500);
-            } else {
-                showToast(data.message, 'error');
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-trash-alt mr-1"></i> Delete Supplier';
-            }
-        })
-        .catch(err => {
-            closeDeleteModal();
-            showToast('Network error: ' + err.message, 'error');
-        });
-}
-
-function showToast(message, type) {
-    const existing = document.getElementById('supplierToast');
-    if (existing) existing.remove();
-    const colors = { success: 'bg-green-600', error: 'bg-red-600' };
-    const icons  = { success: 'fa-check-circle', error: 'fa-exclamation-circle' };
-    const toast  = document.createElement('div');
-    toast.id = 'supplierToast';
-    toast.className = `fixed bottom-6 right-6 z-50 flex items-center gap-3 px-5 py-3 rounded-xl shadow-2xl text-white text-sm font-semibold ${colors[type]}`;
-    toast.innerHTML = `<i class="fas ${icons[type]}"></i> <span>${message}</span>`;
-    document.body.appendChild(toast);
-    setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 400); }, 3500);
-}
-</script>
-<?php endif; ?>
 
 <?php require_once '../templates/footer.php'; ?>

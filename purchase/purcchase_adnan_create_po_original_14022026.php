@@ -1,11 +1,12 @@
 <?php
 /**
  * Purchase (Adnan) Module - Create Purchase Order
- * Form for creating new wheat purchase orders with manual PO number option
+ * Form for creating new wheat purchase orders
  * 
  * @package Ujjal Flour Mills
  * @subpackage Purchase (Adnan) Module
  */
+
 
 require_once '../core/init.php';
 require_once '../core/config/config.php';
@@ -24,42 +25,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $result = $purchaseManager->createPurchaseOrder($_POST);
     
     if ($result['success']) {
-        // ============================================
-        // AUDIT TRAIL - PO CREATION
-        // ============================================
-        // ============================================
-// AUDIT TRAIL - PO CREATION
-// ============================================
-        try {
-            if (function_exists('auditLog')) {
-                $currentUser = getCurrentUser();
-                $user_name = $currentUser['display_name'] ?? 'System User';
-                
-                auditLog(
-                    'purchase',  // ✓ Valid ENUM value
-                    'created',   // ✓ Valid ENUM value (was 'po_created')
-                    "Purchase Order {$result['po_number']} created - {$_POST['quantity_kg']} KG {$_POST['wheat_origin']} wheat @ ৳{$_POST['unit_price_per_kg']}/KG = ৳" . number_format($result['total_value'], 2),
-                    [
-                        'record_type' => 'purchase_order',
-                        'record_id' => $result['po_id'],
-                        'reference_number' => $result['po_number'],
-                        'po_id' => $result['po_id'],
-                        'po_number' => $result['po_number'],
-                        'supplier_id' => $_POST['supplier_id'],
-                        'wheat_origin' => $_POST['wheat_origin'],
-                        'quantity_kg' => $_POST['quantity_kg'],
-                        'unit_price_per_kg' => $_POST['unit_price_per_kg'],
-                        'total_order_value' => $result['total_value'],
-                        'expected_delivery_date' => $_POST['expected_delivery_date'] ?? null,
-                        'manual_po_number' => !empty($_POST['po_number']),
-                        'created_by' => $user_name
-                    ]
-                );
-            }
-        } catch (Exception $e) {
-            error_log("✗ Audit log error: " . $e->getMessage());
-        }
-        
         // ============================================
         // TELEGRAM NOTIFICATION - PURCHASE ORDER CREATED
         // ============================================
@@ -137,7 +102,7 @@ include '../templates/header.php';
     <!-- Page Header -->
     <div class="mb-6">
         <div class="flex items-center gap-2 text-sm text-gray-600 mb-2">
-            <a href="purchase_adnan_index.php" class="hover:text-primary-600">Purchase (Adnan)</a>
+            <a href="index.php" class="hover:text-primary-600">Purchase (Adnan)</a>
             <i class="fas fa-chevron-right text-xs"></i>
             <span>Create Purchase Order</span>
         </div>
@@ -160,22 +125,6 @@ include '../templates/header.php';
             <h2 class="text-lg font-semibold text-gray-900 mb-4">Basic Information</h2>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- PO Number (Manual) -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                        PO Number (Optional)
-                        <i class="fas fa-info-circle text-blue-500 ml-1" title="Leave blank for auto-generation"></i>
-                    </label>
-                    <input type="text" 
-                           name="po_number" 
-                           id="po_number"
-                           placeholder="Auto-generated if left blank"
-                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
-                    <p class="mt-1 text-xs text-gray-500">
-                        <i class="fas fa-magic text-primary-500"></i> Leave blank to auto-generate (e.g., PO-2024-0001)
-                    </p>
-                </div>
-
                 <!-- PO Date -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">
@@ -187,30 +136,19 @@ include '../templates/header.php';
                 </div>
 
                 <!-- Supplier -->
-                <div class="md:col-span-2">
+                <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">
                         Supplier <span class="text-red-500">*</span>
                     </label>
-                    <select name="supplier_id" required id="supplier_select"
+                    <select name="supplier_id" required
                             class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
                         <option value="">Select Supplier</option>
                         <?php foreach ($suppliers as $supplier): ?>
-                            <option value="<?php echo $supplier->id; ?>" 
-                                    data-name="<?php echo htmlspecialchars($supplier->name); ?>"
-                                    data-contact="<?php echo htmlspecialchars($supplier->contact_person ?? ''); ?>"
-                                    data-phone="<?php echo htmlspecialchars($supplier->phone ?? ''); ?>">
+                            <option value="<?php echo $supplier->id; ?>">
                                 <?php echo htmlspecialchars($supplier->name); ?>
-                                <?php if ($supplier->supplier_code): ?>
-                                    (<?php echo htmlspecialchars($supplier->supplier_code); ?>)
-                                <?php endif; ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
-                    <div id="supplier_info" class="mt-2 text-xs text-gray-600 hidden">
-                        <i class="fas fa-user mr-1"></i>
-                        <span id="supplier_contact"></span>
-                        <span id="supplier_phone" class="ml-3"></span>
-                    </div>
                 </div>
             </div>
         </div>
@@ -233,9 +171,8 @@ include '../templates/header.php';
                         <option value="Australia">Australia</option>
                         <option value="Ukraine">Ukraine</option>
                         <option value="India">India</option>
-                        <option value="USA">USA</option>
-                        <option value="Argentina">Argentina</option>
                         <option value="Local">Local</option>
+                        <option value="Brazil">Brazil</option>
                         <option value="Other">Other</option>
                     </select>
                 </div>
@@ -246,7 +183,6 @@ include '../templates/header.php';
                         Expected Delivery Date
                     </label>
                     <input type="date" name="expected_delivery_date"
-                           min="<?php echo date('Y-m-d'); ?>"
                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
                 </div>
 
@@ -255,13 +191,10 @@ include '../templates/header.php';
                     <label class="block text-sm font-medium text-gray-700 mb-2">
                         Quantity (KG) <span class="text-red-500">*</span>
                     </label>
-                    <input type="number" name="quantity_kg" required step="0.01" min="0.01" id="quantity"
+                    <input type="number" name="quantity_kg" required step="0.01" min="0" id="quantity"
                            placeholder="Enter quantity in kilograms"
                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
-                    <p class="mt-1 text-sm text-gray-500">
-                        <i class="fas fa-weight text-gray-400"></i> 
-                        Total order quantity in KG
-                    </p>
+                    <p class="mt-1 text-sm text-gray-500">Enter total order quantity in KG</p>
                 </div>
 
                 <!-- Unit Price -->
@@ -269,32 +202,19 @@ include '../templates/header.php';
                     <label class="block text-sm font-medium text-gray-700 mb-2">
                         Unit Price Per KG (৳) <span class="text-red-500">*</span>
                     </label>
-                    <input type="number" name="unit_price_per_kg" required step="0.01" min="0.01" id="unit_price"
+                    <input type="number" name="unit_price_per_kg" required step="0.01" min="0" id="unit_price"
                            placeholder="Enter price per kilogram"
                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
-                    <p class="mt-1 text-sm text-gray-500">
-                        <i class="fas fa-tag text-gray-400"></i> 
-                        Price per KG in Taka (৳)
-                    </p>
+                    <p class="mt-1 text-sm text-gray-500">Price per KG in Taka</p>
                 </div>
             </div>
         </div>
 
         <!-- Calculated Total -->
-        <div class="p-6 bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-gray-200">
+        <div class="p-6 bg-gray-50 border-b border-gray-200">
             <div class="flex justify-between items-center">
-                <div>
-                    <span class="text-lg font-semibold text-gray-900">Total Order Value:</span>
-                    <p class="text-xs text-gray-600 mt-1">
-                        <span id="quantity_display">0</span> KG × ৳<span id="price_display">0.00</span>
-                    </p>
-                </div>
-                <div class="text-right">
-                    <span class="text-3xl font-bold text-primary-600" id="total_value">৳0.00</span>
-                    <p class="text-xs text-gray-600 mt-1">
-                        <span id="total_in_millions">৳0.00M</span>
-                    </p>
-                </div>
+                <span class="text-lg font-semibold text-gray-900">Total Order Value:</span>
+                <span class="text-2xl font-bold text-primary-600" id="total_value">৳0.00</span>
             </div>
         </div>
 
@@ -306,18 +226,18 @@ include '../templates/header.php';
                 <label class="block text-sm font-medium text-gray-700 mb-2">
                     Remarks / Notes
                 </label>
-                <textarea name="remarks" rows="4"
-                          placeholder="Enter any additional notes, terms, or special conditions for this order..."
+                <textarea name="remarks" rows="3"
+                          placeholder="Enter any additional notes or remarks"
                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"></textarea>
             </div>
         </div>
 
         <!-- Form Actions -->
         <div class="p-6 bg-gray-50 flex justify-between items-center">
-            <a href="purchase_adnan_index.php" class="text-gray-600 hover:text-gray-800 flex items-center gap-2">
-                <i class="fas fa-times"></i> Cancel
+            <a href="index.php" class="text-gray-600 hover:text-gray-800">
+                <i class="fas fa-times mr-1"></i> Cancel
             </a>
-            <button type="submit" class="bg-primary-600 text-white px-6 py-2 rounded-lg hover:bg-primary-700 flex items-center gap-2 transition">
+            <button type="submit" class="bg-primary-600 text-white px-6 py-2 rounded-lg hover:bg-primary-700 flex items-center gap-2">
                 <i class="fas fa-save"></i> Create Purchase Order
             </button>
         </div>
@@ -330,83 +250,20 @@ document.addEventListener('DOMContentLoaded', function() {
     const quantityInput = document.getElementById('quantity');
     const unitPriceInput = document.getElementById('unit_price');
     const totalValueSpan = document.getElementById('total_value');
-    const quantityDisplay = document.getElementById('quantity_display');
-    const priceDisplay = document.getElementById('price_display');
-    const totalInMillions = document.getElementById('total_in_millions');
-    const supplierSelect = document.getElementById('supplier_select');
-    const supplierInfo = document.getElementById('supplier_info');
-    const supplierContact = document.getElementById('supplier_contact');
-    const supplierPhone = document.getElementById('supplier_phone');
     
     function calculateTotal() {
         const quantity = parseFloat(quantityInput.value) || 0;
         const unitPrice = parseFloat(unitPriceInput.value) || 0;
         const total = quantity * unitPrice;
         
-        // Update displays
-        quantityDisplay.textContent = quantity.toLocaleString('en-US', {
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 2
-        });
-        
-        priceDisplay.textContent = unitPrice.toLocaleString('en-US', {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2
-        });
-        
         totalValueSpan.textContent = '৳' + total.toLocaleString('en-US', {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2
         });
-        
-        // Show in millions if over 1M
-        if (total >= 1000000) {
-            totalInMillions.textContent = '৳' + (total / 1000000).toLocaleString('en-US', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            }) + 'M';
-            totalInMillions.style.display = 'inline';
-        } else {
-            totalInMillions.style.display = 'none';
-        }
     }
-    
-    // Show supplier info on selection
-    supplierSelect.addEventListener('change', function() {
-        const selectedOption = this.options[this.selectedIndex];
-        if (selectedOption.value) {
-            const contact = selectedOption.dataset.contact;
-            const phone = selectedOption.dataset.phone;
-            
-            if (contact || phone) {
-                supplierContact.textContent = contact || '';
-                supplierPhone.textContent = phone ? '📱 ' + phone : '';
-                supplierInfo.classList.remove('hidden');
-            } else {
-                supplierInfo.classList.add('hidden');
-            }
-        } else {
-            supplierInfo.classList.add('hidden');
-        }
-    });
     
     quantityInput.addEventListener('input', calculateTotal);
     unitPriceInput.addEventListener('input', calculateTotal);
-    
-    // PO Number validation
-    const poNumberInput = document.getElementById('po_number');
-    if (poNumberInput) {
-        poNumberInput.addEventListener('blur', function() {
-            if (this.value.trim()) {
-                // Basic format validation
-                const validPattern = /^[A-Z0-9\-\/]+$/i;
-                if (!validPattern.test(this.value)) {
-                    alert('PO Number should only contain letters, numbers, hyphens, and slashes');
-                    this.focus();
-                }
-            }
-        });
-    }
 });
 </script>
 

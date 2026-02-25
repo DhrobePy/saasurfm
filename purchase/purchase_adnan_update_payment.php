@@ -1,21 +1,17 @@
 <?php
 /**
  * Update Payment Handler - Superadmin Only
- * File: /purchase/purchase_adnan_update_payment.php
- * 
- * Table: purchase_payments_adnan
- * Handles payment updates with journal entry reversal
+ * With Integrated Audit Trail
  */
 
 require_once '../core/init.php';
 require_once '../core/classes/JournalEntryHelper.php';
 
-// Superadmin only
 restrict_access(['Superadmin']);
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     $_SESSION['error_message'] = "Invalid request method";
-    header('Location: purchase_adnan_list_po.php');
+    header('Location: purchase_adnan_index.php');
     exit;
 }
 
@@ -24,7 +20,7 @@ $purchase_order_id = isset($_POST['purchase_order_id']) ? (int)$_POST['purchase_
 
 if ($payment_id === 0 || $purchase_order_id === 0) {
     $_SESSION['error_message'] = "Invalid Payment or PO ID";
-    header('Location: purchase_adnan_list_po.php');
+    header('Location: purchase_adnan_index.php');
     exit;
 }
 
@@ -35,7 +31,12 @@ try {
     $db->beginTransaction();
     
     // Get existing payment data for audit log
-    $stmt = $db->prepare("SELECT * FROM purchase_payments_adnan WHERE id = ?");
+    $stmt = $db->prepare("
+        SELECT pmt.*, po.po_number, po.supplier_name
+        FROM purchase_payments_adnan pmt
+        LEFT JOIN purchase_orders_adnan po ON pmt.purchase_order_id = po.id
+        WHERE pmt.id = ?
+    ");
     $stmt->execute([$payment_id]);
     $old_payment = $stmt->fetch(PDO::FETCH_OBJ);
     
@@ -43,30 +44,47 @@ try {
         throw new Exception("Payment not found");
     }
     
-    // Get bank name if bank/cheque payment
-    $payment_method = $_POST['payment_method'];
-    $bank_account_id = null;
-    $bank_name = null;
+    // Track changes for audit
+    $changes = [];
+    $old_values = [];
+    $new_values = [];
     
-    if ($payment_method === 'bank' || $payment_method === 'cheque') {
-        $bank_account_id = !empty($_POST['bank_account_id']) ? (int)$_POST['bank_account_id'] : null;
-        
-        if ($bank_account_id) {
-            $stmt = $db->prepare("SELECT account_name FROM bank_accounts WHERE id = ?");
-            $stmt->execute([$bank_account_id]);
-            $account = $stmt->fetch(PDO::FETCH_OBJ);
-            $bank_name = $account ? $account->account_name : null;
-        }
+    // Payment Date
+    if ($_POST['payment_date'] != $old_payment->payment_date) {
+        $changes[] = "Payment Date: {$old_payment->payment_date} → {$_POST['payment_date']}";
+        $old_values['payment_date'] = $old_payment->payment_date;
+        $new_values['payment_date'] = $_POST['payment_date'];
     }
     
-    // If payment is posted and has journal entry, reverse it
-    if ($old_payment->is_posted == 1 && $old_payment->journal_entry_id) {
+    // Amount Paid
+    if ($_POST['amount_paid'] != $old_payment->amount_paid) {
+        $changes[] = "Amount: ৳" . number_format($old_payment->amount_paid, 2) . " → ৳" . number_format($_POST['amount_paid'], 2);
+        $old_values['amount_paid'] = $old_payment->amount_paid;
+        $new_values['amount_paid'] = $_POST['amount_paid'];
+    }
+    
+    // Payment Method
+    if ($_POST['payment_method'] != $old_payment->payment_method) {
+        $changes[] = "Method: {$old_payment->payment_method} → {$_POST['payment_method']}";
+        $old_values['payment_method'] = $old_payment->payment_method;
+        $new_values['payment_method'] = $_POST['payment_method'];
+    }
+    
+    // Payment Type
+    if ($_POST['payment_type'] != $old_payment->payment_type) {
+        $changes[] = "Type: {$old_payment->payment_type} → {$_POST['payment_type']}";
+        $old_values['payment_type'] = $old_payment->payment_type;
+        $new_values['payment_type'] = $_POST['payment_type'];
+    }
+    
+    // If payment has journal entry, reverse it
+    if ($old_payment->journal_entry_id) {
         if ($journalHelper->canReverse($old_payment->journal_entry_id)) {
             $reversal_id = $journalHelper->reverseJournalEntry(
                 $old_payment->journal_entry_id,
                 'payment_adnan_edit_reversal',
                 $payment_id,
-                "Payment Edit: {$old_payment->payment_voucher_number} - Updated by " . getCurrentUser()['name']
+                "Payment Edit: {$old_payment->payment_voucher_number} - Updated by " . getCurrentUser()['display_name']
             );
             
             if (!$reversal_id) {
@@ -82,11 +100,10 @@ try {
             payment_date = ?,
             amount_paid = ?,
             payment_method = ?,
-            bank_account_id = ?,
-            bank_name = ?,
-            handled_by_employee = ?,
-            reference_number = ?,
             payment_type = ?,
+            bank_account_id = ?,
+            reference_number = ?,
+            handled_by_employee = ?,
             remarks = ?,
             updated_at = NOW()
         WHERE id = ?
@@ -94,55 +111,53 @@ try {
     
     $stmt->execute([
         $_POST['payment_date'],
-        (float)$_POST['amount_paid'],
-        $payment_method,
-        $bank_account_id,
-        $bank_name,
-        $payment_method === 'cash' ? (!empty($_POST['handled_by_employee']) ? $_POST['handled_by_employee'] : null) : null,
-        !empty($_POST['reference_number']) ? $_POST['reference_number'] : null,
+        $_POST['amount_paid'],
+        $_POST['payment_method'],
         $_POST['payment_type'],
+        !empty($_POST['bank_account_id']) ? $_POST['bank_account_id'] : null,
+        !empty($_POST['reference_number']) ? $_POST['reference_number'] : null,
+        !empty($_POST['handled_by_employee']) ? $_POST['handled_by_employee'] : null,
         !empty($_POST['remarks']) ? $_POST['remarks'] : null,
         $payment_id
     ]);
     
-    // Recalculate PO totals (skips generated columns)
+    // Recalculate PO totals
     $journalHelper->recalculatePOTotals($purchase_order_id);
     
     // Update payment status
     $journalHelper->updatePaymentStatus($purchase_order_id);
     
-    // Log to audit_log if table exists
-    try {
-        $stmt = $db->prepare("
-            INSERT INTO audit_log (
-                table_name, record_id, action,
-                old_values, new_values, user_id, created_at
-            ) VALUES (
-                'purchase_payments_adnan', ?, 'update',
-                ?, ?, ?, NOW()
-            )
-        ");
-        
-        $new_values = [
-            'payment_date' => $_POST['payment_date'],
-            'amount_paid' => (float)$_POST['amount_paid'],
-            'payment_method' => $payment_method,
-            'bank_account_id' => $bank_account_id,
-            'payment_type' => $_POST['payment_type']
-        ];
-        
-        $stmt->execute([
-            $payment_id,
-            json_encode($old_payment),
-            json_encode($new_values),
-            getCurrentUser()['id']
-        ]);
-    } catch (Exception $e) {
-        // Audit log is optional - don't fail if table doesn't exist
-        error_log("Audit log failed: " . $e->getMessage());
-    }
-    
     $db->commit();
+    
+    // ============================================
+    // AUDIT TRAIL - PAYMENT UPDATED
+    // ============================================
+    try {
+        if (function_exists('auditLog') && !empty($changes)) {
+            $currentUser = getCurrentUser();
+            $user_name = $currentUser['display_name'] ?? 'System User';
+            
+            auditLog(
+                'purchase',
+                'updated',
+                "Payment {$old_payment->payment_voucher_number} updated for PO #{$old_payment->po_number}. Changes: " . implode(', ', $changes),
+                [
+                    'record_type' => 'purchase_payment',
+                    'record_id' => $payment_id,
+                    'reference_number' => $old_payment->payment_voucher_number,
+                    'po_number' => $old_payment->po_number,
+                    'supplier_name' => $old_payment->supplier_name,
+                    'changes' => $changes,
+                    'old_values' => $old_values,
+                    'new_values' => $new_values,
+                    'updated_by' => $user_name,
+                    'severity' => 'warning'
+                ]
+            );
+        }
+    } catch (Exception $e) {
+        error_log("✗ Audit log error: " . $e->getMessage());
+    }
     
     $_SESSION['success_message'] = "Payment {$old_payment->payment_voucher_number} updated successfully!";
     header("Location: purchase_adnan_view_po.php?id={$purchase_order_id}");

@@ -1096,3 +1096,5 @@ Stack trace:
 #0 {main}
   thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/expense/edit_expense.php on line 31
 [24-Jan-2026 16:25:54 Asia/Dhaka] Error approving expense: Voucher not found or already processed
+[09-Feb-2026 17:44:44 Asia/Dhaka] Error approving expense: Voucher not found or already processed
+[09-Feb-2026 17:45:45 Asia/Dhaka] Error approving expense: Voucher not found or already processed

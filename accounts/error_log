@@ -22281,3 +22281,2757 @@ Stack trace:
 (
 )
 
+[07-Feb-2026 10:29:37 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[07-Feb-2026 10:29:37 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-07
+)
+
+[07-Feb-2026 10:29:37 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-07
+)
+
+[07-Feb-2026 10:29:37 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[07-Feb-2026 16:18:42 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[07-Feb-2026 16:18:42 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-07
+)
+
+[07-Feb-2026 16:18:42 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-07
+)
+
+[07-Feb-2026 16:18:42 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[07-Feb-2026 17:14:27 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[07-Feb-2026 17:14:27 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-07
+)
+
+[07-Feb-2026 17:14:27 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-07
+)
+
+[07-Feb-2026 17:14:27 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[08-Feb-2026 10:47:46 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[08-Feb-2026 10:47:46 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-08
+)
+
+[08-Feb-2026 10:47:46 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-08
+)
+
+[08-Feb-2026 10:47:46 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[08-Feb-2026 12:49:20 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[08-Feb-2026 12:49:20 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-08
+)
+
+[08-Feb-2026 12:49:20 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-08
+)
+
+[08-Feb-2026 12:49:20 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[08-Feb-2026 16:51:37 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[08-Feb-2026 16:51:37 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-08
+)
+
+[08-Feb-2026 16:51:37 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-08
+)
+
+[08-Feb-2026 16:51:37 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[08-Feb-2026 16:51:46 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[08-Feb-2026 16:51:46 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-08
+)
+
+[08-Feb-2026 16:51:46 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-08
+)
+
+[08-Feb-2026 16:51:46 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[09-Feb-2026 10:07:57 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[09-Feb-2026 10:07:57 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-09
+)
+
+[09-Feb-2026 10:07:57 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-09
+)
+
+[09-Feb-2026 10:07:57 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[09-Feb-2026 13:14:23 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[09-Feb-2026 13:14:23 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-09
+)
+
+[09-Feb-2026 13:14:23 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-09
+)
+
+[09-Feb-2026 13:14:23 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[09-Feb-2026 14:41:28 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[09-Feb-2026 14:41:28 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-09
+)
+
+[09-Feb-2026 14:41:28 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-09
+)
+
+[09-Feb-2026 14:41:28 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[10-Feb-2026 10:03:31 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[10-Feb-2026 10:03:31 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-10
+)
+
+[10-Feb-2026 10:03:31 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-10
+)
+
+[10-Feb-2026 10:03:31 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[10-Feb-2026 10:22:31 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[10-Feb-2026 10:22:31 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-10
+)
+
+[10-Feb-2026 10:22:31 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-10
+)
+
+[10-Feb-2026 10:22:31 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[10-Feb-2026 13:55:36 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[10-Feb-2026 13:55:36 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-10
+)
+
+[10-Feb-2026 13:55:36 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-10
+)
+
+[10-Feb-2026 13:55:36 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[10-Feb-2026 13:56:01 Asia/Dhaka] Total accounts retrieved: 59
+[10-Feb-2026 13:56:01 Asia/Dhaka] Added to assets: Advance to Suppliers - Wheat (Type: Other Current Asset)
+[10-Feb-2026 13:56:01 Asia/Dhaka] Added to assets: Cash - Purchase Payments (Type: Cash)
+[10-Feb-2026 13:56:01 Asia/Dhaka] Added to income: Credit sales Sirajgonh (Type: Revenue)
+[10-Feb-2026 13:56:01 Asia/Dhaka] Added to income: Credit Sales Sirajgonj (Type: Revenue)
+[10-Feb-2026 13:56:01 Asia/Dhaka] Added to expenses: Demra Mill Expense (Type: Expense)
+[10-Feb-2026 13:56:01 Asia/Dhaka] Added to expenses: Freight In (Type: Cost of Goods Sold)
+[10-Feb-2026 13:56:01 Asia/Dhaka] Added to expenses: Fuel Expense (Type: Expense)
+[10-Feb-2026 13:56:01 Asia/Dhaka] Added to assets: General Bank Account (Type: Bank)
+[10-Feb-2026 13:56:01 Asia/Dhaka] Added to assets: IFIC Bank (IFIC) (Type: Bank)
+[10-Feb-2026 13:56:01 Asia/Dhaka] Added to assets: Inventory - Raw Materials (Type: Other Current Asset)
+[10-Feb-2026 13:56:01 Asia/Dhaka] Added to assets: Inventory - Wheat - Canadian (Type: Other Current Asset)
+[10-Feb-2026 13:56:01 Asia/Dhaka] Added to assets: Inventory - Wheat - Russian (Type: Other Current Asset)
+[10-Feb-2026 13:56:01 Asia/Dhaka] Added to income: Inventory Gain - Weight Variance (Type: Other Income)
+[10-Feb-2026 13:56:01 Asia/Dhaka] Added to assets: Inventory in Transit (Type: Other Current Asset)
+[10-Feb-2026 13:56:01 Asia/Dhaka] Added to expenses: Inventory Loss - Weight Variance (Type: Expense)
+[10-Feb-2026 13:56:01 Asia/Dhaka] Added to assets: Jamuna Bank - Branch 178 (178) (Type: Bank)
+[10-Feb-2026 13:56:01 Asia/Dhaka] Added to assets: Mercantile Bank - Branch 445 (445) (Type: Bank)
+[10-Feb-2026 13:56:01 Asia/Dhaka] Added to assets: Mercantile Bank PLC - UJJAL FLOUR MILLS (1131000060445) (Type: Bank)
+[10-Feb-2026 13:56:01 Asia/Dhaka] Added to expenses: Packaging Materials (Type: Cost of Goods Sold)
+[10-Feb-2026 13:56:01 Asia/Dhaka] Added to assets: Petty Cash Demra Mill (Type: Petty Cash)
+[10-Feb-2026 13:56:01 Asia/Dhaka] Added to assets: Petty Cash HO (Type: Petty Cash)
+[10-Feb-2026 13:56:01 Asia/Dhaka] Added to assets: Petty Cash Sirajgonj (Type: Petty Cash)
+[10-Feb-2026 13:56:01 Asia/Dhaka] Added to assets: POS Cash - Demra (Type: Petty Cash)
+[10-Feb-2026 13:56:01 Asia/Dhaka] Added to assets: POS Cash - Head Office (Type: Petty Cash)
+[10-Feb-2026 13:56:01 Asia/Dhaka] Added to assets: POS Rampura (Type: Petty Cash)
+[10-Feb-2026 13:56:01 Asia/Dhaka] Added to income: POS Sales Collection Rampura (Type: Revenue)
+[10-Feb-2026 13:56:01 Asia/Dhaka] Added to income: POS sales Collection Sirajgonj (Type: Revenue)
+[10-Feb-2026 13:56:01 Asia/Dhaka] Added to income: POS Sales Revenue - Demra (Type: Revenue)
+[10-Feb-2026 13:56:01 Asia/Dhaka] Added to income: POS Sales Revenue - Head Office (Type: Revenue)
+[10-Feb-2026 13:56:01 Asia/Dhaka] Added to income: POS Sales Revenue SRG (Type: Revenue)
+[10-Feb-2026 13:56:01 Asia/Dhaka] Added to assets: POS Sales Sirajgonj (Type: Petty Cash)
+[10-Feb-2026 13:56:01 Asia/Dhaka] Added to assets: Premier Bank - Branch 030 (030) (Type: Bank)
+[10-Feb-2026 13:56:01 Asia/Dhaka] Added to assets: Pubali Bank - Branch 1430 (1430) (Type: Bank)
+[10-Feb-2026 13:56:01 Asia/Dhaka] Added to assets: Pubali Bank - Branch 4250 (4250) (Type: Bank)
+[10-Feb-2026 13:56:01 Asia/Dhaka] Added to assets: Pubali Bank - UJJAL FLOUR MILLS (0114902001260) (Type: Bank)
+[10-Feb-2026 13:56:01 Asia/Dhaka] Added to assets: Pubali Bank Plc - RAFIQUL ISLAM DULAL (0114102001430) (Type: Bank)
+[10-Feb-2026 13:56:01 Asia/Dhaka] Added to income: Purchase Discounts (Type: Other Income)
+[10-Feb-2026 13:56:01 Asia/Dhaka] Added to expenses: Raw Material (Type: Expense)
+[10-Feb-2026 13:56:01 Asia/Dhaka] Added to expenses: Raw Material Purchases (Type: Cost of Goods Sold)
+[10-Feb-2026 13:56:01 Asia/Dhaka] Added to expenses: Repairs and Maintainance (Type: Expense)
+[10-Feb-2026 13:56:01 Asia/Dhaka] Added to expenses: Salary Expense Demra (Type: Expense)
+[10-Feb-2026 13:56:01 Asia/Dhaka] Added to expenses: Salary Expense Sirajgonj (Type: Expense)
+[10-Feb-2026 13:56:01 Asia/Dhaka] Added to expenses: Sales Discounts (Type: Expense)
+[10-Feb-2026 13:56:01 Asia/Dhaka] Added to assets: UCB Bank - MILI Branch (824) (Type: Bank)
+[10-Feb-2026 13:56:01 Asia/Dhaka] Added to assets: ucbl - ujjal flour mills (1662301000000228) (Type: Bank)
+[10-Feb-2026 13:56:01 Asia/Dhaka] Added to assets: UCBL - Ujjal Flour Mills (2122101000000123) (Type: Bank)
+[10-Feb-2026 13:56:01 Asia/Dhaka] Added to assets: Undeposited Funds (Type: Other Current Asset)
+[10-Feb-2026 13:56:01 Asia/Dhaka] Added to expenses: Vehicle Document Expense (Type: Expense)
+[10-Feb-2026 13:56:01 Asia/Dhaka] Added to expenses: Vehicle Maintanance (Type: Expense)
+[10-Feb-2026 13:56:01 Asia/Dhaka] Added to expenses: Vehicle Maintenance Expense (Type: Expense)
+[10-Feb-2026 13:56:01 Asia/Dhaka] Added to income: Vehicle Rental Income (Type: Revenue)
+[10-Feb-2026 13:56:01 Asia/Dhaka] Added to expenses: Wheat Procurement - Canadian (Type: Cost of Goods Sold)
+[10-Feb-2026 13:56:01 Asia/Dhaka] Added to expenses: Wheat Procurement - Russian (Type: Cost of Goods Sold)
+[10-Feb-2026 13:56:01 Asia/Dhaka] Asset accounts: 27
+[10-Feb-2026 13:56:01 Asia/Dhaka] Income accounts: 10
+[10-Feb-2026 13:56:01 Asia/Dhaka] Expense accounts: 16
+[10-Feb-2026 13:56:19 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[10-Feb-2026 13:56:19 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-10
+)
+
+[10-Feb-2026 13:56:19 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-10
+)
+
+[10-Feb-2026 13:56:19 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[10-Feb-2026 13:56:20 Asia/Dhaka] Total accounts retrieved: 59
+[10-Feb-2026 13:56:20 Asia/Dhaka] Added to assets: Advance to Suppliers - Wheat (Type: Other Current Asset)
+[10-Feb-2026 13:56:20 Asia/Dhaka] Added to assets: Cash - Purchase Payments (Type: Cash)
+[10-Feb-2026 13:56:20 Asia/Dhaka] Added to income: Credit sales Sirajgonh (Type: Revenue)
+[10-Feb-2026 13:56:20 Asia/Dhaka] Added to income: Credit Sales Sirajgonj (Type: Revenue)
+[10-Feb-2026 13:56:20 Asia/Dhaka] Added to expenses: Demra Mill Expense (Type: Expense)
+[10-Feb-2026 13:56:20 Asia/Dhaka] Added to expenses: Freight In (Type: Cost of Goods Sold)
+[10-Feb-2026 13:56:20 Asia/Dhaka] Added to expenses: Fuel Expense (Type: Expense)
+[10-Feb-2026 13:56:20 Asia/Dhaka] Added to assets: General Bank Account (Type: Bank)
+[10-Feb-2026 13:56:20 Asia/Dhaka] Added to assets: IFIC Bank (IFIC) (Type: Bank)
+[10-Feb-2026 13:56:20 Asia/Dhaka] Added to assets: Inventory - Raw Materials (Type: Other Current Asset)
+[10-Feb-2026 13:56:20 Asia/Dhaka] Added to assets: Inventory - Wheat - Canadian (Type: Other Current Asset)
+[10-Feb-2026 13:56:20 Asia/Dhaka] Added to assets: Inventory - Wheat - Russian (Type: Other Current Asset)
+[10-Feb-2026 13:56:20 Asia/Dhaka] Added to income: Inventory Gain - Weight Variance (Type: Other Income)
+[10-Feb-2026 13:56:20 Asia/Dhaka] Added to assets: Inventory in Transit (Type: Other Current Asset)
+[10-Feb-2026 13:56:20 Asia/Dhaka] Added to expenses: Inventory Loss - Weight Variance (Type: Expense)
+[10-Feb-2026 13:56:20 Asia/Dhaka] Added to assets: Jamuna Bank - Branch 178 (178) (Type: Bank)
+[10-Feb-2026 13:56:20 Asia/Dhaka] Added to assets: Mercantile Bank - Branch 445 (445) (Type: Bank)
+[10-Feb-2026 13:56:20 Asia/Dhaka] Added to assets: Mercantile Bank PLC - UJJAL FLOUR MILLS (1131000060445) (Type: Bank)
+[10-Feb-2026 13:56:20 Asia/Dhaka] Added to expenses: Packaging Materials (Type: Cost of Goods Sold)
+[10-Feb-2026 13:56:20 Asia/Dhaka] Added to assets: Petty Cash Demra Mill (Type: Petty Cash)
+[10-Feb-2026 13:56:20 Asia/Dhaka] Added to assets: Petty Cash HO (Type: Petty Cash)
+[10-Feb-2026 13:56:20 Asia/Dhaka] Added to assets: Petty Cash Sirajgonj (Type: Petty Cash)
+[10-Feb-2026 13:56:20 Asia/Dhaka] Added to assets: POS Cash - Demra (Type: Petty Cash)
+[10-Feb-2026 13:56:20 Asia/Dhaka] Added to assets: POS Cash - Head Office (Type: Petty Cash)
+[10-Feb-2026 13:56:20 Asia/Dhaka] Added to assets: POS Rampura (Type: Petty Cash)
+[10-Feb-2026 13:56:20 Asia/Dhaka] Added to income: POS Sales Collection Rampura (Type: Revenue)
+[10-Feb-2026 13:56:20 Asia/Dhaka] Added to income: POS sales Collection Sirajgonj (Type: Revenue)
+[10-Feb-2026 13:56:20 Asia/Dhaka] Added to income: POS Sales Revenue - Demra (Type: Revenue)
+[10-Feb-2026 13:56:20 Asia/Dhaka] Added to income: POS Sales Revenue - Head Office (Type: Revenue)
+[10-Feb-2026 13:56:20 Asia/Dhaka] Added to income: POS Sales Revenue SRG (Type: Revenue)
+[10-Feb-2026 13:56:20 Asia/Dhaka] Added to assets: POS Sales Sirajgonj (Type: Petty Cash)
+[10-Feb-2026 13:56:20 Asia/Dhaka] Added to assets: Premier Bank - Branch 030 (030) (Type: Bank)
+[10-Feb-2026 13:56:20 Asia/Dhaka] Added to assets: Pubali Bank - Branch 1430 (1430) (Type: Bank)
+[10-Feb-2026 13:56:20 Asia/Dhaka] Added to assets: Pubali Bank - Branch 4250 (4250) (Type: Bank)
+[10-Feb-2026 13:56:20 Asia/Dhaka] Added to assets: Pubali Bank - UJJAL FLOUR MILLS (0114902001260) (Type: Bank)
+[10-Feb-2026 13:56:20 Asia/Dhaka] Added to assets: Pubali Bank Plc - RAFIQUL ISLAM DULAL (0114102001430) (Type: Bank)
+[10-Feb-2026 13:56:20 Asia/Dhaka] Added to income: Purchase Discounts (Type: Other Income)
+[10-Feb-2026 13:56:20 Asia/Dhaka] Added to expenses: Raw Material (Type: Expense)
+[10-Feb-2026 13:56:20 Asia/Dhaka] Added to expenses: Raw Material Purchases (Type: Cost of Goods Sold)
+[10-Feb-2026 13:56:20 Asia/Dhaka] Added to expenses: Repairs and Maintainance (Type: Expense)
+[10-Feb-2026 13:56:20 Asia/Dhaka] Added to expenses: Salary Expense Demra (Type: Expense)
+[10-Feb-2026 13:56:20 Asia/Dhaka] Added to expenses: Salary Expense Sirajgonj (Type: Expense)
+[10-Feb-2026 13:56:20 Asia/Dhaka] Added to expenses: Sales Discounts (Type: Expense)
+[10-Feb-2026 13:56:20 Asia/Dhaka] Added to assets: UCB Bank - MILI Branch (824) (Type: Bank)
+[10-Feb-2026 13:56:20 Asia/Dhaka] Added to assets: ucbl - ujjal flour mills (1662301000000228) (Type: Bank)
+[10-Feb-2026 13:56:20 Asia/Dhaka] Added to assets: UCBL - Ujjal Flour Mills (2122101000000123) (Type: Bank)
+[10-Feb-2026 13:56:20 Asia/Dhaka] Added to assets: Undeposited Funds (Type: Other Current Asset)
+[10-Feb-2026 13:56:20 Asia/Dhaka] Added to expenses: Vehicle Document Expense (Type: Expense)
+[10-Feb-2026 13:56:20 Asia/Dhaka] Added to expenses: Vehicle Maintanance (Type: Expense)
+[10-Feb-2026 13:56:20 Asia/Dhaka] Added to expenses: Vehicle Maintenance Expense (Type: Expense)
+[10-Feb-2026 13:56:20 Asia/Dhaka] Added to income: Vehicle Rental Income (Type: Revenue)
+[10-Feb-2026 13:56:20 Asia/Dhaka] Added to expenses: Wheat Procurement - Canadian (Type: Cost of Goods Sold)
+[10-Feb-2026 13:56:20 Asia/Dhaka] Added to expenses: Wheat Procurement - Russian (Type: Cost of Goods Sold)
+[10-Feb-2026 13:56:20 Asia/Dhaka] Asset accounts: 27
+[10-Feb-2026 13:56:20 Asia/Dhaka] Income accounts: 10
+[10-Feb-2026 13:56:20 Asia/Dhaka] Expense accounts: 16
+[10-Feb-2026 13:56:45 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[10-Feb-2026 13:56:45 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-10
+)
+
+[10-Feb-2026 13:56:45 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-10
+)
+
+[10-Feb-2026 13:56:45 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[10-Feb-2026 16:47:53 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[10-Feb-2026 16:47:53 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-10
+)
+
+[10-Feb-2026 16:47:53 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-10
+)
+
+[10-Feb-2026 16:47:53 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[10-Feb-2026 16:48:02 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[10-Feb-2026 16:48:02 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-10
+)
+
+[10-Feb-2026 16:48:02 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-10
+)
+
+[10-Feb-2026 16:48:02 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[15-Feb-2026 10:36:10 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[15-Feb-2026 10:36:10 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-15
+)
+
+[15-Feb-2026 10:36:10 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-15
+)
+
+[15-Feb-2026 10:36:10 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[15-Feb-2026 10:55:34 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[15-Feb-2026 10:55:34 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-15
+)
+
+[15-Feb-2026 10:55:34 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-15
+)
+
+[15-Feb-2026 10:55:34 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[15-Feb-2026 12:41:51 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[15-Feb-2026 12:41:51 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-15
+)
+
+[15-Feb-2026 12:41:51 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-15
+)
+
+[15-Feb-2026 12:41:51 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[15-Feb-2026 14:26:56 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[15-Feb-2026 14:26:56 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-15
+)
+
+[15-Feb-2026 14:26:56 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-15
+)
+
+[15-Feb-2026 14:26:56 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[15-Feb-2026 15:59:21 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[15-Feb-2026 15:59:21 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-15
+)
+
+[15-Feb-2026 15:59:21 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-15
+)
+
+[15-Feb-2026 15:59:21 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[15-Feb-2026 15:59:32 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[15-Feb-2026 15:59:32 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-15
+)
+
+[15-Feb-2026 15:59:32 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-15
+)
+
+[15-Feb-2026 15:59:32 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[16-Feb-2026 10:21:52 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[16-Feb-2026 10:21:52 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-16
+)
+
+[16-Feb-2026 10:21:52 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-16
+)
+
+[16-Feb-2026 10:21:52 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[16-Feb-2026 10:23:58 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[16-Feb-2026 10:23:58 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-16
+)
+
+[16-Feb-2026 10:23:58 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-16
+)
+
+[16-Feb-2026 10:23:58 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[16-Feb-2026 11:31:30 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[16-Feb-2026 11:31:30 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-16
+)
+
+[16-Feb-2026 11:31:30 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-16
+)
+
+[16-Feb-2026 11:31:30 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[16-Feb-2026 11:54:01 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[16-Feb-2026 11:54:01 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-16
+)
+
+[16-Feb-2026 11:54:01 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-16
+)
+
+[16-Feb-2026 11:54:01 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[16-Feb-2026 12:40:17 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[16-Feb-2026 12:40:17 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-16
+)
+
+[16-Feb-2026 12:40:17 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-16
+)
+
+[16-Feb-2026 12:40:17 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[16-Feb-2026 12:44:50 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[16-Feb-2026 12:44:50 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-16
+)
+
+[16-Feb-2026 12:44:50 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-16
+)
+
+[16-Feb-2026 12:44:50 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[16-Feb-2026 12:44:56 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[16-Feb-2026 12:44:56 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-16
+)
+
+[16-Feb-2026 12:44:56 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-16
+)
+
+[16-Feb-2026 12:44:56 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[16-Feb-2026 12:54:31 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[16-Feb-2026 12:54:31 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-16
+)
+
+[16-Feb-2026 12:54:31 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-16
+)
+
+[16-Feb-2026 12:54:31 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[16-Feb-2026 12:56:24 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[16-Feb-2026 12:56:24 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-16
+)
+
+[16-Feb-2026 12:56:24 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-16
+)
+
+[16-Feb-2026 12:56:24 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[16-Feb-2026 12:59:17 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[16-Feb-2026 12:59:17 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-16
+)
+
+[16-Feb-2026 12:59:17 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-16
+)
+
+[16-Feb-2026 12:59:17 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[17-Feb-2026 10:34:27 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[17-Feb-2026 10:34:27 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-17
+)
+
+[17-Feb-2026 10:34:27 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-17
+)
+
+[17-Feb-2026 10:34:27 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[17-Feb-2026 11:50:31 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[17-Feb-2026 11:50:31 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-17
+)
+
+[17-Feb-2026 11:50:31 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-17
+)
+
+[17-Feb-2026 11:50:31 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[17-Feb-2026 20:59:50 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[17-Feb-2026 20:59:50 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-17
+)
+
+[17-Feb-2026 20:59:50 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-17
+)
+
+[17-Feb-2026 20:59:50 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[17-Feb-2026 21:00:06 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[17-Feb-2026 21:00:06 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-17
+)
+
+[17-Feb-2026 21:00:06 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-17
+)
+
+[17-Feb-2026 21:00:06 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[17-Feb-2026 21:00:09 Asia/Dhaka] Total accounts retrieved: 59
+[17-Feb-2026 21:00:09 Asia/Dhaka] Added to assets: Advance to Suppliers - Wheat (Type: Other Current Asset)
+[17-Feb-2026 21:00:09 Asia/Dhaka] Added to assets: Cash - Purchase Payments (Type: Cash)
+[17-Feb-2026 21:00:09 Asia/Dhaka] Added to income: Credit sales Sirajgonh (Type: Revenue)
+[17-Feb-2026 21:00:09 Asia/Dhaka] Added to income: Credit Sales Sirajgonj (Type: Revenue)
+[17-Feb-2026 21:00:09 Asia/Dhaka] Added to expenses: Demra Mill Expense (Type: Expense)
+[17-Feb-2026 21:00:09 Asia/Dhaka] Added to expenses: Freight In (Type: Cost of Goods Sold)
+[17-Feb-2026 21:00:09 Asia/Dhaka] Added to expenses: Fuel Expense (Type: Expense)
+[17-Feb-2026 21:00:09 Asia/Dhaka] Added to assets: General Bank Account (Type: Bank)
+[17-Feb-2026 21:00:09 Asia/Dhaka] Added to assets: IFIC Bank (IFIC) (Type: Bank)
+[17-Feb-2026 21:00:09 Asia/Dhaka] Added to assets: Inventory - Raw Materials (Type: Other Current Asset)
+[17-Feb-2026 21:00:09 Asia/Dhaka] Added to assets: Inventory - Wheat - Canadian (Type: Other Current Asset)
+[17-Feb-2026 21:00:09 Asia/Dhaka] Added to assets: Inventory - Wheat - Russian (Type: Other Current Asset)
+[17-Feb-2026 21:00:09 Asia/Dhaka] Added to income: Inventory Gain - Weight Variance (Type: Other Income)
+[17-Feb-2026 21:00:09 Asia/Dhaka] Added to assets: Inventory in Transit (Type: Other Current Asset)
+[17-Feb-2026 21:00:09 Asia/Dhaka] Added to expenses: Inventory Loss - Weight Variance (Type: Expense)
+[17-Feb-2026 21:00:09 Asia/Dhaka] Added to assets: Jamuna Bank - Branch 178 (178) (Type: Bank)
+[17-Feb-2026 21:00:09 Asia/Dhaka] Added to assets: Mercantile Bank - Branch 445 (445) (Type: Bank)
+[17-Feb-2026 21:00:09 Asia/Dhaka] Added to assets: Mercantile Bank PLC - UJJAL FLOUR MILLS (1131000060445) (Type: Bank)
+[17-Feb-2026 21:00:09 Asia/Dhaka] Added to expenses: Packaging Materials (Type: Cost of Goods Sold)
+[17-Feb-2026 21:00:09 Asia/Dhaka] Added to assets: Petty Cash Demra Mill (Type: Petty Cash)
+[17-Feb-2026 21:00:09 Asia/Dhaka] Added to assets: Petty Cash HO (Type: Petty Cash)
+[17-Feb-2026 21:00:09 Asia/Dhaka] Added to assets: Petty Cash Sirajgonj (Type: Petty Cash)
+[17-Feb-2026 21:00:09 Asia/Dhaka] Added to assets: POS Cash - Demra (Type: Petty Cash)
+[17-Feb-2026 21:00:09 Asia/Dhaka] Added to assets: POS Cash - Head Office (Type: Petty Cash)
+[17-Feb-2026 21:00:09 Asia/Dhaka] Added to assets: POS Rampura (Type: Petty Cash)
+[17-Feb-2026 21:00:09 Asia/Dhaka] Added to income: POS Sales Collection Rampura (Type: Revenue)
+[17-Feb-2026 21:00:09 Asia/Dhaka] Added to income: POS sales Collection Sirajgonj (Type: Revenue)
+[17-Feb-2026 21:00:09 Asia/Dhaka] Added to income: POS Sales Revenue - Demra (Type: Revenue)
+[17-Feb-2026 21:00:09 Asia/Dhaka] Added to income: POS Sales Revenue - Head Office (Type: Revenue)
+[17-Feb-2026 21:00:09 Asia/Dhaka] Added to income: POS Sales Revenue SRG (Type: Revenue)
+[17-Feb-2026 21:00:09 Asia/Dhaka] Added to assets: POS Sales Sirajgonj (Type: Petty Cash)
+[17-Feb-2026 21:00:09 Asia/Dhaka] Added to assets: Premier Bank - Branch 030 (030) (Type: Bank)
+[17-Feb-2026 21:00:09 Asia/Dhaka] Added to assets: Pubali Bank - Branch 1430 (1430) (Type: Bank)
+[17-Feb-2026 21:00:09 Asia/Dhaka] Added to assets: Pubali Bank - Branch 4250 (4250) (Type: Bank)
+[17-Feb-2026 21:00:09 Asia/Dhaka] Added to assets: Pubali Bank - UJJAL FLOUR MILLS (0114902001260) (Type: Bank)
+[17-Feb-2026 21:00:09 Asia/Dhaka] Added to assets: Pubali Bank Plc - RAFIQUL ISLAM DULAL (0114102001430) (Type: Bank)
+[17-Feb-2026 21:00:09 Asia/Dhaka] Added to income: Purchase Discounts (Type: Other Income)
+[17-Feb-2026 21:00:09 Asia/Dhaka] Added to expenses: Raw Material (Type: Expense)
+[17-Feb-2026 21:00:09 Asia/Dhaka] Added to expenses: Raw Material Purchases (Type: Cost of Goods Sold)
+[17-Feb-2026 21:00:09 Asia/Dhaka] Added to expenses: Repairs and Maintainance (Type: Expense)
+[17-Feb-2026 21:00:09 Asia/Dhaka] Added to expenses: Salary Expense Demra (Type: Expense)
+[17-Feb-2026 21:00:09 Asia/Dhaka] Added to expenses: Salary Expense Sirajgonj (Type: Expense)
+[17-Feb-2026 21:00:09 Asia/Dhaka] Added to expenses: Sales Discounts (Type: Expense)
+[17-Feb-2026 21:00:09 Asia/Dhaka] Added to assets: UCB Bank - MILI Branch (824) (Type: Bank)
+[17-Feb-2026 21:00:09 Asia/Dhaka] Added to assets: ucbl - ujjal flour mills (1662301000000228) (Type: Bank)
+[17-Feb-2026 21:00:09 Asia/Dhaka] Added to assets: UCBL - Ujjal Flour Mills (2122101000000123) (Type: Bank)
+[17-Feb-2026 21:00:09 Asia/Dhaka] Added to assets: Undeposited Funds (Type: Other Current Asset)
+[17-Feb-2026 21:00:09 Asia/Dhaka] Added to expenses: Vehicle Document Expense (Type: Expense)
+[17-Feb-2026 21:00:09 Asia/Dhaka] Added to expenses: Vehicle Maintanance (Type: Expense)
+[17-Feb-2026 21:00:09 Asia/Dhaka] Added to expenses: Vehicle Maintenance Expense (Type: Expense)
+[17-Feb-2026 21:00:09 Asia/Dhaka] Added to income: Vehicle Rental Income (Type: Revenue)
+[17-Feb-2026 21:00:09 Asia/Dhaka] Added to expenses: Wheat Procurement - Canadian (Type: Cost of Goods Sold)
+[17-Feb-2026 21:00:09 Asia/Dhaka] Added to expenses: Wheat Procurement - Russian (Type: Cost of Goods Sold)
+[17-Feb-2026 21:00:09 Asia/Dhaka] Asset accounts: 27
+[17-Feb-2026 21:00:09 Asia/Dhaka] Income accounts: 10
+[17-Feb-2026 21:00:09 Asia/Dhaka] Expense accounts: 16
+[18-Feb-2026 09:48:07 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[18-Feb-2026 09:48:07 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-18
+)
+
+[18-Feb-2026 09:48:07 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-18
+)
+
+[18-Feb-2026 09:48:07 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[18-Feb-2026 09:48:47 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[18-Feb-2026 09:48:47 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-18
+)
+
+[18-Feb-2026 09:48:47 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-18
+)
+
+[18-Feb-2026 09:48:47 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[18-Feb-2026 19:05:19 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[18-Feb-2026 19:05:19 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-18
+)
+
+[18-Feb-2026 19:05:19 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-18
+)
+
+[18-Feb-2026 19:05:19 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[19-Feb-2026 10:35:47 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[19-Feb-2026 10:35:47 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-19
+)
+
+[19-Feb-2026 10:35:47 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-19
+)
+
+[19-Feb-2026 10:35:47 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[19-Feb-2026 12:43:07 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[19-Feb-2026 12:43:07 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-19
+)
+
+[19-Feb-2026 12:43:07 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-19
+)
+
+[19-Feb-2026 12:43:07 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[22-Feb-2026 10:38:19 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[22-Feb-2026 10:38:19 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-22
+)
+
+[22-Feb-2026 10:38:19 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-22
+)
+
+[22-Feb-2026 10:38:19 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[22-Feb-2026 13:29:18 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[22-Feb-2026 13:29:18 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-22
+)
+
+[22-Feb-2026 13:29:18 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-22
+)
+
+[22-Feb-2026 13:29:18 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[22-Feb-2026 13:29:24 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[22-Feb-2026 13:29:24 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-22
+)
+
+[22-Feb-2026 13:29:24 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-22
+)
+
+[22-Feb-2026 13:29:24 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[23-Feb-2026 09:47:20 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[23-Feb-2026 09:47:20 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-23
+)
+
+[23-Feb-2026 09:47:20 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-23
+)
+
+[23-Feb-2026 09:47:20 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[23-Feb-2026 11:53:23 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[23-Feb-2026 11:53:23 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-23
+)
+
+[23-Feb-2026 11:53:23 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-23
+)
+
+[23-Feb-2026 11:53:23 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[23-Feb-2026 12:02:30 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[23-Feb-2026 12:02:30 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-23
+)
+
+[23-Feb-2026 12:02:30 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-23
+)
+
+[23-Feb-2026 12:02:30 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[23-Feb-2026 12:14:37 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[23-Feb-2026 12:14:37 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-23
+)
+
+[23-Feb-2026 12:14:37 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-23
+)
+
+[23-Feb-2026 12:14:37 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[23-Feb-2026 14:06:41 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[23-Feb-2026 14:06:41 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-23
+)
+
+[23-Feb-2026 14:06:41 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-23
+)
+
+[23-Feb-2026 14:06:41 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[23-Feb-2026 17:31:55 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[23-Feb-2026 17:31:55 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-23
+)
+
+[23-Feb-2026 17:31:55 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-23
+)
+
+[23-Feb-2026 17:31:55 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[23-Feb-2026 19:18:11 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[23-Feb-2026 19:18:11 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-23
+)
+
+[23-Feb-2026 19:18:11 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-23
+)
+
+[23-Feb-2026 19:18:11 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[23-Feb-2026 19:26:03 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[23-Feb-2026 19:26:03 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-23
+)
+
+[23-Feb-2026 19:26:03 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-23
+)
+
+[23-Feb-2026 19:26:03 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[24-Feb-2026 10:05:07 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[24-Feb-2026 10:05:07 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-24
+)
+
+[24-Feb-2026 10:05:07 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-24
+)
+
+[24-Feb-2026 10:05:07 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[24-Feb-2026 10:30:49 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[24-Feb-2026 10:30:49 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-24
+)
+
+[24-Feb-2026 10:30:49 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-24
+)
+
+[24-Feb-2026 10:30:49 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[24-Feb-2026 12:00:25 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[24-Feb-2026 12:00:25 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-24
+)
+
+[24-Feb-2026 12:00:25 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-24
+)
+
+[24-Feb-2026 12:00:25 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[24-Feb-2026 14:32:44 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[24-Feb-2026 14:32:44 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-24
+)
+
+[24-Feb-2026 14:32:44 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-24
+)
+
+[24-Feb-2026 14:32:44 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[24-Feb-2026 14:39:46 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[24-Feb-2026 14:39:46 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-24
+)
+
+[24-Feb-2026 14:39:46 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-24
+)
+
+[24-Feb-2026 14:39:46 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[24-Feb-2026 15:46:21 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[24-Feb-2026 15:46:21 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-24
+)
+
+[24-Feb-2026 15:46:21 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-24
+)
+
+[24-Feb-2026 15:46:21 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[25-Feb-2026 10:05:33 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[25-Feb-2026 10:05:33 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-25
+)
+
+[25-Feb-2026 10:05:33 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-25
+)
+
+[25-Feb-2026 10:05:33 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[25-Feb-2026 12:27:07 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[25-Feb-2026 12:27:07 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-25
+)
+
+[25-Feb-2026 12:27:07 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-25
+)
+
+[25-Feb-2026 12:27:07 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[25-Feb-2026 13:48:09 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[25-Feb-2026 13:48:09 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-25
+)
+
+[25-Feb-2026 13:48:09 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-25
+)
+
+[25-Feb-2026 13:48:09 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+
+[25-Feb-2026 15:39:38 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'je.branch_id' in 'ON' in query: SELECT je.id, je.transaction_date, je.description, tl.debit_amount, tl.credit_amount, coa.name as account_name, b.name as branch_name 
+     FROM transaction_lines tl
+     JOIN journal_entries je ON tl.journal_entry_id = je.id
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     LEFT JOIN branches b ON je.branch_id = b.id
+     WHERE DATE(je.transaction_date) = CURDATE()
+     ORDER BY je.id ASC, tl.id ASC | Params: Array
+(
+)
+
+[25-Feb-2026 15:39:38 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.credit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Revenue' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-25
+)
+
+[25-Feb-2026 15:39:38 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'WHERE' in query: SELECT SUM(tl.debit_amount) as total 
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE coa.account_type_group = 'Expense' AND tl.transaction_date BETWEEN ? AND ? | Params: Array
+(
+    [0] => 2026-02-01
+    [1] => 2026-02-25
+)
+
+[25-Feb-2026 15:39:38 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tl.transaction_date' in 'SELECT' in query: SELECT 
+        DATE_FORMAT(tl.transaction_date, '%Y-%m') as month,
+        SUM(CASE WHEN coa.account_type_group = 'Revenue' THEN tl.credit_amount ELSE 0 END) as revenue,
+        SUM(CASE WHEN coa.account_type_group = 'Expense' THEN tl.debit_amount ELSE 0 END) as expenses
+     FROM transaction_lines tl
+     JOIN chart_of_accounts coa ON tl.account_id = coa.id
+     WHERE tl.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       AND coa.account_type_group IN ('Revenue', 'Expense')
+     GROUP BY DATE_FORMAT(tl.transaction_date, '%Y-%m')
+     ORDER BY month ASC | Params: Array
+(
+)
+

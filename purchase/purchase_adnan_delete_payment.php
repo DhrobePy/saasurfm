@@ -108,7 +108,7 @@ try {
     // Log the deletion (if audit_log table exists)
     try {
         $stmt = $db->prepare("
-            INSERT INTO audit_log (
+            INSERT INTO system_audit_log (
                 table_name, record_id, action, 
                 old_values, reason, user_id, created_at
             ) VALUES (
