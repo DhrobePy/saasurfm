@@ -727,3 +727,222 @@
     [0] => 193
 )
 
+[17-Mar-2026 16:03:21 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'p.name' in 'SELECT' in query: SELECT 
+            coi.id,
+            coi.order_id,
+            coi.product_id,
+            coi.variant_id,
+            coi.quantity,
+            coi.unit_price,
+            coi.discount_amount,
+            coi.tax_amount,
+            coi.line_total,
+            coi.notes,
+            p.name as product_name,
+            p.sku as product_sku,
+            p.unit as product_unit,
+            pv.variant_name,
+            pv.sku as variant_sku,
+            pv.barcode,
+            COALESCE(pv.variant_name, p.name) as display_name
+        FROM credit_order_items coi
+        LEFT JOIN products p ON coi.product_id = p.id
+        LEFT JOIN product_variants pv ON coi.variant_id = pv.id
+        WHERE coi.order_id = ?
+        ORDER BY coi.id ASC | Params: Array
+(
+    [0] => 196
+)
+
+[17-Mar-2026 16:06:11 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'p.name' in 'SELECT' in query: SELECT 
+            coi.id,
+            coi.order_id,
+            coi.product_id,
+            coi.variant_id,
+            coi.quantity,
+            coi.unit_price,
+            coi.discount_amount,
+            coi.tax_amount,
+            coi.line_total,
+            coi.notes,
+            p.name as product_name,
+            p.sku as product_sku,
+            p.unit as product_unit,
+            pv.variant_name,
+            pv.sku as variant_sku,
+            pv.barcode,
+            COALESCE(pv.variant_name, p.name) as display_name
+        FROM credit_order_items coi
+        LEFT JOIN products p ON coi.product_id = p.id
+        LEFT JOIN product_variants pv ON coi.variant_id = pv.id
+        WHERE coi.order_id = ?
+        ORDER BY coi.id ASC | Params: Array
+(
+    [0] => 196
+)
+
+[17-Mar-2026 16:14:43 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.units' doesn't exist in query: SELECT 
+            coi.id,
+            coi.order_id,
+            coi.product_id,
+            coi.variant_id,
+            coi.quantity,
+            coi.unit_price,
+            coi.discount_amount,
+            coi.tax_amount,
+            coi.line_total,
+            coi.notes,
+            p.name          AS product_name,
+            p.sku           AS product_sku,
+            p.unit          AS product_unit,
+            pv.name         AS variant_name,
+            pv.sku          AS variant_sku,
+            pv.barcode,
+            u.name          AS unit_name,
+            COALESCE(pv.name, p.name) AS display_name
+        FROM credit_order_items coi
+        LEFT JOIN products       p  ON coi.product_id  = p.id
+        LEFT JOIN product_variants pv ON coi.variant_id = pv.id
+        LEFT JOIN units          u  ON coi.unit_id     = u.id
+        WHERE coi.order_id = ?
+        ORDER BY coi.id ASC | Params: Array
+(
+    [0] => 196
+)
+
+[17-Mar-2026 16:15:23 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'p.name' in 'SELECT' in query: SELECT 
+            coi.id,
+            coi.order_id,
+            coi.product_id,
+            coi.variant_id,
+            coi.quantity,
+            coi.unit_price,
+            coi.discount_amount,
+            coi.tax_amount,
+            coi.line_total,
+            coi.notes,
+            p.name as product_name,
+            p.sku as product_sku,
+            p.unit as product_unit,
+            pv.variant_name,
+            pv.sku as variant_sku,
+            pv.barcode,
+            COALESCE(pv.variant_name, p.name) as display_name
+        FROM credit_order_items coi
+        LEFT JOIN products p ON coi.product_id = p.id
+        LEFT JOIN product_variants pv ON coi.variant_id = pv.id
+        WHERE coi.order_id = ?
+        ORDER BY coi.id ASC | Params: Array
+(
+    [0] => 196
+)
+
+[17-Mar-2026 16:17:44 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.units' doesn't exist in query: SELECT 
+        coi.id,
+        coi.order_id,
+        coi.product_id,
+        coi.variant_id,
+        coi.quantity,
+        coi.unit_price,
+        coi.discount_amount,
+        coi.tax_amount,
+        coi.line_total,
+        coi.notes,
+        p.product_name          AS product_name,     -- ← changed from p.name
+        p.sku                   AS product_sku,
+        p.unit                  AS product_unit,     -- check if 'unit' really exists
+        pv.variant_name,
+        pv.sku                  AS variant_sku,
+        pv.barcode,
+        u.name                  AS unit_name,
+        COALESCE(pv.variant_name, p.product_name) AS display_name   -- ← changed from p.name
+    FROM credit_order_items coi
+    LEFT JOIN products          p   ON coi.product_id  = p.id
+    LEFT JOIN product_variants  pv  ON coi.variant_id  = pv.id
+    LEFT JOIN units             u   ON coi.unit_id     = u.id      -- check if unit_id exists
+    WHERE coi.order_id = ?
+    ORDER BY coi.id ASC | Params: Array
+(
+    [0] => 196
+)
+
+[17-Mar-2026 16:19:44 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'p.product_name' in 'SELECT' in query: SELECT 
+        coi.id,
+        coi.order_id,
+        coi.product_id,
+        coi.variant_id,
+        coi.quantity,
+        coi.unit_price,
+        coi.discount_amount,
+        coi.tax_amount,
+        coi.line_total,
+        coi.notes,
+        p.product_name          AS product_name,
+        p.sku                   AS product_sku,
+        p.unit                  AS unit,           -- keep this if it exists, otherwise remove
+        pv.variant_name,
+        pv.sku                  AS variant_sku,
+        pv.barcode,
+        COALESCE(pv.variant_name, p.product_name) AS display_name
+    FROM credit_order_items coi
+    LEFT JOIN products          p   ON coi.product_id  = p.id
+    LEFT JOIN product_variants  pv  ON coi.variant_id  = pv.id
+    -- Removed: LEFT JOIN units u ON coi.unit_id = u.id
+    WHERE coi.order_id = ?
+    ORDER BY coi.id ASC | Params: Array
+(
+    [0] => 196
+)
+
+[17-Mar-2026 16:21:29 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'p.title' in 'SELECT' in query: SELECT 
+        coi.id,
+        coi.order_id,
+        coi.product_id,
+        coi.variant_id,
+        coi.quantity,
+        coi.unit_price,
+        coi.discount_amount,
+        coi.tax_amount,
+        coi.line_total,
+        coi.notes,
+        p.title          AS product_name,          -- ← change 'title' to the real column you find
+        p.sku            AS product_sku,           -- keep only if sku really exists
+        pv.variant_name  AS variant_name,
+        pv.sku           AS variant_sku,
+        pv.barcode,
+        COALESCE(pv.variant_name, p.title) AS display_name   -- ← must match the chosen column
+    FROM credit_order_items coi
+    LEFT JOIN products p ON coi.product_id = p.id
+    LEFT JOIN product_variants pv ON coi.variant_id = pv.id
+    WHERE coi.order_id = ?
+    ORDER BY coi.id ASC | Params: Array
+(
+    [0] => 196
+)
+
+[17-Mar-2026 16:25:49 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pv.variant_name' in 'SELECT' in query: SELECT 
+        coi.id,
+        coi.order_id,
+        coi.product_id,
+        coi.variant_id,
+        coi.quantity,
+        coi.unit_price,
+        coi.discount_amount,
+        coi.tax_amount,
+        coi.line_total,
+        coi.notes,
+        p.base_name       AS product_name,  -- Changed from 'title' to 'base_name'
+        p.base_sku        AS product_sku,   -- Changed from 'sku' to 'base_sku'
+        pv.variant_name   AS variant_name,
+        pv.sku            AS variant_sku,
+        pv.barcode,
+        COALESCE(pv.variant_name, p.base_name) AS display_name -- Changed 'title' to 'base_name'
+    FROM credit_order_items coi
+    LEFT JOIN products p ON coi.product_id = p.id
+    LEFT JOIN product_variants pv ON coi.variant_id = pv.id
+    WHERE coi.order_id = ?
+    ORDER BY coi.id ASC | Params: Array
+(
+    [0] => 196
+)
+

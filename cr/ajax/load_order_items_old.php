@@ -40,31 +40,31 @@ global $db;
 try {
     // Fetch order items with product details
     $items = $db->query(
-    "SELECT 
-        coi.id,
-        coi.order_id,
-        coi.product_id,
-        coi.variant_id,
-        coi.quantity,
-        coi.unit_price,
-        coi.discount_amount,
-        coi.tax_amount,
-        coi.line_total,
-        coi.notes,
-        p.base_name AS product_name,
-        p.base_sku AS product_sku,
-        -- Concatenate grade and weight to form a variant name
-        CONCAT_WS(' ', pv.grade, pv.weight_variant) AS variant_name,
-        pv.sku AS variant_sku,
-        -- Removed pv.barcode as it is not in your product_variants schema
-        COALESCE(CONCAT_WS(' ', pv.grade, pv.weight_variant), p.base_name) AS display_name
-    FROM credit_order_items coi
-    LEFT JOIN products p ON coi.product_id = p.id
-    LEFT JOIN product_variants pv ON coi.variant_id = pv.id
-    WHERE coi.order_id = ?
-    ORDER BY coi.id ASC",
-    [$order_id]
-)->results();
+        "SELECT 
+            coi.id,
+            coi.order_id,
+            coi.product_id,
+            coi.variant_id,
+            coi.quantity,
+            coi.unit_price,
+            coi.discount_amount,
+            coi.tax_amount,
+            coi.line_total,
+            coi.notes,
+            p.name as product_name,
+            p.sku as product_sku,
+            p.unit as product_unit,
+            pv.variant_name,
+            pv.sku as variant_sku,
+            pv.barcode,
+            COALESCE(pv.variant_name, p.name) as display_name
+        FROM credit_order_items coi
+        LEFT JOIN products p ON coi.product_id = p.id
+        LEFT JOIN product_variants pv ON coi.variant_id = pv.id
+        WHERE coi.order_id = ?
+        ORDER BY coi.id ASC",
+        [$order_id]
+    )->results();
     
     if (empty($items)) {
         echo json_encode([

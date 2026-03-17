@@ -2154,9 +2154,15 @@ function cancelOrder(orderId) {
 // Show timeline
 // Show timeline - FIX applied here
 function showTimeline(orderId) {
-    document.getElementById('timelineModal').classList.remove('hidden');
-    // Clear previous content and show loading
+    console.log('Opening timeline for order:', orderId); // DEBUG
+    
+    const modal = document.getElementById('timelineModal');
     const contentDiv = document.getElementById('timelineContent');
+    
+    // Show modal
+    modal.classList.remove('hidden');
+    
+    // Show loading state
     contentDiv.innerHTML = `
         <div class="text-center py-8">
             <i class="fas fa-spinner fa-spin text-4xl text-gray-400"></i>
@@ -2164,73 +2170,167 @@ function showTimeline(orderId) {
         </div>
     `;
     
-    // Create FormData to send action and order_id via POST
+    // Create FormData
     const formData = new FormData();
     formData.append('action', 'get_order_timeline');
     formData.append('order_id', orderId);
     
-    // Use POST to match the PHP handler logic
+    console.log('Sending request...'); // DEBUG
+    
+    // Fetch timeline data
     fetch(window.location.href, {
         method: 'POST',
         body: formData
     })
-    .then(response => response.json())
+    .then(response => {
+        console.log('Response status:', response.status); // DEBUG
+        console.log('Response headers:', response.headers.get('content-type')); // DEBUG
+        
+        // Check if response is OK
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        // Check if response is JSON
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+            // Log the actual response for debugging
+            return response.text().then(text => {
+                console.error('Non-JSON response received:', text); // DEBUG
+                throw new Error('Server returned non-JSON response');
+            });
+        }
+        
+        return response.json();
+    })
     .then(data => {
-        if (data.success && data.timeline.length > 0) {
-            let html = '<div class="space-y-4">';
+        console.log('Response data:', data); // DEBUG
+        
+        if (!data.success) {
+            throw new Error(data.message || 'Request failed');
+        }
+        
+        if (!data.timeline) {
+            throw new Error('Timeline data missing from response');
+        }
+        
+        if (data.timeline.length === 0) {
+            // No timeline events
+            contentDiv.innerHTML = `
+                <div class="text-center py-8">
+                    <i class="fas fa-inbox text-4xl mb-3 text-gray-300 block"></i>
+                    <p class="text-gray-500">No timeline events found for this order</p>
+                    <p class="text-xs text-gray-400 mt-2">Changes will appear here once the order is updated</p>
+                </div>
+            `;
+            return;
+        }
+        
+        // Build timeline HTML
+        let html = '<div class="space-y-4">';
+        
+        data.timeline.forEach((event, index) => {
+            console.log(`Event ${index}:`, event); // DEBUG
             
-            data.timeline.forEach((event) => {
-                const actionIcons = {
-                    'created': 'fa-plus-circle text-blue-600',
-                    'updated': 'fa-edit text-yellow-600',
-                    'status_changed': 'fa-exchange-alt text-purple-600',
-                    'priority_changed': 'fa-flag text-orange-600',
-                    'payment_collected': 'fa-money-bill-wave text-green-600'
-                };
-                
-                const icon = actionIcons[event.action_type] || 'fa-circle text-gray-600';
-                
-                html += `
-                    <div class="timeline-step">
-                        <div class="flex items-start gap-3">
-                            <i class="fas ${icon} text-xl mt-1"></i>
-                            <div class="flex-1">
-                                <p class="font-semibold text-gray-900">
-                                    ${event.action_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                                </p>
-                                <!-- FIX: Removed notes display since it's not in DB -->
-                                <p class="text-xs text-gray-500 mt-2">
-                                    by ${escapeHtml(event.user_name || 'System')} • ${new Date(event.created_at).toLocaleString()}
-                                </p>
-                            </div>
+            const actionIcons = {
+                'created': 'fa-plus-circle text-blue-600',
+                'updated': 'fa-edit text-yellow-600',
+                'status_changed': 'fa-exchange-alt text-purple-600',
+                'priority_changed': 'fa-flag text-orange-600',
+                'payment_collected': 'fa-money-bill-wave text-green-600',
+                'payment_recorded': 'fa-money-bill-wave text-green-600'
+            };
+            
+            const icon = actionIcons[event.action_type] || 'fa-circle text-gray-600';
+            const actionLabel = (event.action_type || 'unknown')
+                .replace(/_/g, ' ')
+                .replace(/\b\w/g, l => l.toUpperCase());
+            
+            // Format date
+            let dateStr = 'Unknown date';
+            if (event.created_at) {
+                try {
+                    dateStr = new Date(event.created_at).toLocaleString('en-US', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                } catch (e) {
+                    console.error('Date parsing error:', e);
+                    dateStr = event.created_at;
+                }
+            }
+            
+            // Build change description
+            let changeDesc = '';
+            if (event.field_name) {
+                changeDesc = `<p class="text-sm text-gray-600 mt-1">
+                    Field: <span class="font-medium">${escapeHtml(event.field_name)}</span>
+                </p>`;
+            }
+            
+            if (event.old_value && event.new_value) {
+                changeDesc += `<p class="text-xs text-gray-500 mt-1">
+                    ${escapeHtml(event.old_value)} → ${escapeHtml(event.new_value)}
+                </p>`;
+            }
+            
+            html += `
+                <div class="timeline-step border-l-2 border-gray-200 pl-4 pb-4 relative">
+                    <div class="absolute -left-2 top-0 w-4 h-4 rounded-full bg-white border-2 border-gray-400"></div>
+                    <div class="flex items-start gap-3">
+                        <i class="fas ${icon} text-xl mt-1"></i>
+                        <div class="flex-1">
+                            <p class="font-semibold text-gray-900">
+                                ${actionLabel}
+                            </p>
+                            ${changeDesc}
+                            <p class="text-xs text-gray-500 mt-2">
+                                <i class="fas fa-user text-gray-400 mr-1"></i>
+                                ${escapeHtml(event.user_name || 'System')}
+                                <span class="mx-2">•</span>
+                                <i class="fas fa-clock text-gray-400 mr-1"></i>
+                                ${dateStr}
+                            </p>
                         </div>
                     </div>
-                `;
-            });
-            
-            html += '</div>';
-            contentDiv.innerHTML = html;
-        } else {
-            contentDiv.innerHTML = `
-                <p class="text-center text-gray-500 py-8">
-                    <i class="fas fa-inbox text-4xl mb-3 text-gray-300 block"></i>
-                    No timeline events found
-                </p>
+                </div>
             `;
-        }
+        });
+        
+        html += '</div>';
+        contentDiv.innerHTML = html;
     })
     .catch(error => {
-        console.error('Error:', error);
+        console.error('Timeline error:', error); // DEBUG
         contentDiv.innerHTML = `
-            <p class="text-center text-red-500 py-8">
-                Failed to load timeline. Please try again later.
-            </p>
+            <div class="text-center py-8">
+                <i class="fas fa-exclamation-triangle text-4xl mb-3 text-red-400 block"></i>
+                <p class="text-red-600 font-semibold">Failed to load timeline</p>
+                <p class="text-sm text-gray-500 mt-2">${escapeHtml(error.message)}</p>
+                <button onclick="showTimeline(${orderId})" 
+                        class="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                    <i class="fas fa-redo mr-2"></i>Try Again
+                </button>
+            </div>
         `;
     });
 }
 
 function closeTimelineModal() {
     document.getElementById('timelineModal').classList.add('hidden');
+}
+
+function escapeHtml(unsafe) {
+    if (unsafe === null || unsafe === undefined) return '';
+    return String(unsafe)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 }
 
 // Bulk actions

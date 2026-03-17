@@ -100,14 +100,8 @@ $sql_conditions = ["co.order_date BETWEEN ? AND ?"];
 $sql_params = [$date_from, $date_to];
 
 if (!empty($status_filter)) {
-    // User selected a specific status - show only that status
     $sql_conditions[] = "co.status = ?";
     $sql_params[] = $status_filter;
-} else {
-    // No status filter selected - exclude delivered and cancelled orders by default
-    // This keeps the dashboard focused on active orders only
-    // Users can still view delivered/cancelled by selecting them from the dropdown
-    $sql_conditions[] = "co.status NOT IN ('delivered', 'cancelled')";
 }
 
 // Role-specific constraints
@@ -305,7 +299,7 @@ require_once '../templates/header.php';
                 <input type="date" name="date_to" value="<?php echo $date_to; ?>" class="px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500">
                 
                 <select name="status" class="px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500">
-                    <option value="">Active Orders (Excl. Delivered/Cancelled)</option>
+                    <option value="">All Status</option>
                     <option value="pending_approval" <?php echo $status_filter == 'pending_approval' ? 'selected' : ''; ?>>Pending</option>
                     <option value="approved" <?php echo $status_filter == 'approved' ? 'selected' : ''; ?>>Approved</option>
                     <option value="shipped" <?php echo $status_filter == 'shipped' ? 'selected' : ''; ?>>Shipped</option>

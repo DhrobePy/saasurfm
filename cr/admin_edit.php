@@ -230,10 +230,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 $order_items = $db->query(
     "SELECT 
         coi.*,
-        p.name as product_name,
-        p.sku as product_sku,
-        p.unit as product_unit,
-        pv.variant_name,
+        p.base_name as product_name,
+        p.base_sku as product_sku,
+        CONCAT_WS(' ', pv.grade, pv.weight_variant) as variant_name,
         pv.sku as variant_sku
     FROM credit_order_items coi
     LEFT JOIN products p ON coi.product_id = p.id
@@ -253,26 +252,35 @@ $customers = $db->query(
 
 // Fetch all branches
 $branches = $db->query(
-    "SELECT id, name FROM branches WHERE is_active = 1 ORDER BY name"
+    "SELECT id, name FROM branches ORDER BY name"
 )->results();
 
 // Fetch all products with variants
+// Fetch all products with variants
+// Fetch all products with variants and their specific branch/variant prices
+// Fetch all products with variants and their current prices
 $products = $db->query(
     "SELECT 
         p.id,
-        p.name,
-        p.sku,
-        p.unit,
-        p.sale_price,
+        p.base_name as name,
+        p.base_sku as sku,
         GROUP_CONCAT(
-            CONCAT(pv.id, '|', pv.variant_name, '|', pv.sku, '|', COALESCE(pv.sale_price, p.sale_price))
+            CONCAT(
+                pv.id, '|', 
+                CONCAT_WS(' ', pv.grade, pv.weight_variant), '|', 
+                pv.sku, '|', 
+                COALESCE(pp.unit_price, 0.00)
+            )
             SEPARATOR '||'
         ) as variants
     FROM products p
-    LEFT JOIN product_variants pv ON p.id = pv.product_id AND pv.is_active = 1
-    WHERE p.is_active = 1
+    LEFT JOIN product_variants pv ON p.id = pv.product_id AND pv.status = 'active'
+    LEFT JOIN product_prices pp ON pv.id = pp.variant_id 
+        AND pp.is_active = 1 
+        AND pp.status = 'active'
+    WHERE p.status = 'active'
     GROUP BY p.id
-    ORDER BY p.name"
+    ORDER BY p.base_name"
 )->results();
 
 // Fetch audit history
@@ -510,7 +518,7 @@ require_once '../templates/header.php';
                             <option value="">-- Select Branch --</option>
                             <?php foreach ($branches as $branch): ?>
                             <option value="<?php echo $branch->id; ?>" 
-                                    <?php echo $branch->id == $order->assigned_branch_id ? 'selected' : ''; ?>>
+                                    <?php echo (int)$branch->id === (int)$order->assigned_branch_id ? 'selected' : ''; ?>>
                                 <?php echo htmlspecialchars($branch->name); ?>
                             </option>
                             <?php endforeach; ?>
@@ -547,8 +555,7 @@ require_once '../templates/header.php';
                                     <option value="">Select...</option>
                                     <?php foreach ($products as $product): ?>
                                     <optgroup label="<?php echo htmlspecialchars($product->name); ?>">
-                                        <option value="<?php echo $product->id; ?>|0" 
-                                                data-price="<?php echo $product->sale_price; ?>"
+                                        <option value="<?php echo $product->id; ?>|0" data-price="0.00">
                                                 <?php echo ($item->product_id == $product->id && empty($item->variant_id)) ? 'selected' : ''; ?>>
                                             <?php echo htmlspecialchars($product->name); ?> (<?php echo $product->sku; ?>)
                                         </option>
@@ -849,7 +856,7 @@ function addItem() {
                     <option value="">Select...</option>
                     <?php foreach ($products as $product): ?>
                     <optgroup label="<?php echo htmlspecialchars($product->name); ?>">
-                        <option value="<?php echo $product->id; ?>|0" data-price="<?php echo $product->sale_price; ?>">
+                        <option value="<?php echo $product->id; ?>|0" data-price="0.00">
                             <?php echo htmlspecialchars($product->name); ?> (<?php echo $product->sku; ?>)
                         </option>
                         <?php if ($product->variants): 

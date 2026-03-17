@@ -2970,3 +2970,82 @@ Gemini/gemini-2.0-flash-lite: cURL: Resolving timed out after 30000 milliseconds
 (
 )
 
+[17-Mar-2026 14:37:04 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pv.variant_name' in 'SELECT' in query: SELECT pv.sku, pv.variant_name, SUM(i.quantity) as total_qty, b.name as branch_name
+         FROM inventory i
+         JOIN product_variants pv ON i.variant_id = pv.id
+         JOIN branches b ON i.branch_id = b.id
+         GROUP BY pv.id, b.id ORDER BY total_qty ASC LIMIT 8 | Params: Array
+(
+)
+
+[17-Mar-2026 14:37:07 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pv.variant_name' in 'SELECT' in query: SELECT pv.sku, pv.variant_name, SUM(i.quantity) as total_qty, b.name as branch_name
+         FROM inventory i
+         JOIN product_variants pv ON i.variant_id = pv.id
+         JOIN branches b ON i.branch_id = b.id
+         GROUP BY pv.id, b.id ORDER BY total_qty ASC LIMIT 8 | Params: Array
+(
+)
+
+[17-Mar-2026 15:30:30 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pv.variant_name' in 'SELECT' in query: SELECT pv.sku, pv.variant_name, SUM(i.quantity) as total_qty, b.name as branch_name
+         FROM inventory i
+         JOIN product_variants pv ON i.variant_id = pv.id
+         JOIN branches b ON i.branch_id = b.id
+         GROUP BY pv.id, b.id ORDER BY total_qty ASC LIMIT 8 | Params: Array
+(
+)
+
+[17-Mar-2026 15:30:33 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pv.variant_name' in 'SELECT' in query: SELECT pv.sku, pv.variant_name, SUM(i.quantity) as total_qty, b.name as branch_name
+         FROM inventory i
+         JOIN product_variants pv ON i.variant_id = pv.id
+         JOIN branches b ON i.branch_id = b.id
+         GROUP BY pv.id, b.id ORDER BY total_qty ASC LIMIT 8 | Params: Array
+(
+)
+
+[17-Mar-2026 17:38:42 Asia/Dhaka] SQL Error [Type: array] [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pv.variant_name' in 'SELECT' in query: SELECT pv.sku, pv.variant_name, SUM(i.quantity) as total_qty, b.name as branch_name
+         FROM inventory i
+         JOIN product_variants pv ON i.variant_id = pv.id
+         JOIN branches b ON i.branch_id = b.id
+         GROUP BY pv.id, b.id ORDER BY total_qty ASC LIMIT 8 | Params: Array
+(
+)
+
+[17-Mar-2026 17:38:45 Asia/Dhaka] SQL Error [Type: array] [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pv.variant_name' in 'SELECT' in query: SELECT pv.sku, pv.variant_name, SUM(i.quantity) as total_qty, b.name as branch_name
+         FROM inventory i
+         JOIN product_variants pv ON i.variant_id = pv.id
+         JOIN branches b ON i.branch_id = b.id
+         GROUP BY pv.id, b.id ORDER BY total_qty ASC LIMIT 8 | Params: Array
+(
+)
+
+[17-Mar-2026 19:04:22 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pv.variant_name' in 'SELECT'
+Query: SELECT pv.sku, pv.variant_name, SUM(i.quantity) as total_qty, b.name as branch_name
+         FROM inventory i
+         JOIN product_variants pv ON i.variant_id = pv.id
+         JOIN branches b ON i.branch_id = b.id
+         GROUP BY pv.id, b.id ORDER BY total_qty ASC LIMIT 8
+Params: []
+[17-Mar-2026 19:06:21 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pv.variant_name' in 'SELECT'
+Query: SELECT pv.sku, pv.variant_name, SUM(i.quantity) as total_qty, b.name as branch_name
+         FROM inventory i
+         JOIN product_variants pv ON i.variant_id = pv.id
+         JOIN branches b ON i.branch_id = b.id
+         GROUP BY pv.id, b.id ORDER BY total_qty ASC LIMIT 8
+Params: []
+[17-Mar-2026 19:07:13 Asia/Dhaka] AI Advisor Error: All AI providers failed. Please check API keys in config.php.
+DeepSeek/deepseek-chat: cURL: Resolving timed out after 30000 milliseconds
+Groq/llama-3.3-70b-versatile: cURL: Resolving timed out after 30000 milliseconds
+Gemini/gemini-2.0-flash: cURL: Resolving timed out after 30001 milliseconds
+Gemini/gemini-2.0-flash-lite: cURL: Resolving timed out after 30000 milliseconds
+[17-Mar-2026 19:07:43 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pv.variant_name' in 'SELECT'
+Query: SELECT pv.sku, pv.variant_name, SUM(i.quantity) as total_qty, b.name as branch_name
+         FROM inventory i
+         JOIN product_variants pv ON i.variant_id = pv.id
+         JOIN branches b ON i.branch_id = b.id
+         GROUP BY pv.id, b.id ORDER BY total_qty ASC LIMIT 8
+Params: []
+[17-Mar-2026 19:09:13 Asia/Dhaka] AI Advisor Error: All AI providers failed. Please check API keys in config.php.
+DeepSeek/deepseek-chat: cURL: Could not resolve host: api.deepseek.com
+Groq/llama-3.3-70b-versatile: cURL: Could not resolve host: api.groq.com
+Gemini/gemini-2.0-flash: cURL: Resolving timed out after 30000 milliseconds
+Gemini/gemini-2.0-flash-lite: cURL: Resolving timed out after 30001 milliseconds

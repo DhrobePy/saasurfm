@@ -1,35 +1,51 @@
 <?php
-// core/classes/Database.php
+/**
+ * Database Class
+ * 
+ * Singleton PDO wrapper with query builder methods
+ * Supports both legacy ID-based updates and modern array-based where clauses
+ * 
+ * @version 2.0.0
+ * @date 2025-03-17
+ */
 
 class Database
 {
     private static $_instance = null;
-    private $_pdo,
-            $_query,
-            $_error = false,
-            $_results,
-            $_count = 0;
+    private $_pdo;
+    private $_query;
+    private $_error = false;
+    private $_results = [];
+    private $_count = 0;
+    private $_lastInsertId = null;
 
     private function __construct()
     {
         try {
-            // Enable persistent connections and error mode exceptions
             $options = [
                 PDO::ATTR_PERSISTENT => true,
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ, // Default to objects
-                PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci" // Ensure UTF8
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
+                PDO::ATTR_EMULATE_PREPARES => false, // Use real prepared statements
+                PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci"
             ];
-            $this->_pdo = new PDO('mysql:host=' . DB_HOST . ';dbname=' . DB_NAME . ';charset=utf8mb4', DB_USER, DB_PASS, $options);
+            
+            $this->_pdo = new PDO(
+                'mysql:host=' . DB_HOST . ';dbname=' . DB_NAME . ';charset=utf8mb4',
+                DB_USER,
+                DB_PASS,
+                $options
+            );
 
         } catch (PDOException $e) {
-            // Log error instead of dying directly in production
             error_log("Database Connection Error: " . $e->getMessage());
-            // Optionally re-throw or handle differently based on environment
             die("Database connection failed. Please check logs or contact support.");
         }
     }
 
+    /**
+     * Get singleton instance
+     */
     public static function getInstance()
     {
         if (!isset(self::$_instance)) {
@@ -38,169 +54,347 @@ class Database
         return self::$_instance;
     }
 
+    /**
+     * Get PDO instance
+     */
     public function getPdo()
     {
         return $this->_pdo;
     }
 
     /**
-     * Executes a SQL query with parameters.
-     * Handles both positional (?) and named (:name) placeholders.
-     *
-     * @param string $sql The SQL query string.
-     * @param array $params An array of parameters to bind.
-     * @return Database Returns the Database instance for chaining.
+     * Execute a SQL query with parameters
+     * 
+     * @param string $sql SQL query with placeholders
+     * @param array $params Parameters to bind
+     * @return Database Returns instance for chaining
      */
     public function query($sql, $params = [])
     {
-        $this->_error = false; // Reset error state
-        $this->_results = [];  // Reset results
-        $this->_count = 0;     // Reset count
+        $this->_error = false;
+        $this->_results = [];
+        $this->_count = 0;
 
         try {
             $this->_query = $this->_pdo->prepare($sql);
-
-            // Let PDO's execute handle parameter binding
             $success = $this->_query->execute($params);
 
             if ($success) {
-                // Check if it was a SELECT statement before fetching
-                // Use trim() to handle potential whitespace
-                if (stripos(trim($sql), 'SELECT') === 0) {
-                    $this->_results = $this->_query->fetchAll(PDO::FETCH_OBJ); // Fetch as objects
-                    $this->_count = $this->_query->rowCount(); // rowCount is reliable after fetchAll for SELECT
+                $sqlType = strtoupper(trim(explode(' ', trim($sql))[0]));
+                
+                if ($sqlType === 'SELECT') {
+                    $this->_results = $this->_query->fetchAll(PDO::FETCH_OBJ);
+                    $this->_count = count($this->_results);
                 } else {
-                    // For INSERT, UPDATE, DELETE, rowCount gives affected rows
                     $this->_count = $this->_query->rowCount();
                 }
             }
-            // No need for an else here, execute throws exception on failure with ERRMODE_EXCEPTION
 
         } catch (PDOException $e) {
             $this->_error = true;
-            // Log the detailed PDO error
-            error_log("SQL Error [{$e->getCode()}]: {$e->getMessage()} in query: $sql | Params: " . print_r($params, true));
-            // You might want to throw the exception again or handle it based on context
-            // throw $e; // Re-throw if you want calling code to handle it
+            error_log(sprintf(
+                "SQL Error [%s]: %s\nQuery: %s\nParams: %s",
+                $e->getCode(),
+                $e->getMessage(),
+                $sql,
+                json_encode($params, JSON_UNESCAPED_UNICODE)
+            ));
         }
 
-        return $this; // Return instance for chaining
-    }
-
-
-    /**
-     * Simplified action method (kept for potential compatibility, but recommend direct query)
-     * Only handles simple WHERE clauses with one condition.
-     */
-    public function action($action, $table, $where = [])
-    {
-        if (count($where) === 3) {
-            $operators = ['=', '>', '<', '>=', '<=', '!=', '<>']; // Added !=, <>
-
-            $field = "`" . str_replace("`", "``", $where[0]) . "`"; // Basic quoting
-            $operator = $where[1];
-            $value = $where[2];
-
-            if (in_array($operator, $operators)) {
-                // Use positional placeholder for compatibility with this method's design
-                $sql = "{$action} FROM `{$table}` WHERE {$field} {$operator} ?";
-                if (!$this->query($sql, [$value])->error()) {
-                    return $this;
-                }
-            }
-        }
-        // Log error if action fails or conditions are wrong
-        error_log("Database action '{$action}' failed or had invalid 'where' clause.");
-        return false;
+        return $this;
     }
 
     /**
-     * Simplified get method.
-     */
-    public function get($table, $where)
-    {
-        return $this->action('SELECT *', $table, $where);
-    }
-
-    /**
-     * Simplified delete method.
-     */
-    public function delete($table, $where)
-    {
-        return $this->action('DELETE', $table, $where);
-    }
-
-
-    /**
-     * Inserts data into a table.
-     *
-     * @param string $table Table name.
-     * @param array $fields Associative array of column => value.
-     * @return mixed Last insert ID on success, false on failure.
+     * Insert data into table
+     * 
+     * @param string $table Table name
+     * @param array $fields Associative array of column => value
+     * @return mixed Last insert ID on success, false on failure
      */
     public function insert($table, $fields = [])
     {
-        if (count($fields)) {
-            $keys = array_keys($fields);
-            // Properly quote column names
-            $columns = "`" . implode('`, `', $keys) . "`";
-            // Create positional placeholders
-            $placeholders = implode(', ', array_fill(0, count($fields), '?'));
+        if (empty($fields)) {
+            error_log("Database insert failed: no fields provided for table '{$table}'.");
+            return false;
+        }
 
-            $sql = "INSERT INTO `{$table}` ({$columns}) VALUES ({$placeholders})";
+        $keys = array_keys($fields);
+        $columns = '`' . implode('`, `', array_map([$this, 'sanitizeIdentifier'], $keys)) . '`';
+        $placeholders = implode(', ', array_fill(0, count($fields), '?'));
 
-            // Use array_values to ensure parameters match placeholders order
-            if (!$this->query($sql, array_values($fields))->error()) {
-                try {
-                    return $this->_pdo->lastInsertId();
-                } catch (PDOException $e) {
-                    // Handle cases where lastInsertId might not be applicable (e.g., tables without auto-increment)
-                    error_log("Could not get lastInsertId after INSERT: " . $e->getMessage());
-                    return true; // Indicate success even if ID isn't available/needed
-                }
+        $sql = "INSERT INTO `" . $this->sanitizeIdentifier($table) . "` ({$columns}) VALUES ({$placeholders})";
+
+        if (!$this->query($sql, array_values($fields))->error()) {
+            try {
+                $this->_lastInsertId = $this->_pdo->lastInsertId();
+                return $this->_lastInsertId;
+            } catch (PDOException $e) {
+                error_log("Could not get lastInsertId: " . $e->getMessage());
+                return true;
             }
         }
+
         error_log("Database insert failed for table '{$table}'.");
         return false;
     }
 
     /**
-     * Updates data in a table based on ID.
-     *
-     * @param string $table Table name.
-     * @param int $id The ID of the row to update.
-     * @param array $fields Associative array of column => value.
-     * @return bool True on success (or no change), false on failure.
+     * Update data in table
+     * 
+     * Supports both legacy and modern syntax:
+     * - Modern: update($table, $fields, ['id' => 123])
+     * - Legacy: update($table, 123, $fields)
+     * 
+     * @param string $table Table name
+     * @param mixed $fieldsOrId Fields array (modern) or ID (legacy)
+     * @param mixed $whereOrFields Where clause array (modern) or fields array (legacy)
+     * @return bool
      */
-    public function update($table, $id, $fields = [])
+    public function update($table, $fieldsOrId, $whereOrFields = [])
     {
-        if (count($fields) && $id) {
-            $set = '';
-            $params = [];
-            foreach ($fields as $name => $value) {
-                // Properly quote column names and create placeholders
-                $set .= "`{$name}` = ?, ";
+        // Detect call signature
+        $fields = [];
+        $where = [];
+
+        if (is_array($fieldsOrId)) {
+            // Modern syntax: update($table, $fields, $where)
+            $fields = $fieldsOrId;
+            $where = $whereOrFields;
+        } else {
+            // Legacy syntax: update($table, $id, $fields)
+            $where = ['id' => $fieldsOrId];
+            $fields = $whereOrFields;
+        }
+
+        // Validate inputs
+        if (empty($fields)) {
+            error_log("Database update failed: no fields provided for table '{$table}'.");
+            return false;
+        }
+
+        if (empty($where)) {
+            error_log("Database update failed: no WHERE clause provided for table '{$table}'.");
+            return false;
+        }
+
+        // Build SET clause
+        $set = [];
+        $params = [];
+        foreach ($fields as $column => $value) {
+            $set[] = '`' . $this->sanitizeIdentifier($column) . '` = ?';
+            $params[] = $value;
+        }
+
+        // Build WHERE clause
+        $conditions = [];
+        foreach ($where as $column => $value) {
+            if (is_array($value)) {
+                // Handle IN clause: ['status' => ['pending', 'processing']]
+                $placeholders = implode(', ', array_fill(0, count($value), '?'));
+                $conditions[] = '`' . $this->sanitizeIdentifier($column) . '` IN (' . $placeholders . ')';
+                $params = array_merge($params, $value);
+            } else {
+                $conditions[] = '`' . $this->sanitizeIdentifier($column) . '` = ?';
                 $params[] = $value;
             }
-            $set = rtrim($set, ', '); // Remove trailing comma and space
-
-            // Add the ID to the parameters array for the WHERE clause
-            $params[] = $id;
-
-            $sql = "UPDATE `{$table}` SET {$set} WHERE `id` = ?";
-
-            if (!$this->query($sql, $params)->error()) {
-                // Check if rows were actually affected, or just return true if query succeeded
-                // return $this->count() > 0; // Stricter: only true if rows changed
-                return true; // More lenient: true if query ran without error
-            }
         }
-        error_log("Database update failed for table '{$table}', ID '{$id}'.");
+
+        $sql = sprintf(
+            "UPDATE `%s` SET %s WHERE %s",
+            $this->sanitizeIdentifier($table),
+            implode(', ', $set),
+            implode(' AND ', $conditions)
+        );
+
+        if (!$this->query($sql, $params)->error()) {
+            return true;
+        }
+
+        error_log("Database update failed for table '{$table}'.");
         return false;
     }
 
-    // --- Result Methods ---
+    /**
+     * Delete records from table
+     * 
+     * @param string $table Table name
+     * @param array $where Where conditions ['column' => 'value']
+     * @return bool
+     */
+    public function delete($table, $where = [])
+    {
+        if (empty($where)) {
+            error_log("Database delete failed: no WHERE clause provided for table '{$table}' (safety).");
+            return false;
+        }
 
+        $conditions = [];
+        $params = [];
+
+        foreach ($where as $column => $value) {
+            if (is_array($value)) {
+                $placeholders = implode(', ', array_fill(0, count($value), '?'));
+                $conditions[] = '`' . $this->sanitizeIdentifier($column) . '` IN (' . $placeholders . ')';
+                $params = array_merge($params, $value);
+            } else {
+                $conditions[] = '`' . $this->sanitizeIdentifier($column) . '` = ?';
+                $params[] = $value;
+            }
+        }
+
+        $sql = sprintf(
+            "DELETE FROM `%s` WHERE %s",
+            $this->sanitizeIdentifier($table),
+            implode(' AND ', $conditions)
+        );
+
+        if (!$this->query($sql, $params)->error()) {
+            return true;
+        }
+
+        error_log("Database delete failed for table '{$table}'.");
+        return false;
+    }
+
+    /**
+     * Get records from table
+     * 
+     * @param string $table Table name
+     * @param array $where Where conditions
+     * @return Database
+     */
+    public function get($table, $where = [])
+    {
+        if (empty($where)) {
+            $sql = "SELECT * FROM `" . $this->sanitizeIdentifier($table) . "`";
+            return $this->query($sql);
+        }
+
+        $conditions = [];
+        $params = [];
+
+        foreach ($where as $column => $value) {
+            if (is_array($value)) {
+                $placeholders = implode(', ', array_fill(0, count($value), '?'));
+                $conditions[] = '`' . $this->sanitizeIdentifier($column) . '` IN (' . $placeholders . ')';
+                $params = array_merge($params, $value);
+            } else {
+                $conditions[] = '`' . $this->sanitizeIdentifier($column) . '` = ?';
+                $params[] = $value;
+            }
+        }
+
+        $sql = sprintf(
+            "SELECT * FROM `%s` WHERE %s",
+            $this->sanitizeIdentifier($table),
+            implode(' AND ', $conditions)
+        );
+
+        return $this->query($sql, $params);
+    }
+
+    /**
+     * Check if record exists
+     * 
+     * @param string $table Table name
+     * @param array $where Where conditions
+     * @return bool
+     */
+    public function exists($table, $where = [])
+    {
+        if (empty($where)) {
+            return false;
+        }
+
+        $conditions = [];
+        $params = [];
+
+        foreach ($where as $column => $value) {
+            $conditions[] = '`' . $this->sanitizeIdentifier($column) . '` = ?';
+            $params[] = $value;
+        }
+
+        $sql = sprintf(
+            "SELECT COUNT(*) as count FROM `%s` WHERE %s LIMIT 1",
+            $this->sanitizeIdentifier($table),
+            implode(' AND ', $conditions)
+        );
+
+        $result = $this->query($sql, $params)->first();
+        return $result && $result->count > 0;
+    }
+
+    /**
+     * Get single record by ID
+     * 
+     * @param string $table Table name
+     * @param int $id Record ID
+     * @return object|null
+     */
+    public function getById($table, $id)
+    {
+        $sql = "SELECT * FROM `" . $this->sanitizeIdentifier($table) . "` WHERE `id` = ? LIMIT 1";
+        return $this->query($sql, [$id])->first();
+    }
+
+    /**
+     * Transaction methods
+     */
+    public function beginTransaction()
+    {
+        return $this->_pdo->beginTransaction();
+    }
+
+    public function commit()
+    {
+        return $this->_pdo->commit();
+    }
+
+    public function rollback()
+    {
+        return $this->_pdo->rollBack();
+    }
+
+    public function inTransaction()
+    {
+        return $this->_pdo->inTransaction();
+    }
+
+    /**
+     * Execute callback within transaction
+     * 
+     * @param callable $callback Function to execute
+     * @return mixed Returns callback result or false on error
+     */
+    public function transaction($callback)
+    {
+        try {
+            $this->beginTransaction();
+            $result = $callback($this);
+            $this->commit();
+            return $result;
+        } catch (Exception $e) {
+            $this->rollback();
+            error_log("Transaction failed: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Sanitize table/column identifier
+     * 
+     * @param string $identifier Table or column name
+     * @return string Sanitized identifier
+     */
+    private function sanitizeIdentifier($identifier)
+    {
+        // Remove backticks and escape any that might be in the name
+        return str_replace('`', '', $identifier);
+    }
+
+    /**
+     * Result methods
+     */
     public function results()
     {
         return $this->_results;
@@ -208,13 +402,11 @@ class Database
 
     public function first()
     {
-        // Return the first result object, or null if no results
         return $this->_results[0] ?? null;
     }
 
     public function count()
     {
-        // Returns rows selected (for SELECT) or rows affected (for INSERT/UPDATE/DELETE)
         return $this->_count;
     }
 
@@ -223,9 +415,46 @@ class Database
         return $this->_error;
     }
 
-    // Added to get raw PDO error info if needed for detailed debugging
-    public function errorInfo() {
+    public function errorInfo()
+    {
         return $this->_query ? $this->_query->errorInfo() : $this->_pdo->errorInfo();
     }
+
+    public function lastInsertId()
+    {
+        return $this->_lastInsertId;
+    }
+
+    /**
+     * Legacy action method (for backward compatibility)
+     * 
+     * @deprecated Use get() or delete() directly
+     */
+    public function action($action, $table, $where = [])
+    {
+        if (count($where) === 3) {
+            $operators = ['=', '>', '<', '>=', '<=', '!=', '<>', 'LIKE', 'NOT LIKE'];
+            
+            $field = $where[0];
+            $operator = strtoupper($where[1]);
+            $value = $where[2];
+
+            if (in_array($operator, $operators)) {
+                $sql = sprintf(
+                    "%s FROM `%s` WHERE `%s` %s ?",
+                    $action,
+                    $this->sanitizeIdentifier($table),
+                    $this->sanitizeIdentifier($field),
+                    $operator
+                );
+                
+                if (!$this->query($sql, [$value])->error()) {
+                    return $this;
+                }
+            }
+        }
+        
+        error_log("Database action '{$action}' failed or had invalid 'where' clause.");
+        return false;
+    }
 }
-?>
