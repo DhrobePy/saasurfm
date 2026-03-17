@@ -13,7 +13,7 @@ $success = null;
 
 // Get customers with credit limits
 $customers = $db->query(
-    "SELECT id, name, phone_number, credit_limit, current_balance, status
+    "SELECT id, name, phone_number, credit_limit, initial_due, current_balance, status
      FROM customers 
      WHERE status = 'active'
      ORDER BY name ASC"
@@ -278,8 +278,10 @@ require_once '../templates/header.php';
                 <option value="">-- Select Customer --</option>
                 <?php foreach ($customers as $customer): ?>
                 <option value="<?php echo $customer->id; ?>" 
-                        data-credit-limit="<?php echo $customer->credit_limit; ?>"
-                        data-balance="<?php echo $customer->current_balance; ?>">
+                    data-credit-limit="<?php echo $customer->credit_limit; ?>"
+                    data-initial-due="<?php echo $customer->initial_due; ?>"
+                    data-balance="<?php echo $customer->current_balance; ?>">
+                    
                     <?php echo htmlspecialchars($customer->name); ?> 
                     <?php if ($customer->credit_limit > 0): ?>
                         (Limit: ৳<?php echo number_format($customer->credit_limit, 0); ?>)
@@ -882,7 +884,11 @@ function updateCustomerInfo() {
     
     const creditLimit = parseFloat(option.dataset.creditLimit) || 0;
     const currentBalance = parseFloat(option.dataset.balance) || 0;
-    const available = creditLimit - currentBalance;
+    
+    const initialDue = parseFloat(option.dataset.initialDue) || 0;
+    const available = creditLimit - (currentBalance - initialDue);
+
+    
     
     document.getElementById('creditLimit').textContent = '৳' + creditLimit.toFixed(0);
     document.getElementById('availableCredit').textContent = '৳' + available.toFixed(0);
@@ -899,7 +905,8 @@ function updateCreditUsage(orderTotal) {
     const option = select.options[select.selectedIndex];
     const creditLimit = parseFloat(option.dataset.creditLimit) || 0;
     const currentBalance = parseFloat(option.dataset.balance) || 0;
-    const available = creditLimit - currentBalance;
+    const initialDue = parseFloat(option.dataset.initialDue) || 0;
+    const available = creditLimit - (currentBalance - initialDue);
     
     if (creditLimit > 0 && available > 0) {
         const usage = (orderTotal / available) * 100;

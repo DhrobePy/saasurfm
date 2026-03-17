@@ -51,7 +51,11 @@ switch ($role) {
     case 'dispatchpos-srg':
         header('Location: dispatch/index.php');
         exit();
-        
+    //----- Bank Transaction Roles----
+    
+    case 'bank Transaction initiator':
+        header('Location: bank/index.php');
+        exit();
         
     // --- Logistics Roles ---- 
     // --- Dispatch Roles ---

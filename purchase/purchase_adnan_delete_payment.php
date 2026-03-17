@@ -1,14 +1,12 @@
 <?php
 /**
- * Delete Payment Handler with Journal Entry Reversal - CORRECTED VERSION
+ * Delete Payment Handler with Journal Entry Reversal and Audit Trail
  * Only Superadmin can delete Payments
- * Uses actual column names: related_document_type, related_document_id
  */
 
 require_once '../core/init.php';
 require_once '../core/classes/JournalEntryHelper.php';
 
-// Superadmin only
 restrict_access(['Superadmin']);
 
 header('Content-Type: application/json');
@@ -37,8 +35,13 @@ $journalHelper = new JournalEntryHelper();
 try {
     $db->beginTransaction();
     
-    // Get Payment details
-    $stmt = $db->prepare("SELECT * FROM purchase_payments_adnan WHERE id = ?");
+    // Get Payment details for audit
+    $stmt = $db->prepare("
+        SELECT pmt.*, po.po_number, po.supplier_name
+        FROM purchase_payments_adnan pmt
+        LEFT JOIN purchase_orders_adnan po ON pmt.purchase_order_id = po.id
+        WHERE pmt.id = ?
+    ");
     $stmt->execute([$payment_id]);
     $payment = $stmt->fetch(PDO::FETCH_OBJ);
     
@@ -52,9 +55,35 @@ try {
         $stmt = $db->prepare("DELETE FROM purchase_payments_adnan WHERE id = ?");
         $stmt->execute([$payment_id]);
         
-        // Recalculate PO totals even for unpaid
         $journalHelper->recalculatePOTotals($payment->purchase_order_id);
         $journalHelper->updatePaymentStatus($payment->purchase_order_id);
+        
+        // ============================================
+        // AUDIT TRAIL - PAYMENT DELETED (UNPOSTED)
+        // ============================================
+        if (function_exists('auditLog')) {
+            $currentUser = getCurrentUser();
+            
+            auditLog(
+                'purchase',
+                'deleted',
+                "Unposted payment {$payment->payment_voucher_number} deleted (was not posted) - ৳" . number_format($payment->amount_paid, 2) . " for PO #{$payment->po_number}. Reason: {$reason}",
+                [
+                    'record_type' => 'purchase_payment',
+                    'record_id' => $payment_id,
+                    'reference_number' => $payment->payment_voucher_number,
+                    'po_number' => $payment->po_number,
+                    'supplier_name' => $payment->supplier_name,
+                    'amount_paid' => $payment->amount_paid,
+                    'payment_method' => $payment->payment_method,
+                    'payment_date' => $payment->payment_date,
+                    'deletion_reason' => $reason,
+                    'was_posted' => false,
+                    'deleted_by' => $currentUser['display_name'] ?? 'Unknown',
+                    'severity' => 'critical'
+                ]
+            );
+        }
         
         $db->commit();
         echo json_encode([
@@ -92,10 +121,16 @@ try {
     $stmt = $db->prepare("
         UPDATE purchase_payments_adnan 
         SET is_posted = 0,
+            payment_status = 'cancelled',
+            remarks = CONCAT(COALESCE(remarks, ''), '\n\n[DELETED: ', ?, ' on ', NOW(), ']\nReason: ', ?),
             updated_at = NOW()
         WHERE id = ?
     ");
-    $stmt->execute([$payment_id]);
+    $stmt->execute([
+        getCurrentUser()['display_name'] ?? 'System',
+        $reason,
+        $payment_id
+    ]);
     
     // Recalculate PO totals
     if (!$journalHelper->recalculatePOTotals($payment->purchase_order_id)) {
@@ -105,38 +140,48 @@ try {
     // Update payment status
     $journalHelper->updatePaymentStatus($payment->purchase_order_id);
     
-    // Log the deletion (if audit_log table exists)
-    try {
-        $stmt = $db->prepare("
-            INSERT INTO system_audit_log (
-                table_name, record_id, action, 
-                old_values, reason, user_id, created_at
-            ) VALUES (
-                'purchase_payments_adnan', ?, 'delete',
-                ?, ?, ?, NOW()
-            )
-        ");
+    // ============================================
+    // AUDIT TRAIL - PAYMENT DELETED (POSTED)
+    // ============================================
+    if (function_exists('auditLog')) {
+        $currentUser = getCurrentUser();
         
-        $stmt->execute([
-            $payment_id,
-            json_encode($payment),
-            $reason,
-            getCurrentUser()['id']
-        ]);
-    } catch (Exception $e) {
-        // Audit log is optional, don't fail if table doesn't exist
-        error_log("Audit log failed (table may not exist): " . $e->getMessage());
+        auditLog(
+            'purchase',
+            'deleted',
+            "Payment {$payment->payment_voucher_number} deleted - ৳" . number_format($payment->amount_paid, 2) . " for PO #{$payment->po_number} ({$payment->supplier_name}). Journal entry reversed. Reason: {$reason}",
+            [
+                'record_type' => 'purchase_payment',
+                'record_id' => $payment_id,
+                'reference_number' => $payment->payment_voucher_number,
+                'po_number' => $payment->po_number,
+                'supplier_name' => $payment->supplier_name,
+                'amount_paid' => $payment->amount_paid,
+                'payment_method' => $payment->payment_method,
+                'payment_date' => $payment->payment_date,
+                'payment_type' => $payment->payment_type,
+                'journal_entry_id' => $journal->id ?? null,
+                'journal_reversed' => isset($reversal_id),
+                'deletion_reason' => $reason,
+                'was_posted' => true,
+                'deleted_by' => $currentUser['display_name'] ?? 'Unknown',
+                'severity' => 'critical'
+            ]
+        );
     }
     
     $db->commit();
     
     echo json_encode([
         'success' => true,
-        'message' => "Payment {$payment->payment_voucher_number} unposted successfully. Journal entry reversed and PO totals recalculated."
+        'message' => "Payment {$payment->payment_voucher_number} deleted successfully. Journal entry reversed and PO totals recalculated."
     ]);
     
 } catch (Exception $e) {
-    $db->rollBack();
+    if ($db->inTransaction()) {
+        $db->rollBack();
+    }
+    
     echo json_encode([
         'success' => false,
         'message' => $e->getMessage()

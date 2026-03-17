@@ -33,13 +33,18 @@ if (!$customer) {
 // --- DATA: CALCULATE FINANCIALS ---
 $available_credit = 0;
 $utilization_percent = 0;
+
 if ($customer->customer_type == 'Credit') {
-    $available_credit = $customer->credit_limit - $customer->current_balance;
+    $available_credit = $customer->credit_limit - ($customer->current_balance - $customer->initial_due);
+    
+    $new_orders_balance = $customer->current_balance - $customer->initial_due;
     if ($customer->credit_limit > 0) {
-        $utilization_percent = ($customer->current_balance / $customer->credit_limit) * 100;
-    } elseif ($customer->current_balance > 0) {
-        $utilization_percent = 100; // Over limit even if limit is 0
+        $utilization_percent = ($new_orders_balance / $customer->credit_limit) * 100;
+    } elseif ($new_orders_balance > 0) {
+        $utilization_percent = 100;
     }
+    
+    
 }
 
 // --- DATA: FETCH LEDGER (Last 50 for this page) ---
@@ -115,9 +120,13 @@ if ($stats->total_invoices > 5 && $risk == 'low') {
     $advice[] = "Good Payer: Consistent order volume with low financial risk. This is a valuable customer.";
 }
 
-if ($customer->current_balance < 0) {
-    $advice[] = "Customer in Advance: This customer has a positive balance (BDT " . number_format(abs($customer->current_balance), 2) . "). Ensure new orders are applied against this advance.";
+
+if ($new_orders_balance < 0) {
+    $advice[] = "Customer in Advance: This customer has a positive balance (BDT "
+        . number_format(abs($new_orders_balance), 2) . "). Ensure new orders are applied against this advance.";
 }
+
+
 
 if ($customer->status == 'blacklisted') {
     $advice[] = "Blacklisted: Do not issue any new credit or sales to this customer.";

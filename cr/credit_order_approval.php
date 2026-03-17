@@ -26,10 +26,11 @@ $orders = $db->query(
            c.name as customer_name,
            c.phone_number as customer_phone,
            c.credit_limit,
+           c.initial_due,
            c.current_balance,
-           (c.credit_limit - c.current_balance) as available_credit,
+           (c.credit_limit - (c.current_balance - c.initial_due)) as available_credit,
            u.display_name as created_by_name,
-           ROUND((co.balance_due / NULLIF((c.credit_limit - c.current_balance), 0)) * 100, 2) as credit_usage_percent
+           ROUND((co.balance_due / NULLIF((c.credit_limit - (c.current_balance - c.initial_due)), 0)) * 100, 2) as credit_usage_percent
      FROM credit_orders co
      JOIN customers c ON co.customer_id = c.id
      LEFT JOIN users u ON co.created_by_user_id = u.id
@@ -57,10 +58,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'approve') {
             $order = $db->query("SELECT * FROM credit_orders WHERE id = ?", [$order_id])->first();
             if (!$order) throw new Exception("Order not found");
             
-            $customer = $db->query("SELECT credit_limit, current_balance FROM customers WHERE id = ?", [$order->customer_id])->first();
+            $customer = $db->query("SELECT credit_limit, initial_due, current_balance FROM customers WHERE id = ?",[$order->customer_id])->first();
             if (!$customer) throw new Exception("Customer not found");
             
-            $available_credit = $customer->credit_limit - $customer->current_balance;
+            $available_credit = $customer->credit_limit - ($customer->current_balance - $customer->initial_due);
+
             $usage_percent = $available_credit > 0 ? ($order->balance_due / $available_credit) * 100 : 0;
             
             // Allow order even if no credit limit set
@@ -364,14 +366,22 @@ require_once '../templates/header.php';
                         <span class="text-gray-600">Credit Limit:</span>
                         <span class="font-bold">৳<?php echo number_format($order->credit_limit, 0); ?></span>
                     </div>
+                    
                     <div class="flex justify-between">
-                        <span class="text-gray-600">Current Balance:</span>
-                        <span class="font-bold text-orange-600">৳<?php echo number_format($order->current_balance, 0); ?></span>
+                        <span class="text-gray-600">Previous Due (Carried):</span>
+                        <span class="font-bold text-gray-500">৳<?php echo number_format($order->initial_due, 0); ?></span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">New Orders Balance:</span>
+                        <span class="font-bold text-orange-600">৳<?php echo number_format($order->current_balance - $order->initial_due, 0); ?></span>
                     </div>
                     <div class="flex justify-between">
                         <span class="text-gray-600">Available Credit:</span>
                         <span class="font-bold text-green-600">৳<?php echo number_format($order->available_credit, 0); ?></span>
                     </div>
+                    
+                    
+                    
                     <div class="flex justify-between pt-2 border-t">
                         <span class="text-gray-600">Order Amount:</span>
                         <span class="font-bold text-blue-600">৳<?php echo number_format($order->balance_due, 0); ?></span>

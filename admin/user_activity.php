@@ -2,7 +2,7 @@
 /**
  * User Activity / Audit Trail Page
  * Superadmin only - View all user activities across the system
- * FIXED VERSION - All SQL and display errors corrected
+ * UPDATED: Now shows authentication events (login/logout)
  */
 
 require_once '../core/init.php';
@@ -22,12 +22,12 @@ $selectedUserId = $_GET['user_id'] ?? '';
 $selectedModule = $_GET['module'] ?? '';
 $selectedAction = $_GET['action'] ?? '';
 $selectedSeverity = $_GET['severity'] ?? '';
-$startDate = $_GET['start_date'] ?? ''; // NO DEFAULT - show all logs
-$endDate = $_GET['end_date'] ?? ''; // NO DEFAULT - show all logs
+$startDate = $_GET['start_date'] ?? '';
+$endDate = $_GET['end_date'] ?? '';
 $search = $_GET['search'] ?? '';
-$limit = max(1, min(1000, (int)($_GET['limit'] ?? 100))); // Safe integer between 1-1000
+$limit = max(1, min(1000, (int)($_GET['limit'] ?? 100)));
 
-// Build SQL query
+// ✅ FIX: Include authentication events by checking for original_action in metadata
 $sql = "SELECT 
         sal.*,
         u.display_name as user_name,
@@ -45,13 +45,33 @@ if ($selectedUserId) {
 }
 
 if ($selectedModule) {
-    $sql .= " AND sal.module = ?";
-    $params[] = $selectedModule;
+    // ✅ FIX: Handle authentication module filter
+    if ($selectedModule === 'authentication') {
+        $sql .= " AND (sal.module = 'user_management' AND sal.record_type = 'user_session')";
+    } else {
+        $sql .= " AND sal.module = ?";
+        $params[] = $selectedModule;
+    }
 }
 
 if ($selectedAction) {
-    $sql .= " AND sal.action = ?";
-    $params[] = $selectedAction;
+    // ✅ FIX: Handle authentication action filters
+    $authActions = ['logged_in', 'logged_out', 'login_failed', 'login_error', 'session_timeout'];
+    if (in_array($selectedAction, $authActions)) {
+        if (in_array($selectedAction, ['logged_in', 'logged_out'])) {
+            // These exist in ENUM, use directly
+            $sql .= " AND sal.action = ?";
+            $params[] = $selectedAction;
+        } else {
+            // These are stored as 'other', check metadata
+            $sql .= " AND (sal.action = ? OR JSON_EXTRACT(sal.metadata, '$.original_action') = ?)";
+            $params[] = 'other';
+            $params[] = $selectedAction;
+        }
+    } else {
+        $sql .= " AND sal.action = ?";
+        $params[] = $selectedAction;
+    }
 }
 
 if ($selectedSeverity) {
@@ -70,14 +90,14 @@ if ($endDate) {
 }
 
 if ($search) {
-    $sql .= " AND (sal.description LIKE ? OR sal.reference_number LIKE ? OR u.display_name LIKE ?)";
+    $sql .= " AND (sal.description LIKE ? OR sal.reference_number LIKE ? OR u.display_name LIKE ? OR u.email LIKE ?)";
     $searchTerm = "%$search%";
+    $params[] = $searchTerm;
     $params[] = $searchTerm;
     $params[] = $searchTerm;
     $params[] = $searchTerm;
 }
 
-// FIX: Add LIMIT directly to SQL, not as parameter
 $sql .= " ORDER BY sal.created_at DESC LIMIT " . $limit;
 
 $activities = $db->query($sql, $params)->results();
@@ -87,7 +107,8 @@ $statsSQL = "SELECT
         COUNT(*) as total_actions,
         COUNT(DISTINCT user_id) as unique_users,
         COUNT(DISTINCT DATE(created_at)) as active_days,
-        COUNT(CASE WHEN severity = 'critical' THEN 1 END) as critical_count
+        COUNT(CASE WHEN severity = 'critical' THEN 1 END) as critical_count,
+        COUNT(CASE WHEN module = 'user_management' AND record_type = 'user_session' THEN 1 END) as auth_count
     FROM system_audit_log
     WHERE 1=1";
 
@@ -115,9 +136,12 @@ $stats = $db->query($statsSQL, $statsParams)->first();
 // Get all users for dropdown
 $allUsers = $db->query("SELECT id, display_name, role, email FROM users WHERE status = 'active' ORDER BY display_name")->results();
 
-// Get module breakdown
+// Get module breakdown - ✅ FIX: Group authentication events properly
 $moduleStatsSQL = "SELECT 
-        module,
+        CASE 
+            WHEN module = 'user_management' AND record_type = 'user_session' THEN 'authentication'
+            ELSE module
+        END as module,
         COUNT(*) as count
     FROM system_audit_log
     WHERE 1=1";
@@ -170,27 +194,15 @@ include '../templates/header.php';
     </div>
 
     <!-- Statistics Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+    <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
         <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg p-6 text-white">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-blue-100 text-sm font-medium">Total Actions</p>
-                    <p class="text-3xl font-bold mt-2"><?= number_format($stats->total_actions ?? 0) ?></p>
+                    <p class="text-blue-100 text-sm font-medium mb-1">Total Actions</p>
+                    <p class="text-3xl font-bold"><?= number_format($stats->total_actions ?? 0) ?></p>
                 </div>
-                <div class="bg-blue-400 bg-opacity-30 rounded-full p-3">
+                <div class="bg-white bg-opacity-20 p-3 rounded-lg">
                     <i class="fas fa-chart-line text-2xl"></i>
-                </div>
-            </div>
-        </div>
-
-        <div class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl shadow-lg p-6 text-white">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-purple-100 text-sm font-medium">Active Users</p>
-                    <p class="text-3xl font-bold mt-2"><?= number_format($stats->unique_users ?? 0) ?></p>
-                </div>
-                <div class="bg-purple-400 bg-opacity-30 rounded-full p-3">
-                    <i class="fas fa-users text-2xl"></i>
                 </div>
             </div>
         </div>
@@ -198,11 +210,23 @@ include '../templates/header.php';
         <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg p-6 text-white">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-green-100 text-sm font-medium">Active Days</p>
-                    <p class="text-3xl font-bold mt-2"><?= number_format($stats->active_days ?? 0) ?></p>
+                    <p class="text-green-100 text-sm font-medium mb-1">Active Users</p>
+                    <p class="text-3xl font-bold"><?= number_format($stats->unique_users ?? 0) ?></p>
                 </div>
-                <div class="bg-green-400 bg-opacity-30 rounded-full p-3">
-                    <i class="fas fa-calendar-check text-2xl"></i>
+                <div class="bg-white bg-opacity-20 p-3 rounded-lg">
+                    <i class="fas fa-users text-2xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl shadow-lg p-6 text-white">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-purple-100 text-sm font-medium mb-1">Active Days</p>
+                    <p class="text-3xl font-bold"><?= number_format($stats->active_days ?? 0) ?></p>
+                </div>
+                <div class="bg-white bg-opacity-20 p-3 rounded-lg">
+                    <i class="fas fa-calendar-alt text-2xl"></i>
                 </div>
             </div>
         </div>
@@ -210,11 +234,24 @@ include '../templates/header.php';
         <div class="bg-gradient-to-br from-red-500 to-red-600 rounded-xl shadow-lg p-6 text-white">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-red-100 text-sm font-medium">Critical Actions</p>
-                    <p class="text-3xl font-bold mt-2"><?= number_format($stats->critical_count ?? 0) ?></p>
+                    <p class="text-red-100 text-sm font-medium mb-1">Critical Actions</p>
+                    <p class="text-3xl font-bold"><?= number_format($stats->critical_count ?? 0) ?></p>
                 </div>
-                <div class="bg-red-400 bg-opacity-30 rounded-full p-3">
+                <div class="bg-white bg-opacity-20 p-3 rounded-lg">
                     <i class="fas fa-exclamation-triangle text-2xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- ✅ NEW: Authentication Statistics -->
+        <div class="bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl shadow-lg p-6 text-white">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-indigo-100 text-sm font-medium mb-1">Login/Logout</p>
+                    <p class="text-3xl font-bold"><?= number_format($stats->auth_count ?? 0) ?></p>
+                </div>
+                <div class="bg-white bg-opacity-20 p-3 rounded-lg">
+                    <i class="fas fa-sign-in-alt text-2xl"></i>
                 </div>
             </div>
         </div>
@@ -223,130 +260,99 @@ include '../templates/header.php';
     <!-- Filters -->
     <div class="bg-white rounded-xl shadow-md p-6">
         <form method="GET" class="space-y-4">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <!-- User Filter -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                        <i class="fas fa-user text-primary-600"></i> User
-                    </label>
-                    <select name="user_id" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Filter by User</label>
+                    <select name="user_id" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
                         <option value="">All Users</option>
                         <?php foreach ($allUsers as $user): ?>
                             <option value="<?= $user->id ?>" <?= $selectedUserId == $user->id ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($user->display_name) ?> (<?= $user->role ?>)
+                                <?= htmlspecialchars($user->display_name) ?> (<?= htmlspecialchars($user->role) ?>)
                             </option>
                         <?php endforeach; ?>
                     </select>
                 </div>
 
-                <!-- Module Filter -->
+                <!-- Module Filter - ✅ FIX: Add authentication option -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                        <i class="fas fa-cube text-primary-600"></i> Module
-                    </label>
-                    <select name="module" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Filter by Module</label>
+                    <select name="module" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
                         <option value="">All Modules</option>
-                        <option value="expense" <?= $selectedModule == 'expense' ? 'selected' : '' ?>>Expense</option>
-                        <option value="credit_order" <?= $selectedModule == 'credit_order' ? 'selected' : '' ?>>Credit Order</option>
-                        <option value="customer" <?= $selectedModule == 'customer' ? 'selected' : '' ?>>Customer</option>
-                        <option value="customer_payment" <?= $selectedModule == 'customer_payment' ? 'selected' : '' ?>>Customer Payment</option>
-                        <option value="supplier" <?= $selectedModule == 'supplier' ? 'selected' : '' ?>>Supplier</option>
-                        <option value="supplier_payment" <?= $selectedModule == 'supplier_payment' ? 'selected' : '' ?>>Supplier Payment</option>
-                        <option value="production" <?= $selectedModule == 'production' ? 'selected' : '' ?>>Production</option>
-                        <option value="shipping" <?= $selectedModule == 'shipping' ? 'selected' : '' ?>>Shipping</option>
-                        <option value="dispatch" <?= $selectedModule == 'dispatch' ? 'selected' : '' ?>>Dispatch</option>
-                        <option value="purchase" <?= $selectedModule == 'purchase' ? 'selected' : '' ?>>Purchase</option>
-                        <option value="wheat_shipment" <?= $selectedModule == 'wheat_shipment' ? 'selected' : '' ?>>Wheat Shipment</option>
-                        <option value="inventory" <?= $selectedModule == 'inventory' ? 'selected' : '' ?>>Inventory</option>
-                        <option value="vehicle" <?= $selectedModule == 'vehicle' ? 'selected' : '' ?>>Vehicle</option>
-                        <option value="driver" <?= $selectedModule == 'driver' ? 'selected' : '' ?>>Driver</option>
-                        <option value="employee" <?= $selectedModule == 'employee' ? 'selected' : '' ?>>Employee</option>
-                        <option value="user_management" <?= $selectedModule == 'user_management' ? 'selected' : '' ?>>User Management</option>
-                        <option value="account" <?= $selectedModule == 'account' ? 'selected' : '' ?>>Accounting</option>
-                        <option value="petty_cash" <?= $selectedModule == 'petty_cash' ? 'selected' : '' ?>>Petty Cash</option>
-                        <option value="bank_account" <?= $selectedModule == 'bank_account' ? 'selected' : '' ?>>Bank Account</option>
+                        <option value="authentication" <?= $selectedModule === 'authentication' ? 'selected' : '' ?>>🔐 Authentication (Login/Logout)</option>
+                        <option value="expense" <?= $selectedModule === 'expense' ? 'selected' : '' ?>>Expense</option>
+                        <option value="credit_order" <?= $selectedModule === 'credit_order' ? 'selected' : '' ?>>Credit Order</option>
+                        <option value="customer_payment" <?= $selectedModule === 'customer_payment' ? 'selected' : '' ?>>Customer Payment</option>
+                        <option value="purchase" <?= $selectedModule === 'purchase' ? 'selected' : '' ?>>Purchase</option>
+                        <option value="shipping" <?= $selectedModule === 'shipping' ? 'selected' : '' ?>>Shipping</option>
+                        <option value="user_management" <?= $selectedModule === 'user_management' ? 'selected' : '' ?>>User Management</option>
+                        <option value="other" <?= $selectedModule === 'other' ? 'selected' : '' ?>>Other</option>
                     </select>
                 </div>
 
-                <!-- Action Filter -->
+                <!-- Action Filter - ✅ FIX: Add auth actions -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                        <i class="fas fa-bolt text-primary-600"></i> Action
-                    </label>
-                    <select name="action" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Filter by Action</label>
+                    <select name="action" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
                         <option value="">All Actions</option>
-                        <option value="created" <?= $selectedAction == 'created' ? 'selected' : '' ?>>Created</option>
-                        <option value="updated" <?= $selectedAction == 'updated' ? 'selected' : '' ?>>Updated</option>
-                        <option value="deleted" <?= $selectedAction == 'deleted' ? 'selected' : '' ?>>Deleted</option>
-                        <option value="approved" <?= $selectedAction == 'approved' ? 'selected' : '' ?>>Approved</option>
-                        <option value="rejected" <?= $selectedAction == 'rejected' ? 'selected' : '' ?>>Rejected</option>
-                        <option value="shipped" <?= $selectedAction == 'shipped' ? 'selected' : '' ?>>Shipped</option>
-                        <option value="dispatched" <?= $selectedAction == 'dispatched' ? 'selected' : '' ?>>Dispatched</option>
-                        <option value="received" <?= $selectedAction == 'received' ? 'selected' : '' ?>>Received</option>
-                        <option value="allocated" <?= $selectedAction == 'allocated' ? 'selected' : '' ?>>Allocated</option>
-                        <option value="paid" <?= $selectedAction == 'paid' ? 'selected' : '' ?>>Paid</option>
-                        <option value="logged_in" <?= $selectedAction == 'logged_in' ? 'selected' : '' ?>>Logged In</option>
-                        <option value="logged_out" <?= $selectedAction == 'logged_out' ? 'selected' : '' ?>>Logged Out</option>
-                        <option value="status_changed" <?= $selectedAction == 'status_changed' ? 'selected' : '' ?>>Status Changed</option>
-                        <option value="viewed" <?= $selectedAction == 'viewed' ? 'selected' : '' ?>>Viewed</option>
-                        <option value="printed" <?= $selectedAction == 'printed' ? 'selected' : '' ?>>Printed</option>
-                        <option value="exported" <?= $selectedAction == 'exported' ? 'selected' : '' ?>>Exported</option>
+                        <optgroup label="Authentication">
+                            <option value="logged_in" <?= $selectedAction === 'logged_in' ? 'selected' : '' ?>>Logged In</option>
+                            <option value="logged_out" <?= $selectedAction === 'logged_out' ? 'selected' : '' ?>>Logged Out</option>
+                            <option value="login_failed" <?= $selectedAction === 'login_failed' ? 'selected' : '' ?>>Login Failed</option>
+                            <option value="session_timeout" <?= $selectedAction === 'session_timeout' ? 'selected' : '' ?>>Session Timeout</option>
+                        </optgroup>
+                        <optgroup label="General">
+                            <option value="created" <?= $selectedAction === 'created' ? 'selected' : '' ?>>Created</option>
+                            <option value="updated" <?= $selectedAction === 'updated' ? 'selected' : '' ?>>Updated</option>
+                            <option value="deleted" <?= $selectedAction === 'deleted' ? 'selected' : '' ?>>Deleted</option>
+                            <option value="approved" <?= $selectedAction === 'approved' ? 'selected' : '' ?>>Approved</option>
+                            <option value="status_changed" <?= $selectedAction === 'status_changed' ? 'selected' : '' ?>>Status Changed</option>
+                        </optgroup>
                     </select>
                 </div>
 
                 <!-- Severity Filter -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                        <i class="fas fa-exclamation-circle text-primary-600"></i> Severity
-                    </label>
-                    <select name="severity" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
-                        <option value="">All Severity</option>
-                        <option value="info" <?= $selectedSeverity == 'info' ? 'selected' : '' ?>>Info</option>
-                        <option value="warning" <?= $selectedSeverity == 'warning' ? 'selected' : '' ?>>Warning</option>
-                        <option value="critical" <?= $selectedSeverity == 'critical' ? 'selected' : '' ?>>Critical</option>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Filter by Severity</label>
+                    <select name="severity" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                        <option value="">All Severities</option>
+                        <option value="info" <?= $selectedSeverity === 'info' ? 'selected' : '' ?>>Info</option>
+                        <option value="warning" <?= $selectedSeverity === 'warning' ? 'selected' : '' ?>>Warning</option>
+                        <option value="critical" <?= $selectedSeverity === 'critical' ? 'selected' : '' ?>>Critical</option>
                     </select>
                 </div>
+            </div>
 
-                <!-- Start Date -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <!-- Date Range -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                        <i class="fas fa-calendar text-primary-600"></i> Start Date
-                    </label>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Start Date</label>
                     <input type="date" name="start_date" value="<?= htmlspecialchars($startDate) ?>" 
-                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
                 </div>
 
-                <!-- End Date -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                        <i class="fas fa-calendar text-primary-600"></i> End Date
-                    </label>
-                    <input type="date" name="end_date" value="<?= htmlspecialchars($endDate) ?>"
-                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">End Date</label>
+                    <input type="date" name="end_date" value="<?= htmlspecialchars($endDate) ?>" 
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
                 </div>
 
                 <!-- Search -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                        <i class="fas fa-search text-primary-600"></i> Search
-                    </label>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Search</label>
                     <input type="text" name="search" value="<?= htmlspecialchars($search) ?>" 
-                           placeholder="Search description, reference..." 
-                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                           placeholder="Search description, reference..."
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
                 </div>
 
                 <!-- Limit -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                        <i class="fas fa-list text-primary-600"></i> Limit
-                    </label>
-                    <select name="limit" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Results Limit</label>
+                    <select name="limit" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
                         <option value="50" <?= $limit == 50 ? 'selected' : '' ?>>50</option>
                         <option value="100" <?= $limit == 100 ? 'selected' : '' ?>>100</option>
-                        <option value="200" <?= $limit == 200 ? 'selected' : '' ?>>200</option>
+                        <option value="250" <?= $limit == 250 ? 'selected' : '' ?>>250</option>
                         <option value="500" <?= $limit == 500 ? 'selected' : '' ?>>500</option>
-                        <option value="1000" <?= $limit == 1000 ? 'selected' : '' ?>>1000</option>
                     </select>
                 </div>
             </div>
@@ -362,21 +368,23 @@ include '../templates/header.php';
         </form>
     </div>
 
-    <!-- Module Breakdown Chart -->
+    <!-- Module Activity Breakdown -->
     <?php if (!empty($moduleStats)): ?>
     <div class="bg-white rounded-xl shadow-md p-6">
         <h2 class="text-lg font-bold text-gray-900 mb-4">
-            <i class="fas fa-chart-bar text-primary-600"></i> Activity by Module
+            <i class="fas fa-chart-bar text-primary-600"></i> Activity Breakdown by Module
         </h2>
         <div class="space-y-3">
             <?php 
             $maxCount = $moduleStats[0]->count ?? 1;
             foreach ($moduleStats as $moduleStat): 
                 $percentage = ($moduleStat->count / $maxCount) * 100;
+                // ✅ FIX: Display authentication module properly
+                $displayModule = $moduleStat->module === 'authentication' ? '🔐 Authentication' : ucfirst(str_replace('_', ' ', $moduleStat->module));
             ?>
                 <div>
                     <div class="flex justify-between text-sm mb-1">
-                        <span class="font-medium text-gray-700 capitalize"><?= str_replace('_', ' ', $moduleStat->module) ?></span>
+                        <span class="font-medium text-gray-700"><?= $displayModule ?></span>
                         <span class="text-gray-600"><?= number_format($moduleStat->count) ?></span>
                     </div>
                     <div class="w-full bg-gray-200 rounded-full h-2">
@@ -421,7 +429,22 @@ include '../templates/header.php';
                             </td>
                         </tr>
                     <?php else: ?>
-                        <?php foreach ($activities as $activity): ?>
+                        <?php foreach ($activities as $activity): 
+                            // ✅ FIX: Extract original action from metadata if exists
+                            $displayAction = $activity->action;
+                            $displayModule = $activity->module;
+                            
+                            if ($activity->record_type === 'user_session') {
+                                $displayModule = 'authentication';
+                                // Try to get original action from metadata
+                                if ($activity->metadata) {
+                                    $metadata = json_decode($activity->metadata, true);
+                                    if (isset($metadata['original_action'])) {
+                                        $displayAction = $metadata['original_action'];
+                                    }
+                                }
+                            }
+                        ?>
                             <tr class="hover:bg-gray-50 transition-colors">
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                     <?= date('Y-m-d H:i:s', strtotime($activity->created_at)) ?>
@@ -443,6 +466,7 @@ include '../templates/header.php';
                                     <span class="px-2 py-1 text-xs font-medium rounded-full 
                                         <?php
                                         $moduleColors = [
+                                            'authentication' => 'bg-indigo-100 text-indigo-800',
                                             'expense' => 'bg-blue-100 text-blue-800',
                                             'credit_order' => 'bg-green-100 text-green-800',
                                             'customer_payment' => 'bg-purple-100 text-purple-800',
@@ -451,15 +475,26 @@ include '../templates/header.php';
                                             'purchase' => 'bg-orange-100 text-orange-800',
                                             'wheat_shipment' => 'bg-amber-100 text-amber-800',
                                         ];
-                                        echo $moduleColors[$activity->module] ?? 'bg-gray-100 text-gray-800';
+                                        echo $moduleColors[$displayModule] ?? 'bg-gray-100 text-gray-800';
                                         ?>">
-                                        <?= ucfirst(str_replace('_', ' ', $activity->module)) ?>
+                                        <?php
+                                        if ($displayModule === 'authentication') {
+                                            echo '🔐 Authentication';
+                                        } else {
+                                            echo ucfirst(str_replace('_', ' ', $displayModule));
+                                        }
+                                        ?>
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <span class="px-2 py-1 text-xs font-medium rounded-full 
                                         <?php
                                         $actionColors = [
+                                            'logged_in' => 'bg-green-100 text-green-800',
+                                            'logged_out' => 'bg-blue-100 text-blue-800',
+                                            'login_failed' => 'bg-red-100 text-red-800',
+                                            'login_error' => 'bg-red-100 text-red-800',
+                                            'session_timeout' => 'bg-orange-100 text-orange-800',
                                             'created' => 'bg-green-100 text-green-800',
                                             'updated' => 'bg-blue-100 text-blue-800',
                                             'deleted' => 'bg-red-100 text-red-800',
@@ -467,9 +502,9 @@ include '../templates/header.php';
                                             'rejected' => 'bg-orange-100 text-orange-800',
                                             'shipped' => 'bg-indigo-100 text-indigo-800',
                                         ];
-                                        echo $actionColors[$activity->action] ?? 'bg-gray-100 text-gray-800';
+                                        echo $actionColors[$displayAction] ?? 'bg-gray-100 text-gray-800';
                                         ?>">
-                                        <?= ucfirst($activity->action) ?>
+                                        <?= ucfirst(str_replace('_', ' ', $displayAction)) ?>
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 text-sm text-gray-900 max-w-md truncate" title="<?= htmlspecialchars($activity->description) ?>">
@@ -477,22 +512,7 @@ include '../templates/header.php';
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm">
                                     <?php if ($activity->reference_number): ?>
-                                        <?php
-                                        // Generate link based on module and reference
-                                        $viewLink = '';
-                                        if (str_starts_with($activity->reference_number, 'EXP-')) {
-                                            $viewLink = url("expense/view_expense_voucher.php?id=" . $activity->record_id);
-                                        } elseif (str_starts_with($activity->reference_number, 'CR-')) {
-                                            $viewLink = url("orders/view_credit_order.php?id=" . $activity->record_id);
-                                        }
-                                        ?>
-                                        <?php if ($viewLink): ?>
-                                            <a href="<?= $viewLink ?>" class="text-primary-600 hover:text-primary-900 font-medium">
-                                                <?= htmlspecialchars($activity->reference_number) ?>
-                                            </a>
-                                        <?php else: ?>
-                                            <span class="text-gray-700 font-medium"><?= htmlspecialchars($activity->reference_number) ?></span>
-                                        <?php endif; ?>
+                                        <span class="text-gray-700 font-medium"><?= htmlspecialchars($activity->reference_number) ?></span>
                                     <?php else: ?>
                                         <span class="text-gray-400">—</span>
                                     <?php endif; ?>

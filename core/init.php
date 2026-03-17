@@ -20,5 +20,9 @@ spl_autoload_register(function ($class) {
 // Include all helper functions.
 require_once __DIR__ . '/functions/helpers.php';
 
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
 // Create a single database instance for the application to use.
 $db = Database::getInstance();

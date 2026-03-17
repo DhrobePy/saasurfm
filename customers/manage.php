@@ -165,7 +165,7 @@ require_once '../templates/header.php';
                     <input type="text" id="name" name="name" required
                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                            value="<?php echo htmlspecialchars($customer->name ?? ''); ?>"
-                           placeholder="e.g., John Doe">
+                           placeholder="e.g., Adnan Illius Siddique">
                 </div>
 
                 <div>
@@ -173,7 +173,7 @@ require_once '../templates/header.php';
                     <input type="text" id="business_name" name="business_name"
                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                            value="<?php echo htmlspecialchars($customer->business_name ?? ''); ?>"
-                           placeholder="e.g., Acme Hardware">
+                           placeholder="e.g., Ujjal Flour Mills">
                 </div>
 
                 <div>
@@ -181,7 +181,7 @@ require_once '../templates/header.php';
                     <input type="tel" id="phone_number" name="phone_number" required
                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                            value="<?php echo htmlspecialchars($customer->phone_number ?? ''); ?>"
-                           placeholder="e.g., 01700000000">
+                           placeholder="e.g., 017XX-XXXXXXX">
                 </div>
                 
                 <div>
@@ -189,14 +189,14 @@ require_once '../templates/header.php';
                     <input type="email" id="email" name="email"
                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                            value="<?php echo htmlspecialchars($customer->email ?? ''); ?>"
-                           placeholder="e.g., john.doe@example.com">
+                           placeholder="e.g., adnan.siddique@gmail.com">
                 </div>
                 
                 <div>
                     <label for="business_address" class="block text-sm font-medium text-gray-700 mb-1">Business Address</label>
                     <textarea id="business_address" name="business_address" rows="3"
                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                              placeholder="123 Main St, Dhaka"><?php echo htmlspecialchars($customer->business_address ?? ''); ?></textarea>
+                              placeholder="17, Nuraibag, Demra, Dhaka"><?php echo htmlspecialchars($customer->business_address ?? ''); ?></textarea>
                 </div>
             </div>
 
@@ -227,6 +227,13 @@ require_once '../templates/header.php';
                                 <i class="fas fa-info-circle mr-1"></i>
                                 An invoice will be created automatically for this amount.
                             </p>
+                        </div>
+                        <div class="mt-2 p-2 bg-blue-50 border border-blue-200 rounded text-xs text-blue-700">
+                            <i class="fas fa-info-circle mr-1"></i>
+                            <strong>Initial Due does NOT reduce the Credit Limit.</strong>
+                            Setting Credit Limit = Tk.10,00,000 gives the customer a full
+                            Tk.10,00,000 of fresh credit for new orders, regardless of any
+                            Initial Due entered here.
                         </div>
                         <?php endif; ?>
 

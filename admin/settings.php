@@ -408,6 +408,100 @@ require_once '../templates/header.php';
             
             <?php endforeach; ?>
             
+
+            <!-- AI Advisor Configuration Card -->
+            <div class="bg-white rounded-lg shadow-md overflow-hidden border-l-4 border-purple-500" id="ai-advisor-section">
+                <div class="p-4 bg-purple-50 border-b border-purple-200 flex justify-between items-center">
+                    <h2 class="text-xl font-bold text-gray-900">
+                        <i class="fas fa-robot text-purple-600 mr-2"></i>
+                        AI Business Advisor
+                    </h2>
+                    <span class="text-xs bg-purple-600 text-white px-2 py-1 rounded-full font-semibold">Groq Powered</span>
+                </div>
+                <div class="p-6 space-y-5">
+                    <p class="text-sm text-gray-600">
+                        The AI Advisor analyzes your live ERP data (sales, receivables, inventory, production) and delivers smart business insights.
+                        It appears as a collapsible sidebar panel on your dashboard.
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="border rounded-lg p-4 bg-gradient-to-br from-purple-50 to-white">
+                            <div class="flex items-center gap-2 mb-2">
+                                <i class="fas fa-sun text-yellow-500"></i>
+                                <span class="font-bold text-gray-800 text-sm">Daily Brief</span>
+                                <span class="text-xs bg-green-100 text-green-700 px-1.5 py-0.5 rounded font-medium">Auto-loads</span>
+                            </div>
+                            <p class="text-xs text-gray-600">Morning snapshot with highlights, urgent actions, and one strategic tip. Auto-displays as a banner when you open the dashboard.</p>
+                        </div>
+                        <div class="border rounded-lg p-4 bg-gradient-to-br from-green-50 to-white">
+                            <div class="flex items-center gap-2 mb-2">
+                                <i class="fas fa-coins text-green-500"></i>
+                                <span class="font-bold text-gray-800 text-sm">Cash Flow Analysis</span>
+                            </div>
+                            <p class="text-xs text-gray-600">Collection efficiency, expense trends, which customers to chase, and overall liquidity assessment.</p>
+                        </div>
+                        <div class="border rounded-lg p-4 bg-gradient-to-br from-red-50 to-white">
+                            <div class="flex items-center gap-2 mb-2">
+                                <i class="fas fa-shield-alt text-red-500"></i>
+                                <span class="font-bold text-gray-800 text-sm">Credit Risk Report</span>
+                            </div>
+                            <p class="text-xs text-gray-600">Identifies over-limit customers, flags risky accounts, and recommends credit actions per customer.</p>
+                        </div>
+                        <div class="border rounded-lg p-4 bg-gradient-to-br from-orange-50 to-white">
+                            <div class="flex items-center gap-2 mb-2">
+                                <i class="fas fa-industry text-orange-500"></i>
+                                <span class="font-bold text-gray-800 text-sm">Operations Briefing</span>
+                            </div>
+                            <p class="text-xs text-gray-600">Production pipeline, inventory gaps, procurement status, and factory floor priorities for the day.</p>
+                        </div>
+                        <div class="border rounded-lg p-4 bg-gradient-to-br from-blue-50 to-white">
+                            <div class="flex items-center gap-2 mb-2">
+                                <i class="fas fa-chart-line text-blue-500"></i>
+                                <span class="font-bold text-gray-800 text-sm">Sales Analysis</span>
+                            </div>
+                            <p class="text-xs text-gray-600">Day-over-day comparison, month projection, bottleneck identification, and sales acceleration tips.</p>
+                        </div>
+                        <div class="border rounded-lg p-4 bg-gradient-to-br from-indigo-50 to-white">
+                            <div class="flex items-center gap-2 mb-2">
+                                <i class="fas fa-comments text-indigo-500"></i>
+                                <span class="font-bold text-gray-800 text-sm">Ask Anything</span>
+                            </div>
+                            <p class="text-xs text-gray-600">Free-form questions answered using live ERP context. e.g. "Which customers haven't paid this month?"</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                        <p class="text-xs font-bold text-gray-600 uppercase tracking-wide mb-2">
+                            <i class="fas fa-key mr-1"></i>API Configuration (config.php)
+                        </p>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+                            <div class="flex items-center gap-2 p-2 bg-white rounded border">
+                                <?php $groq_set = defined('GROQ_API_KEY') && GROQ_API_KEY; ?>
+                                <span class="w-2 h-2 rounded-full <?php echo $groq_set ? 'bg-green-500' : 'bg-red-400'; ?>"></span>
+                                <span class="font-semibold">Groq (Primary)</span>
+                                <span class="text-gray-500 ml-auto"><?php echo $groq_set ? 'Configured ✓' : 'Not set'; ?></span>
+                            </div>
+                            <div class="flex items-center gap-2 p-2 bg-white rounded border">
+                                <?php $gemini_set = defined('GEMINI_API_KEY') && GEMINI_API_KEY; ?>
+                                <span class="w-2 h-2 rounded-full <?php echo $gemini_set ? 'bg-green-500' : 'bg-yellow-400'; ?>"></span>
+                                <span class="font-semibold">Gemini (Fallback)</span>
+                                <span class="text-gray-500 ml-auto"><?php echo $gemini_set ? 'Configured ✓' : 'Not set'; ?></span>
+                            </div>
+                            <div class="flex items-center gap-2 p-2 bg-white rounded border">
+                                <?php $anthropic_set = defined('ANTHROPIC_API_KEY') && ANTHROPIC_API_KEY; ?>
+                                <span class="w-2 h-2 rounded-full <?php echo $anthropic_set ? 'bg-green-500' : 'bg-gray-300'; ?>"></span>
+                                <span class="font-semibold">Claude (Last resort)</span>
+                                <span class="text-gray-500 ml-auto"><?php echo $anthropic_set ? 'Configured ✓' : 'Optional'; ?></span>
+                            </div>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-2">
+                            <i class="fas fa-info-circle text-blue-500 mr-1"></i>
+                            The AI advisor calls each provider in order and falls back automatically on failure.
+                            All API keys are defined in <code class="bg-gray-200 px-1 rounded">core/config.php</code>.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
             <!-- Save Button -->
             <div class="bg-white rounded-lg shadow-md p-6">
                 <div class="flex justify-between items-center">

@@ -23,6 +23,9 @@ if ($po_id) {
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
+        // Get selected PO details for additional fields
+        $selected_po = $po_manager->getPurchaseOrder($_POST['purchase_order_id']);
+        
         $data = [
             'purchase_order_id' => $_POST['purchase_order_id'],
             'grn_date' => $_POST['grn_date'],
@@ -31,99 +34,148 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'expected_quantity' => $_POST['expected_quantity'] ?? null,
             'unload_point_branch_id' => $_POST['unload_point_branch_id'] ?? null,
             'unload_point_name' => $_POST['unload_point_name'],
-            'remarks' => $_POST['remarks'] ?? null
+            'remarks' => $_POST['remarks'] ?? null,
+            // Add missing required fields
+            'po_number' => $selected_po->po_number,
+            'supplier_name' => $selected_po->supplier_name,
+            'unit_price_per_kg' => $selected_po->unit_price_per_kg,
+            'total_value' => floatval($_POST['quantity_received_kg']) * floatval($selected_po->unit_price_per_kg)
         ];
 
-        $grn_id = $grn_manager->recordGoodsReceived($data);
+        $result = $grn_manager->recordGoodsReceived($data);
         
-        // ============================================
-        // TELEGRAM NOTIFICATION - GRN RECORDED
-        // ============================================
-        try {
-            if (defined('TELEGRAM_NOTIFICATIONS_ENABLED') && TELEGRAM_NOTIFICATIONS_ENABLED) {
-                require_once '../core/classes/TelegramNotifier.php';
-                $telegram = new TelegramNotifier(TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID);
-                
-                $db = Database::getInstance();
-                
-                // Handle if $grn_id is an array (returns ['grn_id' => 123])
-                $actual_grn_id = is_array($grn_id) 
-                    ? ($grn_id['grn_id'] ?? $grn_id['id'] ?? $grn_id[0] ?? null) 
-                    : $grn_id;
-                
-                if (!$actual_grn_id) {
-                    error_log("✗ Telegram GRN notification: Invalid GRN ID - " . print_r($grn_id, true));
-                    throw new Exception("Invalid GRN ID returned");
-                }
-                
-                // Get complete GRN details (most data is cached in the table)
-                $grn = $db->query(
-                    "SELECT grn.*, 
-                            po.wheat_origin,
-                            b.name as branch_name
-                     FROM goods_received_adnan grn
-                     LEFT JOIN purchase_orders_adnan po ON grn.purchase_order_id = po.id
-                     LEFT JOIN branches b ON grn.unload_point_branch_id = b.id
-                     WHERE grn.id = ?",
-                    [$actual_grn_id]
-                )->first();
-                
-                if ($grn) {
-                    // Get current user info
+        // Check if result is array or just ID
+        $grn_id = is_array($result) ? ($result['grn_id'] ?? $result['id'] ?? null) : $result;
+        
+        if ($grn_id) {
+            // ============================================
+            // AUDIT TRAIL - GRN CREATED
+            // ============================================
+            try {
+                if (function_exists('auditLog')) {
                     $currentUser = getCurrentUser();
                     $user_name = $currentUser['display_name'] ?? 'System User';
                     
-                    // Get PO details for progress calculation
-                    $po = $db->query(
-                        "SELECT quantity_kg, total_received_qty 
-                         FROM purchase_orders_adnan 
-                         WHERE id = ?",
-                        [$grn->purchase_order_id]
+                    // Get GRN number from result
+                    $grn_number = is_array($result) && isset($result['grn_number']) 
+                        ? $result['grn_number'] 
+                        : ($grn_manager->getGRNNumber($grn_id) ?? 'N/A');
+                    
+                    $variance = floatval($_POST['quantity_received_kg']) - floatval($_POST['expected_quantity'] ?? 0);
+                    $variance_pct = floatval($_POST['expected_quantity'] ?? 0) > 0 
+                        ? ($variance / floatval($_POST['expected_quantity'])) * 100 
+                        : 0;
+                    
+                    auditLog(
+                        'purchase',
+                        'created',
+                        "GRN {$grn_number} created for PO #{$selected_po->po_number} - Expected: " . number_format($_POST['expected_quantity'] ?? 0, 2) . " KG, Received: " . number_format($_POST['quantity_received_kg'], 2) . " KG" . ($variance != 0 ? ", Variance: " . number_format($variance, 2) . " KG (" . number_format($variance_pct, 2) . "%)" : ""),
+                        [
+                            'record_type' => 'purchase_grn',
+                            'record_id' => $grn_id,
+                            'reference_number' => $grn_number,
+                            'po_id' => $selected_po->id,
+                            'po_number' => $selected_po->po_number,
+                            'supplier_name' => $selected_po->supplier_name,
+                            'grn_date' => $_POST['grn_date'],
+                            'truck_number' => $_POST['truck_number'] ?? null,
+                            'expected_quantity' => $_POST['expected_quantity'] ?? 0,
+                            'quantity_received_kg' => $_POST['quantity_received_kg'],
+                            'variance' => $variance,
+                            'variance_percentage' => $variance_pct,
+                            'unit_price' => $selected_po->unit_price_per_kg,
+                            'expected_value' => floatval($_POST['expected_quantity'] ?? 0) * floatval($selected_po->unit_price_per_kg),
+                            'received_value' => floatval($_POST['quantity_received_kg']) * floatval($selected_po->unit_price_per_kg),
+                            'created_by' => $user_name,
+                            'severity' => abs($variance) > 100 ? 'warning' : 'info'
+                        ]
+                    );
+                }
+            } catch (Exception $e) {
+                error_log("✗ Audit log error: " . $e->getMessage());
+            }
+            
+            // ============================================
+            // TELEGRAM NOTIFICATION - GRN RECORDED
+            // ============================================
+            try {
+                if (defined('TELEGRAM_NOTIFICATIONS_ENABLED') && TELEGRAM_NOTIFICATIONS_ENABLED) {
+                    require_once '../core/classes/TelegramNotifier.php';
+                    $telegram = new TelegramNotifier(TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID);
+                    
+                    $db = Database::getInstance();
+                    
+                    // Get complete GRN details
+                    $grn = $db->query(
+                        "SELECT grn.*, 
+                                po.wheat_origin,
+                                b.name as branch_name
+                         FROM goods_received_adnan grn
+                         LEFT JOIN purchase_orders_adnan po ON grn.purchase_order_id = po.id
+                         LEFT JOIN branches b ON grn.unload_point_branch_id = b.id
+                         WHERE grn.id = ?",
+                        [$grn_id]
                     )->first();
                     
-                    $po_quantity = $po ? floatval($po->quantity_kg) : 0;
-                    $total_received = $po ? floatval($po->total_received_qty) : 0;
-                    $completion_percentage = $po_quantity > 0 ? ($total_received / $po_quantity) * 100 : 0;
-                    
-                    // Prepare GRN data
-                    $grnData = [
-                        'grn_number' => $grn->grn_number,
-                        'grn_date' => date('d M Y', strtotime($grn->grn_date)),
-                        'po_number' => $grn->po_number,
-                        'supplier_name' => $grn->supplier_name,
-                        'wheat_origin' => $grn->wheat_origin,
-                        'truck_number' => $grn->truck_number ?: 'N/A',
-                        'quantity_received_kg' => floatval($grn->quantity_received_kg),
-                        'unit_price_per_kg' => floatval($grn->unit_price_per_kg),
-                        'received_value' => floatval($grn->total_value),
-                        'unload_point' => $grn->branch_name ?: $grn->unload_point_name,
-                        'po_quantity' => $po_quantity,
-                        'total_received' => $total_received,
-                        'pending' => $po_quantity - $total_received,
-                        'completion_percentage' => $completion_percentage,
-                        'remarks' => $grn->remarks ?: '',
-                        'recorded_by' => $user_name
-                    ];
-                    
-                    // Send notification
-                    $notif_result = $telegram->sendGRNNotification($grnData);
-                    
-                    if ($notif_result['success']) {
-                        error_log("✓ Telegram GRN notification sent: " . $grn->grn_number);
+                    if ($grn) {
+                        // Get current user info
+                        $currentUser = getCurrentUser();
+                        $user_name = $currentUser['display_name'] ?? 'System User';
+                        
+                        // Get PO details for progress calculation
+                        $po = $db->query(
+                            "SELECT quantity_kg, total_received_qty 
+                             FROM purchase_orders_adnan 
+                             WHERE id = ?",
+                            [$grn->purchase_order_id]
+                        )->first();
+                        
+                        $po_quantity = $po ? floatval($po->quantity_kg) : 0;
+                        $total_received = $po ? floatval($po->total_received_qty) : 0;
+                        $completion_percentage = $po_quantity > 0 ? ($total_received / $po_quantity) * 100 : 0;
+                        
+                        // Prepare GRN data
+                        $grnData = [
+                            'grn_number' => $grn->grn_number,
+                            'grn_date' => date('d M Y', strtotime($grn->grn_date)),
+                            'po_number' => $grn->po_number,
+                            'supplier_name' => $grn->supplier_name,
+                            'wheat_origin' => $grn->wheat_origin,
+                            'truck_number' => $grn->truck_number ?: 'N/A',
+                            'quantity_received_kg' => floatval($grn->quantity_received_kg),
+                            'unit_price_per_kg' => floatval($grn->unit_price_per_kg),
+                            'received_value' => floatval($grn->total_value),
+                            'unload_point' => $grn->branch_name ?: $grn->unload_point_name,
+                            'po_quantity' => $po_quantity,
+                            'total_received' => $total_received,
+                            'pending' => $po_quantity - $total_received,
+                            'completion_percentage' => $completion_percentage,
+                            'remarks' => $grn->remarks ?: '',
+                            'recorded_by' => $user_name
+                        ];
+                        
+                        // Send notification
+                        $notif_result = $telegram->sendGRNNotification($grnData);
+                        
+                        if ($notif_result['success']) {
+                            error_log("✓ Telegram GRN notification sent: " . $grn->grn_number);
+                        } else {
+                            error_log("✗ Telegram GRN notification failed: " . json_encode($notif_result['response']));
+                        }
                     } else {
-                        error_log("✗ Telegram GRN notification failed: " . json_encode($notif_result['response']));
+                        error_log("✗ Telegram GRN notification: GRN not found with ID: " . $grn_id);
                     }
-                } else {
-                    error_log("✗ Telegram GRN notification: GRN not found with ID: " . $actual_grn_id);
                 }
+            } catch (Exception $e) {
+                error_log("✗ Telegram GRN notification error: " . $e->getMessage());
             }
-        } catch (Exception $e) {
-            error_log("✗ Telegram GRN notification error: " . $e->getMessage());
+            // END TELEGRAM NOTIFICATION
+            
+            $_SESSION['success'] = "Goods received recorded successfully! GRN ID: " . $grn_id;
+            redirect('purchase/purchase_adnan_view_po.php?id=' . $data['purchase_order_id']);
+        } else {
+            throw new Exception("Failed to record goods received");
         }
-        // END TELEGRAM NOTIFICATION
-        
-        $_SESSION['success'] = "Goods received recorded successfully! GRN ID: " . (is_array($grn_id) ? ($grn_id['grn_id'] ?? $grn_id['id'] ?? $grn_id[0] ?? 'N/A') : $grn_id);
-        redirect('purchase/purchase_adnan_view_po.php?id=' . $data['purchase_order_id']);
         
     } catch (Exception $e) {
         $_SESSION['error'] = $e->getMessage();
@@ -132,6 +184,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 require_once '../templates/header.php';
 ?>
+
+<!-- Rest of your HTML remains exactly the same -->
+
 
 <div class="w-full px-4 py-6">
     <!-- Header -->

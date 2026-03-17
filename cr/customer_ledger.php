@@ -29,11 +29,12 @@ $summary = null;
 if ($selected_customer_id) {
     // Get customer info with credit details
     $customer_info = $db->query(
-    "SELECT id, name, phone_number, email, credit_limit, current_balance
-     FROM customers
-     WHERE id = ?",
-        [$selected_customer_id]
-    )->first();
+            "SELECT id, name, phone_number, email, credit_limit, initial_due, current_balance
+             FROM customers
+             WHERE id = ?",
+            [$selected_customer_id]
+        )->first();
+
     
     if ($customer_info) {
         // Get ledger entries
@@ -54,14 +55,17 @@ if ($selected_customer_id) {
         ];
         
         // Get opening balance (balance before date_from)
-        $opening = $db->query(
-            "SELECT COALESCE(MAX(balance_after), 0) as balance
-             FROM customer_ledger
-             WHERE customer_id = ? AND transaction_date < ?",
-            [$selected_customer_id, $date_from]
+      $opening = $db->query(
+            "SELECT COALESCE(
+                (SELECT balance_after FROM customer_ledger
+                 WHERE customer_id = ? AND transaction_date < ?
+                 ORDER BY id DESC LIMIT 1),
+                (SELECT initial_due FROM customers WHERE id = ?)
+             ) as balance",
+            [$selected_customer_id, $date_from, $selected_customer_id]
         )->first();
-        
         $summary['opening_balance'] = $opening ? $opening->balance : 0;
+
         
         // Calculate totals
         foreach ($ledger_entries as $entry) {
@@ -158,15 +162,28 @@ require_once '../templates/header.php';
                 <span class="text-gray-600">Credit Limit:</span>
                 <span class="font-bold">৳<?php echo number_format($customer_info->credit_limit ?? 0, 2); ?></span>
             </div>
+            
+            <?php
+            $new_orders_balance = ($customer_info->current_balance ?? 0) - ($customer_info->initial_due ?? 0);
+            $available_credit   = ($customer_info->credit_limit ?? 0) - $new_orders_balance;
+            ?>
+            <div class="flex justify-between">
+                <span class="text-gray-600">Previous Due (Carried):</span>
+                <span class="font-bold text-gray-500">৳<?php echo number_format($customer_info->initial_due ?? 0, 2); ?></span>
+            </div>
+            <div class="flex justify-between">
+                <span class="text-gray-600">New Orders Used:</span>
+                <span class="font-bold text-orange-600">৳<?php echo number_format($new_orders_balance, 2); ?></span>
+            </div>
             <div class="flex justify-between">
                 <span class="text-gray-600">Available Credit:</span>
-                <!-- Calculated on the fly -->
-                <span class="font-bold text-green-600">৳<?php echo number_format(($customer_info->credit_limit ?? 0) - ($customer_info->current_balance ?? 0), 2); ?></span>
+                <span class="font-bold text-green-600">৳<?php echo number_format($available_credit, 2); ?></span>
             </div>
-            <div class="flex justify-between">
-                <span class="text-gray-600">Used Credit:</span>
-                <span class="font-bold text-orange-600">৳<?php echo number_format($customer_info->current_balance ?? 0, 2); ?></span>
-            </div>
+            
+            
+            
+            
+            
         </div>
     </div>
     

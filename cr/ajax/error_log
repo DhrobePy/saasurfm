@@ -619,3 +619,111 @@
     [0] => 87
 )
 
+[26-Feb-2026 15:08:57 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'p.name' in 'SELECT' in query: SELECT 
+            coi.id,
+            coi.order_id,
+            coi.product_id,
+            coi.variant_id,
+            coi.quantity,
+            coi.unit_price,
+            coi.discount_amount,
+            coi.tax_amount,
+            coi.line_total,
+            coi.notes,
+            p.name as product_name,
+            p.sku as product_sku,
+            p.unit as product_unit,
+            pv.variant_name,
+            pv.sku as variant_sku,
+            pv.barcode,
+            COALESCE(pv.variant_name, p.name) as display_name
+        FROM credit_order_items coi
+        LEFT JOIN products p ON coi.product_id = p.id
+        LEFT JOIN product_variants pv ON coi.variant_id = pv.id
+        WHERE coi.order_id = ?
+        ORDER BY coi.id ASC | Params: Array
+(
+    [0] => 110
+)
+
+[26-Feb-2026 15:08:59 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'p.name' in 'SELECT' in query: SELECT 
+            coi.id,
+            coi.order_id,
+            coi.product_id,
+            coi.variant_id,
+            coi.quantity,
+            coi.unit_price,
+            coi.discount_amount,
+            coi.tax_amount,
+            coi.line_total,
+            coi.notes,
+            p.name as product_name,
+            p.sku as product_sku,
+            p.unit as product_unit,
+            pv.variant_name,
+            pv.sku as variant_sku,
+            pv.barcode,
+            COALESCE(pv.variant_name, p.name) as display_name
+        FROM credit_order_items coi
+        LEFT JOIN products p ON coi.product_id = p.id
+        LEFT JOIN product_variants pv ON coi.variant_id = pv.id
+        WHERE coi.order_id = ?
+        ORDER BY coi.id ASC | Params: Array
+(
+    [0] => 111
+)
+
+[28-Feb-2026 19:39:05 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'p.name' in 'SELECT' in query: SELECT 
+            coi.id,
+            coi.order_id,
+            coi.product_id,
+            coi.variant_id,
+            coi.quantity,
+            coi.unit_price,
+            coi.discount_amount,
+            coi.tax_amount,
+            coi.line_total,
+            coi.notes,
+            p.name as product_name,
+            p.sku as product_sku,
+            p.unit as product_unit,
+            pv.variant_name,
+            pv.sku as variant_sku,
+            pv.barcode,
+            COALESCE(pv.variant_name, p.name) as display_name
+        FROM credit_order_items coi
+        LEFT JOIN products p ON coi.product_id = p.id
+        LEFT JOIN product_variants pv ON coi.variant_id = pv.id
+        WHERE coi.order_id = ?
+        ORDER BY coi.id ASC | Params: Array
+(
+    [0] => 139
+)
+
+[16-Mar-2026 10:53:37 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'p.name' in 'SELECT' in query: SELECT 
+            coi.id,
+            coi.order_id,
+            coi.product_id,
+            coi.variant_id,
+            coi.quantity,
+            coi.unit_price,
+            coi.discount_amount,
+            coi.tax_amount,
+            coi.line_total,
+            coi.notes,
+            p.name as product_name,
+            p.sku as product_sku,
+            p.unit as product_unit,
+            pv.variant_name,
+            pv.sku as variant_sku,
+            pv.barcode,
+            COALESCE(pv.variant_name, p.name) as display_name
+        FROM credit_order_items coi
+        LEFT JOIN products p ON coi.product_id = p.id
+        LEFT JOIN product_variants pv ON coi.variant_id = pv.id
+        WHERE coi.order_id = ?
+        ORDER BY coi.id ASC | Params: Array
+(
+    [0] => 193
+)
+

@@ -228,6 +228,52 @@ class PurchaseAdnanManager {
                 WHERE po.po_status != 'cancelled'";
         
         $params = [];
+
+        // ── Order status filter (primary view selector) ──────────────────────
+        // Handles both 'order_status_filter' (from UI dropdown) and legacy flags.
+        $osf = $filters['order_status_filter'] ?? null;
+        $show_in_progress = isset($filters['show_in_progress']) && $filters['show_in_progress'] === true;
+
+        if ($show_in_progress || $osf === 'in_progress') {
+            // In Progress = needs delivery OR payment
+            // Exclude: fully closed AND fully complete (delivered + paid)
+            $sql .= " AND po.delivery_status != 'closed'"
+                  . " AND NOT (po.delivery_status = 'completed' AND po.payment_status = 'paid')";
+
+        } elseif ($osf === 'all_active') {
+            // All active = exclude closed and cancelled only
+            $sql .= " AND po.delivery_status != 'closed' AND po.po_status != 'cancelled'";
+
+        } elseif ($osf === 'completed') {
+            // Fully delivered AND fully paid
+            $sql .= " AND po.delivery_status = 'completed' AND po.payment_status = 'paid'";
+
+        } elseif ($osf === 'closed') {
+            $sql .= " AND po.delivery_status = 'closed'";
+
+        } elseif ($osf === 'cancelled') {
+            $sql .= " AND po.po_status = 'cancelled'";
+
+        } elseif ($osf === 'all') {
+            // No additional WHERE — show everything including cancelled
+            // (base query already excludes nothing extra)
+            // Remove the base cancelled exclusion by rewriting base WHERE
+            $sql = str_replace("WHERE po.po_status != 'cancelled'", "WHERE 1=1", $sql);
+
+        } else {
+            // Legacy flags — kept for backward compatibility
+            if (isset($filters['exclude_closed']) && $filters['exclude_closed'] === true) {
+                $sql .= " AND po.delivery_status != 'closed' AND po.po_status != 'cancelled'";
+            }
+            if (isset($filters['show_closed'])) {
+                switch ($filters['show_closed']) {
+                    case 'yes':         break;
+                    case 'closed_only': $sql .= " AND po.delivery_status = 'closed'"; break;
+                    case 'cancelled_only': $sql .= " AND po.po_status = 'cancelled'"; break;
+                    default: $sql .= " AND po.delivery_status != 'closed' AND po.po_status != 'cancelled'";
+                }
+            }
+        }
         
         // Apply filters
         if (!empty($filters['supplier_id'])) {
@@ -306,9 +352,32 @@ class PurchaseAdnanManager {
      * 
      * @return array Supplier-wise summary
      */
-    public function getSupplierSummary() {
+    public function OLDgetSupplierSummary() {
         $sql = "SELECT * FROM v_purchase_adnan_supplier_summary ORDER BY balance_payable DESC";
         $stmt = $this->db->query($sql);
+        return $stmt->fetchAll(PDO::FETCH_OBJ);
+    }
+    
+    
+    public function getSupplierSummary() {
+        $sql = "SELECT 
+                    s.id,
+                    s.company_name,
+                    COUNT(po.id) as order_count,
+                    COALESCE(SUM(po.total_order_value), 0) as total_value,
+                    COALESCE(SUM(po.balance_payable), 0) as balance_due
+                FROM suppliers s
+                LEFT JOIN purchase_orders_adnan po ON s.id = po.supplier_id
+                    AND po.delivery_status != 'closed'   -- ✅ Exclude closed
+                    AND po.po_status != 'cancelled'      -- ✅ Exclude cancelled
+                WHERE s.status = 'active'
+                GROUP BY s.id
+                HAVING order_count > 0
+                ORDER BY balance_due DESC
+                LIMIT 10";
+        
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_OBJ);
     }
     
@@ -330,7 +399,8 @@ class PurchaseAdnanManager {
             SUM(CASE WHEN delivery_status = 'closed' THEN 1 ELSE 0 END) as closed_deals,
             SUM(CASE WHEN payment_status = 'paid' THEN 1 ELSE 0 END) as completed_payments
         FROM purchase_orders_adnan
-        WHERE po_status != 'cancelled'";
+        WHERE delivery_status != 'closed' 
+        AND po_status != 'cancelled'";
         
         $stmt = $this->db->query($sql);
         $stats = $stmt->fetch(PDO::FETCH_OBJ);
@@ -496,6 +566,7 @@ class PurchaseAdnanManager {
             AVG(unit_price_per_kg) as avg_price
         FROM purchase_orders_adnan
         WHERE po_status != 'cancelled'
+        AND delivery_status != 'closed' 
         GROUP BY wheat_origin";
         
         $stmt = $this->db->query($sql);

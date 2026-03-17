@@ -1,0 +1,32 @@
+[07-Mar-2026 16:53:35 Asia/Dhaka] SQL Error [23000]: SQLSTATE[23000]: Integrity constraint violation: 1052 Column 'status' in WHERE is ambiguous in query: SELECT bt.*,
+                btt.name AS type_name,
+                u.display_name AS created_by_name,
+                au.display_name AS approved_by_name
+             FROM bank_transactions bt
+             LEFT JOIN bank_tx_transaction_types btt ON btt.id = bt.transaction_type_id
+             LEFT JOIN users u  ON u.id  = bt.created_by_user_id
+             LEFT JOIN users au ON au.id = bt.approved_by_user_id
+             WHERE bank_tx_account_id = ? AND status != 'unposted' AND transaction_date >= ? AND transaction_date <= ?
+             ORDER BY bt.transaction_date ASC, bt.id ASC | Params: Array
+(
+    [0] => 1
+    [1] => 2026-03-03
+    [2] => 2026-03-07
+)
+
+[13-Mar-2026 00:38:38 Asia/Dhaka] PHP Parse error:  syntax error, unexpected identifier "bg", expecting "]" in /home/ujjalfmc/public_html/saas.ujjalfm.com/templates/header.php on line 56
+[13-Mar-2026 12:42:03 Asia/Dhaka] PHP Warning:  require_once(/home/ujjalfmc/public_html/saas.ujjalfm.com/core/header.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/bank/transfer.php on line 71
+[13-Mar-2026 12:42:03 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Failed opening required '/home/ujjalfmc/public_html/saas.ujjalfm.com/core/header.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/bank/transfer.php:71
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/bank/transfer.php on line 71
+[13-Mar-2026 12:43:15 Asia/Dhaka] PHP Warning:  require_once(/home/ujjalfmc/public_html/saas.ujjalfm.com/core/footer.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/bank/transfer.php on line 721
+[13-Mar-2026 12:43:15 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Failed opening required '/home/ujjalfmc/public_html/saas.ujjalfm.com/core/footer.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/bank/transfer.php:721
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/bank/transfer.php on line 721
+[13-Mar-2026 12:44:00 Asia/Dhaka] PHP Warning:  require_once(/home/ujjalfmc/public_html/saas.ujjalfm.com/core/footer.php): Failed to open stream: No such file or directory in /home/ujjalfmc/public_html/saas.ujjalfm.com/bank/transfer.php on line 721
+[13-Mar-2026 12:44:00 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Failed opening required '/home/ujjalfmc/public_html/saas.ujjalfm.com/core/footer.php' (include_path='.:/opt/alt/php84/usr/share/pear:/opt/alt/php84/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ujjalfmc/public_html/saas.ujjalfm.com/bank/transfer.php:721
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/bank/transfer.php on line 721

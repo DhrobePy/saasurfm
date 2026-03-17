@@ -43,13 +43,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 // FIX 1: Removed join to non-existent `customer_credit_limits` table
 // FIX 2: Changed `c.phone` to `c.phone_number`
 // FIX 3: Filtered by customer_type = 'Credit' as per schema comment
+
 $customers = $db->query(
     "SELECT c.id, c.name, c.phone_number as phone, c.current_balance, c.credit_limit,
-            (c.credit_limit - c.current_balance) as available_credit,
-            c.current_balance as used_credit,
+            c.initial_due,
+            (c.current_balance - c.initial_due) as used_credit,
+            (c.credit_limit - (c.current_balance - c.initial_due)) as available_credit,
             c.status as credit_status,
-            -- Defaulting payment terms to 30 since table is missing
-            30 as payment_terms_days, 
+            30 as payment_terms_days,
             '' as credit_notes,
             c.updated_at as last_updated,
             COALESCE(
@@ -238,18 +239,22 @@ require_once '../templates/header.php';
                 
                 <div id="edit_current_info" class="bg-blue-50 border border-blue-200 rounded-lg p-4">
                     <p class="text-sm font-medium text-blue-900 mb-2">Current Status:</p>
-                    <div class="grid grid-cols-3 gap-4 text-xs text-blue-800">
+                    <div class="grid grid-cols-4 gap-3 text-xs text-blue-800">
                         <div>
-                            <p>Current Limit:</p>
+                            <p>Credit Limit:</p>
                             <p class="font-bold" id="current_limit">-</p>
                         </div>
                         <div>
-                            <p>Used:</p>
-                            <p class="font-bold" id="current_used">-</p>
+                            <p>Previous Due:</p>
+                            <p class="font-bold text-gray-600" id="current_initial_due">-</p>
+                        </div>
+                        <div>
+                            <p>New Orders Used:</p>
+                            <p class="font-bold text-orange-600" id="current_used">-</p>
                         </div>
                         <div>
                             <p>Available:</p>
-                            <p class="font-bold" id="current_available">-</p>
+                            <p class="font-bold text-green-600" id="current_available">-</p>
                         </div>
                     </div>
                 </div>
@@ -274,16 +279,17 @@ const customers = <?php echo json_encode($customers); ?>;
 function editCredit(customerId) {
     const customer = customers.find(c => c.id == customerId);
     if (!customer) return;
-    
-    document.getElementById('edit_customer_id').value = customer.id;
+
+    document.getElementById('edit_customer_id').value    = customer.id;
     document.getElementById('edit_customer_name').textContent = customer.name;
-    document.getElementById('edit_credit_limit').value = customer.credit_limit || 0;
-    document.getElementById('edit_credit_status').value = customer.credit_status || 'active';
-    
-    document.getElementById('current_limit').textContent = '৳' + (parseFloat(customer.credit_limit) || 0).toFixed(0);
-    document.getElementById('current_used').textContent = '৳' + (parseFloat(customer.used_credit) || 0).toFixed(0);
-    document.getElementById('current_available').textContent = '৳' + (parseFloat(customer.available_credit) || 0).toFixed(0);
-    
+    document.getElementById('edit_credit_limit').value   = customer.credit_limit || 0;
+    document.getElementById('edit_credit_status').value  = customer.credit_status || 'active';
+
+    document.getElementById('current_limit').textContent        = '৳' + parseFloat(customer.credit_limit   || 0).toLocaleString();
+    document.getElementById('current_initial_due').textContent  = '৳' + parseFloat(customer.initial_due    || 0).toLocaleString();
+    document.getElementById('current_used').textContent         = '৳' + parseFloat(customer.used_credit    || 0).toLocaleString();
+    document.getElementById('current_available').textContent    = '৳' + parseFloat(customer.available_credit|| 0).toLocaleString();
+
     document.getElementById('editCreditModal').classList.remove('hidden');
 }
 

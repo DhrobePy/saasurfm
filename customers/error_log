@@ -174,3 +174,73 @@ Stack trace:
 Stack trace:
 #0 {main}
   thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/customers/view.php on line 180
+[01-Mar-2026 16:01:28 Asia/Dhaka] SQL Error [23000]: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'adnansidque@gmail.com' for key 'email' in query: INSERT INTO customers (name, business_name, phone_number, email, business_address, customer_type, credit_limit, initial_due, current_balance, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => Adnan Ilias Siddique
+    [1] => A 2 Z trading 2
+    [2] => 01647723466
+    [3] => adnansidque@gmail.com
+    [4] => Adabor, Dhaka.
+    [5] => Credit
+    [6] => 500000
+    [7] => 1500000
+    [8] => 1500000
+    [9] => active
+)
+
+[01-Mar-2026 16:01:46 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined function get_initials() in /home/ujjalfmc/public_html/saas.ujjalfm.com/customers/view.php:180
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/customers/view.php on line 180
+[01-Mar-2026 16:01:50 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined function get_initials() in /home/ujjalfmc/public_html/saas.ujjalfm.com/customers/view.php:180
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/customers/view.php on line 180
+[01-Mar-2026 16:02:00 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined function get_initials() in /home/ujjalfmc/public_html/saas.ujjalfm.com/customers/view.php:180
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/customers/view.php on line 180
+[02-Mar-2026 08:33:57 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Call to undefined function get_initials() in /home/ujjalfmc/public_html/saas.ujjalfm.com/customers/view.php:180
+Stack trace:
+#0 {main}
+  thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/customers/view.php on line 180
+[02-Mar-2026 16:48:23 Asia/Dhaka] SQL Error [23000]: SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails (`ujjalfmc_saas`.`vehicle_rentals`, CONSTRAINT `vehicle_rentals_ibfk_2` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`)) in query: DELETE FROM customers WHERE id = ? | Params: Array
+(
+    [0] => 10
+)
+
+[02-Mar-2026 16:48:27 Asia/Dhaka] SQL Error [23000]: SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails (`ujjalfmc_saas`.`vehicle_rentals`, CONSTRAINT `vehicle_rentals_ibfk_2` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`)) in query: DELETE FROM customers WHERE id = ? | Params: Array
+(
+    [0] => 10
+)
+
+[02-Mar-2026 16:48:32 Asia/Dhaka] SQL Error [23000]: SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails (`ujjalfmc_saas`.`vehicle_rentals`, CONSTRAINT `vehicle_rentals_ibfk_2` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`)) in query: DELETE FROM customers WHERE id = ? | Params: Array
+(
+    [0] => 10
+)
+
+[02-Mar-2026 16:48:48 Asia/Dhaka] SQL Error [23000]: SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails (`ujjalfmc_saas`.`vehicle_rentals`, CONSTRAINT `vehicle_rentals_ibfk_2` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`)) in query: DELETE FROM customers WHERE id = ? | Params: Array
+(
+    [0] => 10
+)
+
+[03-Mar-2026 10:23:57 Asia/Dhaka] SQL Error [23000]: SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails (`ujjalfmc_saas`.`vehicle_rentals`, CONSTRAINT `vehicle_rentals_ibfk_2` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`)) in query: DELETE FROM customers WHERE id = ? | Params: Array
+(
+    [0] => 10
+)
+
+[03-Mar-2026 11:55:04 Asia/Dhaka] SQL Error [23000]: SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails (`ujjalfmc_saas`.`vehicle_rentals`, CONSTRAINT `vehicle_rentals_ibfk_2` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`)) in query: DELETE FROM customers WHERE id = ? | Params: Array
+(
+    [0] => 10
+)
+
+[03-Mar-2026 12:41:38 Asia/Dhaka] SQL Error [23000]: SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails (`ujjalfmc_saas`.`vehicle_rentals`, CONSTRAINT `vehicle_rentals_ibfk_2` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`)) in query: DELETE FROM customers WHERE id = ? | Params: Array
+(
+    [0] => 10
+)
+
+[03-Mar-2026 23:32:38 Asia/Dhaka] SQL Error [23000]: SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails (`ujjalfmc_saas`.`vehicle_rentals`, CONSTRAINT `vehicle_rentals_ibfk_2` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`)) in query: DELETE FROM customers WHERE id = ? | Params: Array
+(
+    [0] => 10
+)
+

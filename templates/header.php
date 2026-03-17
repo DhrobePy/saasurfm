@@ -46,7 +46,7 @@
     $expense_roles = ['Superadmin', 'admin', 'Accounts', 'Expense Initiator', 'Expense Approver'];
     $expense_category_roles = ['Superadmin', 'admin', 'Accounts']; // Only these can access categories
     $expense_approver_roles = ['Superadmin', 'admin', 'Accounts', 'Expense Approver']; // Can approve expenses
-
+    $bank_roles = ['Superadmin', 'admin', 'Bank Transaction initiator', 'Bank Transaction Approver'];
     // Check if user is expense-only role (should ONLY see Dashboard and Expense menu)
     $is_expense_only = in_array($user_role, ['Expense Initiator', 'Expense Approver']);
 
@@ -99,7 +99,7 @@
 
                         <!-- POS -->
                         <?php if (in_array($user_role, $pos_roles) && !$is_expense_only): ?>
-                        <div class="relative" x-data="{ open: false }">
+                        <!--<div class="relative" x-data="{ open: false }">
                             <button @click="open = !open" class="text-gray-600 hover:text-primary-600 inline-flex items-center px-1 pt-1 text-sm font-medium h-full">
                                 POS <i class="fas fa-chevron-down text-xs ml-1"></i>
                             </button>
@@ -111,12 +111,12 @@
                                     <a href="<?php echo url('pos/eod.php'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">End of Day</a>
                                 </div>
                             </div>
-                        </div>
+                        </div>-->
                         <?php endif; ?>
 
                         <!-- Logistics -->
                         <?php if (in_array($user_role, $logistics_roles) && !$is_expense_only): ?>
-                        <div class="relative" x-data="{ open: false }">
+                        <!--<div class="relative" x-data="{ open: false }">
                             <button @click="open = !open" class="text-gray-600 hover:text-primary-600 inline-flex items-center px-1 pt-1 text-sm font-medium h-full">
                                 Logistics <i class="fas fa-chevron-down text-xs ml-1"></i>
                             </button>
@@ -131,9 +131,18 @@
                                     <a href="<?php echo url('logistics/rentals/');?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Rent Out</a>
                                 </div>
                             </div>
-                        </div>
+                        </div>-->
                         <?php endif; ?>
 
+                        
+
+                        <!-- Customers -->
+                        <?php if (!$is_expense_only): ?>
+                        <a href="<?php echo url('customers/index.php'); ?>" class="text-gray-600 hover:text-primary-600 inline-flex items-center px-1 pt-1 text-sm font-medium">
+                            Customers
+                        </a>
+                        <?php endif; ?>
+                        
                         <!-- Products -->
                         <?php if (!$is_expense_only): ?>
                         <div class="relative" x-data="{ open: false }">
@@ -150,13 +159,56 @@
                             </div>
                         </div>
                         <?php endif; ?>
+                        
+                        <!-- Bank Module (add this in the desktop nav section) -->
+                        <?php if (in_array($user_role, $bank_roles)): ?>
+                        <div class="relative h-full flex items-center" x-data="{ open: false }">
+                            <button @click="open = !open"
+                                    class="text-gray-600 hover:text-primary-600 inline-flex items-center px-1 pt-1 text-sm font-medium h-full transition-colors duration-200">
+                                <i class="fas fa-university mr-1 text-xs text-primary-500"></i> Bank <i class="fas fa-chevron-down text-[10px] ml-1 opacity-50"></i>
+                            </button>
+                            
+                            <!-- Dropdown Menu -->
+                            <div x-show="open" 
+                                 @click.away="open = false" 
+                                 x-transition:enter="transition ease-out duration-100"
+                                 x-transition:enter-start="transform opacity-0 scale-95"
+                                 x-transition:enter-end="transform opacity-100 scale-100"
+                                 class="absolute left-0 mt-2 w-52 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50 top-full">
+                                <div class="py-1">
+                                    <a href="<?php echo url('bank/index.php'); ?>"
+                                       class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary-600 transition-colors">
+                                        <i class="fas fa-tachometer-alt mr-2 text-primary-500 w-4"></i>Dashboard
+                                    </a>
+                                    
+                                    <a href="<?php echo url('bank/create_transaction.php'); ?>"
+                                       class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-green-600 transition-colors">
+                                        <i class="fas fa-plus mr-2 text-green-500 w-4"></i>New Transaction
+                                    </a>
+                                    
+                                    <a href="<?php echo url('bank/transfer.php'); ?>"
+                                       class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-green-600 transition-colors">
+                                        <i class="fas fa-plus mr-2 text-green-500 w-4"></i>Bank to Bank Transfer
+                                    </a>
 
-                        <!-- Customers -->
-                        <?php if (!$is_expense_only): ?>
-                        <a href="<?php echo url('customers/index.php'); ?>" class="text-gray-600 hover:text-primary-600 inline-flex items-center px-1 pt-1 text-sm font-medium">
-                            Customers
-                        </a>
-                        <?php endif; ?>
+                                    <?php if (in_array($user_role, ['Superadmin', 'admin'])): ?>
+                                        <div class="border-t border-gray-100 my-1"></div>
+                                        
+                                        <a href="<?php echo url('bank/manage_accounts.php'); ?>"
+                                           class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600 transition-colors">
+                                            <i class="fas fa-piggy-bank mr-2 text-blue-500 w-4"></i>Bank Accounts
+                                        </a>
+                                        
+                                        <a href="<?php echo url('bank/manage_types.php'); ?>"
+                                           class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-purple-600 transition-colors">
+                                            <i class="fas fa-tags mr-2 text-purple-500 w-4"></i>Transaction Types
+                                        </a>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+
 
                         <!-- Accounts -->
                         <?php if (in_array($user_role, $accounts_roles) && !$is_expense_only): ?>
@@ -203,7 +255,7 @@
                                 <div class="px-4 py-1">
                                     <span class="text-xs font-semibold text-gray-400 uppercase">Suppliers</span>
                                 </div>
-                                <a href="<?php echo url('purchase/suppliers.php'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <a href="<?php echo url('purchase/purchase_adnan_supplier_summary.php'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                     <i class="fas fa-users w-5 text-gray-400"></i> All Suppliers
                                 </a>
                                 <a href="<?php echo url('purchase/supplier_form.php'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">

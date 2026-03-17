@@ -96,7 +96,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                 'payment_date' => $payment_date,
                 'amount' => $payment_amount,
                 'payment_method' => $payment_method,
+                
                 'payment_type' => 'invoice_payment',
+                
                 'reference_number' => $reference_number ?: null,
                 'notes' => $notes ?: null,
                 'created_by_user_id' => $user_id,
@@ -117,13 +119,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             
             // Get previous balance from customer_ledger
             $prev_balance_result = $db->query(
-                "SELECT COALESCE(MAX(balance_after), 0) as balance 
+                "SELECT balance_after 
                  FROM customer_ledger 
-                 WHERE customer_id = ?", 
+                 WHERE customer_id = ? 
+                 ORDER BY id DESC 
+                 LIMIT 1",
                 [$customer_id]
             )->first();
             
-            $prev_balance = $prev_balance_result ? $prev_balance_result->balance : 0;
+            if ($prev_balance_result) {
+                $prev_balance = (float)$prev_balance_result->balance_after;
+            } else {
+                // No ledger entries yet (new customer) — use current_balance
+                // which equals initial_due at the time of customer creation
+                $prev_balance = (float)($customer->current_balance ?? 0);
+                // $customer is already fetched at line 77, no extra query needed
+            }
+            
             $new_balance = $prev_balance - $payment_amount; // Payment reduces balance
             
             // Insert into customer_ledger (CREDIT entry - reduces receivable)
@@ -145,9 +157,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             // Update customer balance
             $db->query(
                 "UPDATE customers 
-                 SET current_balance = current_balance - ?
+                 SET current_balance = ?
                  WHERE id = ?",
-                [$payment_amount, $customer_id]
+                [$new_balance, $customer_id]
             );
             
             // ===== PROPER DOUBLE-ENTRY ACCOUNTING =====
@@ -388,7 +400,7 @@ if (isset($_GET['customer_id']) && $_GET['customer_id'] > 0) {
                     CONCAT(e.first_name, ' ', e.last_name) as employee_name,
                     b.name as branch_name
              FROM customer_payments cp
-             LEFT JOIN users u ON cp.collected_by_user_id = u.id
+             LEFT JOIN users u ON cp.created_by_user_id = u.id    /* ← CORRECT COLUMN */
              LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
              LEFT JOIN branches b ON cp.branch_id = b.id
              WHERE cp.customer_id = ?

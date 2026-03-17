@@ -22,112 +22,104 @@ class AuditLogger {
      * @param array $options Additional logging options
      * @return bool Success status
      */
-    /**
- * Log a user activity
- * 
- * @param string $module Module name (expense, credit_order, etc.)
- * @param string $action Action performed (created, updated, etc.)
- * @param array $options Additional logging options
- * @return bool Success status
- */
     public static function log($module, $action, $options = []) {
-    global $db;
-    
-    // Get current user ID
-    $userId = $_SESSION['user_id'] ?? $_SESSION['id'] ?? null;
-    if (!$userId) {
-        // If no user is logged in, log as system (user_id = 0 or skip)
-        return false;
-    }
-    
-    // Extract options
-    $recordType = $options['record_type'] ?? null;
-    $recordId = $options['record_id'] ?? null;
-    $reference = $options['reference'] ?? $options['reference_number'] ?? null;
-    $description = $options['description'] ?? self::generateDescription($module, $action, $options);
-    $oldValue = $options['old_value'] ?? null;
-    $newValue = $options['new_value'] ?? null;
-    $changesJson = $options['changes'] ?? $options['data'] ?? null;
-    $severity = $options['severity'] ?? self::determineSeverity($action);
-    $status = $options['status'] ?? 'success';
-    $metadata = $options['metadata'] ?? null;
-    $errorMessage = $options['error'] ?? $options['error_message'] ?? null;
-    
-    // Get request information
-    $ipAddress = self::getClientIP();
-    $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? null;
-    $requestUri = $_SERVER['REQUEST_URI'] ?? null;
-    
-    // Convert arrays/objects to JSON
-    if (is_array($changesJson) || is_object($changesJson)) {
-        $changesJson = json_encode($changesJson, JSON_UNESCAPED_UNICODE);
-    }
-    if (is_array($metadata) || is_object($metadata)) {
-        $metadata = json_encode($metadata, JSON_UNESCAPED_UNICODE);
-    }
-    if (is_array($oldValue) || is_object($oldValue)) {
-        $oldValue = json_encode($oldValue, JSON_UNESCAPED_UNICODE);
-    }
-    if (is_array($newValue) || is_object($newValue)) {
-        $newValue = json_encode($newValue, JSON_UNESCAPED_UNICODE);
-    }
-    
-    // Insert log entry
-    try {
-        $sql = "INSERT INTO system_audit_log (
-            user_id, module, action, record_type, record_id, reference_number,
-            description, old_value, new_value, changes_json,
-            ip_address, user_agent, request_uri,
-            severity, status, metadata, error_message
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        global $db;
         
-        // Get PDO instance - handle both custom Database wrapper and direct PDO
-        if (method_exists($db, 'getPdo')) {
-            $pdo = $db->getPdo();
-        } elseif ($db instanceof PDO) {
-            $pdo = $db;
-        } else {
-            throw new Exception('Invalid database connection');
+        // Get current user ID
+        $userId = $_SESSION['user_id'] ?? $_SESSION['id'] ?? null;
+        if (!$userId) {
+            // If no user is logged in, log as system (user_id = 0 or skip)
+            return false;
         }
         
-        $stmt = $pdo->prepare($sql);
-        $result = $stmt->execute([
-            $userId,
-            $module,
-            $action,
-            $recordType,
-            $recordId,
-            $reference,
-            $description,
-            $oldValue,
-            $newValue,
-            $changesJson,
-            $ipAddress,
-            $userAgent,
-            $requestUri,
-            $severity,
-            $status,
-            $metadata,
-            $errorMessage
-        ]);
+        // Extract options
+        $recordType = $options['record_type'] ?? null;
+        $recordId = $options['record_id'] ?? null;
+        $reference = $options['reference'] ?? $options['reference_number'] ?? null;
+        $description = $options['description'] ?? self::generateDescription($module, $action, $options);
+        $oldValue = $options['old_value'] ?? null;
+        $newValue = $options['new_value'] ?? null;
+        $changesJson = $options['changes'] ?? $options['data'] ?? null;
+        $severity = $options['severity'] ?? self::determineSeverity($action);
+        $status = $options['status'] ?? 'success';
+        $metadata = $options['metadata'] ?? null;
+        $errorMessage = $options['error'] ?? $options['error_message'] ?? null;
         
-        return $result;
-    } catch (PDOException $e) {
-        // Log error but don't break the application
-        error_log("AuditLogger PDO Error: " . $e->getMessage());
-        error_log("SQL: " . $sql);
-        error_log("Params: " . json_encode([
-            'user_id' => $userId,
-            'module' => $module,
-            'action' => $action
-        ]));
-        return false;
-    } catch (Exception $e) {
-        // Log error but don't break the application
-        error_log("AuditLogger Error: " . $e->getMessage());
-        return false;
+        // Get request information
+        $ipAddress = self::getClientIP();
+        $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? null;
+        $requestUri = $_SERVER['REQUEST_URI'] ?? null;
+        
+        // Convert arrays/objects to JSON
+        if (is_array($changesJson) || is_object($changesJson)) {
+            $changesJson = json_encode($changesJson, JSON_UNESCAPED_UNICODE);
+        }
+        if (is_array($metadata) || is_object($metadata)) {
+            $metadata = json_encode($metadata, JSON_UNESCAPED_UNICODE);
+        }
+        if (is_array($oldValue) || is_object($oldValue)) {
+            $oldValue = json_encode($oldValue, JSON_UNESCAPED_UNICODE);
+        }
+        if (is_array($newValue) || is_object($newValue)) {
+            $newValue = json_encode($newValue, JSON_UNESCAPED_UNICODE);
+        }
+        
+        // Insert log entry
+        try {
+            $sql = "INSERT INTO system_audit_log (
+                user_id, module, action, record_type, record_id, reference_number,
+                description, old_value, new_value, changes_json,
+                ip_address, user_agent, request_uri,
+                severity, status, metadata, error_message
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            
+            // Get PDO instance - handle both custom Database wrapper and direct PDO
+            if (method_exists($db, 'getPdo')) {
+                $pdo = $db->getPdo();
+            } elseif ($db instanceof PDO) {
+                $pdo = $db;
+            } else {
+                throw new Exception('Invalid database connection');
+            }
+            
+            $stmt = $pdo->prepare($sql);
+            $result = $stmt->execute([
+                $userId,
+                $module,
+                $action,
+                $recordType,
+                $recordId,
+                $reference,
+                $description,
+                $oldValue,
+                $newValue,
+                $changesJson,
+                $ipAddress,
+                $userAgent,
+                $requestUri,
+                $severity,
+                $status,
+                $metadata,
+                $errorMessage
+            ]);
+            
+            return $result;
+        } catch (PDOException $e) {
+            // Log error but don't break the application
+            error_log("AuditLogger PDO Error: " . $e->getMessage());
+            error_log("SQL: " . $sql);
+            error_log("Params: " . json_encode([
+                'user_id' => $userId,
+                'module' => $module,
+                'action' => $action
+            ]));
+            return false;
+        } catch (Exception $e) {
+            // Log error but don't break the application
+            error_log("AuditLogger Error: " . $e->getMessage());
+            return false;
+        }
     }
-}
     
     /**
      * Log expense voucher actions
@@ -174,13 +166,85 @@ class AuditLogger {
     }
     
     /**
-     * Log user authentication actions
+     * ====================================================================
+     * NEW METHOD: Log user authentication actions (LOGIN/LOGOUT)
+     * ====================================================================
+     * 
+     * @param string $action Action performed (logged_in, logged_out, login_failed, login_error, session_timeout)
+     * @param int|null $userId User ID (can be null for failed attempts)
+     * @param array $options Additional logging options
+     * @return bool Success status
      */
-    public static function logAuth($action, $userId, $options = []) {
-        return self::log('user_management', $action, array_merge([
+    public static function logAuth($action, $userId = null, $options = []) {
+        // For failed logins, userId might be null, so we need to handle that
+        $logUserId = $userId;
+        
+        // If no userId provided but we have user_id in session, use that
+        if (!$logUserId && isset($_SESSION['user_id'])) {
+            $logUserId = $_SESSION['user_id'];
+        }
+        
+        // Generate description if not provided
+        if (!isset($options['description'])) {
+            $options['description'] = self::generateAuthDescription($action, $options);
+        }
+        
+        // Ensure severity is set appropriately
+        if (!isset($options['severity'])) {
+            $severityMap = [
+                'logged_in' => 'info',
+                'logged_out' => 'info',
+                'login_failed' => 'warning',
+                'login_error' => 'warning',
+                'session_timeout' => 'info'
+            ];
+            $options['severity'] = $severityMap[$action] ?? 'info';
+        }
+        
+        return self::log('authentication', $action, array_merge([
             'record_type' => 'user_session',
-            'record_id' => $userId
+            'record_id' => $logUserId,
+            'user_id' => $logUserId // Pass to ensure it's used in log()
         ], $options));
+    }
+    
+    /**
+     * ====================================================================
+     * NEW HELPER: Generate description for authentication events
+     * ====================================================================
+     */
+    private static function generateAuthDescription($action, $options) {
+        $email = $options['email'] ?? $options['user_email'] ?? 'Unknown';
+        $name = $options['user_name'] ?? $options['display_name'] ?? $email;
+        
+        switch ($action) {
+            case 'logged_in':
+                return "User {$name} logged in successfully";
+                
+            case 'logged_out':
+                $duration = isset($options['session_duration']) ? " (Session: {$options['session_duration']})" : "";
+                return "User {$name} logged out{$duration}";
+                
+            case 'login_failed':
+                $reason = $options['reason'] ?? 'invalid credentials';
+                $reasonMap = [
+                    'user_not_found' => 'Account not found',
+                    'inactive_account' => 'Account is inactive',
+                    'invalid_password' => 'Incorrect password'
+                ];
+                $reasonText = $reasonMap[$reason] ?? ucfirst(str_replace('_', ' ', $reason));
+                return "Failed login attempt for {$email} - {$reasonText}";
+                
+            case 'login_error':
+                $error = isset($options['error']) ? ": {$options['error']}" : "";
+                return "Login error for {$email}{$error}";
+                
+            case 'session_timeout':
+                return "Session timed out for {$name}";
+                
+            default:
+                return "Authentication event: {$action} for {$email}";
+        }
     }
     
     /**
@@ -336,6 +400,13 @@ class AuditLogger {
                 'updated' => "Updated user account",
                 'deleted' => "Deleted user account",
             ],
+            'authentication' => [
+                'logged_in' => "User logged into system",
+                'logged_out' => "User logged out of system",
+                'login_failed' => "Failed login attempt",
+                'login_error' => "Login error occurred",
+                'session_timeout' => "Session timed out",
+            ],
         ];
         
         return $descriptions[$module][$action] ?? ucfirst($action) . " in " . $module;
@@ -346,7 +417,7 @@ class AuditLogger {
      */
     private static function determineSeverity($action) {
         $critical = ['deleted', 'cancelled', 'refunded'];
-        $warning = ['approved', 'rejected', 'updated', 'status_changed'];
+        $warning = ['approved', 'rejected', 'updated', 'status_changed', 'login_failed', 'login_error'];
         
         if (in_array($action, $critical)) {
             return 'critical';
@@ -422,10 +493,18 @@ class AuditLogger {
  * 
  * // Example 6: Log user login
  * AuditLogger::logAuth('logged_in', $userId, [
- *     'description' => 'User logged into system'
+ *     'description' => 'User logged into system',
+ *     'ip_address' => $_SERVER['REMOTE_ADDR']
  * ]);
  * 
- * // Example 7: Log with error
+ * // Example 7: Log failed login attempt
+ * AuditLogger::logAuth('login_failed', null, [
+ *     'email' => 'user@example.com',
+ *     'reason' => 'invalid_password',
+ *     'ip_address' => $_SERVER['REMOTE_ADDR']
+ * ]);
+ * 
+ * // Example 8: Log with error
  * AuditLogger::log('expense', 'created', [
  *     'description' => 'Attempted to create expense voucher',
  *     'status' => 'failed',
@@ -433,13 +512,16 @@ class AuditLogger {
  *     'severity' => 'warning'
  * ]);
  * 
- * // Example 8: Get user activity
+ * // Example 9: Get user activity
  * $activities = AuditLogger::getUserActivity($userId, '2026-01-01', '2026-01-31');
  * 
- * // Example 9: Get module activity
+ * // Example 10: Get module activity
  * $expenseActivities = AuditLogger::getModuleActivity('expense', '2026-01-01', '2026-01-31');
  * 
- * // Example 10: Get statistics
+ * // Example 11: Get statistics
  * $stats = AuditLogger::getStatistics($userId, '2026-01-01', '2026-01-31');
+ * 
+ * // Example 12: Get authentication logs
+ * $authLogs = AuditLogger::getModuleActivity('authentication', '2026-01-01', '2026-01-31');
  */
 ?>

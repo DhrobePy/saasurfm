@@ -210,3 +210,51 @@ Stack trace:
 Stack trace:
 #0 {main}
   thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/auth/login.php on line 8
+[27-Feb-2026 00:48:00 Asia/Dhaka] AuditLogger PDO Error: SQLSTATE[01000]: Warning: 1265 Data truncated for column 'module' at row 1
+[27-Feb-2026 00:48:00 Asia/Dhaka] SQL: INSERT INTO system_audit_log (
+                user_id, module, action, record_type, record_id, reference_number,
+                description, old_value, new_value, changes_json,
+                ip_address, user_agent, request_uri,
+                severity, status, metadata, error_message
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+[27-Feb-2026 00:48:00 Asia/Dhaka] Params: {"user_id":"2","module":"authentication","action":"logged_in"}
+[27-Feb-2026 00:57:33 Asia/Dhaka] AuditLogger PDO Error: SQLSTATE[01000]: Warning: 1265 Data truncated for column 'module' at row 1
+[27-Feb-2026 00:57:33 Asia/Dhaka] SQL: INSERT INTO system_audit_log (
+                user_id, module, action, record_type, record_id, reference_number,
+                description, old_value, new_value, changes_json,
+                ip_address, user_agent, request_uri,
+                severity, status, metadata, error_message
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+[27-Feb-2026 00:57:33 Asia/Dhaka] Params: {"user_id":"2","module":"authentication","action":"logged_out"}
+[27-Feb-2026 00:57:37 Asia/Dhaka] AuditLogger PDO Error: SQLSTATE[01000]: Warning: 1265 Data truncated for column 'module' at row 1
+[27-Feb-2026 00:57:37 Asia/Dhaka] SQL: INSERT INTO system_audit_log (
+                user_id, module, action, record_type, record_id, reference_number,
+                description, old_value, new_value, changes_json,
+                ip_address, user_agent, request_uri,
+                severity, status, metadata, error_message
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+[27-Feb-2026 00:57:37 Asia/Dhaka] Params: {"user_id":"2","module":"authentication","action":"logged_in"}
+[27-Feb-2026 00:59:27 Asia/Dhaka] AuditLogger PDO Error: SQLSTATE[01000]: Warning: 1265 Data truncated for column 'module' at row 1
+[27-Feb-2026 00:59:27 Asia/Dhaka] SQL: INSERT INTO system_audit_log (
+                user_id, module, action, record_type, record_id, reference_number,
+                description, old_value, new_value, changes_json,
+                ip_address, user_agent, request_uri,
+                severity, status, metadata, error_message
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+[27-Feb-2026 00:59:27 Asia/Dhaka] Params: {"user_id":"2","module":"authentication","action":"logged_out"}
+[27-Feb-2026 00:59:32 Asia/Dhaka] AuditLogger PDO Error: SQLSTATE[01000]: Warning: 1265 Data truncated for column 'module' at row 1
+[27-Feb-2026 00:59:32 Asia/Dhaka] SQL: INSERT INTO system_audit_log (
+                user_id, module, action, record_type, record_id, reference_number,
+                description, old_value, new_value, changes_json,
+                ip_address, user_agent, request_uri,
+                severity, status, metadata, error_message
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+[27-Feb-2026 00:59:32 Asia/Dhaka] Params: {"user_id":"2","module":"authentication","action":"logged_in"}
+[27-Feb-2026 11:27:23 Asia/Dhaka] AuditLogger PDO Error: SQLSTATE[01000]: Warning: 1265 Data truncated for column 'module' at row 1
+[27-Feb-2026 11:27:23 Asia/Dhaka] SQL: INSERT INTO system_audit_log (
+                user_id, module, action, record_type, record_id, reference_number,
+                description, old_value, new_value, changes_json,
+                ip_address, user_agent, request_uri,
+                severity, status, metadata, error_message
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+[27-Feb-2026 11:27:23 Asia/Dhaka] Params: {"user_id":"12","module":"authentication","action":"logged_in"}

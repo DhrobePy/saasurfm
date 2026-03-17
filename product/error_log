@@ -289,3 +289,23 @@ Stack trace:
     [5] => active
 )
 
+[05-Mar-2026 15:35:38 Asia/Dhaka] SQL Error [01000]: SQLSTATE[01000]: Warning: 1265 Data truncated for column 'unit_of_measure' at row 1 in query: INSERT INTO product_variants (product_id, sku, weight_variant, grade, unit_of_measure, status) VALUES (?, ?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 35
+    [1] => (50KG)-50-A
+    [2] => 50
+    [3] => A
+    [4] => bag
+    [5] => active
+)
+
+[05-Mar-2026 15:36:30 Asia/Dhaka] SQL Error [23000]: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '(50KG)-50-A' for key 'sku' in query: INSERT INTO product_variants (product_id, sku, weight_variant, grade, unit_of_measure, status) VALUES (?, ?, ?, ?, ?, ?) | Params: Array
+(
+    [0] => 35
+    [1] => (50KG)-50-A
+    [2] => 50
+    [3] => A
+    [4] => kg
+    [5] => active
+)
+
