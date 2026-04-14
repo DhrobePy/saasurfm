@@ -447,3 +447,356 @@ Stack trace:
 [17-Mar-2026 12:56:58 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260317-0013
 [17-Mar-2026 12:57:35 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260317-0014
 [17-Mar-2026 14:36:15 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260317-0015
+[28-Mar-2026 10:36:35 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260328-0001
+[28-Mar-2026 10:37:10 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260328-0002
+[28-Mar-2026 10:37:42 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260328-0003
+[28-Mar-2026 10:38:31 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260328-0004
+[28-Mar-2026 10:45:54 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260328-0005
+[28-Mar-2026 10:49:19 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260328-0006
+[28-Mar-2026 10:50:31 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260328-0007
+[28-Mar-2026 10:51:11 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260328-0008
+[28-Mar-2026 10:51:44 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260328-0009
+[28-Mar-2026 10:52:25 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260328-0010
+[28-Mar-2026 10:53:15 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260328-0011
+[28-Mar-2026 10:53:50 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260328-0012
+[28-Mar-2026 10:54:52 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260328-0013
+[28-Mar-2026 10:55:55 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260328-0014
+[28-Mar-2026 10:56:34 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260328-0015
+[28-Mar-2026 11:59:03 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260328-0016
+[28-Mar-2026 12:56:48 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20260328-0001
+[28-Mar-2026 13:00:45 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20260328-0002
+[28-Mar-2026 13:12:40 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20260328-0003
+[28-Mar-2026 13:20:37 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20260328-0004
+[28-Mar-2026 13:33:39 Asia/Dhaka] Purchase Advisor Error: All AI providers failed. Check API keys in config.php.
+DeepSeek/deepseek-chat: skipped
+DeepSeek/deepseek-reasoner: skipped
+Groq/llama-3.3-70b-versatile: HTTP 401: {"error":{"message":"Invalid API Key","type":"invalid_request_error","code":"invalid_api_key"}}
+
+Gemini/gemini-2.0-flash: HTTP 400: {
+  "error": {
+    "code": 400,
+    "message": "AP
+Gemini/gemini-2.0-flash-lite: HTTP 400: {
+  "error": {
+    "code": 400,
+    "message": "AP
+[28-Mar-2026 13:47:54 Asia/Dhaka] WARNING: Bank account 21 (Pubali 957) not linked to chart of accounts
+[28-Mar-2026 13:48:01 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20260328-0005
+[28-Mar-2026 14:00:47 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20260328-0006
+[28-Mar-2026 15:16:07 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260328-0017
+[28-Mar-2026 15:16:44 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260328-0018
+[28-Mar-2026 15:17:19 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260328-0019
+[28-Mar-2026 16:12:10 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260328-0020
+[28-Mar-2026 16:12:37 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260328-0021
+[29-Mar-2026 09:58:15 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260329-0001
+[29-Mar-2026 09:58:50 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260329-0002
+[29-Mar-2026 09:59:26 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260329-0003
+[29-Mar-2026 10:42:16 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260329-0004
+[29-Mar-2026 11:54:18 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260329-0005
+[29-Mar-2026 12:18:41 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260329-0006
+[29-Mar-2026 13:04:19 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260329-0007
+[30-Mar-2026 10:04:11 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260330-0001
+[30-Mar-2026 10:05:13 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260330-0002
+[30-Mar-2026 10:05:46 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260330-0003
+[30-Mar-2026 10:06:18 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260330-0004
+[30-Mar-2026 10:45:16 Asia/Dhaka] Manual PO Number used: 499 by user 15
+[30-Mar-2026 10:45:17 Asia/Dhaka] ✓ Telegram purchase order notification sent: 499
+[30-Mar-2026 11:19:42 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260330-0005
+[30-Mar-2026 11:20:26 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260330-0006
+[30-Mar-2026 11:21:08 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260330-0007
+[30-Mar-2026 12:24:40 Asia/Dhaka] Manual PO Number used: 500 by user 15
+[30-Mar-2026 12:24:44 Asia/Dhaka] ✓ Telegram purchase order notification sent: 500
+[30-Mar-2026 13:10:57 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260330-0008
+[31-Mar-2026 10:11:59 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20260331-0001
+[31-Mar-2026 10:14:12 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20260331-0002
+[31-Mar-2026 10:18:48 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260331-0001
+[31-Mar-2026 10:20:52 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260331-0002
+[31-Mar-2026 10:24:53 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20260331-0003
+[31-Mar-2026 10:26:48 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20260331-0004
+[31-Mar-2026 10:30:13 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20260331-0005
+[31-Mar-2026 10:44:40 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20260331-0006
+[31-Mar-2026 13:14:57 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260331-0003
+[31-Mar-2026 20:59:07 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20260331-0007
+[01-Apr-2026 10:28:11 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260401-0001
+[01-Apr-2026 10:28:57 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260401-0002
+[01-Apr-2026 10:31:30 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260401-0003
+[01-Apr-2026 10:32:18 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260401-0004
+[01-Apr-2026 10:32:48 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260401-0005
+[01-Apr-2026 10:33:58 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260401-0006
+[01-Apr-2026 11:32:10 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260401-0007
+[01-Apr-2026 12:23:00 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260401-0008
+[01-Apr-2026 14:27:10 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260401-0009
+[01-Apr-2026 15:47:33 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260401-0010
+[01-Apr-2026 16:40:38 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260401-0011
+[02-Apr-2026 10:36:26 Asia/Dhaka] Manual PO Number used: 501 by user 15
+[02-Apr-2026 10:36:27 Asia/Dhaka] ✓ Telegram purchase order notification sent: 501
+[02-Apr-2026 10:37:31 Asia/Dhaka] Manual PO Number used: 502 by user 15
+[02-Apr-2026 10:37:32 Asia/Dhaka] ✓ Telegram purchase order notification sent: 502
+[02-Apr-2026 10:38:41 Asia/Dhaka] Manual PO Number used: 503 by user 15
+[02-Apr-2026 10:38:42 Asia/Dhaka] ✓ Telegram purchase order notification sent: 503
+[02-Apr-2026 10:39:59 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260402-0001
+[02-Apr-2026 10:41:35 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260402-0002
+[02-Apr-2026 10:43:13 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260402-0003
+[02-Apr-2026 10:46:00 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260402-0004
+[02-Apr-2026 10:46:39 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260402-0005
+[02-Apr-2026 10:47:21 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260402-0006
+[02-Apr-2026 10:48:07 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260402-0007
+[02-Apr-2026 10:55:37 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260402-0008
+[02-Apr-2026 10:56:24 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260402-0009
+[02-Apr-2026 11:47:34 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20260402-0001
+[02-Apr-2026 11:53:13 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20260402-0002
+[02-Apr-2026 13:39:50 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260402-0010
+[02-Apr-2026 13:41:20 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260402-0011
+[02-Apr-2026 14:03:05 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20260402-0003
+[02-Apr-2026 14:05:14 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20260402-0004
+[02-Apr-2026 14:21:05 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260402-0012
+[02-Apr-2026 14:21:53 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260402-0013
+[02-Apr-2026 16:26:51 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260402-0014
+[02-Apr-2026 16:27:57 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260402-0015
+[02-Apr-2026 16:28:49 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260402-0016
+[02-Apr-2026 16:49:08 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260402-0017
+[04-Apr-2026 09:52:13 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260404-0001
+[04-Apr-2026 09:53:35 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260404-0002
+[04-Apr-2026 09:54:38 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260404-0003
+[04-Apr-2026 09:59:13 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260404-0004
+[04-Apr-2026 09:59:39 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260404-0005
+[04-Apr-2026 10:00:52 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260404-0006
+[04-Apr-2026 10:01:34 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260404-0007
+[04-Apr-2026 10:02:21 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260404-0008
+[04-Apr-2026 10:03:04 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260404-0009
+[04-Apr-2026 10:04:00 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260404-0010
+[04-Apr-2026 10:04:37 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260404-0011
+[04-Apr-2026 10:05:24 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260404-0012
+[04-Apr-2026 10:06:06 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260404-0013
+[04-Apr-2026 10:08:12 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260404-0014
+[04-Apr-2026 10:10:40 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260404-0015
+[04-Apr-2026 10:11:55 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260404-0016
+[04-Apr-2026 10:12:30 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260404-0017
+[04-Apr-2026 10:13:17 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260404-0018
+[04-Apr-2026 10:13:51 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260404-0019
+[04-Apr-2026 10:14:26 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260404-0020
+[04-Apr-2026 10:14:58 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260404-0021
+[04-Apr-2026 10:15:46 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260404-0022
+[04-Apr-2026 10:17:07 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260404-0023
+[04-Apr-2026 13:47:26 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260404-0024
+[04-Apr-2026 13:47:55 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260404-0025
+[04-Apr-2026 13:48:27 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260404-0026
+[04-Apr-2026 13:49:04 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260404-0027
+[04-Apr-2026 13:49:40 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260404-0028
+[04-Apr-2026 13:50:08 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260404-0029
+[04-Apr-2026 13:50:42 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260404-0030
+[04-Apr-2026 13:51:18 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260404-0031
+[04-Apr-2026 16:00:33 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260404-0032
+[04-Apr-2026 16:01:07 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260404-0033
+[04-Apr-2026 17:01:45 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260404-0034
+[04-Apr-2026 17:32:15 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260404-0035
+[05-Apr-2026 10:30:47 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260405-0001
+[05-Apr-2026 11:59:53 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260405-0002
+[05-Apr-2026 12:01:07 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260405-0003
+[05-Apr-2026 13:08:16 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260405-0004
+[05-Apr-2026 14:41:37 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260405-0005
+[05-Apr-2026 14:42:38 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260405-0006
+[05-Apr-2026 14:45:22 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260405-0007
+[05-Apr-2026 14:46:06 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260405-0008
+[05-Apr-2026 14:47:09 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260405-0009
+[05-Apr-2026 17:37:55 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260405-0010
+[05-Apr-2026 17:39:56 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260405-0011
+[05-Apr-2026 17:40:44 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260405-0012
+[05-Apr-2026 17:41:22 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260405-0013
+[06-Apr-2026 10:14:13 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260406-0001
+[06-Apr-2026 10:14:54 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260406-0002
+[06-Apr-2026 10:16:07 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260406-0003
+[06-Apr-2026 10:16:44 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260406-0004
+[06-Apr-2026 10:17:47 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260406-0005
+[06-Apr-2026 10:19:22 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260406-0006
+[06-Apr-2026 10:20:20 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260406-0007
+[06-Apr-2026 10:21:22 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260406-0008
+[06-Apr-2026 11:37:11 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260406-0009
+[06-Apr-2026 11:41:44 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260406-0010
+[06-Apr-2026 13:24:01 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20260406-0001
+[06-Apr-2026 14:17:04 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260406-0011
+[06-Apr-2026 14:17:51 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260406-0012
+[06-Apr-2026 14:18:33 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260406-0013
+[06-Apr-2026 14:19:03 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260406-0014
+[06-Apr-2026 14:19:33 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260406-0015
+[06-Apr-2026 16:02:49 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260406-0016
+[07-Apr-2026 10:10:05 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260407-0001
+[07-Apr-2026 10:12:15 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260407-0002
+[07-Apr-2026 10:13:02 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260407-0003
+[07-Apr-2026 10:14:22 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260407-0004
+[07-Apr-2026 10:14:58 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260407-0005
+[07-Apr-2026 10:15:44 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260407-0006
+[07-Apr-2026 10:16:44 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260407-0007
+[07-Apr-2026 10:17:21 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260407-0008
+[07-Apr-2026 10:17:58 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260407-0009
+[07-Apr-2026 10:18:37 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260407-0010
+[07-Apr-2026 10:19:42 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260407-0011
+[07-Apr-2026 10:37:37 Asia/Dhaka] Manual PO Number used: 504 by user 15
+[07-Apr-2026 10:37:39 Asia/Dhaka] ✓ Telegram purchase order notification sent: 504
+[07-Apr-2026 10:39:09 Asia/Dhaka] Manual PO Number used: 505 by user 15
+[07-Apr-2026 10:39:09 Asia/Dhaka] ✓ Telegram purchase order notification sent: 505
+[07-Apr-2026 10:41:18 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260407-0012
+[07-Apr-2026 10:44:44 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20260407-0001
+[07-Apr-2026 10:47:04 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260407-0013
+[07-Apr-2026 10:47:53 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260407-0014
+[07-Apr-2026 10:49:10 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260407-0015
+[07-Apr-2026 10:50:02 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260407-0016
+[07-Apr-2026 10:50:31 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260407-0017
+[07-Apr-2026 11:02:37 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20260407-0002
+[07-Apr-2026 11:26:47 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20260407-0003
+[07-Apr-2026 11:37:09 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260407-0018
+[07-Apr-2026 11:37:34 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20260407-0004
+[07-Apr-2026 11:38:09 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260407-0019
+[07-Apr-2026 11:40:10 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20260407-0005
+[07-Apr-2026 11:49:42 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260407-0020
+[07-Apr-2026 11:54:01 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260407-0021
+[07-Apr-2026 12:21:26 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260407-0022
+[07-Apr-2026 12:28:40 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20260407-0006
+[07-Apr-2026 12:48:06 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20260407-0007
+[07-Apr-2026 12:50:46 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20260407-0008
+[07-Apr-2026 13:24:53 Asia/Dhaka] Manual PO Number used: 506 by user 15
+[07-Apr-2026 13:24:59 Asia/Dhaka] ✓ Telegram purchase order notification sent: 506
+[07-Apr-2026 13:26:24 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260407-0023
+[07-Apr-2026 13:27:00 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260407-0024
+[07-Apr-2026 13:45:20 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260407-0025
+[07-Apr-2026 16:17:09 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260407-0026
+[07-Apr-2026 16:35:09 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260407-0027
+[07-Apr-2026 16:36:34 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260407-0028
+[07-Apr-2026 17:41:12 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260407-0029
+[08-Apr-2026 10:11:25 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260408-0001
+[08-Apr-2026 10:11:58 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260408-0002
+[08-Apr-2026 10:17:36 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260408-0003
+[08-Apr-2026 10:18:50 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260408-0004
+[08-Apr-2026 10:22:01 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260408-0005
+[08-Apr-2026 10:23:01 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260408-0006
+[08-Apr-2026 10:23:43 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260408-0007
+[08-Apr-2026 10:24:27 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260408-0008
+[08-Apr-2026 10:25:44 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260408-0009
+[08-Apr-2026 10:26:25 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260408-0010
+[08-Apr-2026 10:27:00 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260408-0011
+[08-Apr-2026 11:40:04 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20260408-0001
+[08-Apr-2026 11:41:56 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20260408-0002
+[08-Apr-2026 12:02:59 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260408-0012
+[08-Apr-2026 13:10:03 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260408-0013
+[08-Apr-2026 13:31:42 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260408-0014
+[08-Apr-2026 14:43:17 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260408-0015
+[08-Apr-2026 14:43:52 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260408-0016
+[08-Apr-2026 14:44:30 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260408-0017
+[08-Apr-2026 17:15:26 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260408-0018
+[08-Apr-2026 17:48:52 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260408-0019
+[09-Apr-2026 10:02:38 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260409-0001
+[09-Apr-2026 10:03:32 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260409-0002
+[09-Apr-2026 10:04:19 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260409-0003
+[09-Apr-2026 10:05:05 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260409-0004
+[09-Apr-2026 10:06:18 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260409-0005
+[09-Apr-2026 10:45:55 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260409-0006
+[09-Apr-2026 10:47:27 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260409-0007
+[09-Apr-2026 13:00:55 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260409-0008
+[09-Apr-2026 13:01:21 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260409-0009
+[09-Apr-2026 13:01:56 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260409-0010
+[09-Apr-2026 14:00:14 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260409-0011
+[09-Apr-2026 14:30:18 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260409-0012
+[09-Apr-2026 14:47:18 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260409-0013
+[09-Apr-2026 15:15:31 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260409-0014
+[09-Apr-2026 15:15:57 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260409-0015
+[09-Apr-2026 17:25:08 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260409-0016
+[09-Apr-2026 17:25:46 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260409-0017
+[09-Apr-2026 17:26:21 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260409-0018
+[09-Apr-2026 17:46:14 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260409-0019
+[11-Apr-2026 10:43:59 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260411-0001
+[11-Apr-2026 10:44:51 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260411-0002
+[11-Apr-2026 10:45:27 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260411-0003
+[11-Apr-2026 10:47:02 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260411-0004
+[11-Apr-2026 10:47:51 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260411-0005
+[11-Apr-2026 10:48:29 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260411-0006
+[11-Apr-2026 10:49:16 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260411-0007
+[11-Apr-2026 10:50:06 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260411-0008
+[11-Apr-2026 11:00:45 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260411-0009
+[11-Apr-2026 11:01:22 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260411-0010
+[11-Apr-2026 11:02:36 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260411-0011
+[11-Apr-2026 11:03:08 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260411-0012
+[11-Apr-2026 11:03:43 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260411-0013
+[11-Apr-2026 11:04:19 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260411-0014
+[11-Apr-2026 11:04:57 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260411-0015
+[11-Apr-2026 11:05:38 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260411-0016
+[11-Apr-2026 11:06:27 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260411-0017
+[11-Apr-2026 11:07:11 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260411-0018
+[11-Apr-2026 11:07:47 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260411-0019
+[11-Apr-2026 11:08:34 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260411-0020
+[11-Apr-2026 11:09:11 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260411-0021
+[11-Apr-2026 11:10:15 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260411-0022
+[11-Apr-2026 11:11:03 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260411-0023
+[11-Apr-2026 11:11:35 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260411-0024
+[11-Apr-2026 11:12:16 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260411-0025
+[11-Apr-2026 11:13:10 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260411-0026
+[11-Apr-2026 11:13:56 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260411-0027
+[11-Apr-2026 11:14:30 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260411-0028
+[11-Apr-2026 11:14:57 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260411-0029
+[11-Apr-2026 11:15:38 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260411-0030
+[11-Apr-2026 11:16:08 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260411-0031
+[11-Apr-2026 11:16:46 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260411-0032
+[11-Apr-2026 11:18:25 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260411-0033
+[11-Apr-2026 11:19:03 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260411-0034
+[11-Apr-2026 11:19:42 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260411-0035
+[11-Apr-2026 11:24:25 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260411-0036
+[11-Apr-2026 12:33:51 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20260411-0001
+[11-Apr-2026 12:35:47 Asia/Dhaka] WARNING: Bank account 21 (Pubali 957) not linked to chart of accounts
+[11-Apr-2026 12:35:48 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20260411-0002
+[11-Apr-2026 12:59:03 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260411-0037
+[11-Apr-2026 13:00:40 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260411-0038
+[11-Apr-2026 13:01:08 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260411-0039
+[11-Apr-2026 13:02:18 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260411-0040
+[11-Apr-2026 13:03:19 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260411-0041
+[11-Apr-2026 13:15:28 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260411-0042
+[11-Apr-2026 16:13:56 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260411-0043
+[11-Apr-2026 16:14:41 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260411-0044
+[12-Apr-2026 10:04:36 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260412-0001
+[12-Apr-2026 10:05:11 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260412-0002
+[12-Apr-2026 10:05:44 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260412-0003
+[12-Apr-2026 10:06:21 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260412-0004
+[12-Apr-2026 10:07:02 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260412-0005
+[12-Apr-2026 10:07:39 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260412-0006
+[12-Apr-2026 10:08:20 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260412-0007
+[12-Apr-2026 10:08:54 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260412-0008
+[12-Apr-2026 10:15:09 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260412-0009
+[12-Apr-2026 10:35:04 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20260412-0001
+[12-Apr-2026 10:37:15 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20260412-0002
+[12-Apr-2026 10:39:22 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260412-0010
+[12-Apr-2026 10:56:33 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260412-0011
+[12-Apr-2026 12:16:04 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260412-0012
+[12-Apr-2026 12:16:34 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260412-0013
+[12-Apr-2026 12:31:18 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260412-0014
+[12-Apr-2026 12:59:25 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260412-0015
+[12-Apr-2026 13:00:10 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260412-0016
+[12-Apr-2026 13:00:48 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260412-0017
+[12-Apr-2026 16:23:31 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260412-0018
+[12-Apr-2026 16:24:02 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260412-0019
+[12-Apr-2026 16:24:33 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260412-0020
+[12-Apr-2026 16:45:57 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260412-0021
+[13-Apr-2026 10:12:21 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260413-0001
+[13-Apr-2026 10:12:50 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260413-0002
+[13-Apr-2026 10:13:28 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260413-0003
+[13-Apr-2026 10:14:03 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260413-0004
+[13-Apr-2026 10:14:32 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260413-0005
+[13-Apr-2026 10:24:53 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260413-0006
+[13-Apr-2026 10:39:40 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20260413-0001
+[13-Apr-2026 10:46:19 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20260413-0002
+[13-Apr-2026 11:14:09 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20260413-0003
+[13-Apr-2026 11:29:22 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260413-0007
+[13-Apr-2026 11:29:56 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260413-0008
+[13-Apr-2026 11:58:22 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20260413-0004
+[13-Apr-2026 12:07:24 Asia/Dhaka] ✓ Telegram purchase payment notification sent: PV-20260413-0005
+[13-Apr-2026 12:48:08 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260413-0009
+[13-Apr-2026 12:48:39 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260413-0010
+[13-Apr-2026 14:31:12 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260413-0011
+[13-Apr-2026 14:32:19 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260413-0012
+[13-Apr-2026 14:32:58 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260413-0013
+[13-Apr-2026 14:33:31 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260413-0014
+[13-Apr-2026 14:34:02 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260413-0015
+[13-Apr-2026 14:34:03 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260413-0016
+[13-Apr-2026 14:34:48 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260413-0017
+[13-Apr-2026 15:36:20 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260413-0018
+[13-Apr-2026 17:30:58 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260413-0019
+[13-Apr-2026 17:31:31 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260413-0020
+[13-Apr-2026 17:32:07 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260413-0021
+[13-Apr-2026 17:49:11 Asia/Dhaka] ✓ Telegram GRN notification sent: GRN-20260413-0022

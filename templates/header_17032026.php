@@ -44,145 +44,11 @@
     $logistics_roles = ['Superadmin', 'admin', 'Accounts', 'Transport Manager', 'dispatch-demra', 'dispatch-srg', 'dispatchpos-demra', 'dispatchpos-srg'];
     $purchase_roles = ['Superadmin', 'admin', 'Accounts', 'accounts-demra', 'accounts-srg', 'production manager-srg', 'production manager-demra'];
     $expense_roles = ['Superadmin', 'admin', 'Accounts', 'Expense Initiator', 'Expense Approver'];
-    $expense_category_roles = ['Superadmin', 'admin', 'Accounts']; 
-    $expense_approver_roles = ['Superadmin', 'admin', 'Accounts', 'Expense Approver']; 
+    $expense_category_roles = ['Superadmin', 'admin', 'Accounts']; // Only these can access categories
+    $expense_approver_roles = ['Superadmin', 'admin', 'Accounts', 'Expense Approver']; // Can approve expenses
     $bank_roles = ['Superadmin', 'admin', 'Bank Transaction initiator', 'Bank Transaction Approver'];
+    // Check if user is expense-only role (should ONLY see Dashboard and Expense menu)
     $is_expense_only = in_array($user_role, ['Expense Initiator', 'Expense Approver']);
-    
-    // Credit Sales Menu Permissions Matrix
-$credit_menu_permissions = [
-    'dashboard' => [
-        'Superadmin', 'admin', 'Accounts', 
-        'accounts-demra', 'accounts-srg', 
-        'sales-srg', 'sales-demra', 'sales-other', 
-        'production manager-srg', 'production manager-demra', 
-        'dispatch-demra', 'dispatch-srg', 'collector'
-    ],
-    'create_order' => [
-        'Superadmin', 'admin', 
-        'sales-srg', 'sales-demra', 'sales-other'
-    ],
-    'approve_orders' => [
-        'Superadmin', 'admin', 'Accounts', 
-        'accounts-demra', 'accounts-srg'
-    ],
-    'production_queue' => [
-        'Superadmin', 'admin', 
-        'production manager-srg', 'production manager-demra'
-    ],
-    'track_status' => [
-        'Superadmin', 'admin', 'Accounts', 
-        'accounts-demra', 'accounts-srg', 
-        'sales-srg', 'sales-demra', 'sales-other', 
-        'production manager-srg', 'production manager-demra', 
-        'dispatch-demra', 'dispatch-srg'
-    ],
-    'dispatch' => [
-        'Superadmin', 'admin', 
-        'dispatch-demra', 'dispatch-srg'
-    ],
-    'customer_ledger' => [
-        'Superadmin', 'admin', 'Accounts', 
-        'accounts-demra', 'accounts-srg', 'collector'
-    ],
-    'collect_payment' => [
-        'Superadmin', 'admin', 'Accounts', 
-        'accounts-demra', 'accounts-srg', 'collector'
-    ],
-    'advance_collection' => [
-        'Superadmin', 'admin', 'Accounts', 
-        'accounts-demra', 'accounts-srg', 'collector'
-    ],
-    'credit_limits' => [
-        'Superadmin', 'admin', 'Accounts', 
-        'accounts-demra', 'accounts-srg'
-    ],
-];
-
-// Helper function
-function canAccessCreditMenu($menu_item, $user_role, $permissions) {
-    return isset($permissions[$menu_item]) && in_array($user_role, $permissions[$menu_item]);
-}
-
-// Define which roles should see FLAT menus (individual buttons)
-$flat_menu_roles = [
-    'sales-srg',
-    'sales-demra', 
-    'sales-other',
-    'production manager-srg',
-    'production manager-demra',
-    'dispatch-demra',
-    'dispatch-srg',
-    'collector'
-];
-
-// Define which roles should see DROPDOWN menu (many items)
-$dropdown_menu_roles = [
-    'Superadmin',
-    'admin',
-    'Accounts',
-    'accounts-demra',
-    'accounts-srg'
-];
-
-// Check if current user should see flat or dropdown
-$show_flat_menu = in_array($user_role, $flat_menu_roles);
-$show_dropdown_menu = in_array($user_role, $dropdown_menu_roles);
-
-// Define menu items with labels and icons
-$credit_menu_items = [
-    'dashboard' => [
-        'label' => 'Credit Dashboard',
-        'url' => 'cr/index.php',
-        'icon' => 'fa-chart-line'
-    ],
-    'create_order' => [
-        'label' => 'Create Order',
-        'url' => 'cr/create_order.php',
-        'icon' => 'fa-plus-circle'
-    ],
-    'approve_orders' => [
-        'label' => 'Approve Orders',
-        'url' => 'cr/credit_order_approval.php',
-        'icon' => 'fa-check-circle'
-    ],
-    'production_queue' => [
-        'label' => 'Production',
-        'url' => 'cr/credit_production.php',
-        'icon' => 'fa-industry'
-    ],
-    'track_status' => [
-        'label' => 'Track Orders',
-        'url' => 'cr/order_status.php',
-        'icon' => 'fa-truck'
-    ],
-    'dispatch' => [
-        'label' => 'Dispatch',
-        'url' => 'cr/credit_dispatch.php',
-        'icon' => 'fa-shipping-fast'
-    ],
-    'customer_ledger' => [
-        'label' => 'Ledger',
-        'url' => 'cr/customer_ledger.php',
-        'icon' => 'fa-book'
-    ],
-    'collect_payment' => [
-        'label' => 'Collect Payment',
-        'url' => 'cr/credit_payment_collect.php',
-        'icon' => 'fa-money-bill-wave'
-    ],
-    'advance_collection' => [
-        'label' => 'Advance',
-        'url' => 'cr/advance_payment_collection.php',
-        'icon' => 'fa-hand-holding-usd'
-    ],
-    'credit_limits' => [
-        'label' => 'Credit Limits',
-        'url' => 'cr/customer_credit_management.php',
-        'icon' => 'fa-credit-card'
-    ],
-];
-    
 
     ?>
 
@@ -209,49 +75,27 @@ $credit_menu_items = [
                         </a>
 
                         <!-- Credit Sales -->
-                        
-                        <!-- Credit Sales Menu - Flat or Dropdown based on role -->
                         <?php if (in_array($user_role, $credit_sales_roles) && !$is_expense_only): ?>
-                        
-                            <?php if ($show_flat_menu): ?>
-                                <!-- FLAT MENU for Sales, Production, Dispatch, Collector -->
-                                <?php foreach ($credit_menu_items as $key => $item):
-                                    if (canAccessCreditMenu($key, $user_role, $credit_menu_permissions)): ?>
-                                        <a href="<?php echo url($item['url']); ?>" 
-                                           class="text-gray-600 hover:text-primary-600 inline-flex items-center px-1 pt-1 text-sm font-medium">
-                                            <i class="fas <?php echo $item['icon']; ?> mr-1 text-xs"></i>
-                                            <?php echo $item['label']; ?>
-                                        </a>
-                                    <?php endif;
-                                endforeach; ?>
-                                
-                            <?php elseif ($show_dropdown_menu): ?>
-                                <!-- DROPDOWN MENU for Admin, Accounts -->
-                                <div class="relative" x-data="{ open: false }">
-                                    <button @click="open = !open" 
-                                            class="text-gray-600 hover:text-primary-600 inline-flex items-center px-1 pt-1 text-sm font-medium h-full">
-                                        Credit Sales <i class="fas fa-chevron-down text-xs ml-1"></i>
-                                    </button>
-                                    <div x-show="open" @click.away="open = false" x-transition 
-                                         class="absolute left-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
-                                        <div class="py-1">
-                                            <?php foreach ($credit_menu_items as $key => $item):
-                                                if (canAccessCreditMenu($key, $user_role, $credit_menu_permissions)): ?>
-                                                    <a href="<?php echo url($item['url']); ?>" 
-                                                       class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                                        <i class="fas <?php echo $item['icon']; ?> mr-2 text-gray-400"></i>
-                                                        <?php echo $item['label']; ?>
-                                                    </a>
-                                                <?php endif;
-                                            endforeach; ?>
-                                        </div>
-                                    </div>
+                        <div class="relative" x-data="{ open: false }">
+                            <button @click="open = !open" class="text-gray-600 hover:text-primary-600 inline-flex items-center px-1 pt-1 text-sm font-medium h-full">
+                                Credit Sales <i class="fas fa-chevron-down text-xs ml-1"></i>
+                            </button>
+                            <div x-show="open" @click.away="open = false" x-transition class="absolute left-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
+                                <div class="py-1">
+                                    <a href="<?php echo url('cr/index.php'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Dashboard</a>
+                                    <a href="<?php echo url('cr/create_order.php'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Create Order</a>
+                                    <a href="<?php echo url('cr/credit_order_approval.php'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Approve Orders</a>
+                                    <a href="<?php echo url('cr/credit_production.php'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Production Queue</a>
+                                    <a href="<?php echo url('cr/order_status.php'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Track Status</a>
+                                    <a href="<?php echo url('cr/credit_dispatch.php'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Dispatch</a>
+                                    <a href="<?php echo url('cr/customer_ledger.php'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Customer Ledger</a>
+                                    <a href="<?php echo url('cr/credit_payment_collect.php'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Collect Payment</a>
+                                    <a href="<?php echo url('cr/advance_payment_collection.php');?>" class="block ps-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Advance Collection</a>
+                                    <a href="<?php echo url('cr/customer_credit_management.php'); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Credit Limits</a>
                                 </div>
-                                
-                            <?php endif; ?>
-                            
+                            </div>
+                        </div>
                         <?php endif; ?>
-                        
 
                         <!-- POS -->
                         <?php if (in_array($user_role, $pos_roles) && !$is_expense_only): ?>

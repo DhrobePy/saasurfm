@@ -4,14 +4,9 @@ require_once '../core/init.php';
 /* -----------------------------
    SECURITY & ACCESS CONTROL
 ----------------------------- */
-$allowed_roles = [
-    'Superadmin', 'admin', 'Accounts',
-    'accounts-rampura', 'accounts-srg', 'accounts-demra',
-    'sales-srg', 'sales-demra', 'sales-other',
-    'production manager-srg', 'production manager-demra', 'production manager-rampura',
-    'dispatch-srg', 'dispatch-demra', 'dispatchpos-demra', 'dispatchpos-srg',
-    'collector'
-];
+//$allowed_roles = ['Superadmin', 'admin', 'Accounts','accounts-rampura', 'accounts-srg', 'accounts-demra','sales-srg', 'sales-demra', 'sales-other','production manager-srg', 'production manager-demra', 'production manager-rampura','dispatch-srg', 'dispatch-demra', 'dispatchpos-demra', 'dispatchpos-srg','collector'];
+
+$allowed_roles = ['Superadmin', 'admin', 'Accounts', 'sales-srg', 'sales-demra', 'sales-other'];
 restrict_access($allowed_roles);
 
 global $db;
