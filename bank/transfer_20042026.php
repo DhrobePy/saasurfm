@@ -21,7 +21,7 @@ $ipAddress    = $_SERVER['REMOTE_ADDR'] ?? null;
 $bankManager  = new BankManager();
 $db           = Database::getInstance();
 
-$approverRoles   = ['Superadmin', 'admin', 'Bank Transaction Approver'];
+$approverRoles   = ['Superadmin', 'admin', 'bank-approver'];
 $isApprover      = in_array($userRole, $approverRoles);
 $initiatorRoles  = $allowedRoles;
 $isInitiator     = in_array($userRole, $initiatorRoles);

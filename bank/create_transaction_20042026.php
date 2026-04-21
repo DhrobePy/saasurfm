@@ -7,11 +7,7 @@
 require_once dirname(__DIR__) . '/core/init.php';
 require_once dirname(__DIR__) . '/bank/BankManager.php';
 
-// Bank Transaction Approver can edit/update existing transactions but not create new ones.
-// Creation is blocked below in the POST handler when not in edit mode.
-restrict_access(['Superadmin', 'admin', 'Accounts', 'accounts-demra', 'accounts-srg',
-                 'accountspos-demra', 'accountspos-srg', 'bank Transaction initiator',
-                 'Bank Transaction Approver']);
+restrict_access();
 
 $currentUser = getCurrentUser();
 $userId      = $currentUser['id'];
@@ -21,8 +17,7 @@ $ipAddress   = $_SERVER['REMOTE_ADDR'] ?? null;
 
 $bankManager = new BankManager();
 
-$adminRoles  = ['Superadmin', 'admin', 'Accounts', 'accounts-demra', 'accounts-srg',
-                'Bank Transaction Approver'];
+$adminRoles  = ['Superadmin', 'admin', 'Accounts', 'accounts-demra', 'accounts-srg'];
 $isAdmin     = in_array($userRole, $adminRoles);
 
 // Edit mode
@@ -48,10 +43,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $bankManager->updateTransaction((int)$_POST['edit_id'], $_POST, $userId, $userName, $ipAddress);
             $_SESSION['success_flash'] = 'Transaction updated successfully.';
         } else {
-            // Bank Transaction Approver can edit but not create new transactions
-            if ($userRole === 'Bank Transaction Approver') {
-                throw new Exception('Approvers cannot create new transactions.');
-            }
             $result = $bankManager->createTransaction($_POST, $userId, $userName, $ipAddress);
             $_SESSION['success_flash'] = 'Transaction ' . $result['transaction_number'] . ' created. Pending approval.';
             header('Location: ' . url('bank/receipt.php?id=' . $result['id']));

@@ -189,9 +189,7 @@ class BankManager {
         $where  = ['1=1'];
         $params = [];
 
-        // Roles that can see ALL transactions (not just their own)
-        $adminRoles = ['Superadmin', 'admin', 'Accounts', 'accounts-demra', 'accounts-srg',
-                       'Bank Transaction Approver'];
+        $adminRoles = ['Superadmin', 'admin', 'Accounts', 'accounts-demra', 'accounts-srg'];
         if (!in_array($role, $adminRoles)) {
             $where[]  = 'bt.created_by_user_id = ?';
             $params[] = (int)$userId;
@@ -244,9 +242,7 @@ class BankManager {
         $where  = ['1=1'];
         $params = [];
 
-        // Roles that can see ALL transactions (not just their own)
-        $adminRoles = ['Superadmin', 'admin', 'Accounts', 'accounts-demra', 'accounts-srg',
-                       'Bank Transaction Approver'];
+        $adminRoles = ['Superadmin', 'admin', 'Accounts', 'accounts-demra', 'accounts-srg'];
         if (!in_array($role, $adminRoles)) {
             $where[]  = 'bt.created_by_user_id = ?';
             $params[] = (int)$userId;
@@ -376,16 +372,16 @@ class BankManager {
         if (!$tx) throw new Exception("Transaction not found.");
         if ($tx->status === 'unposted') throw new Exception("Transaction is already unposted.");
 
-        $canUnpostApproved = in_array($role, ['Superadmin', 'Bank Transaction Approver']);
+        $isSuperadmin = ($role === 'Superadmin');
 
-        // Only Superadmin and Bank Transaction Approver can unpost approved transactions
-        if ($tx->status === 'approved' && !$canUnpostApproved) {
-            throw new Exception("Only Superadmin or Bank Transaction Approver can unpost an approved transaction.");
+        // Only Superadmin can unpost approved transactions
+        if ($tx->status === 'approved' && !$isSuperadmin) {
+            throw new Exception("Only Superadmin can unpost an approved transaction.");
         }
 
         $prevStatus = $tx->status;
-        $notes = $canUnpostApproved && $prevStatus === 'approved'
-            ? 'OVERRIDE: Approved transaction marked as unposted by ' . $userName . ' (' . $role . ').'
+        $notes = $isSuperadmin && $prevStatus === 'approved'
+            ? 'SUPERADMIN OVERRIDE: Approved transaction marked as unposted.'
             : 'Transaction marked as unposted by ' . $userName;
 
         // Update status to unposted
@@ -515,158 +511,6 @@ class BankManager {
         $filters['limit']  = 10000;
         $filters['offset'] = 0;
         return $this->getTransactions($filters, $userId, $role);
-    }
-
-    // =========================================================
-    // BULK MANAGE — admin-only query (includes ALL statuses)
-    // =========================================================
-
-    public function getTransactionsForBulkManage($filters = []) {
-        $where  = ['1=1'];
-        $params = [];
-
-        // No created_by_user_id filter — admins see everything
-        // No automatic unposted exclusion — bulk manage shows all statuses
-
-        if (!empty($filters['bank_tx_account_id'])) {
-            $where[]  = 'bt.bank_tx_account_id = ?';
-            $params[] = (int)$filters['bank_tx_account_id'];
-        }
-        if (!empty($filters['entry_type'])) {
-            $where[]  = 'bt.entry_type = ?';
-            $params[] = $filters['entry_type'];
-        }
-        if (!empty($filters['status'])) {
-            $where[]  = 'bt.status = ?';
-            $params[] = $filters['status'];
-        }
-        // If no status filter — show ALL statuses including unposted (unlike dashboard)
-        if (!empty($filters['date_from'])) {
-            $where[]  = 'bt.transaction_date >= ?';
-            $params[] = $filters['date_from'];
-        }
-        if (!empty($filters['date_to'])) {
-            $where[]  = 'bt.transaction_date <= ?';
-            $params[] = $filters['date_to'];
-        }
-        if (!empty($filters['transaction_type_id'])) {
-            $where[]  = 'bt.transaction_type_id = ?';
-            $params[] = (int)$filters['transaction_type_id'];
-        }
-        if (!empty($filters['keyword'])) {
-            $kw       = '%' . $filters['keyword'] . '%';
-            $where[]  = '(bt.reference_number LIKE ? OR bt.payee_payer_name LIKE ? OR bt.transaction_number LIKE ? OR bt.description LIKE ?)';
-            $params   = array_merge($params, [$kw, $kw, $kw, $kw]);
-        }
-
-        $limit  = min((int)($filters['limit'] ?? 500), 500);
-        $offset = (int)($filters['offset'] ?? 0);
-        $whereStr = implode(' AND ', $where);
-
-        return $this->db->query(
-            "SELECT bt.*,
-                ba.bank_name, ba.account_name, ba.account_number,
-                btt.name AS type_name, btt.nature AS type_nature,
-                u.display_name  AS created_by_name,
-                au.display_name AS approved_by_name,
-                br.name AS branch_name
-             FROM bank_transactions bt
-             LEFT JOIN bank_tx_accounts ba  ON ba.id  = bt.bank_tx_account_id
-             LEFT JOIN bank_tx_transaction_types btt ON btt.id = bt.transaction_type_id
-             LEFT JOIN users u  ON u.id  = bt.created_by_user_id
-             LEFT JOIN users au ON au.id = bt.approved_by_user_id
-             LEFT JOIN branches br ON br.id = bt.branch_id
-             WHERE $whereStr
-             ORDER BY bt.transaction_date DESC, bt.id DESC
-             LIMIT $limit OFFSET $offset",
-            $params
-        )->results();
-    }
-
-    // =========================================================
-    // BULK UNPOST
-    // =========================================================
-
-    /**
-     * Mark multiple transactions as 'unposted' (soft delete).
-     * Returns ['success' => n, 'skipped' => n, 'skipped_ids' => []]
-     */
-    public function bulkUnpost(array $ids, $userId, $userName, $reason, $ipAddress = null) {
-        $success = 0;
-        $skipped = [];
-
-        foreach ($ids as $id) {
-            $id = (int)$id;
-            $tx = $this->getTransactionById($id);
-            if (!$tx || $tx->status === 'unposted') {
-                $skipped[] = $id;
-                continue;
-            }
-
-            $prevStatus = $tx->status;
-            $this->db->query(
-                "UPDATE bank_transactions SET status='unposted', updated_by_user_id=?, updated_at=NOW() WHERE id=?",
-                [$userId, $id]
-            );
-
-            $this->writeAuditLog(
-                $id, 'bulk_unposted', $userId, $userName, $ipAddress,
-                ['status' => $prevStatus],
-                ['status' => 'unposted'],
-                'BULK UNPOST by ' . $userName . '. Reason: ' . $reason
-            );
-
-            $success++;
-        }
-
-        return ['success' => $success, 'skipped' => count($skipped), 'skipped_ids' => $skipped];
-    }
-
-    // =========================================================
-    // BULK DELETE (permanent — Superadmin only)
-    // =========================================================
-
-    /**
-     * Permanently delete transactions AND their audit logs.
-     * Returns ['success' => n, 'skipped' => n]
-     */
-    public function bulkDelete(array $ids, $userId, $userName, $ipAddress = null) {
-        $success = 0;
-        $skipped = [];
-
-        foreach ($ids as $id) {
-            $id = (int)$id;
-            $tx = $this->getTransactionById($id);
-            if (!$tx) {
-                $skipped[] = $id;
-                continue;
-            }
-
-            // Write a final audit entry to system_audit_log BEFORE deleting
-            // (bank_tx_audit_log rows for this tx will also be deleted)
-            $this->writeAuditLog(
-                null, 'bulk_deleted', $userId, $userName, $ipAddress,
-                [
-                    'transaction_id'     => $id,
-                    'transaction_number' => $tx->transaction_number,
-                    'amount'             => $tx->amount,
-                    'entry_type'         => $tx->entry_type,
-                    'status'             => $tx->status,
-                ],
-                null,
-                'PERMANENT DELETE by ' . $userName . ' (Superadmin). Transaction ' . $tx->transaction_number . ' removed.'
-            );
-
-            // Delete audit log rows for this transaction
-            $this->db->query("DELETE FROM bank_tx_audit_log WHERE transaction_id = ?", [$id]);
-
-            // Delete the transaction itself
-            $this->db->query("DELETE FROM bank_transactions WHERE id = ?", [$id]);
-
-            $success++;
-        }
-
-        return ['success' => $success, 'skipped' => count($skipped), 'skipped_ids' => $skipped];
     }
 
     // =========================================================

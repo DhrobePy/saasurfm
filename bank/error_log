@@ -30,3 +30,6 @@ Stack trace:
 Stack trace:
 #0 {main}
   thrown in /home/ujjalfmc/public_html/saas.ujjalfm.com/bank/transfer.php on line 721
+[19-Apr-2026 15:01:22 Asia/Dhaka] SQL Error [23000]: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'Opening Balance' for key 'uq_type_name'
+Query: INSERT INTO bank_tx_transaction_types (name, nature, description, created_by_user_id) VALUES (?,?,?,?)
+Params: ["Opening Balance","expense","",2]

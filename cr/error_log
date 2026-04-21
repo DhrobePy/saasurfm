@@ -840,3 +840,5 @@ Params: [205,"2026-04-01 17:30:47","in_progress"]
 [06-Apr-2026 20:28:01 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"A","weight_variant":"50","unit_of_measure":"kg","sku":"2HATI MOIDA (50KG)-50-A","price_id":"29","branch_id":"2","unit_price":"2060.00","branch_name":"Demra","branch_code":"DEMRA","stock_usable":"0"}
 [07-Apr-2026 00:30:10 Asia/Dhaka] Total variants fetched: 41
 [07-Apr-2026 00:30:10 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"A","weight_variant":"50","unit_of_measure":"kg","sku":"2HATI MOIDA (50KG)-50-A","price_id":"29","branch_id":"2","unit_price":"2060.00","branch_name":"Demra","branch_code":"DEMRA","stock_usable":"0"}
+[16-Apr-2026 15:32:47 Asia/Dhaka] Total variants fetched: 41
+[16-Apr-2026 15:32:47 Asia/Dhaka] Sample variant: {"variant_id":"2","product_id":"1","grade":"A","weight_variant":"50","unit_of_measure":"kg","sku":"2HATI MOIDA (50KG)-50-A","price_id":"29","branch_id":"2","unit_price":"2060.00","branch_name":"Demra","branch_code":"DEMRA","stock_usable":"0"}

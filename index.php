@@ -57,6 +57,10 @@ switch ($role) {
         header('Location: bank/index.php');
         exit();
         
+    case 'Bank Transaction Approver':
+        header('Location: bank/index.php');
+        exit();
+        
     // --- Logistics Roles ---- 
     // --- Dispatch Roles ---
     case 'Transport Manager':

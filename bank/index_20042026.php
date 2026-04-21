@@ -211,24 +211,15 @@ require_once dirname(__DIR__) . '/templates/header.php';
     <?php if (!$isAdmin): ?>
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-3">
         <div>
-            <?php if ($userRole === 'Bank Transaction Approver'): ?>
-                <h1 class="text-2xl font-bold text-gray-900 flex items-center gap-2">
-                    <i class="fas fa-tasks text-primary-600"></i> All Bank Transactions
-                </h1>
-                <p class="text-sm text-gray-500 mt-0.5">Review, approve or reject pending transaction entries</p>
-            <?php else: ?>
-                <h1 class="text-2xl font-bold text-gray-900 flex items-center gap-2">
-                    <i class="fas fa-receipt text-primary-600"></i> My Bank Transactions
-                </h1>
-                <p class="text-sm text-gray-500 mt-0.5">Your submitted transaction entries</p>
-            <?php endif; ?>
+            <h1 class="text-2xl font-bold text-gray-900 flex items-center gap-2">
+                <i class="fas fa-receipt text-primary-600"></i> My Bank Transactions
+            </h1>
+            <p class="text-sm text-gray-500 mt-0.5">Your submitted transaction entries</p>
         </div>
-        <?php if ($userRole !== 'Bank Transaction Approver'): ?>
         <a href="<?php echo url('bank/create_transaction.php'); ?>"
            class="inline-flex items-center px-4 py-2 bg-primary-600 rounded-lg text-sm font-medium text-white hover:bg-primary-700">
             <i class="fas fa-plus mr-2"></i> New Transaction
         </a>
-        <?php endif; ?>
     </div>
     <?php endif; ?>
 
@@ -486,8 +477,8 @@ require_once dirname(__DIR__) . '/templates/header.php';
                                     <i class="fas fa-pencil-alt text-xs"></i>
                                 </a>
 
-                                <!-- Unpost: Superadmin + Approver = always; others = non-approved only, not already unposted -->
-                                <?php if ($tx->status !== 'unposted' && (in_array($currentUser['role'], ['Superadmin', 'Bank Transaction Approver']) || $tx->status !== 'approved')): ?>
+                                <!-- Unpost: Superadmin = always, others = non-approved only, not already unposted -->
+                                <?php if ($tx->status !== 'unposted' && ($currentUser['role'] === 'Superadmin' || $tx->status !== 'approved')): ?>
                                 <button onclick="unpostTransaction(<?php echo $tx->id; ?>, '<?php echo htmlspecialchars($tx->transaction_number); ?>', '<?php echo $tx->status; ?>')"
                                         title="<?php echo $tx->status === 'approved' ? 'Unpost (Superadmin Override)' : 'Mark as Unposted'; ?>"
                                         class="p-1.5 rounded transition-colors <?php echo $tx->status === 'approved' ? 'text-orange-500 hover:text-orange-700 hover:bg-orange-50' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'; ?>">

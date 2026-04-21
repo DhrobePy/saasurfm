@@ -19,11 +19,8 @@ $userRole    = $currentUser['role'];
 $userName    = $currentUser['display_name'];
 $ipAddress   = $_SERVER['REMOTE_ADDR'] ?? null;
 
-$adminRoles    = ['Superadmin', 'admin', 'Accounts', 'accounts-demra', 'accounts-srg'];
-$isAdmin       = in_array($userRole, $adminRoles);
-// Approver role can approve/reject transactions but not export or do admin operations
-$approverRoles = array_merge($adminRoles, ['Bank Transaction Approver']);
-$isApprover    = in_array($userRole, $approverRoles);
+$adminRoles  = ['Superadmin', 'admin', 'Accounts', 'accounts-demra', 'accounts-srg'];
+$isAdmin     = in_array($userRole, $adminRoles);
 
 $action      = $_REQUEST['action'] ?? '';
 $bankManager = new BankManager();
@@ -100,7 +97,7 @@ try {
 
         // ── Approve ─────────────────────────────────────────
         case 'approve':
-            if (!$isApprover) throw new Exception('Permission denied.');
+            if (!$isAdmin) throw new Exception('Permission denied.');
             $txId = (int)($_POST['id'] ?? 0);
             $bankManager->approveTransaction($txId, $userId, $userName, $ipAddress);
             echo json_encode(['success' => true, 'message' => 'Transaction approved.']);
@@ -108,7 +105,7 @@ try {
 
         // ── Reject ──────────────────────────────────────────
         case 'reject':
-            if (!$isApprover) throw new Exception('Permission denied.');
+            if (!$isAdmin) throw new Exception('Permission denied.');
             $txId   = (int)($_POST['id'] ?? 0);
             $reason = trim($_POST['reason'] ?? '');
             if (!$reason) throw new Exception('Rejection reason is required.');
@@ -118,7 +115,7 @@ try {
 
         // ── Unpost (soft delete) ────────────────────────────
         case 'unpost':
-            if (!$isApprover) throw new Exception('Permission denied.');
+            if (!$isAdmin) throw new Exception('Permission denied.');
             $txId = (int)($_POST['id'] ?? 0);
             $bankManager->unpostTransaction($txId, $userId, $userName, $ipAddress, $userRole);
             echo json_encode(['success' => true, 'message' => 'Transaction marked as unposted.']);
@@ -148,7 +145,7 @@ try {
 
         // ── Approve Transfer ────────────────────────────────
         case 'approve_transfer':
-            if (!in_array($userRole, ['Superadmin', 'admin', 'Bank Transaction Approver']))
+            if (!in_array($userRole, ['Superadmin', 'admin', 'bank-approver']))
                 throw new Exception('Permission denied.');
             $trnId = (int)($_POST['id'] ?? 0);
             $bankManager->approveTransfer($trnId, $userId, $userName, $ipAddress);
@@ -157,43 +154,13 @@ try {
 
         // ── Reject Transfer ──────────────────────────────────
         case 'reject_transfer':
-            if (!in_array($userRole, ['Superadmin', 'admin', 'Bank Transaction Approver']))
+            if (!in_array($userRole, ['Superadmin', 'admin', 'bank-approver']))
                 throw new Exception('Permission denied.');
             $trnId  = (int)($_POST['id'] ?? 0);
             $reason = trim($_POST['reason'] ?? '');
             if (!$reason) throw new Exception('Rejection reason is required.');
             $bankManager->rejectTransfer($trnId, $reason, $userId, $userName, $ipAddress);
             echo json_encode(['success' => true, 'message' => 'Transfer rejected.']);
-            break;
-
-        // ── Bulk Unpost ──────────────────────────────────────
-        case 'bulk_unpost':
-            if (!in_array($userRole, ['Superadmin', 'admin']))
-                throw new Exception('Permission denied.');
-            $ids    = array_filter(array_map('intval', $_POST['ids'] ?? []));
-            $reason = trim($_POST['reason'] ?? '');
-            if (empty($ids))   throw new Exception('No transaction IDs provided.');
-            if (!$reason)      throw new Exception('A reason is required for bulk unpost.');
-            $result = $bankManager->bulkUnpost($ids, $userId, $userName, $reason, $ipAddress);
-            echo json_encode([
-                'success' => true,
-                'message' => $result['success'] . ' transaction(s) unposted.'
-                             . ($result['skipped'] > 0 ? ' ' . $result['skipped'] . ' skipped (already unposted).' : ''),
-            ]);
-            break;
-
-        // ── Bulk Delete (Superadmin only) ─────────────────────
-        case 'bulk_delete':
-            if ($userRole !== 'Superadmin')
-                throw new Exception('Permission denied. Only Superadmin can permanently delete transactions.');
-            $ids = array_filter(array_map('intval', $_POST['ids'] ?? []));
-            if (empty($ids)) throw new Exception('No transaction IDs provided.');
-            $result = $bankManager->bulkDelete($ids, $userId, $userName, $ipAddress);
-            echo json_encode([
-                'success' => true,
-                'message' => $result['success'] . ' transaction(s) permanently deleted.'
-                             . ($result['skipped'] > 0 ? ' ' . $result['skipped'] . ' not found.' : ''),
-            ]);
             break;
 
         default:
