@@ -21,16 +21,6 @@ $cash_accounts = $payment_manager->getAllCashAccounts();
 // Get employees
 $employees = $payment_manager->getAllEmployees();
 
-// Pre-load supplier credit balances for all unique supplier_ids in the PO list
-$supplier_credits = [];
-foreach ($outstanding_pos as $po_item) {
-    $sid = (int)($po_item->supplier_id ?? 0);
-    if ($sid && !isset($supplier_credits[$sid])) {
-        $cr = $po_manager->getSupplierCreditBalance($sid);
-        $supplier_credits[$sid] = $cr ? floatval($cr->available_balance) : 0;
-    }
-}
-
 // If PO ID provided, get PO details
 $selected_po = null;
 if ($po_id) {
@@ -71,28 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $result = $payment_manager->recordPayment($data);
         
         if ($result['success']) {
-
-            // ── Apply supplier credit if requested ─────────────────────────────
-            $apply_credit  = ($_POST['apply_credit'] ?? '') === '1';
-            $credit_amount = floatval($_POST['credit_amount'] ?? 0);
-
-            if ($apply_credit && $credit_amount > 0) {
-                $po_for_credit   = $po_manager->getPurchaseOrder($data['purchase_order_id']);
-                $actual_pmt_id   = is_array($result['payment_id'])
-                    ? ($result['payment_id']['id'] ?? $result['payment_id'][0] ?? null)
-                    : $result['payment_id'];
-                $cur = getCurrentUser();
-                $po_manager->applySupplierCredit(
-                    $po_for_credit->supplier_id,
-                    $data['purchase_order_id'],
-                    $actual_pmt_id,
-                    $credit_amount,
-                    $cur['id']            ?? null,
-                    $cur['display_name']  ?? 'System'
-                );
-                $_SESSION['info'] = "Supplier credit of ৳" . number_format($credit_amount, 2) . " applied against this payment.";
-            }
-
+            
             try {
                 if (function_exists('auditLog')) {
                     $currentUser = getCurrentUser();
@@ -246,14 +215,6 @@ require_once '../templates/header.php';
         </button>
     </div>
     <?php endif; ?>
-    <?php if (isset($_SESSION['info'])): ?>
-    <div class="bg-blue-50 border border-blue-200 text-blue-800 px-4 py-3 rounded-lg mb-6 flex items-center justify-between">
-        <span><?php echo $_SESSION['info']; unset($_SESSION['info']); ?></span>
-        <button onclick="this.parentElement.remove()" class="text-blue-600 hover:text-blue-800">
-            <i class="fas fa-times"></i>
-        </button>
-    </div>
-    <?php endif; ?>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div class="lg:col-span-2">
@@ -272,21 +233,15 @@ require_once '../templates/header.php';
                                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" 
                                     required>
                                 <option value="">-- Select Purchase Order --</option>
-                                <?php foreach ($outstanding_pos as $po):
-                                    $po_supplier_id  = (int)($po->supplier_id ?? 0);
-                                    $po_credit_avail = $supplier_credits[$po_supplier_id] ?? 0;
-                                ?>
-                                <option value="<?php echo $po->id; ?>"
+                                <?php foreach ($outstanding_pos as $po): ?>
+                                <option value="<?php echo $po->id; ?>" 
                                         data-supplier="<?php echo htmlspecialchars($po->supplier_name); ?>"
-                                        data-supplier-id="<?php echo $po_supplier_id; ?>"
                                         data-balance="<?php echo $po->balance_payable; ?>"
                                         data-received-value="<?php echo $po->total_received_value; ?>"
                                         data-paid="<?php echo $po->total_paid; ?>"
-                                        data-credit="<?php echo $po_credit_avail; ?>"
                                         <?php echo $selected_po && $selected_po->id == $po->id ? 'selected' : ''; ?>>
-                                    PO #<?php echo $po->po_number; ?> - <?php echo htmlspecialchars($po->supplier_name); ?>
-                                    (Balance: ৳<?php echo number_format($po->balance_payable, 2); ?>
-                                     <?php if ($po_credit_avail > 0): ?>| Credit: ৳<?php echo number_format($po_credit_avail, 0); ?><?php endif; ?>)
+                                    PO #<?php echo $po->po_number; ?> - <?php echo htmlspecialchars($po->supplier_name); ?> 
+                                    (Balance: ৳<?php echo number_format($po->balance_payable, 2); ?>)
                                 </option>
                                 <?php endforeach; ?>
                             </select>
@@ -304,59 +259,6 @@ require_once '../templates/header.php';
                                         <div><strong>Already Paid:</strong> ৳<span id="poPaid"></span></div>
                                         <div class="text-red-600"><strong>Balance Due:</strong> ৳<span id="poBalance"></span></div>
                                     </div>
-                                </div>
-                                <!-- Supplier credit row (shown only when credit > 0) -->
-                                <div id="creditAvailRow" class="hidden mt-3 pt-3 border-t border-blue-200 flex items-center justify-between">
-                                    <div class="flex items-center gap-2 text-green-700">
-                                        <i class="fas fa-piggy-bank"></i>
-                                        <strong>Supplier Credit Available:</strong>
-                                        <span id="poCreditBalance" class="font-bold text-green-800">৳0.00</span>
-                                    </div>
-                                    <button type="button" id="btnApplyCredit"
-                                            class="text-sm bg-green-100 text-green-800 border border-green-300 px-3 py-1 rounded hover:bg-green-200">
-                                        Apply Credit
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Credit Application Section (shown when "Apply Credit" clicked) -->
-                        <div id="creditSection" class="mb-4 hidden">
-                            <div class="bg-green-50 border border-green-300 rounded-lg p-4">
-                                <h6 class="font-semibold text-green-800 mb-3 flex items-center gap-2">
-                                    <i class="fas fa-piggy-bank"></i> Apply Supplier Credit Balance
-                                </h6>
-                                <p class="text-sm text-green-700 mb-3">
-                                    This supplier has an available credit from a posted Credit Note (CAN).
-                                    You can apply part or all of it against this payment — it reduces the
-                                    <em>effective</em> cash outflow without changing the payment amount.
-                                </p>
-                                <div class="flex items-center gap-3">
-                                    <div class="flex-1">
-                                        <label class="block text-sm font-medium text-gray-700 mb-1">
-                                            Credit Amount to Apply (৳)
-                                        </label>
-                                        <input type="number" name="credit_amount" id="credit_amount"
-                                               class="w-full px-3 py-2 border border-green-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                                               step="0.01" min="0.01" placeholder="0.00"
-                                               oninput="updateCreditSummary()">
-                                        <p class="text-xs text-gray-500 mt-1">Max: ৳<span id="maxCreditDisplay">0.00</span></p>
-                                    </div>
-                                    <button type="button" id="btnApplyMaxCredit"
-                                            class="bg-green-600 text-white px-3 py-2 rounded text-sm hover:bg-green-700 mt-4">
-                                        Apply Max
-                                    </button>
-                                </div>
-                                <div id="creditSummary" class="mt-3 text-sm text-green-800 hidden">
-                                    <strong>Net cash required:</strong>
-                                    ৳<span id="netCashRequired">0.00</span>
-                                    (Payment: ৳<span id="csTotalPay">0.00</span> − Credit: ৳<span id="csCreditAmt">0.00</span>)
-                                </div>
-                                <div class="mt-2 flex items-center gap-2">
-                                    <input type="checkbox" name="apply_credit" id="apply_credit" value="1" checked class="w-4 h-4">
-                                    <label for="apply_credit" class="text-sm text-green-700">
-                                        Confirm credit application (will be recorded in supplier ledger)
-                                    </label>
                                 </div>
                             </div>
                         </div>
@@ -612,75 +514,21 @@ document.addEventListener('DOMContentLoaded', function() {
     const advanceAlert = document.getElementById('advanceAlert');
     const payFullBalanceBtn = document.getElementById('payFullBalance');
 
-    const creditAvailRow   = document.getElementById('creditAvailRow');
-    const creditSection    = document.getElementById('creditSection');
-    const poCreditBalance  = document.getElementById('poCreditBalance');
-    const maxCreditDisplay = document.getElementById('maxCreditDisplay');
-    const creditAmtInput   = document.getElementById('credit_amount');
-    const btnApplyCredit   = document.getElementById('btnApplyCredit');
-    const btnApplyMax      = document.getElementById('btnApplyMaxCredit');
-
     // Update PO summary
     poSelect.addEventListener('change', function() {
         const option = this.options[this.selectedIndex];
         if (this.value) {
-            document.getElementById('poSupplier').textContent      = option.dataset.supplier;
-            document.getElementById('poReceivedValue').textContent = parseFloat(option.dataset.receivedValue || 0).toFixed(2);
-            document.getElementById('poPaid').textContent          = parseFloat(option.dataset.paid         || 0).toFixed(2);
-            document.getElementById('poBalance').textContent       = parseFloat(option.dataset.balance      || 0).toFixed(2);
+            document.getElementById('poSupplier').textContent = option.dataset.supplier;
+            document.getElementById('poReceivedValue').textContent = parseFloat(option.dataset.receivedValue).toFixed(2);
+            document.getElementById('poPaid').textContent = parseFloat(option.dataset.paid).toFixed(2);
+            document.getElementById('poBalance').textContent = parseFloat(option.dataset.balance).toFixed(2);
+            
             poSummary.classList.remove('hidden');
-
-            // Supplier credit
-            const credit = parseFloat(option.dataset.credit || 0);
-            if (credit > 0.01) {
-                poCreditBalance.textContent  = '৳' + credit.toFixed(2);
-                maxCreditDisplay.textContent = credit.toFixed(2);
-                creditAvailRow.classList.remove('hidden');
-            } else {
-                creditAvailRow.classList.add('hidden');
-                creditSection.classList.add('hidden');
-                if (creditAmtInput) creditAmtInput.value = '';
-            }
         } else {
             poSummary.classList.add('hidden');
-            creditAvailRow.classList.add('hidden');
-            creditSection.classList.add('hidden');
         }
         checkAdvancePayment();
     });
-
-    // Show credit application section
-    if (btnApplyCredit) {
-        btnApplyCredit.addEventListener('click', function() {
-            creditSection.classList.toggle('hidden');
-        });
-    }
-
-    // Apply maximum credit
-    if (btnApplyMax) {
-        btnApplyMax.addEventListener('click', function() {
-            const option  = poSelect.options[poSelect.selectedIndex];
-            const credit  = parseFloat(option.dataset.credit || 0);
-            const payment = parseFloat(amountInput.value) || 0;
-            creditAmtInput.value = Math.min(credit, payment > 0 ? payment : credit).toFixed(2);
-            updateCreditSummary();
-        });
-    }
-
-    // Update credit summary
-    window.updateCreditSummary = function() {
-        const creditAmt = parseFloat(creditAmtInput?.value || 0);
-        const payAmt    = parseFloat(amountInput.value) || 0;
-        const net       = Math.max(0, payAmt - creditAmt);
-        if (creditAmt > 0) {
-            document.getElementById('netCashRequired').textContent = net.toFixed(2);
-            document.getElementById('csTotalPay').textContent      = payAmt.toFixed(2);
-            document.getElementById('csCreditAmt').textContent     = creditAmt.toFixed(2);
-            document.getElementById('creditSummary').classList.remove('hidden');
-        } else {
-            document.getElementById('creditSummary').classList.add('hidden');
-        }
-    };
 
     // Pay full balance
     payFullBalanceBtn.addEventListener('click', function() {

@@ -8,10 +8,9 @@
 require_once '../core/init.php';
 restrict_access(['Superadmin', 'admin', 'Accounts', 'accounts-demra', 'accounts-srg']);
 
-$currentUser   = getCurrentUser();
-$user_role     = $currentUser['role'] ?? '';
+$currentUser = getCurrentUser();
+$user_role = $currentUser['role'] ?? '';
 $is_superadmin = ($user_role === 'Superadmin');
-$is_admin      = in_array($user_role, ['Superadmin', 'admin']);
 
 $po_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
@@ -19,20 +18,7 @@ if ($po_id === 0) {
     redirect('purchase_adnan_index.php', 'Invalid PO', 'error');
 }
 
-$db         = Database::getInstance()->getPdo();
-$po_manager = new Purchaseadnanmanager();
-
-// ── POST: Mark Final Delivery ─────────────────────────────────────────────────
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && $is_admin && isset($_POST['action_final_delivery'])) {
-    $create_can = ($_POST['create_can_shortfall'] ?? '') === '1';
-    $result     = $po_manager->markFinalDelivery($po_id, $create_can, $currentUser['id'], $currentUser['display_name'] ?? 'Admin');
-    if ($result['success']) {
-        $_SESSION['success'] = $result['message'];
-    } else {
-        $_SESSION['error'] = $result['message'];
-    }
-    redirect('purchase/purchase_adnan_view_po.php?id=' . $po_id);
-}
+$db = Database::getInstance()->getPdo();
 
 // Get PO details with supplier info
 $po_sql = "
@@ -91,9 +77,6 @@ $stmt = $db->prepare($payments_sql);
 $stmt->execute([$po_id]);
 $payments = $stmt->fetchAll(PDO::FETCH_OBJ);
 
-// Get adjustment notes for this PO
-$adjustments = $po_manager->listAdjustmentNotes(['purchase_order_id' => $po_id]);
-
 require_once '../templates/header.php';
 ?>
 
@@ -112,19 +95,9 @@ require_once '../templates/header.php';
             <a href="purchase_adnan_index.php" class="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 flex items-center gap-2">
                 <i class="fas fa-arrow-left"></i> Back
             </a>
-            <?php if ($is_admin): ?>
+            <?php if ($is_superadmin): ?>
             <a href="purchase_adnan_edit_po.php?id=<?php echo $po_id; ?>" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2">
                 <i class="fas fa-edit"></i> Edit PO
-            </a>
-            <?php if ($po->delivery_status === 'partial' && !(int)($po->is_delivery_locked ?? 0)): ?>
-            <button onclick="document.getElementById('finalDeliveryPanel').classList.toggle('hidden')"
-                    class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 flex items-center gap-2">
-                <i class="fas fa-flag-checkered"></i> Mark Final Delivery
-            </button>
-            <?php endif; ?>
-            <a href="purchase_adnan_record_adjustment.php?po_id=<?php echo $po_id; ?>"
-               class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 flex items-center gap-2">
-                <i class="fas fa-file-invoice-dollar"></i> Adj. Note
             </a>
             <?php endif; ?>
             <button onclick="window.print()" class="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 flex items-center gap-2">
@@ -132,106 +105,6 @@ require_once '../templates/header.php';
             </button>
         </div>
     </div>
-
-    <?php if (isset($_SESSION['success'])): ?>
-    <div class="bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg mb-4 flex justify-between">
-        <span><?php echo $_SESSION['success']; unset($_SESSION['success']); ?></span>
-        <button onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>
-    </div>
-    <?php endif; ?>
-    <?php if (isset($_SESSION['error'])): ?>
-    <div class="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg mb-4 flex justify-between">
-        <span><?php echo $_SESSION['error']; unset($_SESSION['error']); ?></span>
-        <button onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>
-    </div>
-    <?php endif; ?>
-    <?php if (isset($_SESSION['info'])): ?>
-    <div class="bg-blue-50 border border-blue-200 text-blue-800 px-4 py-3 rounded-lg mb-4 flex justify-between">
-        <span><?php echo $_SESSION['info']; unset($_SESSION['info']); ?></span>
-        <button onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>
-    </div>
-    <?php endif; ?>
-
-    <?php /* ── Mark Final Delivery Panel (admin only, partial delivery) ── */ ?>
-    <?php if ($is_admin && $po->delivery_status === 'partial' && !(int)($po->is_delivery_locked ?? 0)): ?>
-    <div id="finalDeliveryPanel" class="hidden mb-5 bg-purple-50 border-2 border-purple-300 rounded-lg p-5">
-        <h5 class="font-semibold text-purple-800 flex items-center gap-2 mb-3">
-            <i class="fas fa-flag-checkered"></i> Mark as Final Delivery
-        </h5>
-        <?php
-            $shortfall     = floatval($po->quantity_kg) - floatval($po->total_received_qty ?? 0);
-            $shortfall_val = $shortfall * floatval($po->unit_price_per_kg);
-        ?>
-        <div class="text-sm text-purple-700 mb-4">
-            <p>This PO has a shortfall of <strong><?php echo number_format($shortfall, 2); ?> KG</strong>
-               (≈ ৳<?php echo number_format($shortfall_val, 2); ?>) against the ordered quantity.</p>
-            <p class="mt-1">Marking as <em>Final Delivery</em> will:</p>
-            <ul class="list-disc ml-5 mt-1 space-y-1">
-                <li>Lock the PO — no further GRNs can be recorded</li>
-                <li>Optionally auto-create a <strong>draft Credit Note (CAN)</strong> for the shortfall value</li>
-            </ul>
-        </div>
-        <form method="POST">
-            <input type="hidden" name="action_final_delivery" value="1">
-            <div class="flex items-center gap-3 mb-4">
-                <input type="checkbox" name="create_can_shortfall" id="create_can_shortfall" value="1" checked
-                       class="w-4 h-4 text-purple-600 rounded">
-                <label for="create_can_shortfall" class="text-sm text-purple-800 font-medium">
-                    Auto-create draft CAN for shortfall
-                    (৳<?php echo number_format($shortfall_val, 2); ?>) — requires admin approval before taking effect
-                </label>
-            </div>
-            <div class="flex gap-3">
-                <button type="submit"
-                        class="bg-purple-600 text-white px-5 py-2 rounded-lg hover:bg-purple-700 flex items-center gap-2"
-                        onclick="return confirm('Mark this PO as Final Delivery? Delivery will be locked.')">
-                    <i class="fas fa-lock"></i> Confirm Final Delivery
-                </button>
-                <button type="button" onclick="document.getElementById('finalDeliveryPanel').classList.add('hidden')"
-                        class="border border-gray-300 text-gray-700 px-5 py-2 rounded-lg hover:bg-gray-50">
-                    Cancel
-                </button>
-            </div>
-        </form>
-    </div>
-    <?php endif; ?>
-
-    <?php /* ── Delivery lock banner ── */ ?>
-    <?php if ((int)($po->is_delivery_locked ?? 0)): ?>
-    <div class="flex items-start gap-3 bg-red-50 border-l-4 border-red-500 rounded-r-lg px-5 py-4 mb-5">
-        <i class="fas fa-lock text-red-500 mt-0.5 text-xl"></i>
-        <div>
-            <p class="font-semibold text-red-800 text-base">
-                Delivery Locked — No further GRNs can be recorded for this PO
-            </p>
-            <?php if (!empty($po->delivery_lock_reason)): ?>
-            <p class="text-sm text-red-700 mt-1">
-                <span class="font-medium">Reason:</span> <?php echo htmlspecialchars($po->delivery_lock_reason); ?>
-            </p>
-            <?php endif; ?>
-            <?php if (!empty($po->delivery_locked_at)): ?>
-            <?php
-                $lkUser = '';
-                if (!empty($po->delivery_locked_by_user_id)) {
-                    $lkStmt = $db->prepare("SELECT display_name FROM users WHERE id = ?");
-                    $lkStmt->execute([$po->delivery_locked_by_user_id]);
-                    $lkUser = $lkStmt->fetchColumn() ?: 'Admin';
-                }
-            ?>
-            <p class="text-xs text-red-500 mt-1">
-                Locked by <strong><?php echo htmlspecialchars($lkUser); ?></strong>
-                on <?php echo date('d M Y H:i', strtotime($po->delivery_locked_at)); ?>
-            </p>
-            <?php endif; ?>
-            <?php if ($is_admin): ?>
-            <a href="purchase_adnan_edit_po.php?id=<?php echo $po_id; ?>"
-               class="inline-flex items-center gap-1 mt-2 text-sm text-red-700 underline hover:text-red-900">
-                <i class="fas fa-unlock text-xs"></i> Re-open via Edit PO
-            </a>
-            <?php endif; ?>
-        </div>
-    </div>
-    <?php endif; ?>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- Left Column: PO Details & Tables -->
@@ -283,25 +156,20 @@ require_once '../templates/header.php';
                                 <span class="font-semibold w-40">Total Value:</span>
                                 <span class="font-bold">৳<?php echo number_format($po->total_order_value, 2); ?></span>
                             </div>
-                            <div class="flex items-center gap-2">
+                            <div class="flex">
                                 <span class="font-semibold w-40">Delivery Status:</span>
                                 <?php
                                 $status_colors = [
-                                    'pending'       => 'bg-gray-100 text-gray-800',
-                                    'partial'       => 'bg-yellow-100 text-yellow-800',
-                                    'completed'     => 'bg-green-100 text-green-800',
+                                    'pending' => 'bg-gray-100 text-gray-800',
+                                    'partial' => 'bg-yellow-100 text-yellow-800',
+                                    'completed' => 'bg-green-100 text-green-800',
                                     'over_received' => 'bg-blue-100 text-blue-800',
-                                    'closed'        => 'bg-gray-100 text-gray-800',
+                                    'closed' => 'bg-gray-100 text-gray-800'
                                 ];
                                 ?>
                                 <span class="inline-block px-2 py-1 rounded text-sm <?php echo $status_colors[$po->delivery_status] ?? 'bg-gray-100 text-gray-800'; ?>">
                                     <?php echo ucfirst(str_replace('_', ' ', $po->delivery_status)); ?>
                                 </span>
-                                <?php if ((int)($po->is_delivery_locked ?? 0)): ?>
-                                <span class="inline-flex items-center gap-1 px-2 py-1 rounded text-xs bg-red-100 text-red-700 font-semibold">
-                                    <i class="fas fa-lock text-xs"></i> Locked
-                                </span>
-                                <?php endif; ?>
                             </div>
                             <div class="flex">
                                 <span class="font-semibold w-40">Created:</span>
@@ -598,111 +466,6 @@ require_once '../templates/header.php';
                     <?php endif; ?>
                 </div>
             </div>
-            <!-- Adjustment Notes -->
-            <div class="bg-white rounded-lg shadow">
-                <div class="bg-indigo-700 text-white px-6 py-4 rounded-t-lg flex justify-between items-center">
-                    <h5 class="font-semibold flex items-center gap-2">
-                        <i class="fas fa-file-invoice-dollar"></i>
-                        Adjustment Notes (<?php echo count($adjustments); ?>)
-                    </h5>
-                    <div class="flex gap-2">
-                        <a href="purchase_adnan_record_adjustment.php?po_id=<?php echo $po_id; ?>"
-                           class="bg-white text-indigo-700 px-3 py-1 rounded text-sm hover:bg-indigo-50 flex items-center gap-1">
-                            <i class="fas fa-plus"></i> New Note
-                        </a>
-                        <a href="purchase_adnan_adjustments.php"
-                           class="bg-indigo-600 text-white px-3 py-1 rounded text-sm hover:bg-indigo-500 border border-white/30 flex items-center gap-1">
-                            <i class="fas fa-list"></i> All Notes
-                        </a>
-                    </div>
-                </div>
-                <div class="p-6">
-                    <?php if (count($adjustments) > 0):
-                        $adj_status_colors = [
-                            'draft'     => 'bg-yellow-100 text-yellow-800',
-                            'approved'  => 'bg-blue-100 text-blue-800',
-                            'posted'    => 'bg-green-100 text-green-800',
-                            'cancelled' => 'bg-red-100 text-red-800',
-                        ];
-                        $adj_reason_labels = [
-                            'over_delivery'          => 'Over-Delivery',
-                            'under_delivery_closure' => 'Under-Delivery Closure',
-                            'quality_deduction'      => 'Quality Deduction',
-                            'price_dispute'          => 'Price Dispute',
-                            'return'                 => 'Return',
-                            'other'                  => 'Other',
-                        ];
-                    ?>
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200 text-sm">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Note #</th>
-                                    <th class="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase">Type</th>
-                                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Reason</th>
-                                    <th class="px-3 py-2 text-right text-xs font-medium text-gray-500 uppercase">Amount</th>
-                                    <th class="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase">Status</th>
-                                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
-                                    <th class="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase print:hidden">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
-                                <?php foreach ($adjustments as $adj): ?>
-                                <tr class="hover:bg-gray-50">
-                                    <td class="px-3 py-2 font-medium">
-                                        <a href="purchase_adnan_view_adjustment.php?id=<?php echo $adj->id; ?>"
-                                           class="text-indigo-700 hover:underline">
-                                            <?php echo htmlspecialchars($adj->note_number); ?>
-                                        </a>
-                                    </td>
-                                    <td class="px-3 py-2 text-center">
-                                        <?php if ($adj->note_type === 'debit'): ?>
-                                        <span class="px-2 py-0.5 rounded text-xs font-semibold bg-orange-100 text-orange-800">
-                                            <i class="fas fa-arrow-up text-xs"></i> DAN
-                                        </span>
-                                        <?php else: ?>
-                                        <span class="px-2 py-0.5 rounded text-xs font-semibold bg-blue-100 text-blue-800">
-                                            <i class="fas fa-arrow-down text-xs"></i> CAN
-                                        </span>
-                                        <?php endif; ?>
-                                    </td>
-                                    <td class="px-3 py-2 text-gray-600">
-                                        <?php echo $adj_reason_labels[$adj->reason_type] ?? $adj->reason_type; ?>
-                                    </td>
-                                    <td class="px-3 py-2 text-right font-bold <?php echo $adj->note_type === 'debit' ? 'text-orange-700' : 'text-blue-700'; ?>">
-                                        ৳<?php echo number_format($adj->amount, 2); ?>
-                                    </td>
-                                    <td class="px-3 py-2 text-center">
-                                        <span class="px-2 py-0.5 rounded text-xs <?php echo $adj_status_colors[$adj->status] ?? 'bg-gray-100 text-gray-800'; ?>">
-                                            <?php echo ucfirst($adj->status); ?>
-                                        </span>
-                                    </td>
-                                    <td class="px-3 py-2 text-gray-500 text-xs">
-                                        <?php echo date('d M Y', strtotime($adj->created_at)); ?>
-                                    </td>
-                                    <td class="px-3 py-2 text-center print:hidden">
-                                        <a href="purchase_adnan_view_adjustment.php?id=<?php echo $adj->id; ?>"
-                                           class="text-indigo-600 hover:text-indigo-800" title="View / Approve">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
-                    </div>
-                    <?php else: ?>
-                        <p class="text-gray-500 text-center py-4">No adjustment notes for this PO.</p>
-                        <div class="text-center">
-                            <a href="purchase_adnan_record_adjustment.php?po_id=<?php echo $po_id; ?>"
-                               class="inline-flex items-center gap-2 text-sm text-indigo-600 hover:underline">
-                                <i class="fas fa-plus"></i> Create Adjustment Note
-                            </a>
-                        </div>
-                    <?php endif; ?>
-                </div>
-            </div>
-
         </div>
 
         <!-- Right Column: Summary Cards -->
@@ -735,43 +498,17 @@ require_once '../templates/header.php';
                         <span class="text-blue-600">৳<?php echo number_format($po->total_paid, 2); ?></span>
                     </div>
                     
-                    <?php
-                        $total_adj_amount = 0;
-                        foreach ($adjustments as $a) {
-                            if ($a->status === 'posted') {
-                                $total_adj_amount += ($a->note_type === 'debit') ? $a->amount : -$a->amount;
-                            }
-                        }
-                    ?>
-                    <?php if ($total_adj_amount != 0): ?>
-                    <div class="flex justify-between">
-                        <span class="font-semibold">Posted Adjustments:</span>
-                        <span class="<?php echo $total_adj_amount > 0 ? 'text-orange-600' : 'text-blue-600'; ?>">
-                            <?php echo $total_adj_amount > 0 ? '+' : ''; ?>৳<?php echo number_format($total_adj_amount, 2); ?>
-                        </span>
-                    </div>
-                    <?php endif; ?>
-
                     <div class="flex justify-between pt-3 border-t font-bold">
                         <span>Balance Payable:</span>
-                        <?php
-                            $balance_payable_calc = $expected_payable - floatval($po->total_paid) + $total_adj_amount;
+                        <?php 
+                            $balance_payable_calc = $expected_payable - $po->total_paid;
                         ?>
                         <span class="<?php echo $balance_payable_calc > 0 ? 'text-red-600' : 'text-green-600'; ?>">
                             ৳<?php echo number_format($balance_payable_calc, 2); ?>
                         </span>
                     </div>
-
-                    <?php
-                        // Count draft/approved notes to prompt action
-                        $pending_notes = array_filter($adjustments, fn($a) => in_array($a->status, ['draft','approved']));
-                    ?>
-                    <?php if (count($pending_notes) > 0): ?>
-                    <div class="mt-2 flex items-center gap-2 text-xs text-yellow-700 bg-yellow-50 border border-yellow-200 rounded p-2">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <?php echo count($pending_notes); ?> adjustment note(s) pending — balance will change once posted.
-                    </div>
-                    <?php endif; ?>
+                    
+                    
                 </div>
             </div>
 

@@ -208,10 +208,6 @@ include '../templates/header.php';
                class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
                 <i class="fas fa-credit-card"></i> Record Payment
             </a>
-            <a href="purchase_adnan_adjustments.php"
-               class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
-                <i class="fas fa-file-invoice-dollar"></i> Adj. Notes
-            </a>
             <a href="variance_report.php"
                class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors">
                 <i class="fas fa-chart-line"></i> Variance
@@ -228,7 +224,61 @@ include '../templates/header.php';
     </div>
 
     <!-- ── KPI Strip ───────────────────────────────────────── -->
-    
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-5">
+
+        <div class="bg-white border border-gray-100 rounded-xl shadow-sm p-3">
+            <p class="text-[10px] font-semibold text-gray-400 uppercase tracking-wide">Total Orders</p>
+            <p class="text-xl font-bold text-gray-800 mt-0.5"><?php echo number_format($stats->total_orders ?? 0); ?></p>
+            <p class="text-[10px] text-gray-400 mt-0.5">
+                <?php echo $stats->completed_deliveries ?? 0; ?> done ·
+                <?php echo $stats->closed_deals ?? 0; ?> closed
+            </p>
+        </div>
+
+        <div class="bg-white border border-purple-100 rounded-xl shadow-sm p-3">
+            <p class="text-[10px] font-semibold text-purple-400 uppercase tracking-wide">Expected Payable</p>
+            <p class="text-xl font-bold text-purple-700 mt-0.5">
+                ৳<?php echo number_format(($stats->expected_payable ?? 0) / 1000000, 2); ?>M
+            </p>
+            <p class="text-[10px] text-gray-400 mt-0.5">Based on GRN expected qty</p>
+        </div>
+
+        <div class="bg-white border border-green-100 rounded-xl shadow-sm p-3">
+            <p class="text-[10px] font-semibold text-green-500 uppercase tracking-wide">Total Paid</p>
+            <p class="text-xl font-bold text-green-700 mt-0.5">
+                ৳<?php echo number_format(($stats->total_paid ?? 0) / 1000000, 2); ?>M
+            </p>
+            <div class="mt-1.5 w-full bg-gray-100 rounded-full h-1">
+                <div class="bg-green-500 h-1 rounded-full" style="width:<?php echo min(100, $payment_rate); ?>%"></div>
+            </div>
+            <p class="text-[10px] text-gray-400 mt-0.5"><?php echo number_format($payment_rate, 1); ?>% of payable</p>
+        </div>
+
+        <div class="bg-white border border-red-100 rounded-xl shadow-sm p-3">
+            <p class="text-[10px] font-semibold text-red-400 uppercase tracking-wide">Balance Due</p>
+            <p class="text-xl font-bold text-red-600 mt-0.5">
+                ৳<?php echo number_format(($stats->actual_balance_due ?? 0) / 1000000, 2); ?>M
+            </p>
+            <p class="text-[10px] text-gray-400 mt-0.5">Expected − Paid</p>
+        </div>
+
+        <div class="bg-white border border-blue-100 rounded-xl shadow-sm p-3">
+            <p class="text-[10px] font-semibold text-blue-400 uppercase tracking-wide">Advance Paid</p>
+            <p class="text-xl font-bold text-blue-700 mt-0.5">
+                ৳<?php echo number_format(($stats->total_advance ?? 0) / 1000000, 2); ?>M
+            </p>
+            <p class="text-[10px] text-gray-400 mt-0.5">Pre-delivery payments</p>
+        </div>
+
+        <div class="bg-white border border-amber-100 rounded-xl shadow-sm p-3">
+            <p class="text-[10px] font-semibold text-amber-500 uppercase tracking-wide">Order Value</p>
+            <p class="text-xl font-bold text-amber-700 mt-0.5">
+                ৳<?php echo number_format(($stats->total_order_value ?? 0) / 1000000, 2); ?>M
+            </p>
+            <p class="text-[10px] text-gray-400 mt-0.5">Total contracted value</p>
+        </div>
+
+    </div>
 
     <!-- ── Filter Bar ──────────────────────────────────────── -->
     <div class="bg-white border border-gray-100 rounded-xl shadow-sm mb-4">

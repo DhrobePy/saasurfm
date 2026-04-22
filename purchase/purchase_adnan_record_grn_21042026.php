@@ -11,11 +11,8 @@ $po_id = $_GET['po_id'] ?? null;
 $po_manager = new Purchaseadnanmanager();
 $grn_manager = new Goodsreceivedadnanmanager();
 
-// Get all GRN-eligible POs:
-// - Not admin-locked (is_delivery_locked = 0)
-// - Not closed or cancelled
-// - Any delivery_status (pending/partial/completed/over_received) — admin may re-open completed POs
-$open_pos = $po_manager->listPurchaseOrders(['grn_eligible' => true]);
+// Get list of open POs for dropdown
+$open_pos = $po_manager->listPurchaseOrders(['delivery_status' => ['pending', 'partial']]);
 
 // If PO ID provided, get PO details
 $selected_po = null;
@@ -51,40 +48,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $grn_id = is_array($result) ? ($result['grn_id'] ?? $result['id'] ?? null) : $result;
         
         if ($grn_id) {
-
-            // ============================================
-            // OVER-DELIVERY: auto-create draft DAN
-            // ============================================
-            $over_delivery_action = $_POST['over_delivery_action'] ?? 'as_is';
-            $excess_qty           = floatval($_POST['excess_qty'] ?? 0);
-
-            if ($over_delivery_action === 'accept_with_dan' && $excess_qty > 0) {
-                try {
-                    $grn_num_for_dan = is_array($result) && isset($result['grn_number'])
-                        ? $result['grn_number'] : 'GRN#' . $grn_id;
-
-                    $dan_result = $po_manager->createAdjustmentNote([
-                        'note_type'         => 'debit',
-                        'reason_type'       => 'over_delivery',
-                        'purchase_order_id' => $data['purchase_order_id'],
-                        'quantity_kg'       => $excess_qty,
-                        'unit_price_per_kg' => $selected_po->unit_price_per_kg,
-                        'amount'            => $excess_qty * floatval($selected_po->unit_price_per_kg),
-                        'description'       => "Auto-generated: Over-delivery on {$grn_num_for_dan}. "
-                                              . "Excess qty: " . number_format($excess_qty, 2) . " KG.",
-                    ]);
-
-                    if ($dan_result['success']) {
-                        $_SESSION['info'] = "Draft Debit Adjustment Note {$dan_result['note_number']} created for "
-                                           . number_format($excess_qty, 2) . " KG excess delivery. "
-                                           . "<a href='purchase_adnan_view_adjustment.php?id={$dan_result['note_id']}' "
-                                           . "class='underline font-semibold'>Review & Approve →</a>";
-                    }
-                } catch (Exception $dan_e) {
-                    error_log("Auto-DAN creation error: " . $dan_e->getMessage());
-                }
-            }
-
             // ============================================
             // AUDIT TRAIL - GRN CREATED
             // ============================================
@@ -251,14 +214,6 @@ require_once '../templates/header.php';
             </button>
         </div>
     <?php endif; ?>
-    <?php if (isset($_SESSION['info'])): ?>
-        <div class="bg-blue-50 border border-blue-200 text-blue-800 px-4 py-3 rounded-lg mb-6 flex items-center justify-between">
-            <span><?php echo $_SESSION['info']; unset($_SESSION['info']); ?></span>
-            <button onclick="this.parentElement.remove()" class="text-blue-600 hover:text-blue-800">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-    <?php endif; ?>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div class="lg:col-span-2">
@@ -402,46 +357,13 @@ require_once '../templates/header.php';
                             </div>
                         </div>
 
-                        <!-- Over-delivery hidden fields (set by JS modal) -->
-                        <input type="hidden" name="over_delivery_action" id="over_delivery_action" value="as_is">
-                        <input type="hidden" name="excess_qty" id="excess_qty" value="0">
-
-                        <!-- Over-delivery Warning (shown by JS, not a modal) -->
-                        <div id="overDeliveryWarning" class="hidden mb-4 p-4 bg-orange-50 border-2 border-orange-300 rounded-lg">
-                            <div class="flex items-start gap-3">
-                                <i class="fas fa-exclamation-triangle text-orange-500 text-xl mt-0.5"></i>
-                                <div class="flex-1">
-                                    <p class="font-semibold text-orange-800">Over-Delivery Detected</p>
-                                    <p class="text-sm text-orange-700 mt-1">
-                                        Remaining on PO: <strong id="warnPending">0</strong> KG |
-                                        You're recording: <strong id="warnReceiving">0</strong> KG |
-                                        Excess: <strong id="warnExcess" class="text-red-700">0</strong> KG
-                                    </p>
-                                    <p class="text-sm text-orange-700 mt-1">How would you like to handle the excess?</p>
-                                    <div class="mt-3 flex flex-wrap gap-2">
-                                        <button type="button" id="btnAcceptWithDAN"
-                                                class="bg-orange-600 text-white text-sm px-4 py-2 rounded hover:bg-orange-700 flex items-center gap-1">
-                                            <i class="fas fa-file-invoice-dollar"></i>
-                                            Accept All + Auto-Draft Debit Note (DAN)
-                                        </button>
-                                        <button type="button" id="btnAcceptAsIs"
-                                                class="bg-gray-600 text-white text-sm px-4 py-2 rounded hover:bg-gray-700 flex items-center gap-1">
-                                            <i class="fas fa-check"></i>
-                                            Record As-Is (handle manually later)
-                                        </button>
-                                    </div>
-                                    <p id="overDeliveryChoice" class="text-xs text-green-700 mt-2 font-semibold hidden"></p>
-                                </div>
-                            </div>
-                        </div>
-
                         <!-- Submit Buttons -->
                         <div class="flex justify-between">
-                            <a href="<?php echo url('purchase/purchase_adnan_index.php'); ?>"
+                            <a href="<?php echo url('purchase/purchase_adnan_index.php'); ?>" 
                                class="border border-gray-300 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-50">
                                 Cancel
                             </a>
-                            <button type="submit"
+                            <button type="submit" 
                                     class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 flex items-center gap-2">
                                 <i class="fas fa-save"></i> Record GRN
                             </button>
@@ -488,91 +410,46 @@ require_once '../templates/header.php';
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const poSelect             = document.getElementById('purchase_order_id');
-    const qtyReceived          = document.getElementById('quantity_received_kg');
-    const qtyExpected          = document.getElementById('expected_quantity');
-    const poSummary            = document.getElementById('poSummary');
-    const varianceDisplay      = document.getElementById('varianceDisplay');
-    const calculatedValue      = document.getElementById('calculatedValue');
-    const overDeliveryWarning  = document.getElementById('overDeliveryWarning');
-    const overDeliveryChoice   = document.getElementById('overDeliveryChoice');
-    const overDeliveryAction   = document.getElementById('over_delivery_action');
-    const excessQtyInput       = document.getElementById('excess_qty');
+    const poSelect = document.getElementById('purchase_order_id');
+    const qtyReceived = document.getElementById('quantity_received_kg');
+    const qtyExpected = document.getElementById('expected_quantity');
+    const poSummary = document.getElementById('poSummary');
+    const varianceDisplay = document.getElementById('varianceDisplay');
+    const calculatedValue = document.getElementById('calculatedValue');
 
-    // ─── PO change: populate summary ─────────────────────────────
+    // Update PO summary when selection changes
     poSelect.addEventListener('change', function() {
         const option = this.options[this.selectedIndex];
         if (this.value) {
-            document.getElementById('poSupplier').textContent  = option.dataset.supplier;
-            document.getElementById('poOrigin').textContent    = option.dataset.origin;
-            document.getElementById('poOrdered').textContent   = parseFloat(option.dataset.ordered  || 0).toFixed(2);
-            document.getElementById('poReceived').textContent  = parseFloat(option.dataset.received || 0).toFixed(2);
-            // pending = ordered − already received (fallback if data-pending is missing)
-            const pending = parseFloat(option.dataset.pending) ||
-                            (parseFloat(option.dataset.ordered || 0) - parseFloat(option.dataset.received || 0));
-            document.getElementById('poPending').textContent   = pending.toFixed(2);
-            document.getElementById('poUnitPrice').textContent = parseFloat(option.dataset.unitPrice || 0).toFixed(2);
+            document.getElementById('poSupplier').textContent = option.dataset.supplier;
+            document.getElementById('poOrigin').textContent = option.dataset.origin;
+            document.getElementById('poOrdered').textContent = parseFloat(option.dataset.ordered).toFixed(2);
+            document.getElementById('poReceived').textContent = parseFloat(option.dataset.received).toFixed(2);
+            document.getElementById('poPending').textContent = parseFloat(option.dataset.pending).toFixed(2);
+            document.getElementById('poUnitPrice').textContent = parseFloat(option.dataset.unitPrice).toFixed(2);
+            
             poSummary.classList.remove('hidden');
         } else {
             poSummary.classList.add('hidden');
         }
-        resetOverDelivery();
         calculateValue();
     });
 
-    // ─── Reset over-delivery state ────────────────────────────────
-    function resetOverDelivery() {
-        overDeliveryWarning.classList.add('hidden');
-        overDeliveryChoice.classList.add('hidden');
-        overDeliveryAction.value = 'as_is';
-        excessQtyInput.value     = '0';
-    }
-
-    // ─── Check for over-delivery when qty changes ─────────────────
-    function checkOverDelivery() {
-        if (!poSelect.value) { resetOverDelivery(); return; }
-
-        const option   = poSelect.options[poSelect.selectedIndex];
-        const ordered  = parseFloat(option.dataset.ordered  || 0);
-        const received = parseFloat(option.dataset.received || 0);
-        const pending  = parseFloat(option.dataset.pending) || (ordered - received);
-        const nowQty   = parseFloat(qtyReceived.value) || 0;
-
-        if (nowQty > 0 && pending >= 0 && nowQty > pending + 0.01) {
-            const excess = nowQty - pending;
-            document.getElementById('warnPending').textContent   = pending.toFixed(2);
-            document.getElementById('warnReceiving').textContent = nowQty.toFixed(2);
-            document.getElementById('warnExcess').textContent    = excess.toFixed(2);
-            excessQtyInput.value = excess.toFixed(4);
-            overDeliveryWarning.classList.remove('hidden');
-        } else {
-            resetOverDelivery();
-        }
-    }
-
-    // ─── Over-delivery choice buttons ────────────────────────────
-    document.getElementById('btnAcceptWithDAN').addEventListener('click', function() {
-        overDeliveryAction.value = 'accept_with_dan';
-        overDeliveryChoice.textContent = '✔ Choice: Accept all goods + Auto-draft Debit Note (DAN) for excess. Click "Record GRN" to confirm.';
-        overDeliveryChoice.classList.remove('hidden');
-    });
-
-    document.getElementById('btnAcceptAsIs').addEventListener('click', function() {
-        overDeliveryAction.value = 'as_is';
-        overDeliveryChoice.textContent = '✔ Choice: Record as-is. You can create an adjustment note manually later.';
-        overDeliveryChoice.classList.remove('hidden');
-    });
-
-    // ─── Variance display ────────────────────────────────────────
+    // Calculate variance
     function calculateVariance() {
-        const rcvd     = parseFloat(qtyReceived.value) || 0;
+        const received = parseFloat(qtyReceived.value) || 0;
         const expected = parseFloat(qtyExpected.value) || 0;
-        if (expected > 0 && rcvd > 0) {
-            const variance        = rcvd - expected;
+
+        if (expected > 0 && received > 0) {
+            const variance = received - expected;
             const variancePercent = (variance / expected * 100).toFixed(2);
-            document.getElementById('varianceAmount').textContent  = variance.toFixed(2);
+            
+            document.getElementById('varianceAmount').textContent = variance.toFixed(2);
             document.getElementById('variancePercent').textContent = variancePercent;
+            
             varianceDisplay.classList.remove('hidden');
+            
+            // Change color based on variance
             const alertDiv = varianceDisplay.querySelector('div');
             if (Math.abs(variancePercent) > 1) {
                 alertDiv.className = 'bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg';
@@ -586,23 +463,27 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // ─── Calculated value display (based on expected qty) ────────
+    // Calculate total value
     function calculateValue() {
-        const option    = poSelect.options[poSelect.selectedIndex];
-        const unitPrice = parseFloat(option.dataset.unitPrice || 0);
-        const expected  = parseFloat(qtyExpected.value) || 0;
-        calculatedValue.textContent = (unitPrice * expected).toFixed(2);
+        const option = poSelect.options[poSelect.selectedIndex];
+        const unitPrice = parseFloat(option.dataset.unitPrice) || 0;
+        //const received = parseFloat(qtyReceived.value) || 0;
+        const expected = parseFloat(qtyExpected.value) || 0;
+        
+        //const value = unitPrice * received;
+        const value = unitPrice * expected;
+        calculatedValue.textContent = value.toFixed(2);
     }
 
     qtyReceived.addEventListener('input', function() {
-        checkOverDelivery();
         calculateVariance();
         calculateValue();
     });
 
+    //qtyExpected.addEventListener('input', calculateVariance);
     qtyExpected.addEventListener('input', function() {
         calculateVariance();
-        calculateValue();
+        calculateValue();  // Add this line
     });
 
     // Trigger on page load if PO already selected

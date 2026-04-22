@@ -11333,3 +11333,779 @@ Gemini/gemini-2.0-flash-lite: HTTP 400: {
   "error": {
     "code": 400,
     "message": "AP
+[22-Apr-2026 00:31:28 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pv.variant_name' in 'SELECT'
+Query: SELECT pv.sku, pv.variant_name, SUM(i.quantity) as total_qty, b.name as branch_name
+         FROM inventory i
+         JOIN product_variants pv ON i.variant_id = pv.id
+         JOIN branches b ON i.branch_id = b.id
+         GROUP BY pv.id, b.id ORDER BY total_qty ASC LIMIT 8
+Params: []
+[22-Apr-2026 00:31:31 Asia/Dhaka] AI Advisor Error: All AI providers failed. Please check API keys in config.php.
+DeepSeek/deepseek-chat: skipped
+DeepSeek/deepseek-reasoner: skipped
+Groq/llama-3.3-70b-versatile: HTTP 401: {"error":{"message":"Invalid API Key","type":"invalid_request_error","code":"invalid_api_key"}}
+
+Gemini/gemini-2.0-flash: HTTP 400: {
+  "error": {
+    "code": 400,
+    "message": "AP
+Gemini/gemini-2.0-flash-lite: HTTP 400: {
+  "error": {
+    "code": 400,
+    "message": "AP
+[22-Apr-2026 00:46:45 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pv.variant_name' in 'SELECT'
+Query: SELECT pv.sku, pv.variant_name, SUM(i.quantity) as total_qty, b.name as branch_name
+         FROM inventory i
+         JOIN product_variants pv ON i.variant_id = pv.id
+         JOIN branches b ON i.branch_id = b.id
+         GROUP BY pv.id, b.id ORDER BY total_qty ASC LIMIT 8
+Params: []
+[22-Apr-2026 00:46:47 Asia/Dhaka] AI Advisor Error: All AI providers failed. Please check API keys in config.php.
+DeepSeek/deepseek-chat: skipped
+DeepSeek/deepseek-reasoner: skipped
+Groq/llama-3.3-70b-versatile: HTTP 401: {"error":{"message":"Invalid API Key","type":"invalid_request_error","code":"invalid_api_key"}}
+
+Gemini/gemini-2.0-flash: HTTP 400: {
+  "error": {
+    "code": 400,
+    "message": "AP
+Gemini/gemini-2.0-flash-lite: HTTP 400: {
+  "error": {
+    "code": 400,
+    "message": "AP
+[22-Apr-2026 00:46:47 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pv.variant_name' in 'SELECT'
+Query: SELECT pv.sku, pv.variant_name, SUM(i.quantity) as total_qty, b.name as branch_name
+         FROM inventory i
+         JOIN product_variants pv ON i.variant_id = pv.id
+         JOIN branches b ON i.branch_id = b.id
+         GROUP BY pv.id, b.id ORDER BY total_qty ASC LIMIT 8
+Params: []
+[22-Apr-2026 00:46:48 Asia/Dhaka] AI Advisor Error: All AI providers failed. Please check API keys in config.php.
+DeepSeek/deepseek-chat: skipped
+DeepSeek/deepseek-reasoner: skipped
+Groq/llama-3.3-70b-versatile: HTTP 401: {"error":{"message":"Invalid API Key","type":"invalid_request_error","code":"invalid_api_key"}}
+
+Gemini/gemini-2.0-flash: HTTP 400: {
+  "error": {
+    "code": 400,
+    "message": "AP
+Gemini/gemini-2.0-flash-lite: HTTP 400: {
+  "error": {
+    "code": 400,
+    "message": "AP
+[22-Apr-2026 00:46:48 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pv.variant_name' in 'SELECT'
+Query: SELECT pv.sku, pv.variant_name, SUM(i.quantity) as total_qty, b.name as branch_name
+         FROM inventory i
+         JOIN product_variants pv ON i.variant_id = pv.id
+         JOIN branches b ON i.branch_id = b.id
+         GROUP BY pv.id, b.id ORDER BY total_qty ASC LIMIT 8
+Params: []
+[22-Apr-2026 00:46:50 Asia/Dhaka] AI Advisor Error: All AI providers failed. Please check API keys in config.php.
+DeepSeek/deepseek-chat: skipped
+DeepSeek/deepseek-reasoner: skipped
+Groq/llama-3.3-70b-versatile: HTTP 401: {"error":{"message":"Invalid API Key","type":"invalid_request_error","code":"invalid_api_key"}}
+
+Gemini/gemini-2.0-flash: HTTP 400: {
+  "error": {
+    "code": 400,
+    "message": "AP
+Gemini/gemini-2.0-flash-lite: HTTP 400: {
+  "error": {
+    "code": 400,
+    "message": "AP
+[22-Apr-2026 09:45:38 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist
+Query: 
+        SELECT 
+            (
+                (SELECT COUNT(id) FROM pos_sales WHERE created_at BETWEEN ? AND ?) +
+                (SELECT COUNT(id) FROM credit_orders WHERE created_at BETWEEN ? AND ?)
+            )
+        AS total_orders
+    
+Params: ["2026-04-22 00:00:00","2026-04-22 23:59:59","2026-04-22 00:00:00","2026-04-22 23:59:59"]
+[22-Apr-2026 09:45:39 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pv.variant_name' in 'SELECT'
+Query: SELECT pv.sku, pv.variant_name, SUM(i.quantity) as total_qty, b.name as branch_name
+         FROM inventory i
+         JOIN product_variants pv ON i.variant_id = pv.id
+         JOIN branches b ON i.branch_id = b.id
+         GROUP BY pv.id, b.id ORDER BY total_qty ASC LIMIT 8
+Params: []
+[22-Apr-2026 09:45:42 Asia/Dhaka] AI Advisor Error: All AI providers failed. Please check API keys in config.php.
+DeepSeek/deepseek-chat: skipped
+DeepSeek/deepseek-reasoner: skipped
+Groq/llama-3.3-70b-versatile: HTTP 401: {"error":{"message":"Invalid API Key","type":"invalid_request_error","code":"invalid_api_key"}}
+
+Gemini/gemini-2.0-flash: HTTP 400: {
+  "error": {
+    "code": 400,
+    "message": "AP
+Gemini/gemini-2.0-flash-lite: HTTP 400: {
+  "error": {
+    "code": 400,
+    "message": "AP
+[22-Apr-2026 09:45:42 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pv.variant_name' in 'SELECT'
+Query: SELECT pv.sku, pv.variant_name, SUM(i.quantity) as total_qty, b.name as branch_name
+         FROM inventory i
+         JOIN product_variants pv ON i.variant_id = pv.id
+         JOIN branches b ON i.branch_id = b.id
+         GROUP BY pv.id, b.id ORDER BY total_qty ASC LIMIT 8
+Params: []
+[22-Apr-2026 09:45:44 Asia/Dhaka] AI Advisor Error: All AI providers failed. Please check API keys in config.php.
+DeepSeek/deepseek-chat: skipped
+DeepSeek/deepseek-reasoner: skipped
+Groq/llama-3.3-70b-versatile: HTTP 401: {"error":{"message":"Invalid API Key","type":"invalid_request_error","code":"invalid_api_key"}}
+
+Gemini/gemini-2.0-flash: HTTP 400: {
+  "error": {
+    "code": 400,
+    "message": "AP
+Gemini/gemini-2.0-flash-lite: HTTP 400: {
+  "error": {
+    "code": 400,
+    "message": "AP
+[22-Apr-2026 10:03:29 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist
+Query: 
+        SELECT 
+            (
+                (SELECT COUNT(id) FROM pos_sales WHERE created_at BETWEEN ? AND ?) +
+                (SELECT COUNT(id) FROM credit_orders WHERE created_at BETWEEN ? AND ?)
+            )
+        AS total_orders
+    
+Params: ["2026-04-22 00:00:00","2026-04-22 23:59:59","2026-04-22 00:00:00","2026-04-22 23:59:59"]
+[22-Apr-2026 10:03:29 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist
+Query: 
+        SELECT 
+            DATE_FORMAT(created_at, '%Y-%m') as sales_month,
+            SUM(total_amount) as total
+        FROM (
+            -- Query 1: POS Sales
+            SELECT created_at, total_amount 
+            FROM pos_sales
+            WHERE created_at BETWEEN ? AND ?
+            
+            UNION ALL
+            
+            -- Query 2: Completed Credit Sales
+            SELECT created_at, total_amount 
+            FROM credit_orders
+            WHERE created_at BETWEEN ? AND ?
+            AND status IN ('Shipped', 'Dispatched', 'Delivered')
+        ) AS combined_sales
+        GROUP BY sales_month
+        ORDER BY sales_month ASC
+    
+Params: ["2026-04-22 00:00:00","2026-04-22 23:59:59","2026-04-22 00:00:00","2026-04-22 23:59:59"]
+[22-Apr-2026 10:03:30 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pv.variant_name' in 'SELECT'
+Query: SELECT pv.sku, pv.variant_name, SUM(i.quantity) as total_qty, b.name as branch_name
+         FROM inventory i
+         JOIN product_variants pv ON i.variant_id = pv.id
+         JOIN branches b ON i.branch_id = b.id
+         GROUP BY pv.id, b.id ORDER BY total_qty ASC LIMIT 8
+Params: []
+[22-Apr-2026 10:03:32 Asia/Dhaka] AI Advisor Error: All AI providers failed. Please check API keys in config.php.
+DeepSeek/deepseek-chat: skipped
+DeepSeek/deepseek-reasoner: skipped
+Groq/llama-3.3-70b-versatile: HTTP 401: {"error":{"message":"Invalid API Key","type":"invalid_request_error","code":"invalid_api_key"}}
+
+Gemini/gemini-2.0-flash: HTTP 400: {
+  "error": {
+    "code": 400,
+    "message": "AP
+Gemini/gemini-2.0-flash-lite: HTTP 400: {
+  "error": {
+    "code": 400,
+    "message": "AP
+[22-Apr-2026 10:03:32 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pv.variant_name' in 'SELECT'
+Query: SELECT pv.sku, pv.variant_name, SUM(i.quantity) as total_qty, b.name as branch_name
+         FROM inventory i
+         JOIN product_variants pv ON i.variant_id = pv.id
+         JOIN branches b ON i.branch_id = b.id
+         GROUP BY pv.id, b.id ORDER BY total_qty ASC LIMIT 8
+Params: []
+[22-Apr-2026 10:03:34 Asia/Dhaka] AI Advisor Error: All AI providers failed. Please check API keys in config.php.
+DeepSeek/deepseek-chat: skipped
+DeepSeek/deepseek-reasoner: skipped
+Groq/llama-3.3-70b-versatile: HTTP 401: {"error":{"message":"Invalid API Key","type":"invalid_request_error","code":"invalid_api_key"}}
+
+Gemini/gemini-2.0-flash: HTTP 400: {
+  "error": {
+    "code": 400,
+    "message": "AP
+Gemini/gemini-2.0-flash-lite: HTTP 400: {
+  "error": {
+    "code": 400,
+    "message": "AP
+[22-Apr-2026 11:24:22 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist
+Query: 
+        SELECT 
+            (
+                (SELECT COUNT(id) FROM pos_sales WHERE created_at BETWEEN ? AND ?) +
+                (SELECT COUNT(id) FROM credit_orders WHERE created_at BETWEEN ? AND ?)
+            )
+        AS total_orders
+    
+Params: ["2026-04-22 00:00:00","2026-04-22 23:59:59","2026-04-22 00:00:00","2026-04-22 23:59:59"]
+[22-Apr-2026 11:24:22 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist
+Query: 
+        SELECT 
+            DATE_FORMAT(created_at, '%Y-%m') as sales_month,
+            SUM(total_amount) as total
+        FROM (
+            -- Query 1: POS Sales
+            SELECT created_at, total_amount 
+            FROM pos_sales
+            WHERE created_at BETWEEN ? AND ?
+            
+            UNION ALL
+            
+            -- Query 2: Completed Credit Sales
+            SELECT created_at, total_amount 
+            FROM credit_orders
+            WHERE created_at BETWEEN ? AND ?
+            AND status IN ('Shipped', 'Dispatched', 'Delivered')
+        ) AS combined_sales
+        GROUP BY sales_month
+        ORDER BY sales_month ASC
+    
+Params: ["2026-04-22 00:00:00","2026-04-22 23:59:59","2026-04-22 00:00:00","2026-04-22 23:59:59"]
+[22-Apr-2026 11:24:23 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pv.variant_name' in 'SELECT'
+Query: SELECT pv.sku, pv.variant_name, SUM(i.quantity) as total_qty, b.name as branch_name
+         FROM inventory i
+         JOIN product_variants pv ON i.variant_id = pv.id
+         JOIN branches b ON i.branch_id = b.id
+         GROUP BY pv.id, b.id ORDER BY total_qty ASC LIMIT 8
+Params: []
+[22-Apr-2026 11:24:25 Asia/Dhaka] AI Advisor Error: All AI providers failed. Please check API keys in config.php.
+DeepSeek/deepseek-chat: skipped
+DeepSeek/deepseek-reasoner: skipped
+Groq/llama-3.3-70b-versatile: HTTP 401: {"error":{"message":"Invalid API Key","type":"invalid_request_error","code":"invalid_api_key"}}
+
+Gemini/gemini-2.0-flash: HTTP 400: {
+  "error": {
+    "code": 400,
+    "message": "AP
+Gemini/gemini-2.0-flash-lite: HTTP 400: {
+  "error": {
+    "code": 400,
+    "message": "AP
+[22-Apr-2026 11:24:25 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pv.variant_name' in 'SELECT'
+Query: SELECT pv.sku, pv.variant_name, SUM(i.quantity) as total_qty, b.name as branch_name
+         FROM inventory i
+         JOIN product_variants pv ON i.variant_id = pv.id
+         JOIN branches b ON i.branch_id = b.id
+         GROUP BY pv.id, b.id ORDER BY total_qty ASC LIMIT 8
+Params: []
+[22-Apr-2026 11:24:27 Asia/Dhaka] AI Advisor Error: All AI providers failed. Please check API keys in config.php.
+DeepSeek/deepseek-chat: skipped
+DeepSeek/deepseek-reasoner: skipped
+Groq/llama-3.3-70b-versatile: HTTP 401: {"error":{"message":"Invalid API Key","type":"invalid_request_error","code":"invalid_api_key"}}
+
+Gemini/gemini-2.0-flash: HTTP 400: {
+  "error": {
+    "code": 400,
+    "message": "AP
+Gemini/gemini-2.0-flash-lite: HTTP 400: {
+  "error": {
+    "code": 400,
+    "message": "AP
+[22-Apr-2026 11:25:55 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist
+Query: 
+        SELECT 
+            (
+                (SELECT COUNT(id) FROM pos_sales WHERE created_at BETWEEN ? AND ?) +
+                (SELECT COUNT(id) FROM credit_orders WHERE created_at BETWEEN ? AND ?)
+            )
+        AS total_orders
+    
+Params: ["2026-04-22 00:00:00","2026-04-22 23:59:59","2026-04-22 00:00:00","2026-04-22 23:59:59"]
+[22-Apr-2026 11:25:56 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pv.variant_name' in 'SELECT'
+Query: SELECT pv.sku, pv.variant_name, SUM(i.quantity) as total_qty, b.name as branch_name
+         FROM inventory i
+         JOIN product_variants pv ON i.variant_id = pv.id
+         JOIN branches b ON i.branch_id = b.id
+         GROUP BY pv.id, b.id ORDER BY total_qty ASC LIMIT 8
+Params: []
+[22-Apr-2026 11:25:58 Asia/Dhaka] AI Advisor Error: All AI providers failed. Please check API keys in config.php.
+DeepSeek/deepseek-chat: skipped
+DeepSeek/deepseek-reasoner: skipped
+Groq/llama-3.3-70b-versatile: HTTP 401: {"error":{"message":"Invalid API Key","type":"invalid_request_error","code":"invalid_api_key"}}
+
+Gemini/gemini-2.0-flash: HTTP 400: {
+  "error": {
+    "code": 400,
+    "message": "AP
+Gemini/gemini-2.0-flash-lite: HTTP 400: {
+  "error": {
+    "code": 400,
+    "message": "AP
+[22-Apr-2026 11:25:58 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pv.variant_name' in 'SELECT'
+Query: SELECT pv.sku, pv.variant_name, SUM(i.quantity) as total_qty, b.name as branch_name
+         FROM inventory i
+         JOIN product_variants pv ON i.variant_id = pv.id
+         JOIN branches b ON i.branch_id = b.id
+         GROUP BY pv.id, b.id ORDER BY total_qty ASC LIMIT 8
+Params: []
+[22-Apr-2026 11:25:59 Asia/Dhaka] AI Advisor Error: All AI providers failed. Please check API keys in config.php.
+DeepSeek/deepseek-chat: skipped
+DeepSeek/deepseek-reasoner: skipped
+Groq/llama-3.3-70b-versatile: HTTP 401: {"error":{"message":"Invalid API Key","type":"invalid_request_error","code":"invalid_api_key"}}
+
+Gemini/gemini-2.0-flash: HTTP 400: {
+  "error": {
+    "code": 400,
+    "message": "AP
+Gemini/gemini-2.0-flash-lite: HTTP 400: {
+  "error": {
+    "code": 400,
+    "message": "AP
+[22-Apr-2026 11:32:16 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist
+Query: 
+        SELECT 
+            (
+                (SELECT COUNT(id) FROM pos_sales WHERE created_at BETWEEN ? AND ?) +
+                (SELECT COUNT(id) FROM credit_orders WHERE created_at BETWEEN ? AND ?)
+            )
+        AS total_orders
+    
+Params: ["2026-04-22 00:00:00","2026-04-22 23:59:59","2026-04-22 00:00:00","2026-04-22 23:59:59"]
+[22-Apr-2026 11:32:18 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pv.variant_name' in 'SELECT'
+Query: SELECT pv.sku, pv.variant_name, SUM(i.quantity) as total_qty, b.name as branch_name
+         FROM inventory i
+         JOIN product_variants pv ON i.variant_id = pv.id
+         JOIN branches b ON i.branch_id = b.id
+         GROUP BY pv.id, b.id ORDER BY total_qty ASC LIMIT 8
+Params: []
+[22-Apr-2026 11:32:20 Asia/Dhaka] AI Advisor Error: All AI providers failed. Please check API keys in config.php.
+DeepSeek/deepseek-chat: skipped
+DeepSeek/deepseek-reasoner: skipped
+Groq/llama-3.3-70b-versatile: HTTP 401: {"error":{"message":"Invalid API Key","type":"invalid_request_error","code":"invalid_api_key"}}
+
+Gemini/gemini-2.0-flash: HTTP 400: {
+  "error": {
+    "code": 400,
+    "message": "AP
+Gemini/gemini-2.0-flash-lite: HTTP 400: {
+  "error": {
+    "code": 400,
+    "message": "AP
+[22-Apr-2026 11:32:20 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pv.variant_name' in 'SELECT'
+Query: SELECT pv.sku, pv.variant_name, SUM(i.quantity) as total_qty, b.name as branch_name
+         FROM inventory i
+         JOIN product_variants pv ON i.variant_id = pv.id
+         JOIN branches b ON i.branch_id = b.id
+         GROUP BY pv.id, b.id ORDER BY total_qty ASC LIMIT 8
+Params: []
+[22-Apr-2026 11:32:22 Asia/Dhaka] AI Advisor Error: All AI providers failed. Please check API keys in config.php.
+DeepSeek/deepseek-chat: skipped
+DeepSeek/deepseek-reasoner: skipped
+Groq/llama-3.3-70b-versatile: HTTP 401: {"error":{"message":"Invalid API Key","type":"invalid_request_error","code":"invalid_api_key"}}
+
+Gemini/gemini-2.0-flash: HTTP 400: {
+  "error": {
+    "code": 400,
+    "message": "AP
+Gemini/gemini-2.0-flash-lite: HTTP 400: {
+  "error": {
+    "code": 400,
+    "message": "AP
+[22-Apr-2026 11:35:33 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist
+Query: 
+        SELECT 
+            (
+                (SELECT COUNT(id) FROM pos_sales WHERE created_at BETWEEN ? AND ?) +
+                (SELECT COUNT(id) FROM credit_orders WHERE created_at BETWEEN ? AND ?)
+            )
+        AS total_orders
+    
+Params: ["2026-04-22 00:00:00","2026-04-22 23:59:59","2026-04-22 00:00:00","2026-04-22 23:59:59"]
+[22-Apr-2026 11:35:35 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pv.variant_name' in 'SELECT'
+Query: SELECT pv.sku, pv.variant_name, SUM(i.quantity) as total_qty, b.name as branch_name
+         FROM inventory i
+         JOIN product_variants pv ON i.variant_id = pv.id
+         JOIN branches b ON i.branch_id = b.id
+         GROUP BY pv.id, b.id ORDER BY total_qty ASC LIMIT 8
+Params: []
+[22-Apr-2026 11:35:36 Asia/Dhaka] AI Advisor Error: All AI providers failed. Please check API keys in config.php.
+DeepSeek/deepseek-chat: skipped
+DeepSeek/deepseek-reasoner: skipped
+Groq/llama-3.3-70b-versatile: HTTP 401: {"error":{"message":"Invalid API Key","type":"invalid_request_error","code":"invalid_api_key"}}
+
+Gemini/gemini-2.0-flash: HTTP 400: {
+  "error": {
+    "code": 400,
+    "message": "AP
+Gemini/gemini-2.0-flash-lite: HTTP 400: {
+  "error": {
+    "code": 400,
+    "message": "AP
+[22-Apr-2026 11:35:36 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pv.variant_name' in 'SELECT'
+Query: SELECT pv.sku, pv.variant_name, SUM(i.quantity) as total_qty, b.name as branch_name
+         FROM inventory i
+         JOIN product_variants pv ON i.variant_id = pv.id
+         JOIN branches b ON i.branch_id = b.id
+         GROUP BY pv.id, b.id ORDER BY total_qty ASC LIMIT 8
+Params: []
+[22-Apr-2026 11:35:38 Asia/Dhaka] AI Advisor Error: All AI providers failed. Please check API keys in config.php.
+DeepSeek/deepseek-chat: skipped
+DeepSeek/deepseek-reasoner: skipped
+Groq/llama-3.3-70b-versatile: HTTP 401: {"error":{"message":"Invalid API Key","type":"invalid_request_error","code":"invalid_api_key"}}
+
+Gemini/gemini-2.0-flash: HTTP 400: {
+  "error": {
+    "code": 400,
+    "message": "AP
+Gemini/gemini-2.0-flash-lite: HTTP 400: {
+  "error": {
+    "code": 400,
+    "message": "AP
+[22-Apr-2026 11:36:54 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pv.variant_name' in 'SELECT'
+Query: SELECT pv.sku, pv.variant_name, SUM(i.quantity) as total_qty, b.name as branch_name
+         FROM inventory i
+         JOIN product_variants pv ON i.variant_id = pv.id
+         JOIN branches b ON i.branch_id = b.id
+         GROUP BY pv.id, b.id ORDER BY total_qty ASC LIMIT 8
+Params: []
+[22-Apr-2026 11:36:56 Asia/Dhaka] AI Advisor Error: All AI providers failed. Please check API keys in config.php.
+DeepSeek/deepseek-chat: skipped
+DeepSeek/deepseek-reasoner: skipped
+Groq/llama-3.3-70b-versatile: HTTP 401: {"error":{"message":"Invalid API Key","type":"invalid_request_error","code":"invalid_api_key"}}
+
+Gemini/gemini-2.0-flash: HTTP 400: {
+  "error": {
+    "code": 400,
+    "message": "AP
+Gemini/gemini-2.0-flash-lite: HTTP 400: {
+  "error": {
+    "code": 400,
+    "message": "AP
+[22-Apr-2026 11:36:56 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pv.variant_name' in 'SELECT'
+Query: SELECT pv.sku, pv.variant_name, SUM(i.quantity) as total_qty, b.name as branch_name
+         FROM inventory i
+         JOIN product_variants pv ON i.variant_id = pv.id
+         JOIN branches b ON i.branch_id = b.id
+         GROUP BY pv.id, b.id ORDER BY total_qty ASC LIMIT 8
+Params: []
+[22-Apr-2026 11:36:57 Asia/Dhaka] AI Advisor Error: All AI providers failed. Please check API keys in config.php.
+DeepSeek/deepseek-chat: skipped
+DeepSeek/deepseek-reasoner: skipped
+Groq/llama-3.3-70b-versatile: HTTP 401: {"error":{"message":"Invalid API Key","type":"invalid_request_error","code":"invalid_api_key"}}
+
+Gemini/gemini-2.0-flash: HTTP 400: {
+  "error": {
+    "code": 400,
+    "message": "AP
+Gemini/gemini-2.0-flash-lite: HTTP 400: {
+  "error": {
+    "code": 400,
+    "message": "AP
+[22-Apr-2026 12:33:14 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pv.variant_name' in 'SELECT'
+Query: SELECT pv.sku, pv.variant_name, SUM(i.quantity) as total_qty, b.name as branch_name
+         FROM inventory i
+         JOIN product_variants pv ON i.variant_id = pv.id
+         JOIN branches b ON i.branch_id = b.id
+         GROUP BY pv.id, b.id ORDER BY total_qty ASC LIMIT 8
+Params: []
+[22-Apr-2026 12:33:16 Asia/Dhaka] AI Advisor Error: All AI providers failed. Please check API keys in config.php.
+DeepSeek/deepseek-chat: skipped
+DeepSeek/deepseek-reasoner: skipped
+Groq/llama-3.3-70b-versatile: HTTP 401: {"error":{"message":"Invalid API Key","type":"invalid_request_error","code":"invalid_api_key"}}
+
+Gemini/gemini-2.0-flash: HTTP 400: {
+  "error": {
+    "code": 400,
+    "message": "AP
+Gemini/gemini-2.0-flash-lite: HTTP 400: {
+  "error": {
+    "code": 400,
+    "message": "AP
+[22-Apr-2026 12:33:16 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pv.variant_name' in 'SELECT'
+Query: SELECT pv.sku, pv.variant_name, SUM(i.quantity) as total_qty, b.name as branch_name
+         FROM inventory i
+         JOIN product_variants pv ON i.variant_id = pv.id
+         JOIN branches b ON i.branch_id = b.id
+         GROUP BY pv.id, b.id ORDER BY total_qty ASC LIMIT 8
+Params: []
+[22-Apr-2026 12:38:54 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist
+Query: 
+        SELECT 
+            (
+                (SELECT COUNT(id) FROM pos_sales WHERE created_at BETWEEN ? AND ?) +
+                (SELECT COUNT(id) FROM credit_orders WHERE created_at BETWEEN ? AND ?)
+            )
+        AS total_orders
+    
+Params: ["2026-04-22 00:00:00","2026-04-22 23:59:59","2026-04-22 00:00:00","2026-04-22 23:59:59"]
+[22-Apr-2026 12:38:54 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist
+Query: 
+        SELECT 
+            DATE_FORMAT(created_at, '%Y-%m') as sales_month,
+            SUM(total_amount) as total
+        FROM (
+            -- Query 1: POS Sales
+            SELECT created_at, total_amount 
+            FROM pos_sales
+            WHERE created_at BETWEEN ? AND ?
+            
+            UNION ALL
+            
+            -- Query 2: Completed Credit Sales
+            SELECT created_at, total_amount 
+            FROM credit_orders
+            WHERE created_at BETWEEN ? AND ?
+            AND status IN ('Shipped', 'Dispatched', 'Delivered')
+        ) AS combined_sales
+        GROUP BY sales_month
+        ORDER BY sales_month ASC
+    
+Params: ["2026-04-22 00:00:00","2026-04-22 23:59:59","2026-04-22 00:00:00","2026-04-22 23:59:59"]
+[22-Apr-2026 12:38:56 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pv.variant_name' in 'SELECT'
+Query: SELECT pv.sku, pv.variant_name, SUM(i.quantity) as total_qty, b.name as branch_name
+         FROM inventory i
+         JOIN product_variants pv ON i.variant_id = pv.id
+         JOIN branches b ON i.branch_id = b.id
+         GROUP BY pv.id, b.id ORDER BY total_qty ASC LIMIT 8
+Params: []
+[22-Apr-2026 12:38:57 Asia/Dhaka] AI Advisor Error: All AI providers failed. Please check API keys in config.php.
+DeepSeek/deepseek-chat: skipped
+DeepSeek/deepseek-reasoner: skipped
+Groq/llama-3.3-70b-versatile: HTTP 401: {"error":{"message":"Invalid API Key","type":"invalid_request_error","code":"invalid_api_key"}}
+
+Gemini/gemini-2.0-flash: HTTP 400: {
+  "error": {
+    "code": 400,
+    "message": "AP
+Gemini/gemini-2.0-flash-lite: HTTP 400: {
+  "error": {
+    "code": 400,
+    "message": "AP
+[22-Apr-2026 12:38:57 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pv.variant_name' in 'SELECT'
+Query: SELECT pv.sku, pv.variant_name, SUM(i.quantity) as total_qty, b.name as branch_name
+         FROM inventory i
+         JOIN product_variants pv ON i.variant_id = pv.id
+         JOIN branches b ON i.branch_id = b.id
+         GROUP BY pv.id, b.id ORDER BY total_qty ASC LIMIT 8
+Params: []
+[22-Apr-2026 12:38:59 Asia/Dhaka] AI Advisor Error: All AI providers failed. Please check API keys in config.php.
+DeepSeek/deepseek-chat: skipped
+DeepSeek/deepseek-reasoner: skipped
+Groq/llama-3.3-70b-versatile: HTTP 401: {"error":{"message":"Invalid API Key","type":"invalid_request_error","code":"invalid_api_key"}}
+
+Gemini/gemini-2.0-flash: HTTP 400: {
+  "error": {
+    "code": 400,
+    "message": "AP
+Gemini/gemini-2.0-flash-lite: HTTP 400: {
+  "error": {
+    "code": 400,
+    "message": "AP
+[22-Apr-2026 12:49:50 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist
+Query: 
+        SELECT 
+            (
+                (SELECT COUNT(id) FROM pos_sales WHERE created_at BETWEEN ? AND ?) +
+                (SELECT COUNT(id) FROM credit_orders WHERE created_at BETWEEN ? AND ?)
+            )
+        AS total_orders
+    
+Params: ["2026-04-22 00:00:00","2026-04-22 23:59:59","2026-04-22 00:00:00","2026-04-22 23:59:59"]
+[22-Apr-2026 12:49:52 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pv.variant_name' in 'SELECT'
+Query: SELECT pv.sku, pv.variant_name, SUM(i.quantity) as total_qty, b.name as branch_name
+         FROM inventory i
+         JOIN product_variants pv ON i.variant_id = pv.id
+         JOIN branches b ON i.branch_id = b.id
+         GROUP BY pv.id, b.id ORDER BY total_qty ASC LIMIT 8
+Params: []
+[22-Apr-2026 12:49:54 Asia/Dhaka] AI Advisor Error: All AI providers failed. Please check API keys in config.php.
+DeepSeek/deepseek-chat: skipped
+DeepSeek/deepseek-reasoner: skipped
+Groq/llama-3.3-70b-versatile: HTTP 401: {"error":{"message":"Invalid API Key","type":"invalid_request_error","code":"invalid_api_key"}}
+
+Gemini/gemini-2.0-flash: HTTP 400: {
+  "error": {
+    "code": 400,
+    "message": "AP
+Gemini/gemini-2.0-flash-lite: HTTP 400: {
+  "error": {
+    "code": 400,
+    "message": "AP
+[22-Apr-2026 12:49:54 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pv.variant_name' in 'SELECT'
+Query: SELECT pv.sku, pv.variant_name, SUM(i.quantity) as total_qty, b.name as branch_name
+         FROM inventory i
+         JOIN product_variants pv ON i.variant_id = pv.id
+         JOIN branches b ON i.branch_id = b.id
+         GROUP BY pv.id, b.id ORDER BY total_qty ASC LIMIT 8
+Params: []
+[22-Apr-2026 12:49:56 Asia/Dhaka] AI Advisor Error: All AI providers failed. Please check API keys in config.php.
+DeepSeek/deepseek-chat: skipped
+DeepSeek/deepseek-reasoner: skipped
+Groq/llama-3.3-70b-versatile: HTTP 401: {"error":{"message":"Invalid API Key","type":"invalid_request_error","code":"invalid_api_key"}}
+
+Gemini/gemini-2.0-flash: HTTP 400: {
+  "error": {
+    "code": 400,
+    "message": "AP
+Gemini/gemini-2.0-flash-lite: HTTP 400: {
+  "error": {
+    "code": 400,
+    "message": "AP
+[22-Apr-2026 12:49:58 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist
+Query: 
+        SELECT 
+            (
+                (SELECT COUNT(id) FROM pos_sales WHERE created_at BETWEEN ? AND ?) +
+                (SELECT COUNT(id) FROM credit_orders WHERE created_at BETWEEN ? AND ?)
+            )
+        AS total_orders
+    
+Params: ["2026-04-22 00:00:00","2026-04-22 23:59:59","2026-04-22 00:00:00","2026-04-22 23:59:59"]
+[22-Apr-2026 12:49:59 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist
+Query: 
+        SELECT 
+            (
+                (SELECT COUNT(id) FROM pos_sales WHERE created_at BETWEEN ? AND ?) +
+                (SELECT COUNT(id) FROM credit_orders WHERE created_at BETWEEN ? AND ?)
+            )
+        AS total_orders
+    
+Params: ["2026-04-22 00:00:00","2026-04-22 23:59:59","2026-04-22 00:00:00","2026-04-22 23:59:59"]
+[22-Apr-2026 12:50:01 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pv.variant_name' in 'SELECT'
+Query: SELECT pv.sku, pv.variant_name, SUM(i.quantity) as total_qty, b.name as branch_name
+         FROM inventory i
+         JOIN product_variants pv ON i.variant_id = pv.id
+         JOIN branches b ON i.branch_id = b.id
+         GROUP BY pv.id, b.id ORDER BY total_qty ASC LIMIT 8
+Params: []
+[22-Apr-2026 12:50:02 Asia/Dhaka] AI Advisor Error: All AI providers failed. Please check API keys in config.php.
+DeepSeek/deepseek-chat: skipped
+DeepSeek/deepseek-reasoner: skipped
+Groq/llama-3.3-70b-versatile: HTTP 401: {"error":{"message":"Invalid API Key","type":"invalid_request_error","code":"invalid_api_key"}}
+
+Gemini/gemini-2.0-flash: HTTP 400: {
+  "error": {
+    "code": 400,
+    "message": "AP
+Gemini/gemini-2.0-flash-lite: HTTP 400: {
+  "error": {
+    "code": 400,
+    "message": "AP
+[22-Apr-2026 12:50:02 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pv.variant_name' in 'SELECT'
+Query: SELECT pv.sku, pv.variant_name, SUM(i.quantity) as total_qty, b.name as branch_name
+         FROM inventory i
+         JOIN product_variants pv ON i.variant_id = pv.id
+         JOIN branches b ON i.branch_id = b.id
+         GROUP BY pv.id, b.id ORDER BY total_qty ASC LIMIT 8
+Params: []
+[22-Apr-2026 12:50:04 Asia/Dhaka] AI Advisor Error: All AI providers failed. Please check API keys in config.php.
+DeepSeek/deepseek-chat: skipped
+DeepSeek/deepseek-reasoner: skipped
+Groq/llama-3.3-70b-versatile: HTTP 401: {"error":{"message":"Invalid API Key","type":"invalid_request_error","code":"invalid_api_key"}}
+
+Gemini/gemini-2.0-flash: HTTP 400: {
+  "error": {
+    "code": 400,
+    "message": "AP
+Gemini/gemini-2.0-flash-lite: HTTP 400: {
+  "error": {
+    "code": 400,
+    "message": "AP
+[22-Apr-2026 13:01:03 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist
+Query: 
+        SELECT 
+            (
+                (SELECT COUNT(id) FROM pos_sales WHERE created_at BETWEEN ? AND ?) +
+                (SELECT COUNT(id) FROM credit_orders WHERE created_at BETWEEN ? AND ?)
+            )
+        AS total_orders
+    
+Params: ["2026-04-22 00:00:00","2026-04-22 23:59:59","2026-04-22 00:00:00","2026-04-22 23:59:59"]
+[22-Apr-2026 13:01:05 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pv.variant_name' in 'SELECT'
+Query: SELECT pv.sku, pv.variant_name, SUM(i.quantity) as total_qty, b.name as branch_name
+         FROM inventory i
+         JOIN product_variants pv ON i.variant_id = pv.id
+         JOIN branches b ON i.branch_id = b.id
+         GROUP BY pv.id, b.id ORDER BY total_qty ASC LIMIT 8
+Params: []
+[22-Apr-2026 13:01:07 Asia/Dhaka] AI Advisor Error: All AI providers failed. Please check API keys in config.php.
+DeepSeek/deepseek-chat: skipped
+DeepSeek/deepseek-reasoner: skipped
+Groq/llama-3.3-70b-versatile: HTTP 401: {"error":{"message":"Invalid API Key","type":"invalid_request_error","code":"invalid_api_key"}}
+
+Gemini/gemini-2.0-flash: HTTP 400: {
+  "error": {
+    "code": 400,
+    "message": "AP
+Gemini/gemini-2.0-flash-lite: HTTP 400: {
+  "error": {
+    "code": 400,
+    "message": "AP
+[22-Apr-2026 13:01:07 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pv.variant_name' in 'SELECT'
+Query: SELECT pv.sku, pv.variant_name, SUM(i.quantity) as total_qty, b.name as branch_name
+         FROM inventory i
+         JOIN product_variants pv ON i.variant_id = pv.id
+         JOIN branches b ON i.branch_id = b.id
+         GROUP BY pv.id, b.id ORDER BY total_qty ASC LIMIT 8
+Params: []
+[22-Apr-2026 13:01:09 Asia/Dhaka] AI Advisor Error: All AI providers failed. Please check API keys in config.php.
+DeepSeek/deepseek-chat: skipped
+DeepSeek/deepseek-reasoner: skipped
+Groq/llama-3.3-70b-versatile: HTTP 401: {"error":{"message":"Invalid API Key","type":"invalid_request_error","code":"invalid_api_key"}}
+
+Gemini/gemini-2.0-flash: HTTP 400: {
+  "error": {
+    "code": 400,
+    "message": "AP
+Gemini/gemini-2.0-flash-lite: HTTP 400: {
+  "error": {
+    "code": 400,
+    "message": "AP
+[22-Apr-2026 15:50:10 Asia/Dhaka] SQL Error [42S02]: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ujjalfmc_saas.pos_sales' doesn't exist
+Query: 
+        SELECT 
+            (
+                (SELECT COUNT(id) FROM pos_sales WHERE created_at BETWEEN ? AND ?) +
+                (SELECT COUNT(id) FROM credit_orders WHERE created_at BETWEEN ? AND ?)
+            )
+        AS total_orders
+    
+Params: ["2026-04-22 00:00:00","2026-04-22 23:59:59","2026-04-22 00:00:00","2026-04-22 23:59:59"]
+[22-Apr-2026 15:50:11 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pv.variant_name' in 'SELECT'
+Query: SELECT pv.sku, pv.variant_name, SUM(i.quantity) as total_qty, b.name as branch_name
+         FROM inventory i
+         JOIN product_variants pv ON i.variant_id = pv.id
+         JOIN branches b ON i.branch_id = b.id
+         GROUP BY pv.id, b.id ORDER BY total_qty ASC LIMIT 8
+Params: []
+[22-Apr-2026 15:50:14 Asia/Dhaka] AI Advisor Error: All AI providers failed. Please check API keys in config.php.
+DeepSeek/deepseek-chat: skipped
+DeepSeek/deepseek-reasoner: skipped
+Groq/llama-3.3-70b-versatile: HTTP 401: {"error":{"message":"Invalid API Key","type":"invalid_request_error","code":"invalid_api_key"}}
+
+Gemini/gemini-2.0-flash: HTTP 400: {
+  "error": {
+    "code": 400,
+    "message": "AP
+Gemini/gemini-2.0-flash-lite: HTTP 400: {
+  "error": {
+    "code": 400,
+    "message": "AP
+[22-Apr-2026 15:50:14 Asia/Dhaka] SQL Error [42S22]: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pv.variant_name' in 'SELECT'
+Query: SELECT pv.sku, pv.variant_name, SUM(i.quantity) as total_qty, b.name as branch_name
+         FROM inventory i
+         JOIN product_variants pv ON i.variant_id = pv.id
+         JOIN branches b ON i.branch_id = b.id
+         GROUP BY pv.id, b.id ORDER BY total_qty ASC LIMIT 8
+Params: []
+[22-Apr-2026 15:50:15 Asia/Dhaka] AI Advisor Error: All AI providers failed. Please check API keys in config.php.
+DeepSeek/deepseek-chat: skipped
+DeepSeek/deepseek-reasoner: skipped
+Groq/llama-3.3-70b-versatile: HTTP 401: {"error":{"message":"Invalid API Key","type":"invalid_request_error","code":"invalid_api_key"}}
+
+Gemini/gemini-2.0-flash: HTTP 400: {
+  "error": {
+    "code": 400,
+    "message": "AP
+Gemini/gemini-2.0-flash-lite: HTTP 400: {
+  "error": {
+    "code": 400,
+    "message": "AP
