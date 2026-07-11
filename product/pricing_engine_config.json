@@ -1,0 +1,53 @@
+{
+    "formula": {
+        "bag_50": 50,
+        "bag_74": 74,
+        "packaging_fee": 150
+    },
+    "weight_map": {
+        "50": "50",
+        "74": "74",
+        "50KG": "50",
+        "74KG": "74",
+        "50 KG": "50",
+        "74 KG": "74",
+        "50kg": "50",
+        "74kg": "74"
+    },
+    "branch_surcharges": {
+        "2": {
+            "surcharge_50": 0,
+            "surcharge_74": 0
+        },
+        "4": {
+            "surcharge_50": 0,
+            "surcharge_74": 0
+        },
+        "3": {
+            "surcharge_50": 0,
+            "surcharge_74": 0
+        },
+        "1": {
+            "surcharge_50": 20,
+            "surcharge_74": 30
+        },
+        "5": {
+            "surcharge_50": 0,
+            "surcharge_74": 0
+        }
+    },
+    "mini_truck_surcharges": {
+        "2": {
+            "surcharge_50": 10,
+            "surcharge_74": 15
+        },
+        "1": {
+            "surcharge_50": 0,
+            "surcharge_74": 0
+        },
+        "5": {
+            "surcharge_50": 0,
+            "surcharge_74": 0
+        }
+    }
+}
