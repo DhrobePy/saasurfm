@@ -17,7 +17,7 @@ if ($inv === '' || $sig === '') {
     $reason = 'Missing verification parameters.';
 } else {
     $order = $db->query(
-        "SELECT co.order_number, co.total_amount, co.status, co.order_date, co.shipped_date,
+        "SELECT co.order_number, co.total_amount, co.status, co.order_date,
                 c.name AS customer_name
          FROM credit_orders co JOIN customers c ON c.id = co.customer_id
          WHERE co.order_number = ? LIMIT 1",
@@ -27,7 +27,7 @@ if ($inv === '' || $sig === '') {
     if (!$order) {
         $reason = 'No invoice found with this number.';
     } else {
-        $inv_date = $order->shipped_date ?: $order->order_date;
+        $inv_date = $order->order_date;
         $expected = invoiceQrSignature($order->order_number, (float)$order->total_amount, (string)$inv_date);
         // Constant-time compare
         if (hash_equals($expected, $sig)) {
@@ -51,7 +51,7 @@ $pageTitle = 'Invoice Verification';
 <body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
     <div class="w-full max-w-md bg-white rounded-2xl shadow-lg overflow-hidden">
         <?php if ($valid && $order):
-            $inv_date = $order->shipped_date ?: $order->order_date; ?>
+            $inv_date = $order->order_date; ?>
         <div class="bg-green-600 text-white px-6 py-5 text-center">
             <div class="text-4xl mb-1">✓</div>
             <h1 class="text-lg font-bold">Verified Invoice</h1>

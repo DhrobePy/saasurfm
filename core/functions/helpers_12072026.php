@@ -803,30 +803,10 @@ function userHasPageGrant(string $module, string $page_key): bool {
  * @param string|null $module         Module key override (optional; auto-detected)
  * @param string|null $page_key       Page key override (optional; auto-detected)
  */
-/**
- * Return a SAFE internal return-to path saved before a login redirect, or null.
- * Same-origin root-relative only (blocks open-redirect / header injection / auth loops).
- * Consumes the value (unsets it).
- */
-function safe_return_to(): ?string {
-    $rt = $_SESSION['return_to'] ?? null;
-    unset($_SESSION['return_to']);
-    if (!is_string($rt) || $rt === '' || strlen($rt) > 1000) return null;
-    if ($rt[0] !== '/' || substr($rt, 0, 2) === '//' || substr($rt, 0, 2) === '/\\') return null; // no protocol-relative
-    if (preg_match('/[\r\n\t]/', $rt)) return null;                                                 // no header injection
-    if (stripos($rt, '/auth/') !== false) return null;                                              // don't loop back to login
-    return $rt;
-}
-
 function restrict_access(array $allowed_roles = [], ?string $module = null, ?string $page_key = null): void {
     // ── Must be logged in ─────────────────────────────────────────────────────
     if (!isLoggedIn()) {
-        // Deep-link: remember where they were headed so login returns them here
-        // (e.g. scanning the delivery QR in a browser without a session).
-        if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'GET' && !empty($_SERVER['REQUEST_URI'])) {
-            $_SESSION['return_to'] = $_SERVER['REQUEST_URI'];
-        }
-        $_SESSION['error_flash'] = 'Please sign in to continue.';
+        $_SESSION['error_flash'] = 'You must be logged in to access that page.';
         header('Location: ' . url('auth/login.php'));
         exit();
     }
@@ -1814,53 +1794,25 @@ function ensureDeliveryConfirmTable(): void {
     static $done = false;
     if ($done) return;
     $done = true;
-    $db  = Database::getInstance();
-    $pdo = $db->getPdo();
-    // Already has the two-stage (gate-pass) columns? then we're done.
-    try { $pdo->query("SELECT `gate_out_at` FROM `cr_delivery_confirmations` LIMIT 1"); return; } catch (Exception $e) {}
-
-    // Does the table exist at all (old delivery-only version)?
-    $exists = false;
-    try { $pdo->query("SELECT 1 FROM `cr_delivery_confirmations` LIMIT 1"); $exists = true; } catch (Exception $e) {}
-
+    $db = Database::getInstance();
+    try { $db->getPdo()->query("SELECT 1 FROM `cr_delivery_confirmations` LIMIT 1"); return; } catch (Exception $e) {}
     try {
-        if (!$exists) {
-            $pdo->exec("
-                CREATE TABLE IF NOT EXISTS `cr_delivery_confirmations` (
-                  `id`                   bigint UNSIGNED NOT NULL AUTO_INCREMENT,
-                  `order_id`             bigint UNSIGNED NOT NULL,
-                  `order_number`         varchar(50) DEFAULT NULL,
-                  -- Stage 1: GATE PASS (goods leaving the factory)
-                  `gate_out_at`          timestamp NULL DEFAULT NULL,
-                  `gate_out_by_user_id`  bigint UNSIGNED DEFAULT NULL,
-                  `gate_out_by_name`     varchar(120) DEFAULT NULL,
-                  `driver_name`          varchar(150) DEFAULT NULL,
-                  `vehicle_number`       varchar(100) DEFAULT NULL,
-                  `gate_note`            varchar(500) DEFAULT NULL,
-                  -- Stage 2: DELIVERY confirmation (goods received by customer)
-                  `confirmed_at`         timestamp NULL DEFAULT NULL,
-                  `confirmed_by_user_id` bigint UNSIGNED DEFAULT NULL,
-                  `confirmed_by_name`    varchar(120) DEFAULT NULL,
-                  `received_by`          varchar(150) DEFAULT NULL,
-                  `note`                 varchar(500) DEFAULT NULL,
-                  `created_at`           timestamp NOT NULL DEFAULT current_timestamp(),
-                  PRIMARY KEY (`id`),
-                  UNIQUE KEY `uk_dc_order` (`order_id`)
-                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-            ");
-        } else {
-            // Migrate the old delivery-only table → add the gate-pass stage,
-            // and make confirmed_at nullable (a row now starts at gate-out).
-            foreach ([
-                "ALTER TABLE `cr_delivery_confirmations` ADD COLUMN `gate_out_at` timestamp NULL DEFAULT NULL",
-                "ALTER TABLE `cr_delivery_confirmations` ADD COLUMN `gate_out_by_user_id` bigint UNSIGNED DEFAULT NULL",
-                "ALTER TABLE `cr_delivery_confirmations` ADD COLUMN `gate_out_by_name` varchar(120) DEFAULT NULL",
-                "ALTER TABLE `cr_delivery_confirmations` ADD COLUMN `gate_note` varchar(500) DEFAULT NULL",
-                "ALTER TABLE `cr_delivery_confirmations` MODIFY `confirmed_at` timestamp NULL DEFAULT NULL",
-            ] as $sql) {
-                try { $pdo->exec($sql); } catch (Exception $e) { /* column may already exist */ }
-            }
-        }
+        $db->getPdo()->exec("
+            CREATE TABLE IF NOT EXISTS `cr_delivery_confirmations` (
+              `id`                   bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+              `order_id`             bigint UNSIGNED NOT NULL,
+              `order_number`         varchar(50) DEFAULT NULL,
+              `confirmed_by_user_id` bigint UNSIGNED DEFAULT NULL,
+              `confirmed_by_name`    varchar(120) DEFAULT NULL,
+              `driver_name`          varchar(150) DEFAULT NULL,
+              `vehicle_number`       varchar(100) DEFAULT NULL,
+              `received_by`          varchar(150) DEFAULT NULL,
+              `note`                 varchar(500) DEFAULT NULL,
+              `confirmed_at`         timestamp NOT NULL DEFAULT current_timestamp(),
+              PRIMARY KEY (`id`),
+              UNIQUE KEY `uk_dc_order` (`order_id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+        ");
     } catch (Exception $e) {
         error_log('ensureDeliveryConfirmTable: ' . $e->getMessage());
     }

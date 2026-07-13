@@ -467,7 +467,7 @@ body{
 <body>
 
 <div class="toolbar">
-  <span style="color:#6b7280;font-size:11px">Invoice + Delivery Receipt + Gate Pass — Single A4</span>
+  <span style="color:#6b7280;font-size:11px">Invoice + Delivery Receipt — Single A4</span>
   <button class="tb-btn tb-print" onclick="window.print()">🖨 Print / Save PDF</button>
   <button class="tb-btn tb-close" onclick="window.close()">✕ Close</button>
 </div>
@@ -737,12 +737,8 @@ body{
 <!-- ══════════════════════════════════════════════════════════
      CUT LINE 2
 ══════════════════════════════════════════════════════════ -->
-  <div class="cut-line">✂ &nbsp; CUT HERE — GATE PASS — FOR SECURITY / CHECKPOST &nbsp; ✂</div>
-
-<!-- ══════════════════════════════════════════════════════════
-     GATE PASS
-══════════════════════════════════════════════════════════ -->
-
+  <!-- Gate Pass strip removed — the Dispatch Slip (with QR) is now the gate pass. -->
+  <?php if (false): ?>
   <div class="strip-head gp-head">
     <div class="sh-left">
       <div class="sh-title">GATE PASS</div>
@@ -829,6 +825,7 @@ body{
     &nbsp;|&nbsp; Seal No.: _______________ &nbsp;|&nbsp; Vehicle Reg.: _______________
     &nbsp;|&nbsp; ☐ Cleared &nbsp; ☐ Hold
   </div>
+  <?php endif; /* Gate Pass strip removed — now on the Dispatch Slip */ ?>
 
 </div><!-- /.a4-page -->
 

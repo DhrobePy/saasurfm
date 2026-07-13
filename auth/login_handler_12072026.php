@@ -22,10 +22,7 @@ if (isset($_POST['login']) && isset($_POST['email']) && isset($_POST['password']
         // which will act as our central router.
         // ==========================================================
         $_SESSION['success_flash'] = 'Login successful! Redirecting...';
-        // Return the user to the page they were headed for (e.g. the delivery QR
-        // confirm page) if we saved one, otherwise the central router.
-        $dest = function_exists('safe_return_to') ? safe_return_to() : null;
-        header('Location: ' . ($dest ?? '../index.php'));
+        header('Location: ../index.php'); // <-- THIS IS THE CHANGE
         exit();
     
     } else {
@@ -42,3 +39,4 @@ if (isset($_POST['login']) && isset($_POST['email']) && isset($_POST['password']
     exit();
 }
 ?>
+

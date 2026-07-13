@@ -4,23 +4,10 @@
 // *** THIS PATH IS NOW CORRECTED ***
 require_once '../core/init.php';
 
-// Redirect if already logged in — honor a saved return-to (e.g. the delivery QR
-// page) so a logged-in scan lands where it should, else the central router.
+// Redirect if already logged in — use the central router so all roles go to the right place
 if (is_admin_logged_in()) {
-    $dest = safe_return_to();
-    header('Location: ' . ($dest ?? url('index.php')));
+    header('Location: ' . url('index.php'));
     exit();
-}
-
-// Contextual hint when arriving from a QR / deep link (peek, don't consume).
-$login_context = null;
-$rt_peek = $_SESSION['return_to'] ?? '';
-if (is_string($rt_peek) && stripos($rt_peek, 'verify_delivery.php') !== false) {
-    parse_str((string) parse_url($rt_peek, PHP_URL_QUERY), $qp);
-    $inv = trim($qp['inv'] ?? '');
-    $login_context = $inv !== ''
-        ? 'Sign in to confirm delivery of order ' . htmlspecialchars($inv, ENT_QUOTES)
-        : 'Sign in to confirm the delivery.';
 }
 
 $pageTitle = 'Login - ' . APP_NAME;
@@ -65,11 +52,6 @@ $pageTitle = 'Login - ' . APP_NAME;
         </div>
         
         <div class="bg-white rounded-xl shadow-lg p-8">
-            <?php if (!empty($login_context)): ?>
-            <div class="mb-4 p-3 rounded-lg bg-indigo-50 border border-indigo-200 text-indigo-800 text-sm flex items-center gap-2">
-                <i class="fas fa-truck-fast"></i><span><?php echo $login_context; ?></span>
-            </div>
-            <?php endif; ?>
             <?php echo display_message(); ?>
             
             <form action="login_handler.php" method="POST" class="space-y-6">

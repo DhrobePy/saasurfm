@@ -44,7 +44,7 @@ $ship = $db->query("SELECT truck_number, driver_name FROM credit_order_shipping 
 $driver  = $ship->driver_name  ?? '';
 $vehicle = $ship->truck_number ?? '';
 
-$confirmed = $db->query("SELECT confirmed_at, confirmed_by_name FROM cr_delivery_confirmations WHERE order_id = ?", [$order_id])->first();
+$conf = $db->query("SELECT gate_out_at, gate_out_by_name, confirmed_at, confirmed_by_name FROM cr_delivery_confirmations WHERE order_id = ?", [$order_id])->first();
 
 // Signed QR → the login-gated confirm page
 $qr_sig = deliveryQrSignature((string)$order->order_number);
@@ -113,9 +113,9 @@ foreach (['png','jpg','jpeg'] as $_ext) {
       </div>
     </div>
     <div class="doc-title">
-      <div class="t">DISPATCH SLIP</div>
+      <div class="t">GATE PASS <span style="font-weight:600;font-size:12px;color:#6b7280;">/ DISPATCH SLIP</span></div>
       <div class="n"><?php echo htmlspecialchars($order->order_number); ?></div>
-      <div style="font-size:11px;color:#6b7280;margin-top:2px;">Date: <?php echo date('d M Y'); ?></div>
+      <div style="font-size:11px;color:#6b7280;margin-top:2px;">Security / Checkpost Copy — Date: <?php echo date('d M Y'); ?></div>
     </div>
   </div>
 
@@ -151,15 +151,18 @@ foreach (['png','jpg','jpeg'] as $_ext) {
   <div class="qr-wrap">
     <canvas id="dsQr" width="110" height="110" style="width:110px;height:110px;"></canvas>
     <div class="qr-cap">
-      <strong>Scan at delivery to confirm</strong>
-      Driver/dispatch staff scan this code (logged in) to confirm delivery.
-      It shows the items &amp; driver, and <strong>locks the order</strong> so it can't be delivered twice.
+      <strong>Scan twice: at the gate, then at delivery</strong>
+      1) At the factory gate, staff scan (logged in) to <strong>release the goods</strong> — it blocks release if the order isn't cleared for dispatch.
+      2) At the customer, scan again to <strong>confirm delivery</strong>, which locks the order so it can't be delivered twice.
     </div>
   </div>
 
-  <?php if ($confirmed): ?>
-  <div class="warn">⚠ Already delivered — confirmed by <?php echo htmlspecialchars($confirmed->confirmed_by_name ?? 'staff'); ?>
-     on <?php echo date('d M Y, g:i A', strtotime($confirmed->confirmed_at)); ?>. Do not deliver again.</div>
+  <?php if ($conf && !empty($conf->confirmed_at)): ?>
+  <div class="warn">⚠ Already delivered — confirmed by <?php echo htmlspecialchars($conf->confirmed_by_name ?? 'staff'); ?>
+     on <?php echo date('d M Y, g:i A', strtotime($conf->confirmed_at)); ?>. Do not deliver again.</div>
+  <?php elseif ($conf && !empty($conf->gate_out_at)): ?>
+  <div class="warn" style="background:#eff6ff;border-color:#bfdbfe;color:#1e40af;">↗ Gate pass done — goods released by <?php echo htmlspecialchars($conf->gate_out_by_name ?? 'staff'); ?>
+     on <?php echo date('d M Y, g:i A', strtotime($conf->gate_out_at)); ?>. Awaiting delivery confirmation.</div>
   <?php endif; ?>
 
   <div class="sign-row">
