@@ -1,0 +1,730 @@
+<?php
+require_once '../core/init.php';
+
+// Feature #2 — this page is the "Over-Delivery" tab of returns_center.php.
+// Direct hits redirect into the hub; when embedded (CR_EMBED) the hub gated it.
+if (!defined('CR_EMBED')) {
+    $qs = $_GET; $qs['tab'] = 'od';
+    header('Location: returns_center.php?' . http_build_query($qs));
+    exit;
+}
+
+$allowed_roles = ['Superadmin', 'admin', 'Accounts', 'accounts-srg', 'accounts-demra',
+                  'dispatch-srg', 'dispatch-demra', 'production manager-srg', 'production manager-demra'];
+
+global $db;
+$currentUser = getCurrentUser();
+$user_id     = $currentUser['id']   ?? null;
+$user_role   = $currentUser['role'] ?? '';
+$pageTitle   = 'Over-Delivery Management';
+
+$is_admin    = in_array($user_role, ['Superadmin', 'admin']);
+$can_record  = $is_admin || userCanPageAction('credit_sales', 'over_delivery', 'can_record');
+$can_approve = $is_admin || userCanPageAction('credit_sales', 'over_delivery', 'can_approve');
+
+/* ─── Self-migrating schema (CREATE TABLE IF NOT EXISTS only) ─────────────── */
+$pdo = $db->getPdo();
+
+$pdo->exec("
+    CREATE TABLE IF NOT EXISTS `credit_order_over_deliveries` (
+      `id`                  bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+      `od_number`           varchar(50)  NOT NULL,
+      `order_id`            bigint UNSIGNED NOT NULL,
+      `customer_id`         bigint UNSIGNED NOT NULL,
+      `od_date`             date NOT NULL,
+      `reason`              text DEFAULT NULL,
+      `total_extra_qty`     decimal(10,2) NOT NULL DEFAULT 0.00,
+      `total_extra_amount`  decimal(12,2) NOT NULL DEFAULT 0.00,
+      `resolution`          enum('bill','retrieve','writeoff') NOT NULL DEFAULT 'bill',
+      `status`              enum('pending','approved','rejected') NOT NULL DEFAULT 'pending',
+      `retrieved_at`        datetime DEFAULT NULL,
+      `created_by_user_id`  bigint UNSIGNED NOT NULL,
+      `approved_by_user_id` bigint UNSIGNED DEFAULT NULL,
+      `approved_at`         timestamp NULL DEFAULT NULL,
+      `notes`               text DEFAULT NULL,
+      `created_at`          timestamp NOT NULL DEFAULT current_timestamp(),
+      PRIMARY KEY (`id`),
+      UNIQUE KEY `uk_od_number` (`od_number`),
+      KEY `idx_od_order` (`order_id`),
+      KEY `idx_od_customer` (`customer_id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+");
+
+$pdo->exec("
+    CREATE TABLE IF NOT EXISTS `credit_order_over_delivery_items` (
+      `id`            bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+      `od_id`         bigint UNSIGNED NOT NULL,
+      `order_item_id` bigint UNSIGNED NOT NULL,
+      `product_id`    bigint UNSIGNED NOT NULL,
+      `variant_id`    bigint UNSIGNED DEFAULT NULL,
+      `ordered_qty`   decimal(10,2) NOT NULL DEFAULT 0.00,
+      `extra_qty`     decimal(10,2) NOT NULL,
+      `unit_price`    decimal(12,2) NOT NULL,
+      `extra_amount`  decimal(12,2) NOT NULL,
+      PRIMARY KEY (`id`),
+      KEY `idx_odi_od` (`od_id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+");
+
+$error   = null;
+$success = null;
+
+/* ─── Financial application for 'bill' resolution ───────────────────────────
+   Reverse of a return: invoice grows, customer owes more, debit note in ledger. */
+function _applyOverDeliveryBilling($db, $order, $od_id, $od_number, $amount, $user_id): void {
+    $order_id    = $order->id;
+    $customer_id = $order->customer_id;
+
+    $db->query(
+        "UPDATE credit_orders SET total_amount = total_amount + ?, balance_due = balance_due + ?, updated_at = NOW() WHERE id = ?",
+        [$amount, $amount, $order_id]
+    );
+
+    $db->query(
+        "UPDATE customers SET current_balance = current_balance + ? WHERE id = ?",
+        [$amount, $customer_id]
+    );
+
+    $prev = $db->query(
+        "SELECT balance_after FROM customer_ledger WHERE customer_id = ? ORDER BY id DESC LIMIT 1",
+        [$customer_id]
+    )->first();
+    $new_led_bal = ($prev ? (float)$prev->balance_after : 0) + $amount;
+
+    $db->insert('customer_ledger', [
+        'customer_id'        => $customer_id,
+        'transaction_date'   => date('Y-m-d'),
+        'transaction_type'   => 'debit_note',
+        'reference_type'     => 'credit_order_over_deliveries',
+        'reference_id'       => $od_id,
+        'invoice_number'     => $od_number,
+        'description'        => "Over-delivery {$od_number} billed against {$order->order_number} — extra goods kept by customer",
+        'debit_amount'       => $amount,
+        'credit_amount'      => 0,
+        'balance_after'      => $new_led_bal,
+        'created_by_user_id' => $user_id,
+    ]);
+}
+
+/* ─── Load order for new over-delivery record ───────────────────────────────── */
+$selected_order_id = isset($_GET['order_id']) ? (int)$_GET['order_id'] : 0;
+$selected_order    = null;
+$order_items       = [];
+
+if ($selected_order_id) {
+    $selected_order = $db->query(
+        "SELECT co.*, c.name AS customer_name, c.phone_number
+         FROM credit_orders co
+         JOIN customers c ON co.customer_id = c.id
+         WHERE co.id = ? AND co.status IN ('goods_on_board','shipped','delivered')",
+        [$selected_order_id]
+    )->first();
+
+    if ($selected_order) {
+        $order_items = $db->query(
+            "SELECT coi.*, p.base_name AS product_name,
+                    pv.grade, pv.weight_variant, pv.unit_of_measure
+             FROM credit_order_items coi
+             JOIN products p ON coi.product_id = p.id
+             LEFT JOIN product_variants pv ON coi.variant_id = pv.id
+             WHERE coi.order_id = ?
+             ORDER BY coi.id",
+            [$selected_order_id]
+        )->results();
+
+        foreach ($order_items as $item) {
+            $already = $db->query(
+                "SELECT COALESCE(SUM(oi.extra_qty),0) AS qty
+                 FROM credit_order_over_delivery_items oi
+                 JOIN credit_order_over_deliveries od ON od.id = oi.od_id
+                 WHERE oi.order_item_id = ? AND od.status != 'rejected'",
+                [$item->id]
+            )->first();
+            $item->already_recorded = (float)($already->qty ?? 0);
+        }
+    }
+}
+
+/* ─── POST: Record over-delivery ─────────────────────────────────────────────── */
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'create_od') {
+    if (!$can_record) {
+        $error = 'You do not have permission to record over-deliveries.';
+    } else {
+        try {
+            $order_id   = (int)$_POST['order_id'];
+            $od_date    = $_POST['od_date'] ?? date('Y-m-d');
+            $reason     = trim($_POST['reason'] ?? '');
+            $notes      = trim($_POST['notes'] ?? '');
+            $resolution = in_array($_POST['resolution'] ?? '', ['bill', 'retrieve', 'writeoff']) ? $_POST['resolution'] : 'bill';
+            $qtys       = $_POST['extra_qty'] ?? [];
+
+            $order = $db->query(
+                "SELECT co.* FROM credit_orders co WHERE co.id = ? AND co.status IN ('goods_on_board','shipped','delivered')",
+                [$order_id]
+            )->first();
+            if (!$order) throw new Exception('Order not found or not eligible (must be on board, shipped or delivered).');
+
+            $lines = [];
+            $total_extra_qty = 0;
+            $total_extra_amt = 0;
+
+            foreach ($qtys as $item_id => $qty) {
+                $qty = (float)$qty;
+                if ($qty <= 0) continue;
+
+                $item = $db->query(
+                    "SELECT * FROM credit_order_items WHERE id = ? AND order_id = ?",
+                    [(int)$item_id, $order_id]
+                )->first();
+                if (!$item) continue;
+
+                $amount = $qty * (float)$item->unit_price;
+                $lines[] = [
+                    'order_item_id' => (int)$item_id,
+                    'product_id'    => $item->product_id,
+                    'variant_id'    => $item->variant_id,
+                    'ordered_qty'   => (float)$item->quantity,
+                    'extra_qty'     => $qty,
+                    'unit_price'    => (float)$item->unit_price,
+                    'extra_amount'  => $amount,
+                ];
+                $total_extra_qty += $qty;
+                $total_extra_amt += $amount;
+            }
+            if (empty($lines)) throw new Exception('No extra quantities entered.');
+
+            // Generate OD number
+            $od_dt = date('Ymd', strtotime($od_date));
+            $last  = $db->query(
+                "SELECT od_number FROM credit_order_over_deliveries WHERE od_number LIKE ? ORDER BY id DESC LIMIT 1",
+                ["OD-{$od_dt}-%"]
+            )->first();
+            $seq       = $last ? (int)substr($last->od_number, -4) + 1 : 1;
+            $od_number = sprintf("OD-%s-%04d", $od_dt, $seq);
+
+            $pdo->beginTransaction();
+
+            // #2: separation of duties — the creator can never auto-approve their own
+            // over-delivery; it is always created 'pending' for a DIFFERENT approver.
+            $auto_approve = false;
+
+            $od_id = $db->insert('credit_order_over_deliveries', [
+                'od_number'           => $od_number,
+                'order_id'            => $order_id,
+                'customer_id'         => $order->customer_id,
+                'od_date'             => $od_date,
+                'reason'              => $reason ?: null,
+                'total_extra_qty'     => $total_extra_qty,
+                'total_extra_amount'  => $total_extra_amt,
+                'resolution'          => $resolution,
+                'status'              => $auto_approve ? 'approved' : 'pending',
+                'created_by_user_id'  => $user_id,
+                'approved_by_user_id' => $auto_approve ? $user_id : null,
+                'approved_at'         => $auto_approve ? date('Y-m-d H:i:s') : null,
+                'notes'               => $notes ?: null,
+            ]);
+
+            foreach ($lines as $l) {
+                $db->insert('credit_order_over_delivery_items', array_merge(['od_id' => $od_id], $l));
+            }
+
+            if ($auto_approve && $resolution === 'bill') {
+                _applyOverDeliveryBilling($db, $order, $od_id, $od_number, $total_extra_amt, $user_id);
+            }
+
+            $pdo->commit();
+
+            $res_labels = ['bill' => 'Bill customer', 'retrieve' => 'Retrieve goods', 'writeoff' => 'Write off'];
+            auditLog('credit_order_over_deliveries', 'created',
+                "Over-delivery {$od_number} recorded for order {$order->order_number} — ৳" . number_format($total_extra_amt, 2)
+                . " [" . $res_labels[$resolution] . "]",
+                ['od_id' => $od_id, 'order_id' => $order_id, 'resolution' => $resolution, 'amount' => $total_extra_amt]
+            );
+
+            try {
+                if (defined('TELEGRAM_BOT_TOKEN') && defined('TELEGRAM_CHAT_ID') && defined('TELEGRAM_NOTIFICATIONS_ENABLED') && TELEGRAM_NOTIFICATIONS_ENABLED) {
+                    require_once '../core/classes/TelegramNotifier.php';
+                    $notifier = new TelegramNotifier(TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID);
+                    $autoNote = $auto_approve ? ' ✅ Auto-approved' : ' ⏳ Pending approval';
+                    $msg = "<b>📦 OVER-DELIVERY RECORDED</b>\n"
+                         . "─────────────────────────\n\n"
+                         . "<b>OD #:</b> <code>{$od_number}</code>{$autoNote}\n"
+                         . "<b>Order:</b> {$order->order_number}\n"
+                         . "<b>Extra Value:</b> ৳" . number_format($total_extra_amt, 2) . "\n"
+                         . "<b>Resolution:</b> " . $res_labels[$resolution] . "\n"
+                         . "<b>Reason:</b> " . htmlspecialchars($reason ?: 'Not specified') . "\n"
+                         . "<b>By:</b> " . ($currentUser['display_name'] ?? 'Unknown') . "\n\n"
+                         . "<i>Ujjal Flour Mills ERP</i>";
+                    $notifier->sendMessage($msg);
+                }
+            } catch (Exception $te) {}
+
+            $success = "Over-delivery #{$od_number} recorded — awaiting approval by another authorised user (you cannot approve your own).";
+            $selected_order_id = 0;
+            $selected_order    = null;
+            $order_items       = [];
+
+        } catch (Exception $e) {
+            if ($pdo->inTransaction()) $pdo->rollBack();
+            $error = $e->getMessage();
+        }
+    }
+}
+
+/* ─── POST: Approve / Reject ────────────────────────────────────────────────── */
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && in_array($_POST['action'] ?? '', ['approve_od', 'reject_od'])) {
+    if (!$can_approve) {
+        $error = 'Permission denied.';
+    } else {
+        try {
+            $od_id  = (int)$_POST['od_id'];
+            $action = $_POST['action'];
+            $od     = $db->query("SELECT * FROM credit_order_over_deliveries WHERE id = ? AND status = 'pending'", [$od_id])->first();
+            if (!$od) throw new Exception('Record not found or already processed.');
+
+            // #2: no self-approval — the creator cannot approve/reject their own.
+            if ((int)$od->created_by_user_id === (int)$user_id) {
+                throw new Exception('You created this over-delivery — a different authorised user must approve or reject it.');
+            }
+
+            if ($action === 'approve_od') {
+                $order = $db->query("SELECT * FROM credit_orders WHERE id = ?", [$od->order_id])->first();
+                $pdo->beginTransaction();
+                if ($od->resolution === 'bill') {
+                    _applyOverDeliveryBilling($db, $order, $od_id, $od->od_number, (float)$od->total_extra_amount, $user_id);
+                }
+                $db->query("UPDATE credit_order_over_deliveries SET status='approved', approved_by_user_id=?, approved_at=NOW() WHERE id=?", [$user_id, $od_id]);
+                $pdo->commit();
+                auditLog('credit_order_over_deliveries', 'approved', "Over-delivery {$od->od_number} approved", ['od_id' => $od_id]);
+                $success = "Over-delivery #{$od->od_number} approved" . ($od->resolution === 'bill' ? ' and billed to customer.' : '.');
+            } else {
+                $db->query("UPDATE credit_order_over_deliveries SET status='rejected', approved_by_user_id=?, approved_at=NOW() WHERE id=?", [$user_id, $od_id]);
+                auditLog('credit_order_over_deliveries', 'rejected', "Over-delivery {$od->od_number} rejected", ['od_id' => $od_id]);
+                $success = "Over-delivery #{$od->od_number} rejected.";
+            }
+        } catch (Exception $e) {
+            if ($pdo->inTransaction()) $pdo->rollBack();
+            $error = $e->getMessage();
+        }
+    }
+}
+
+/* ─── POST: Mark retrieved (goods physically collected back) ─────────────────── */
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'mark_retrieved') {
+    if (!$can_approve) {
+        $error = 'Permission denied.';
+    } else {
+        try {
+            $od_id = (int)$_POST['od_id'];
+            $od = $db->query(
+                "SELECT * FROM credit_order_over_deliveries
+                 WHERE id = ? AND resolution = 'retrieve' AND status = 'approved' AND retrieved_at IS NULL",
+                [$od_id]
+            )->first();
+            if (!$od) throw new Exception('Record not found, not a retrieval, or already collected.');
+            $db->query("UPDATE credit_order_over_deliveries SET retrieved_at = NOW() WHERE id = ?", [$od_id]);
+            auditLog('credit_order_over_deliveries', 'retrieved', "Over-delivery {$od->od_number} goods retrieved from customer", ['od_id' => $od_id]);
+            $success = "Goods for #{$od->od_number} marked as retrieved.";
+        } catch (Exception $e) {
+            $error = $e->getMessage();
+        }
+    }
+}
+
+/* ─── Load OD list ──────────────────────────────────────────────────────────── */
+$date_from = $_GET['date_from'] ?? date('Y-m-01');
+$date_to   = $_GET['date_to']   ?? date('Y-m-d');
+$f_status  = $_GET['od_status'] ?? '';
+
+$od_conds  = ["od.od_date BETWEEN ? AND ?"];
+$od_params = [$date_from, $date_to];
+if ($f_status !== '') { $od_conds[] = "od.status = ?"; $od_params[] = $f_status; }
+
+$od_list = $db->query(
+    "SELECT od.*, c.name AS customer_name, co.order_number,
+            u.display_name AS created_by_name, au.display_name AS approved_by_name
+     FROM credit_order_over_deliveries od
+     JOIN customers c ON od.customer_id = c.id
+     JOIN credit_orders co ON od.order_id = co.id
+     LEFT JOIN users u  ON od.created_by_user_id  = u.id
+     LEFT JOIN users au ON od.approved_by_user_id = au.id
+     WHERE " . implode(' AND ', $od_conds) . "
+     ORDER BY od.created_at DESC LIMIT 200",
+    $od_params
+)->results();
+
+$od_ids = array_column($od_list, 'id');
+$items_by_od = [];
+if (!empty($od_ids)) {
+    $ph = implode(',', array_fill(0, count($od_ids), '?'));
+    $all_od_items = $db->query(
+        "SELECT oi.*, p.base_name AS product_name, pv.grade, pv.weight_variant, pv.unit_of_measure
+         FROM credit_order_over_delivery_items oi
+         JOIN products p ON oi.product_id = p.id
+         LEFT JOIN product_variants pv ON oi.variant_id = pv.id
+         WHERE oi.od_id IN ($ph)
+         ORDER BY oi.id",
+        $od_ids
+    )->results();
+    foreach ($all_od_items as $oi) {
+        $items_by_od[$oi->od_id][] = $oi;
+    }
+}
+
+if (!defined('CR_EMBED')) require_once '../templates/header.php';
+
+$res_meta = [
+    'bill'     => ['label' => 'Bill Customer',  'cls' => 'bg-blue-100 text-blue-800',   'icon' => 'fa-file-invoice-dollar'],
+    'retrieve' => ['label' => 'Retrieve Goods', 'cls' => 'bg-orange-100 text-orange-800','icon' => 'fa-truck-pickup'],
+    'writeoff' => ['label' => 'Write Off',      'cls' => 'bg-gray-200 text-gray-700',   'icon' => 'fa-eraser'],
+];
+$st_meta = [
+    'pending'  => 'bg-yellow-100 text-yellow-800',
+    'approved' => 'bg-green-100 text-green-800',
+    'rejected' => 'bg-red-100 text-red-800',
+];
+?>
+
+<div class="<?php echo defined('CR_EMBED') ? '' : 'max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-6'; ?>">
+
+<!-- ── Header ─────────────────────────────────────────────────────────────── -->
+<div class="mb-6 flex flex-wrap items-center justify-between gap-4">
+    <div>
+        <h1 class="text-3xl font-bold text-gray-900">
+            <i class="fas fa-truck-loading text-blue-500 mr-2"></i><?= $pageTitle ?>
+        </h1>
+        <p class="text-gray-500 mt-1">Record extra goods delivered beyond order quantity — bill, retrieve, or write off.</p>
+    </div>
+    <a href="index.php" class="px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 hover:bg-gray-50">
+        <i class="fas fa-arrow-left mr-2"></i>Dashboard
+    </a>
+</div>
+
+<?php if ($error): ?>
+<div class="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded-r-lg">
+    <p class="font-bold">Error</p><p><?= htmlspecialchars($error) ?></p>
+</div>
+<?php endif; ?>
+<?php if ($success): ?>
+<div class="bg-green-50 border-l-4 border-green-500 text-green-700 p-4 mb-6 rounded-r-lg">
+    <p class="font-bold">Success</p><p><?= htmlspecialchars($success) ?></p>
+</div>
+<?php endif; ?>
+
+<!-- ═══ NEW OVER-DELIVERY ═══ -->
+<?php if ($can_record): ?>
+<div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
+    <h2 class="text-lg font-bold text-gray-800 mb-4">
+        <i class="fas fa-plus-circle mr-2 text-blue-500"></i>Record New Over-Delivery
+    </h2>
+
+    <!-- Order search -->
+    <form method="GET" class="flex flex-wrap gap-3 mb-5">
+        <div class="flex-1 min-w-[200px]">
+            <label class="block text-xs font-medium text-gray-600 mb-1">Order Number / Customer Name</label>
+            <input type="text" name="order_search" autocomplete="off"
+                   value="<?= htmlspecialchars($_GET['order_search'] ?? '') ?>"
+                   placeholder="Type order number or customer name..."
+                   class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500">
+        </div>
+        <div class="flex items-end">
+            <button type="submit" name="search_order" value="1"
+                    class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 cursor-pointer">
+                <i class="fas fa-search mr-1"></i> Find Order
+            </button>
+        </div>
+    </form>
+
+    <?php
+    $search_results = [];
+    if (!empty($_GET['order_search']) && isset($_GET['search_order'])) {
+        $sq = '%' . $_GET['order_search'] . '%';
+        $search_results = $db->query(
+            "SELECT co.id, co.order_number, co.total_amount, co.balance_due, co.status, co.order_date,
+                    c.name AS customer_name
+             FROM credit_orders co
+             JOIN customers c ON co.customer_id = c.id
+             WHERE co.status IN ('goods_on_board','shipped','delivered')
+               AND (co.order_number LIKE ? OR c.name LIKE ?)
+             ORDER BY co.order_date DESC LIMIT 15",
+            [$sq, $sq]
+        )->results();
+    }
+    ?>
+
+    <?php if (!empty($search_results)): ?>
+    <div class="mb-5 border border-blue-200 rounded-lg overflow-hidden">
+        <div class="bg-blue-50 px-4 py-2 text-sm font-semibold text-blue-800">Select an order:</div>
+        <table class="min-w-full text-sm divide-y divide-gray-200">
+            <thead class="bg-gray-50 text-xs text-gray-500 uppercase">
+                <tr>
+                    <th class="px-4 py-2 text-left">Order #</th>
+                    <th class="px-4 py-2 text-left">Customer</th>
+                    <th class="px-4 py-2 text-left">Date</th>
+                    <th class="px-4 py-2 text-right">Invoice Total</th>
+                    <th class="px-4 py-2 text-center">Status</th>
+                    <th class="px-4 py-2 text-center"></th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+                <?php foreach ($search_results as $sr): ?>
+                <tr class="hover:bg-gray-50">
+                    <td class="px-4 py-2 font-medium text-blue-700"><?= htmlspecialchars($sr->order_number) ?></td>
+                    <td class="px-4 py-2"><?= htmlspecialchars($sr->customer_name) ?></td>
+                    <td class="px-4 py-2 text-gray-500"><?= date('d-M-Y', strtotime($sr->order_date)) ?></td>
+                    <td class="px-4 py-2 text-right">৳<?= number_format($sr->total_amount, 0) ?></td>
+                    <td class="px-4 py-2 text-center">
+                        <span class="px-2 py-0.5 rounded text-xs font-semibold <?= $sr->status === 'delivered' ? 'bg-green-100 text-green-800' : 'bg-teal-100 text-teal-800' ?>">
+                            <?= ucfirst($sr->status) ?>
+                        </span>
+                    </td>
+                    <td class="px-4 py-2 text-center">
+                        <a href="?order_id=<?= $sr->id ?>"
+                           class="px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 cursor-pointer">
+                            Select
+                        </a>
+                    </td>
+                </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+    <?php elseif (isset($_GET['search_order'])): ?>
+    <p class="text-sm text-gray-500 mb-5">No on-board, shipped or delivered orders matched your search.</p>
+    <?php endif; ?>
+
+    <?php if ($selected_order): ?>
+    <!-- Selected order + item entry -->
+    <div class="border-2 border-blue-200 rounded-xl p-5 bg-blue-50/30">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+            <div>
+                <span class="font-mono font-bold text-blue-700 text-lg"><?= htmlspecialchars($selected_order->order_number) ?></span>
+                <span class="ml-3 font-semibold text-gray-800"><?= htmlspecialchars($selected_order->customer_name) ?></span>
+                <span class="ml-2 text-sm text-gray-500"><?= htmlspecialchars($selected_order->phone_number ?? '') ?></span>
+            </div>
+            <a href="over_delivery.php" class="text-sm text-gray-500 hover:text-gray-700"><i class="fas fa-times mr-1"></i>Clear</a>
+        </div>
+
+        <form method="POST">
+            <input type="hidden" name="action" value="create_od">
+            <input type="hidden" name="order_id" value="<?= $selected_order->id ?>">
+
+            <table class="min-w-full text-sm mb-4 bg-white rounded-lg overflow-hidden border border-gray-200">
+                <thead class="bg-gray-50 text-xs text-gray-500 uppercase">
+                    <tr>
+                        <th class="px-4 py-2 text-left">Product</th>
+                        <th class="px-4 py-2 text-right">Ordered Qty</th>
+                        <th class="px-4 py-2 text-right">Unit Price</th>
+                        <th class="px-4 py-2 text-right">Already Recorded</th>
+                        <th class="px-4 py-2 text-right w-36">Extra Qty Delivered</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    <?php foreach ($order_items as $item):
+                        $variant = trim(($item->grade ?? '') . ' ' . ($item->weight_variant ?? ''));
+                    ?>
+                    <tr>
+                        <td class="px-4 py-2">
+                            <div class="font-medium text-gray-900"><?= htmlspecialchars($item->product_name) ?></div>
+                            <?php if ($variant): ?><div class="text-xs text-gray-400"><?= htmlspecialchars($variant) ?></div><?php endif; ?>
+                        </td>
+                        <td class="px-4 py-2 text-right"><?= number_format($item->quantity, 0) ?> <?= htmlspecialchars($item->unit_of_measure ?? '') ?></td>
+                        <td class="px-4 py-2 text-right">৳<?= number_format($item->unit_price, 2) ?></td>
+                        <td class="px-4 py-2 text-right text-gray-500"><?= number_format($item->already_recorded, 0) ?></td>
+                        <td class="px-4 py-2 text-right">
+                            <input type="number" name="extra_qty[<?= $item->id ?>]" min="0" step="0.01" value="0"
+                                   class="w-28 px-2 py-1.5 border rounded-lg text-right text-sm od-qty"
+                                   data-price="<?= (float)$item->unit_price ?>">
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+                <tfoot>
+                    <tr class="bg-gray-50 border-t-2 border-gray-200">
+                        <td colspan="4" class="px-4 py-2 text-right font-bold text-gray-700">Extra Goods Value</td>
+                        <td class="px-4 py-2 text-right font-bold text-blue-700" id="odTotal">৳0</td>
+                    </tr>
+                </tfoot>
+            </table>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <div>
+                    <label class="block text-xs font-medium text-gray-600 mb-1">Date *</label>
+                    <input type="date" name="od_date" value="<?= date('Y-m-d') ?>" required
+                           class="w-full px-3 py-2 border rounded-lg text-sm">
+                </div>
+                <div class="md:col-span-2">
+                    <label class="block text-xs font-medium text-gray-600 mb-1">Reason</label>
+                    <input type="text" name="reason" maxlength="500"
+                           class="w-full px-3 py-2 border rounded-lg text-sm"
+                           placeholder="e.g. Loading miscount at factory, extra bags on truck...">
+                </div>
+            </div>
+
+            <!-- Resolution -->
+            <div class="mb-4">
+                <label class="block text-xs font-medium text-gray-600 mb-2">Resolution — what happens to the extra goods? *</label>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <label class="flex items-start gap-2 p-3 border-2 rounded-lg cursor-pointer has-[:checked]:border-blue-500 has-[:checked]:bg-blue-50">
+                        <input type="radio" name="resolution" value="bill" checked class="mt-0.5 accent-blue-600">
+                        <span class="text-sm">
+                            <span class="font-semibold text-gray-800 block">Bill Customer</span>
+                            <span class="text-xs text-gray-500">Customer keeps goods. Invoice & receivable increase; debit note in ledger.</span>
+                        </span>
+                    </label>
+                    <label class="flex items-start gap-2 p-3 border-2 rounded-lg cursor-pointer has-[:checked]:border-orange-500 has-[:checked]:bg-orange-50">
+                        <input type="radio" name="resolution" value="retrieve" class="mt-0.5 accent-orange-600">
+                        <span class="text-sm">
+                            <span class="font-semibold text-gray-800 block">Retrieve Goods</span>
+                            <span class="text-xs text-gray-500">No charge. Dispatch collects the extra goods back from customer.</span>
+                        </span>
+                    </label>
+                    <label class="flex items-start gap-2 p-3 border-2 rounded-lg cursor-pointer has-[:checked]:border-gray-500 has-[:checked]:bg-gray-50">
+                        <input type="radio" name="resolution" value="writeoff" class="mt-0.5 accent-gray-600">
+                        <span class="text-sm">
+                            <span class="font-semibold text-gray-800 block">Write Off</span>
+                            <span class="text-xs text-gray-500">Company absorbs the cost (goodwill / not recoverable). Logged for audit.</span>
+                        </span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-xs font-medium text-gray-600 mb-1">Notes</label>
+                <textarea name="notes" rows="2" class="w-full px-3 py-2 border rounded-lg text-sm"
+                          placeholder="Additional notes (optional)..."></textarea>
+            </div>
+
+            <button type="submit"
+                    onclick="return confirm('Record this over-delivery?')"
+                    class="px-6 py-2.5 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 cursor-pointer">
+                <i class="fas fa-save mr-2"></i>Record Over-Delivery
+            </button>
+        </form>
+    </div>
+    <?php endif; ?>
+</div>
+<?php endif; ?>
+
+<!-- ═══ OD LIST ═══ -->
+<div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+    <div class="px-6 py-4 border-b border-gray-100 flex flex-wrap items-center justify-between gap-3">
+        <h2 class="text-lg font-bold text-gray-800"><i class="fas fa-list mr-2 text-gray-400"></i>Over-Delivery Records</h2>
+        <form method="GET" class="flex flex-wrap gap-2 items-end">
+            <input type="date" name="date_from" value="<?= htmlspecialchars($date_from) ?>" class="px-2 py-1.5 border rounded text-xs">
+            <input type="date" name="date_to" value="<?= htmlspecialchars($date_to) ?>" class="px-2 py-1.5 border rounded text-xs">
+            <select name="od_status" class="px-2 py-1.5 border rounded text-xs">
+                <option value="">All Statuses</option>
+                <option value="pending"  <?= $f_status === 'pending'  ? 'selected' : '' ?>>Pending</option>
+                <option value="approved" <?= $f_status === 'approved' ? 'selected' : '' ?>>Approved</option>
+                <option value="rejected" <?= $f_status === 'rejected' ? 'selected' : '' ?>>Rejected</option>
+            </select>
+            <button type="submit" class="px-3 py-1.5 bg-gray-700 text-white text-xs rounded hover:bg-gray-800 cursor-pointer">Filter</button>
+        </form>
+    </div>
+
+    <?php if (empty($od_list)): ?>
+    <div class="p-10 text-center text-sm text-gray-400">No over-delivery records in this period.</div>
+    <?php else: ?>
+    <div class="overflow-x-auto">
+    <table class="min-w-full text-sm divide-y divide-gray-200">
+        <thead class="bg-gray-50 text-xs text-gray-500 uppercase">
+            <tr>
+                <th class="px-4 py-2 text-left">OD #</th>
+                <th class="px-4 py-2 text-left">Date</th>
+                <th class="px-4 py-2 text-left">Order</th>
+                <th class="px-4 py-2 text-left">Customer</th>
+                <th class="px-4 py-2 text-left">Items</th>
+                <th class="px-4 py-2 text-right">Extra Value</th>
+                <th class="px-4 py-2 text-center">Resolution</th>
+                <th class="px-4 py-2 text-center">Status</th>
+                <th class="px-4 py-2 text-center">Actions</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100">
+        <?php foreach ($od_list as $od):
+            $items = $items_by_od[$od->id] ?? [];
+            $rm    = $res_meta[$od->resolution] ?? $res_meta['bill'];
+        ?>
+            <tr class="hover:bg-gray-50">
+                <td class="px-4 py-2.5 font-mono font-semibold text-blue-700"><?= htmlspecialchars($od->od_number) ?></td>
+                <td class="px-4 py-2.5 text-gray-500 whitespace-nowrap"><?= date('d M Y', strtotime($od->od_date)) ?></td>
+                <td class="px-4 py-2.5">
+                    <a href="credit_order_view.php?id=<?= $od->order_id ?>" class="text-blue-600 hover:underline font-mono">
+                        <?= htmlspecialchars($od->order_number) ?>
+                    </a>
+                </td>
+                <td class="px-4 py-2.5"><?= htmlspecialchars($od->customer_name) ?></td>
+                <td class="px-4 py-2.5 text-xs text-gray-600">
+                    <?php foreach ($items as $oi):
+                        $v = trim(($oi->grade ?? '') . ' ' . ($oi->weight_variant ?? ''));
+                    ?>
+                    <div><?= htmlspecialchars($oi->product_name) ?><?= $v ? " ($v)" : '' ?> — <strong>+<?= number_format($oi->extra_qty, 0) ?></strong> <?= htmlspecialchars($oi->unit_of_measure ?? '') ?></div>
+                    <?php endforeach; ?>
+                </td>
+                <td class="px-4 py-2.5 text-right font-bold text-gray-900">৳<?= number_format($od->total_extra_amount, 0) ?></td>
+                <td class="px-4 py-2.5 text-center">
+                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-semibold <?= $rm['cls'] ?>">
+                        <i class="fas <?= $rm['icon'] ?>"></i> <?= $rm['label'] ?>
+                    </span>
+                    <?php if ($od->resolution === 'retrieve' && $od->status === 'approved'): ?>
+                    <div class="mt-1 text-[10px] <?= $od->retrieved_at ? 'text-green-600' : 'text-orange-600' ?>">
+                        <?= $od->retrieved_at ? '✓ Retrieved ' . date('d M', strtotime($od->retrieved_at)) : '⏳ Awaiting collection' ?>
+                    </div>
+                    <?php endif; ?>
+                </td>
+                <td class="px-4 py-2.5 text-center">
+                    <span class="px-2 py-0.5 rounded text-xs font-semibold <?= $st_meta[$od->status] ?? '' ?>"><?= ucfirst($od->status) ?></span>
+                    <?php if ($od->status !== 'pending' && $od->approved_by_name): ?>
+                    <div class="text-[10px] text-gray-400 mt-0.5">by <?= htmlspecialchars($od->approved_by_name) ?></div>
+                    <?php endif; ?>
+                </td>
+                <td class="px-4 py-2.5 text-center whitespace-nowrap">
+                    <?php if ($od->status === 'pending' && $can_approve): ?>
+                    <form method="POST" class="inline"><input type="hidden" name="od_id" value="<?= $od->id ?>">
+                        <button type="submit" name="action" value="approve_od"
+                                onclick="return confirm('Approve <?= addslashes($od->od_number) ?>?<?= $od->resolution === 'bill' ? ' Customer will be billed ৳' . number_format($od->total_extra_amount, 0) . '.' : '' ?>')"
+                                class="px-2.5 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700 cursor-pointer">Approve</button>
+                    </form>
+                    <form method="POST" class="inline"><input type="hidden" name="od_id" value="<?= $od->id ?>">
+                        <button type="submit" name="action" value="reject_od"
+                                onclick="return confirm('Reject <?= addslashes($od->od_number) ?>?')"
+                                class="px-2.5 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700 cursor-pointer">Reject</button>
+                    </form>
+                    <?php elseif ($od->resolution === 'retrieve' && $od->status === 'approved' && !$od->retrieved_at && $can_approve): ?>
+                    <form method="POST" class="inline"><input type="hidden" name="od_id" value="<?= $od->id ?>">
+                        <button type="submit" name="action" value="mark_retrieved"
+                                onclick="return confirm('Confirm goods for <?= addslashes($od->od_number) ?> have been collected back?')"
+                                class="px-2.5 py-1 bg-orange-600 text-white text-xs rounded hover:bg-orange-700 cursor-pointer">
+                            <i class="fas fa-check mr-1"></i>Mark Retrieved
+                        </button>
+                    </form>
+                    <?php else: ?>
+                    <span class="text-gray-300">—</span>
+                    <?php endif; ?>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+        </tbody>
+    </table>
+    </div>
+    <?php endif; ?>
+</div>
+
+</div>
+
+<script>
+// Live total for the entry form
+document.querySelectorAll('.od-qty').forEach(inp => {
+    inp.addEventListener('input', () => {
+        let total = 0;
+        document.querySelectorAll('.od-qty').forEach(i => {
+            total += (parseFloat(i.value) || 0) * (parseFloat(i.dataset.price) || 0);
+        });
+        const el = document.getElementById('odTotal');
+        if (el) el.textContent = '৳' + total.toLocaleString(undefined, {maximumFractionDigits: 0});
+    });
+});
+</script>
+
+<?php if (!defined('CR_EMBED')) require_once '../templates/footer.php'; ?>

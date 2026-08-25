@@ -1,0 +1,162 @@
+<?php
+// Start output buffering immediately to catch any unwanted output
+ob_start();
+
+require_once '../core/init.php';
+
+/* -----------------------------
+   SECURITY & ACCESS CONTROL
+----------------------------- */
+// Was bare restrict_access() with an empty $allowed_roles — since restrict_access()'s
+// no-custom-perm-entry fallback requires a non-empty role list, this denied EVERY
+// user without an explicit credit_sales custom-permission row, regardless of role.
+// This export is linked directly from all_sales.php's toolbar, so it should be
+// reachable by the same roles that can see that page.
+$allowed_roles = ['Superadmin', 'admin', 'Accounts', 'accounts-srg', 'accounts-demra',
+                  'sales-srg', 'sales-demra', 'sales-other',
+                  'production manager-srg', 'production manager-demra',
+                  'dispatch-srg', 'dispatch-demra', 'dispatchpos-srg', 'dispatchpos-demra'];
+restrict_access($allowed_roles);
+
+global $db;
+$currentUser = getCurrentUser();
+$user_id     = $currentUser['id'] ?? null;
+$user_role   = $currentUser['role'] ?? '';
+
+// FIX: Use 'display_name' or fallback to 'Unknown' if 'name' key doesn't exist
+$generated_by_name = $currentUser['display_name'] ?? $currentUser['name'] ?? 'System';
+
+/* -----------------------------
+   ROLE LOGIC & PERMISSIONS
+----------------------------- */
+$is_admin       = in_array($user_role, ['Superadmin', 'admin']);
+// Privilege-based: replaces hardcoded role list
+$is_accounts    = userCanPageAction('credit_sales', 'customer_payment', 'can_collect');
+$is_sales       = in_array($user_role, ['sales-srg', 'sales-demra', 'sales-other']);
+$is_production  = in_array($user_role, ['production manager-srg', 'production manager-demra']);
+$is_dispatcher  = in_array($user_role, ['dispatch-srg', 'dispatch-demra', 'dispatchpos-demra', 'dispatchpos-srg']);
+
+// Get Branch for limited roles
+$user_branch = null;
+if (!$is_admin && !$is_accounts && $user_id) {
+    $emp = $db->query("SELECT branch_id FROM employees WHERE user_id = ?", [$user_id])->first();
+    $user_branch = $emp ? $emp->branch_id : null;
+}
+
+/* -----------------------------
+   BUILD QUERY
+----------------------------- */
+$date_from = $_GET['date_from'] ?? date('Y-m-01');
+$date_to   = $_GET['date_to'] ?? date('Y-m-d');
+
+// Multi-status, matching all_sales.php's multi-select filter — accepts
+// status[]=a&status[]=b, with a single ?status=x kept working for old links.
+$known_statuses = ['pending_approval', 'escalated', 'approved', 'in_production', 'produced',
+                    'ready_to_ship', 'goods_on_board', 'shipped', 'delivered', 'cancelled'];
+$status_raw    = $_GET['status'] ?? [];
+if (!is_array($status_raw)) $status_raw = $status_raw !== '' ? [$status_raw] : [];
+$status_filter = array_values(array_intersect(array_map('strval', $status_raw), $known_statuses));
+
+$sql_conditions = ["co.order_date BETWEEN ? AND ?"];
+$sql_params = [$date_from, $date_to];
+
+if (!empty($status_filter)) {
+    $status_placeholders = implode(',', array_fill(0, count($status_filter), '?'));
+    $sql_conditions[] = "co.status IN ($status_placeholders)";
+    foreach ($status_filter as $sf) { $sql_params[] = $sf; }
+}
+
+// Role-based restrictions
+if ($is_sales && $user_id) {
+    $sql_conditions[] = "co.created_by_user_id = ?";
+    $sql_params[] = $user_id;
+} elseif (($is_production || $is_dispatcher) && $user_branch !== null) {
+    $sql_conditions[] = "co.assigned_branch_id = ?";
+    $sql_params[] = $user_branch;
+}
+
+$where_clause = implode(' AND ', $sql_conditions);
+
+$query = "
+    SELECT co.order_number, 
+           co.order_date, 
+           c.name AS customer_name, 
+           c.phone_number AS customer_phone,
+           u.display_name AS created_by,
+           co.subtotal,
+           co.discount_amount,
+           co.tax_amount,
+           co.total_amount,
+           co.amount_paid,
+           (co.total_amount - co.amount_paid) as balance_due,
+           co.status,
+           co.priority
+    FROM credit_orders co
+    JOIN customers c ON co.customer_id = c.id
+    JOIN users u ON co.created_by_user_id = u.id
+    WHERE $where_clause
+    ORDER BY co.order_date DESC, co.id DESC
+";
+
+$orders = $db->query($query, $sql_params)->results();
+
+/* -----------------------------
+   GENERATE CSV
+----------------------------- */
+// Clear the output buffer to remove any PHP warnings or HTML printed before this point
+ob_end_clean(); 
+
+$filename = 'Credit_Order_History_' . date('Y-m-d') . '.csv';
+
+header('Content-Type: text/csv; charset=utf-8');
+header('Content-Disposition: attachment; filename="' . $filename . '"');
+header('Pragma: no-cache');
+header('Expires: 0');
+
+$output = fopen('php://output', 'w');
+
+// Add BOM for Excel UTF-8 compatibility (Now safe because buffer was cleaned)
+fwrite($output, "\xEF\xBB\xBF"); 
+
+// Info Headers
+fputcsv($output, ['Credit Order History Report']);
+fputcsv($output, ['Generated By:', $generated_by_name]); // Using the fixed variable
+fputcsv($output, ['Date Range:', "$date_from to $date_to"]);
+fputcsv($output, []);
+
+// Column Headers
+fputcsv($output, [
+    'Order #', 
+    'Date', 
+    'Customer Name', 
+    'Customer Phone', 
+    'Created By', 
+    'Subtotal', 
+    'Discount', 
+    'Total Amount', 
+    'Paid Amount', 
+    'Balance Due', 
+    'Status', 
+    'Priority'
+]);
+
+// Data Rows
+foreach ($orders as $order) {
+    fputcsv($output, [
+        $order->order_number,
+        $order->order_date,
+        $order->customer_name,
+        $order->customer_phone,
+        $order->created_by,
+        number_format($order->subtotal, 2, '.', ''),
+        number_format($order->discount_amount, 2, '.', ''),
+        number_format($order->total_amount, 2, '.', ''),
+        number_format($order->amount_paid, 2, '.', ''),
+        number_format($order->balance_due, 2, '.', ''),
+        ucwords(str_replace('_', ' ', $order->status)),
+        ucfirst($order->priority)
+    ]);
+}
+
+fclose($output);
+exit();

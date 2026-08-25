@@ -1,0 +1,37 @@
+# ── macOS ─────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V7
+.Trashes
+
+# ── SQL dumps (too large / contain sensitive data) ─
+*.sql
+
+# ── Page scan cache (auto-generated on server) ────
+core/cache/modpages_*.json
+
+# ── PHP error logs ────────────────────────────────
+*.log
+error_log
+
+# ── Editor / IDE ──────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ── Environment / secrets ─────────────────────────
+.env
+.env.local
+core/config/config.local.php
+secure/*.json
+
+# Secrets — never commit
+secure/*.json
+core/config/config.php
+# Backup copies of config.php carry the same live DB password/API keys —
+# found 4 of these sitting untracked with real secrets during the 25 Aug
+# full-sync; excluded rather than pushed to the remote.
+core/config/config.php.*.bak
+core/config/config.php.*.php

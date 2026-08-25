@@ -1,0 +1,315 @@
+<?php
+/**
+ * Partner Settlement — the netting/contra tool for a Business Partner who is
+ * BOTH a customer (they owe us — AR) and a supplier (we owe them — AP).
+ * Formalizes what's usually "adjusted internally with notes" into a traceable,
+ * reversible, atomic entry: reduces AR on the customer_ledger side, reduces AP
+ * on the supplier_ledger side, and posts one balancing journal entry (no cash
+ * actually moves).
+ *
+ * Design: /Users/apple/Desktop/saas/COMMODITY_TRADING_PLAN.md §6
+ * Role-gated, default Superadmin/admin, delegable via the can_settle action.
+ */
+require_once '../core/init.php';
+
+restrict_access(['Superadmin', 'admin'], 'trading', 'partner_settlement');
+
+global $db;
+$currentUser = getCurrentUser();
+$user_id     = $currentUser['id'] ?? null;
+$is_admin    = in_array($currentUser['role'] ?? '', ['Superadmin', 'admin'], true);
+$pageTitle   = 'Partner Settlement';
+
+ensureBusinessPartnersTable();
+ensureBusinessPartnerSettlementsTable();
+
+$csrf = $_SESSION['csrf_token'] ?? '';
+
+// ── POST actions ────────────────────────────────────────────────────────
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $action = $_POST['action'] ?? '';
+    try {
+        if (!hash_equals($csrf, $_POST['csrf_token'] ?? '')) {
+            throw new Exception('Invalid security token — refresh the page and try again.');
+        }
+
+        if ($action === 'post_settlement') {
+            $partner_id = (int)($_POST['business_partner_id'] ?? 0);
+            $amount     = (float)($_POST['offset_amount'] ?? 0);
+            $note       = trim($_POST['note'] ?? '');
+            if (!$partner_id) throw new Exception('Select a linked Business Partner.');
+            if ($amount <= 0) throw new Exception('Offset amount must be greater than zero.');
+            if ($note === '') throw new Exception('A reason note is required for every settlement.');
+
+            $partner = $db->query(
+                "SELECT c.id AS customer_id, c.name AS customer_name,
+                        COALESCE(c.initial_due,0) + COALESCE(cl.d,0) - COALESCE(cl.c,0) AS ar_balance,
+                        s.id AS supplier_id, s.company_name AS supplier_name, s.current_balance AS ap_balance_cached
+                 FROM customers c
+                 JOIN suppliers s ON s.business_partner_id = c.business_partner_id
+                 LEFT JOIN (SELECT customer_id, SUM(debit_amount) d, SUM(credit_amount) c FROM customer_ledger WHERE reference_type != 'initial_due' GROUP BY customer_id) cl ON cl.customer_id = c.id
+                 WHERE c.business_partner_id = ?",
+                [$partner_id]
+            )->first();
+            if (!$partner) throw new Exception('This Business Partner is not linked on both sides — nothing to settle.');
+
+            $ar = (float)$partner->ar_balance;
+            // True AP from ledger aggregate (never trust the cached supplier balance for a money-moving post).
+            $sagg = $db->query("SELECT COALESCE(SUM(credit_amount),0) c, COALESCE(SUM(debit_amount),0) d FROM supplier_ledger WHERE supplier_id = ?", [$partner->supplier_id])->first();
+            $ap = (float)$sagg->c - (float)$sagg->d;
+
+            if ($ar <= 0.01) throw new Exception("{$partner->customer_name} has no outstanding AR to offset.");
+            if ($ap <= 0.01) throw new Exception("{$partner->supplier_name} has no outstanding AP to offset.");
+            $max_offset = min($ar, $ap);
+            if ($amount > $max_offset + 0.01) {
+                throw new Exception('Offset amount cannot exceed ৳' . number_format($max_offset, 2) . ' (the smaller of AR ৳' . number_format($ar, 2) . ' and AP ৳' . number_format($ap, 2) . ').');
+            }
+
+            $ar_account = $db->query("SELECT id FROM chart_of_accounts WHERE account_type = 'Accounts Receivable' LIMIT 1")->first();
+            $ap_account = $db->query("SELECT id FROM chart_of_accounts WHERE account_type = 'Accounts Payable' LIMIT 1")->first();
+            if (!$ar_account) throw new Exception("Chart of Accounts is missing an 'Accounts Receivable' account.");
+            if (!$ap_account) throw new Exception("Chart of Accounts is missing an 'Accounts Payable' account.");
+
+            $pdo = $db->getPdo();
+            $pdo->beginTransaction();
+
+            $today = date('Y-m-d');
+            $journal_desc = "Partner settlement — {$partner->customer_name} / {$partner->supplier_name}: ৳" . number_format($amount, 2) . " netted. {$note}";
+            $journal_id = $db->insert('journal_entries', [
+                'transaction_date' => $today, 'description' => $journal_desc,
+                'related_document_type' => 'business_partner_settlements', 'related_document_id' => $partner_id,
+                'created_by_user_id' => $user_id,
+            ]);
+            if (!$journal_id) throw new Exception('Failed to create the journal entry.');
+            // DR Accounts Payable (reduces what we owe) / CR Accounts Receivable (reduces what they owe) — no cash moves.
+            $db->insert('transaction_lines', ['journal_entry_id' => $journal_id, 'account_id' => $ap_account->id, 'debit_amount' => $amount, 'credit_amount' => 0, 'description' => $journal_desc]);
+            $db->insert('transaction_lines', ['journal_entry_id' => $journal_id, 'account_id' => $ar_account->id, 'debit_amount' => 0, 'credit_amount' => $amount, 'description' => $journal_desc]);
+
+            // customer_ledger: CREDIT reduces AR. transaction_type='adjustment' is
+            // the valid ENUM value for a non-invoice/non-payment ledger movement.
+            $new_ar_balance = $ar - $amount;
+            $cl_id = $db->insert('customer_ledger', [
+                'customer_id' => $partner->customer_id, 'transaction_date' => $today,
+                'transaction_type' => 'adjustment', 'reference_type' => 'business_partner_settlements', 'reference_id' => $partner_id,
+                'description' => "Partner settlement — netted against supplier {$partner->supplier_name}. {$note}",
+                'debit_amount' => 0, 'credit_amount' => $amount, 'balance_after' => $new_ar_balance,
+                'created_by_user_id' => $user_id, 'journal_entry_id' => $journal_id,
+            ]);
+            $db->query("UPDATE customers SET current_balance = ? WHERE id = ?", [$new_ar_balance, $partner->customer_id]);
+
+            // supplier_ledger: DEBIT reduces AP (schema: "Payments reduce liability").
+            $new_ap_balance = $ap - $amount;
+            $sl_id = $db->insert('supplier_ledger', [
+                'supplier_id' => $partner->supplier_id, 'transaction_date' => $today,
+                'transaction_type' => 'adjustment', 'reference_type' => 'business_partner_settlements', 'reference_id' => $partner_id,
+                'debit_amount' => $amount, 'credit_amount' => 0, 'balance' => $new_ap_balance,
+                'description' => "Partner settlement — netted against customer {$partner->customer_name}. {$note}",
+                'created_by_user_id' => $user_id,
+            ]);
+            $db->query("UPDATE suppliers SET current_balance = ? WHERE id = ?", [$new_ap_balance, $partner->supplier_id]);
+
+            $settlement_id = $db->insert('business_partner_settlements', [
+                'business_partner_id' => $partner_id, 'customer_id' => $partner->customer_id, 'supplier_id' => $partner->supplier_id,
+                'offset_amount' => $amount, 'note' => $note,
+                'customer_ledger_id' => $cl_id, 'supplier_ledger_id' => $sl_id, 'journal_entry_id' => $journal_id,
+                'status' => 'posted', 'created_by_user_id' => $user_id,
+            ]);
+            if (!$settlement_id) throw new Exception('Failed to record the settlement.');
+
+            $pdo->commit();
+
+            auditLog('other', 'created',
+                "Partner settlement #{$settlement_id}: ৳" . number_format($amount, 2) . " netted between {$partner->customer_name} (AR) and {$partner->supplier_name} (AP) by "
+                . ($currentUser['display_name'] ?? 'admin') . " — {$note}");
+
+            $_SESSION['success_flash'] = "Settled ৳" . number_format($amount, 2) . " between {$partner->customer_name} and {$partner->supplier_name}.";
+
+        } elseif ($action === 'reverse_settlement') {
+            $settlement_id = (int)($_POST['settlement_id'] ?? 0);
+            $s = $db->query("SELECT * FROM business_partner_settlements WHERE id = ? AND status = 'posted'", [$settlement_id])->first();
+            if (!$s) throw new Exception('Settlement not found or already reversed.');
+
+            // Simple, safe reversal: only allowed while this is still the MOST
+            // RECENT ledger entry on BOTH sides — avoids a complex multi-row
+            // rechain (see delete_payment.php for that pattern if ever needed
+            // here). If something newer exists, the honest answer is "post a
+            // fresh Business Partner Settlement / Ledger Adjustment to correct it"
+            // rather than silently rewriting history under a newer transaction.
+            $newer_cl = $db->query("SELECT id FROM customer_ledger WHERE customer_id = ? AND id > ?", [$s->customer_id, $s->customer_ledger_id])->first();
+            $newer_sl = $db->query("SELECT id FROM supplier_ledger WHERE supplier_id = ? AND id > ?", [$s->supplier_id, $s->supplier_ledger_id])->first();
+            if ($newer_cl || $newer_sl) {
+                throw new Exception('A newer transaction exists on one side since this settlement — it can no longer be cleanly auto-reversed. Post a correcting Ledger Adjustment instead.');
+            }
+
+            ensureRecycleBinTables();
+            $pdo = $db->getPdo();
+            $pdo->beginTransaction();
+
+            $batch = recycleBegin('business_partner_settlement', "Settlement #{$settlement_id} — ৳" . number_format((float)$s->offset_amount, 2), (int)$s->customer_id);
+
+            recycleArchiveDelete($batch, 'customer_ledger', 'id', (int)$s->customer_ledger_id);
+            recycleArchiveDelete($batch, 'supplier_ledger', 'id', (int)$s->supplier_ledger_id);
+            recycleArchiveDelete($batch, 'transaction_lines', 'journal_entry_id', (int)$s->journal_entry_id);
+            recycleArchiveDelete($batch, 'journal_entries', 'id', (int)$s->journal_entry_id);
+            recycleFinalize($batch);
+
+            // Restore both cached balances from ledger truth.
+            $cagg = $db->query("SELECT balance_after FROM customer_ledger WHERE customer_id = ? ORDER BY id DESC LIMIT 1", [$s->customer_id])->first();
+            $cust_init = $db->query("SELECT initial_due FROM customers WHERE id = ?", [$s->customer_id])->first();
+            $db->query("UPDATE customers SET current_balance = ? WHERE id = ?", [$cagg ? (float)$cagg->balance_after : (float)($cust_init->initial_due ?? 0), $s->customer_id]);
+
+            $sagg2 = $db->query("SELECT balance FROM supplier_ledger WHERE supplier_id = ? ORDER BY id DESC LIMIT 1", [$s->supplier_id])->first();
+            $db->query("UPDATE suppliers SET current_balance = ? WHERE id = ?", [$sagg2 ? (float)$sagg2->balance : 0, $s->supplier_id]);
+
+            $db->query("UPDATE business_partner_settlements SET status = 'reversed', reversed_by_user_id = ?, reversed_at = NOW() WHERE id = ?", [$user_id, $settlement_id]);
+
+            $pdo->commit();
+
+            auditLog('other', 'updated', "Partner settlement #{$settlement_id} (৳" . number_format((float)$s->offset_amount, 2) . ") REVERSED to Recycle Bin batch #{$batch} by " . ($currentUser['display_name'] ?? 'admin'));
+            $_SESSION['success_flash'] = "Settlement #{$settlement_id} reversed — restorable from the Recycle Bin.";
+        }
+    } catch (Exception $e) {
+        if (isset($pdo) && $pdo->inTransaction()) $pdo->rollBack();
+        $_SESSION['error_flash'] = $e->getMessage();
+    }
+    header('Location: partner_settlement.php');
+    exit;
+}
+
+// ── Data for render ──────────────────────────────────────────────────────
+$linked = getLinkedBusinessPartners();
+$preselect_partner_id = isset($_GET['partner_id']) ? (int)$_GET['partner_id'] : 0;
+
+$history = $db->query(
+    "SELECT bps.*, c.name AS customer_name, s.company_name AS supplier_name
+     FROM business_partner_settlements bps
+     JOIN customers c ON c.id = bps.customer_id
+     JOIN suppliers s ON s.id = bps.supplier_id
+     ORDER BY bps.created_at DESC LIMIT 30"
+)->results();
+
+$flash = $_SESSION['success_flash'] ?? null; unset($_SESSION['success_flash']);
+$err   = $_SESSION['error_flash']   ?? null; unset($_SESSION['error_flash']);
+
+require_once '../templates/header.php';
+?>
+<div class="max-w-screen-lg mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+    <div class="mb-4">
+        <h1 class="text-2xl font-bold text-gray-900"><i class="fas fa-scale-balanced text-rose-600 mr-2"></i>Partner Settlement</h1>
+        <p class="text-gray-600 mt-1 text-sm">Net a linked Business Partner's receivable (they owe us) against their payable (we owe them) — a traceable, reversible alternative to an informal internal adjustment.</p>
+    </div>
+
+    <?php if ($flash): ?><div class="mb-4 rounded-lg border border-green-300 bg-green-50 px-4 py-2.5 text-sm text-green-800"><i class="fas fa-check-circle mr-1"></i><?php echo htmlspecialchars($flash); ?></div><?php endif; ?>
+    <?php if ($err): ?><div class="mb-4 rounded-lg border border-red-300 bg-red-50 px-4 py-2.5 text-sm text-red-800"><i class="fas fa-triangle-exclamation mr-1"></i><?php echo htmlspecialchars($err); ?></div><?php endif; ?>
+
+    <?php if (empty($linked)): ?>
+    <div class="bg-amber-50 border border-amber-200 rounded-xl p-6 text-amber-800 text-sm">
+        No linked Business Partners yet. <a href="business_partners.php" class="underline font-semibold">Link a customer and supplier first</a>.
+    </div>
+    <?php else: ?>
+
+    <!-- New settlement -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+        <h2 class="text-sm font-bold text-gray-800 mb-3">Post a new settlement</h2>
+        <form method="POST" class="space-y-4">
+            <input type="hidden" name="action" value="post_settlement">
+            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf); ?>">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Business Partner</label>
+                <select name="business_partner_id" id="ps_partner" required class="w-full px-4 py-2 border rounded-lg" onchange="psUpdate()">
+                    <option value="">Select a linked partner</option>
+                    <?php foreach ($linked as $p): ?>
+                    <option value="<?php echo (int)$p->business_partner_id; ?>"
+                            data-ar="<?php echo (float)$p->customer_balance; ?>" data-ap="<?php echo (float)$p->supplier_balance; ?>"
+                            data-cust="<?php echo htmlspecialchars($p->customer_name); ?>" data-supp="<?php echo htmlspecialchars($p->supplier_name); ?>"
+                            <?php echo $preselect_partner_id === (int)$p->business_partner_id ? 'selected' : ''; ?>>
+                        <?php echo htmlspecialchars($p->partner_name); ?> — <?php echo htmlspecialchars($p->customer_name); ?> / <?php echo htmlspecialchars($p->supplier_name); ?>
+                    </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <div id="ps_position" class="hidden grid grid-cols-3 gap-4 bg-gray-50 rounded-lg p-4 text-sm">
+                <div><span class="text-gray-500">They owe us (AR)</span><div class="font-bold text-red-600" id="ps_ar">৳0.00</div></div>
+                <div><span class="text-gray-500">We owe them (AP)</span><div class="font-bold text-amber-600" id="ps_ap">৳0.00</div></div>
+                <div><span class="text-gray-500">Max offset</span><div class="font-bold text-blue-700" id="ps_max">৳0.00</div></div>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Offset amount (৳)</label>
+                <input type="number" name="offset_amount" id="ps_amount" step="0.01" min="0.01" required class="w-full px-4 py-2 border rounded-lg">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Reason note <span class="text-red-500">*</span></label>
+                <textarea name="note" required rows="2" class="w-full px-4 py-2 border rounded-lg" placeholder="e.g. Netting Jul 2026 wheat purchase against surplus wheat sold to them"></textarea>
+            </div>
+            <div class="flex justify-end">
+                <button type="submit" class="px-5 py-2 bg-rose-600 text-white font-semibold rounded-lg hover:bg-rose-700 text-sm"><i class="fas fa-check mr-1"></i>Post Settlement</button>
+            </div>
+        </form>
+    </div>
+    <?php endif; ?>
+
+    <!-- History -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div class="px-4 py-3 border-b border-gray-100"><h2 class="text-sm font-semibold text-gray-700">Settlement History</h2></div>
+        <div class="overflow-x-auto">
+        <?php if (!empty($history)): ?>
+        <table class="min-w-full text-xs">
+            <thead class="bg-gray-50 border-b"><tr>
+                <th class="px-3 py-2 text-left text-[10px] font-semibold uppercase text-gray-500">Date</th>
+                <th class="px-3 py-2 text-left text-[10px] font-semibold uppercase text-gray-500">Customer / Supplier</th>
+                <th class="px-3 py-2 text-right text-[10px] font-semibold uppercase text-gray-500">Amount</th>
+                <th class="px-3 py-2 text-left text-[10px] font-semibold uppercase text-gray-500">Note</th>
+                <th class="px-3 py-2 text-center text-[10px] font-semibold uppercase text-gray-500">Status</th>
+                <th class="px-3 py-2 text-center text-[10px] font-semibold uppercase text-gray-500">Actions</th>
+            </tr></thead>
+            <tbody class="divide-y divide-gray-50">
+                <?php foreach ($history as $h): ?>
+                <tr>
+                    <td class="px-3 py-2 text-gray-500"><?php echo date('d M Y', strtotime($h->created_at)); ?></td>
+                    <td class="px-3 py-2"><?php echo htmlspecialchars($h->customer_name); ?> / <?php echo htmlspecialchars($h->supplier_name); ?></td>
+                    <td class="px-3 py-2 text-right font-semibold">৳<?php echo number_format((float)$h->offset_amount, 2); ?></td>
+                    <td class="px-3 py-2 text-gray-500 max-w-xs truncate" title="<?php echo htmlspecialchars($h->note); ?>"><?php echo htmlspecialchars($h->note); ?></td>
+                    <td class="px-3 py-2 text-center">
+                        <span class="px-1.5 py-0.5 rounded-full text-[10px] font-semibold <?php echo $h->status === 'posted' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'; ?>"><?php echo ucfirst($h->status); ?></span>
+                    </td>
+                    <td class="px-3 py-2 text-center">
+                        <?php if ($h->status === 'posted'): ?>
+                        <form method="POST" onsubmit="return confirm('Reverse this ৳<?php echo number_format((float)$h->offset_amount, 2); ?> settlement? It moves to the Recycle Bin.');">
+                            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf); ?>">
+                            <input type="hidden" name="action" value="reverse_settlement">
+                            <input type="hidden" name="settlement_id" value="<?php echo (int)$h->id; ?>">
+                            <button type="submit" class="text-red-500 hover:text-red-700" title="Reverse"><i class="fas fa-rotate-left"></i></button>
+                        </form>
+                        <?php endif; ?>
+                    </td>
+                </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+        <?php else: ?>
+        <div class="p-8 text-center text-gray-500 text-xs">No settlements posted yet.</div>
+        <?php endif; ?>
+        </div>
+    </div>
+
+</div>
+<script>
+function psUpdate() {
+    const sel = document.getElementById('ps_partner');
+    const opt = sel.selectedOptions[0];
+    const box = document.getElementById('ps_position');
+    if (!opt || !opt.value) { box.classList.add('hidden'); return; }
+    const ar = parseFloat(opt.dataset.ar) || 0;
+    const ap = parseFloat(opt.dataset.ap) || 0;
+    const max = Math.min(ar, ap);
+    document.getElementById('ps_ar').textContent = '৳' + ar.toFixed(2);
+    document.getElementById('ps_ap').textContent = '৳' + ap.toFixed(2);
+    document.getElementById('ps_max').textContent = '৳' + max.toFixed(2);
+    document.getElementById('ps_amount').max = max;
+    document.getElementById('ps_amount').value = max > 0 ? max.toFixed(2) : '';
+    box.classList.remove('hidden');
+}
+document.addEventListener('DOMContentLoaded', psUpdate);
+</script>
+<?php require_once '../templates/footer.php'; ?>

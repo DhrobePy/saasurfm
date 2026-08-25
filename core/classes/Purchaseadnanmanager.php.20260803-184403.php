@@ -1,0 +1,1263 @@
+<?php
+/**
+ * Purchase Adnan Manager Class
+ * Handles Purchase Order operations for Adnan's wheat procurement workflow
+ * 
+ * FULLY RECTIFIED VERSION 2.0
+ * - Fixed cartesian product bug in listPurchaseOrders()
+ * - Fixed getDashboardStats() to calculate from GRNs
+ * - Only counts posted payments (is_posted = 1)
+ * 
+ * @package Ujjal Flour Mills
+ * @subpackage Purchase (Adnan) Module
+ * @author SaaS Development Team
+ * @version 2.0.0
+ * @date 2026-02-18
+ */
+
+class PurchaseAdnanManager {
+    private $db;
+    
+    public function __construct() {
+        $this->db = Database::getInstance()->getPdo();
+    }
+    
+    /**
+     * Create a new purchase order
+     * 
+     * @param array $data PO data
+     * @return array Result with success status and PO ID
+     */
+    public function createPurchaseOrder($data) {
+        try {
+            $this->db->beginTransaction();
+            
+            // Get current user
+            $current_user = getCurrentUser();
+            $user_id = $current_user['id'] ?? null;
+            
+            // Validate required fields
+            $required = ['po_date', 'supplier_id', 'wheat_origin', 'quantity_kg', 'unit_price_per_kg'];
+            foreach ($required as $field) {
+                if (empty($data[$field])) {
+                    $this->db->rollBack();
+                    return ['success' => false, 'message' => ucfirst(str_replace('_', ' ', $field)) . ' is required'];
+                }
+            }
+            
+            // Handle PO number - manual or auto-generate
+            $po_number = trim($data['po_number'] ?? '');
+            
+            if (!empty($po_number)) {
+                // Manual PO number provided - check for duplicates
+                $check_sql = "SELECT id FROM purchase_orders_adnan WHERE po_number = ?";
+                $stmt = $this->db->prepare($check_sql);
+                $stmt->execute([$po_number]);
+                
+                if ($stmt->fetch()) {
+                    $this->db->rollBack();
+                    return [
+                        'success' => false, 
+                        'message' => "PO Number '{$po_number}' already exists. Please use a different number or leave blank for auto-generation."
+                    ];
+                }
+                
+                error_log("Manual PO Number used: {$po_number} by user {$user_id}");
+                
+            } else {
+                // Auto-generate PO number
+                $po_number = $this->generatePONumber();
+            }
+            
+            // Get supplier info
+            $supplier = $this->getSupplierById($data['supplier_id']);
+            if (!$supplier) {
+                $this->db->rollBack();
+                return ['success' => false, 'message' => 'Invalid supplier selected'];
+            }
+            
+            // Calculate totals
+            $quantity_kg = floatval($data['quantity_kg']);
+            $unit_price_per_kg = floatval($data['unit_price_per_kg']);
+            $total_order_value = $quantity_kg * $unit_price_per_kg;
+
+            // Phase 2: multi-commodity. commodity_id + unit come from the form; if a
+            // legacy caller omits them, fall back to the seeded Wheat commodity / KG.
+            $commodity_id = (int)($data['commodity_id'] ?? 0);
+            if ($commodity_id <= 0) {
+                $w = $this->db->prepare("SELECT id FROM purchase_commodities WHERE name = 'Wheat' LIMIT 1");
+                $w->execute();
+                $wid = $w->fetchColumn();
+                $commodity_id = $wid ? (int)$wid : null;
+            }
+            $unit = trim($data['unit'] ?? '') ?: 'KG';
+
+            // Insert purchase order
+            $insert_sql = "
+                INSERT INTO purchase_orders_adnan (
+                    po_number, po_date, supplier_id, supplier_name, branch_id,
+                    wheat_origin, commodity_id, unit, quantity_kg, unit_price_per_kg, total_order_value,
+                    expected_delivery_date, remarks,
+                    po_status, delivery_status, payment_status,
+                    created_by_user_id, created_at
+                ) VALUES (
+                    ?, ?, ?, ?, ?,
+                    ?, ?, ?, ?, ?, ?,
+                    ?, ?,
+                    'approved', 'pending', 'unpaid',
+                    ?, NOW()
+                )
+            ";
+
+            $stmt = $this->db->prepare($insert_sql);
+            $stmt->execute([
+                $po_number,
+                $data['po_date'],
+                $data['supplier_id'],
+                $supplier->name,
+                $data['branch_id'] ?? null,
+                $data['wheat_origin'],
+                $commodity_id,
+                $unit,
+                $quantity_kg,
+                $unit_price_per_kg,
+                $total_order_value,
+                $data['expected_delivery_date'] ?? null,
+                $data['remarks'] ?? null,
+                $user_id
+            ]);
+            
+            $po_id = $this->db->lastInsertId();
+            
+            $this->db->commit();
+            
+            return [
+                'success' => true,
+                'message' => 'Purchase Order created successfully',
+                'po_id' => $po_id,
+                'po_number' => $po_number,
+                'total_value' => $total_order_value
+            ];
+            
+        } catch (PDOException $e) {
+            $this->db->rollBack();
+            error_log("PO Creation Error: " . $e->getMessage());
+            return [
+                'success' => false,
+                'message' => 'Database error: ' . $e->getMessage()
+            ];
+        } catch (Exception $e) {
+            if ($this->db->inTransaction()) {
+                $this->db->rollBack();
+            }
+            error_log("Error creating PO: " . $e->getMessage());
+            return ['success' => false, 'message' => 'Error creating purchase order: ' . $e->getMessage()];
+        }
+    }
+    
+    /**
+     * Generate sequential PO number
+     * 
+     * @return string PO number
+     */
+    private function generatePONumber() {
+        $sql = "SELECT COALESCE(MAX(CAST(po_number AS UNSIGNED)), 441) AS max_po FROM purchase_orders_adnan";
+        $stmt = $this->db->query($sql);
+        $result = $stmt->fetch(PDO::FETCH_OBJ);
+        return (string)($result->max_po + 1);
+    }
+    
+    /**
+     * Get purchase order by ID
+     * 
+     * @param int $po_id Purchase order ID
+     * @return object|null PO object
+     */
+    public function getPurchaseOrder($po_id) {
+        $sql = "SELECT * FROM purchase_orders_adnan WHERE id = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$po_id]);
+        return $stmt->fetch(PDO::FETCH_OBJ);
+    }
+    
+    /**
+     * Get purchase order by PO number
+     * 
+     * @param string $po_number PO number
+     * @return object|null PO object
+     */
+    public function getPurchaseOrderByNumber($po_number) {
+        $sql = "SELECT * FROM purchase_orders_adnan WHERE po_number = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$po_number]);
+        return $stmt->fetch(PDO::FETCH_OBJ);
+    }
+    
+    /**
+     * =====================================================
+     * FIXED: Get all purchase orders with filters
+     * Uses subqueries to prevent cartesian product
+     * =====================================================
+     * 
+     * @param array $filters Filter criteria
+     * @return array List of POs
+     */
+    public function listPurchaseOrders($filters = []) {
+        $sql = "SELECT 
+                    po.*,
+                    s.company_name as supplier_name,
+                    
+                    -- GRN aggregates (from subquery to prevent cartesian product)
+                    COALESCE(grn_data.total_expected_qty, 0) as total_expected_qty,
+                    COALESCE(grn_data.total_received_qty, 0) as total_received_qty,
+                    
+                    -- Payment aggregates (from subquery to prevent cartesian product)
+                    COALESCE(pmt_data.total_paid, 0) as total_paid
+                    
+                FROM purchase_orders_adnan po
+                LEFT JOIN suppliers s ON po.supplier_id = s.id
+                
+                -- Subquery for GRN data (prevents cartesian product)
+                LEFT JOIN (
+                    SELECT 
+                        purchase_order_id,
+                        SUM(expected_quantity) as total_expected_qty,
+                        SUM(quantity_received_kg) as total_received_qty
+                    FROM goods_received_adnan
+                    WHERE grn_status != 'cancelled'
+                    GROUP BY purchase_order_id
+                ) grn_data ON po.id = grn_data.purchase_order_id
+                
+                -- Subquery for Payment data (prevents cartesian product)
+                LEFT JOIN (
+                    SELECT 
+                        purchase_order_id,
+                        SUM(amount_paid) as total_paid
+                    FROM purchase_payments_adnan
+                    WHERE is_posted = 1
+                    GROUP BY purchase_order_id
+                ) pmt_data ON po.id = pmt_data.purchase_order_id
+                
+                WHERE po.po_status != 'cancelled'";
+        
+        $params = [];
+
+        // ── Order status filter (primary view selector) ──────────────────────
+        // Handles both 'order_status_filter' (from UI dropdown) and legacy flags.
+        $osf = $filters['order_status_filter'] ?? null;
+        $show_in_progress = isset($filters['show_in_progress']) && $filters['show_in_progress'] === true;
+
+        if ($show_in_progress || $osf === 'in_progress') {
+            // In Progress = needs delivery OR payment
+            // Exclude: fully closed AND fully complete (delivered + paid)
+            $sql .= " AND po.delivery_status != 'closed'"
+                  . " AND NOT (po.delivery_status = 'completed' AND po.payment_status = 'paid')";
+
+        } elseif ($osf === 'all_active') {
+            // All active = exclude closed and cancelled only
+            $sql .= " AND po.delivery_status != 'closed' AND po.po_status != 'cancelled'";
+
+        } elseif ($osf === 'completed') {
+            // Fully delivered AND fully paid
+            $sql .= " AND po.delivery_status = 'completed' AND po.payment_status = 'paid'";
+
+        } elseif ($osf === 'closed') {
+            $sql .= " AND po.delivery_status = 'closed'";
+
+        } elseif ($osf === 'cancelled') {
+            $sql .= " AND po.po_status = 'cancelled'";
+
+        } elseif ($osf === 'all') {
+            // No additional WHERE — show everything including cancelled
+            // (base query already excludes nothing extra)
+            // Remove the base cancelled exclusion by rewriting base WHERE
+            $sql = str_replace("WHERE po.po_status != 'cancelled'", "WHERE 1=1", $sql);
+
+        } else {
+            // Legacy flags — kept for backward compatibility
+            if (isset($filters['exclude_closed']) && $filters['exclude_closed'] === true) {
+                $sql .= " AND po.delivery_status != 'closed' AND po.po_status != 'cancelled'";
+            }
+            if (isset($filters['show_closed'])) {
+                switch ($filters['show_closed']) {
+                    case 'yes':         break;
+                    case 'closed_only': $sql .= " AND po.delivery_status = 'closed'"; break;
+                    case 'cancelled_only': $sql .= " AND po.po_status = 'cancelled'"; break;
+                    default: $sql .= " AND po.delivery_status != 'closed' AND po.po_status != 'cancelled'";
+                }
+            }
+        }
+        
+        // Apply filters
+        if (!empty($filters['supplier_id'])) {
+            $sql .= " AND po.supplier_id = ?";
+            $params[] = $filters['supplier_id'];
+        }
+        
+        if (!empty($filters['wheat_origin'])) {
+            $sql .= " AND po.wheat_origin = ?";
+            $params[] = $filters['wheat_origin'];
+        }
+        
+        if (!empty($filters['po_status'])) {
+            $sql .= " AND po.po_status = ?";
+            $params[] = $filters['po_status'];
+        }
+        
+        // grn_eligible: show only POs that can still receive goods
+        // (admin-unlocked, not closed, not cancelled)
+        if (!empty($filters['grn_eligible'])) {
+            $sql .= " AND po.is_delivery_locked = 0";
+            $sql .= " AND po.delivery_status != 'closed'";
+            // base query already excludes cancelled
+        }
+
+        if (isset($filters['delivery_status']) && !empty($filters['delivery_status'])) {
+            if (is_array($filters['delivery_status'])) {
+                $placeholders = implode(',', array_fill(0, count($filters['delivery_status']), '?'));
+                $sql .= " AND po.delivery_status IN ({$placeholders})";
+                foreach ($filters['delivery_status'] as $status) {
+                    $params[] = $status;
+                }
+            } else {
+                $sql .= " AND po.delivery_status = ?";
+                $params[] = $filters['delivery_status'];
+            }
+        }
+        
+        if (isset($filters['payment_status']) && !empty($filters['payment_status'])) {
+            if (is_array($filters['payment_status'])) {
+                $placeholders = implode(',', array_fill(0, count($filters['payment_status']), '?'));
+                $sql .= " AND po.payment_status IN ({$placeholders})";
+                foreach ($filters['payment_status'] as $status) {
+                    $params[] = $status;
+                }
+            } else {
+                $sql .= " AND po.payment_status = ?";
+                $params[] = $filters['payment_status'];
+            }
+        }
+        
+        if (!empty($filters['date_from'])) {
+            $sql .= " AND po.po_date >= ?";
+            $params[] = $filters['date_from'];
+        }
+        
+        if (!empty($filters['date_to'])) {
+            $sql .= " AND po.po_date <= ?";
+            $params[] = $filters['date_to'];
+        }
+        
+        if (!empty($filters['search'])) {
+            $sql .= " AND (po.po_number LIKE ? OR s.company_name LIKE ?)";
+            $search_term = '%' . $filters['search'] . '%';
+            $params[] = $search_term;
+            $params[] = $search_term;
+        }
+        
+        // Order by
+        $sql .= " ORDER BY po.po_date DESC, po.id DESC";
+        
+        // Limit
+        if (!empty($filters['limit'])) {
+            $sql .= " LIMIT " . (int)$filters['limit'];
+        }
+        
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll(PDO::FETCH_OBJ);
+    }
+    
+    /**
+     * Get supplier summary (Topsheet)
+     * 
+     * @return array Supplier-wise summary
+     */
+    public function OLDgetSupplierSummary() {
+        $sql = "SELECT * FROM v_purchase_adnan_supplier_summary ORDER BY balance_payable DESC";
+        $stmt = $this->db->query($sql);
+        return $stmt->fetchAll(PDO::FETCH_OBJ);
+    }
+    
+    
+    public function getSupplierSummary() {
+        $sql = "SELECT 
+                    s.id,
+                    s.company_name,
+                    COUNT(po.id) as order_count,
+                    COALESCE(SUM(po.total_order_value), 0) as total_value,
+                    COALESCE(SUM(po.balance_payable), 0) as balance_due
+                FROM suppliers s
+                LEFT JOIN purchase_orders_adnan po ON s.id = po.supplier_id
+                    AND po.delivery_status != 'closed'   -- ✅ Exclude closed
+                    AND po.po_status != 'cancelled'      -- ✅ Exclude cancelled
+                WHERE s.status = 'active'
+                GROUP BY s.id
+                HAVING order_count > 0
+                ORDER BY balance_due DESC
+                LIMIT 10";
+        
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_OBJ);
+    }
+    
+    /**
+     * =====================================================
+     * FIXED: Get dashboard statistics
+     * Calculates expected payable from GRNs (not from DB column)
+     * Only counts posted payments (is_posted = 1)
+     * =====================================================
+     * 
+     * @return object Dashboard KPIs
+     */
+    public function getDashboardStats() {
+        // Basic PO counts
+        $sql = "SELECT 
+            COUNT(*) as total_orders,
+            SUM(total_order_value) as total_order_value,
+            SUM(CASE WHEN delivery_status = 'completed' THEN 1 ELSE 0 END) as completed_deliveries,
+            SUM(CASE WHEN delivery_status = 'closed' THEN 1 ELSE 0 END) as closed_deals,
+            SUM(CASE WHEN payment_status = 'paid' THEN 1 ELSE 0 END) as completed_payments
+        FROM purchase_orders_adnan
+        WHERE delivery_status != 'closed' 
+        AND po_status != 'cancelled'";
+        
+        $stmt = $this->db->query($sql);
+        $stats = $stmt->fetch(PDO::FETCH_OBJ);
+        
+        // Get total paid (only posted payments)
+        $paid_sql = "SELECT COALESCE(SUM(amount_paid), 0) as total_paid 
+                     FROM purchase_payments_adnan
+                     WHERE is_posted = 1";
+        $paid_stmt = $this->db->query($paid_sql);
+        $paid_result = $paid_stmt->fetch(PDO::FETCH_OBJ);
+        $stats->total_paid = $paid_result->total_paid;
+        
+        // Get advance payments (only posted)
+        $advance_sql = "SELECT COALESCE(SUM(amount_paid), 0) as total_advance 
+                        FROM purchase_payments_adnan 
+                        WHERE payment_type = 'advance'
+                        AND is_posted = 1";
+        $advance_stmt = $this->db->query($advance_sql);
+        $advance_result = $advance_stmt->fetch(PDO::FETCH_OBJ);
+        $stats->total_advance = $advance_result->total_advance;
+        
+        // Calculate actual expected payable (based on GRN expected quantities)
+        // THIS IS THE CORRECT METHOD - payment based on expected, not received
+        $expected_sql = "SELECT 
+                            COALESCE(SUM(grn.expected_quantity * po.unit_price_per_kg), 0) as expected_payable
+                         FROM goods_received_adnan grn
+                         INNER JOIN purchase_orders_adnan po ON grn.purchase_order_id = po.id
+                         WHERE grn.grn_status != 'cancelled' AND po.po_status != 'cancelled'";
+        $expected_stmt = $this->db->query($expected_sql);
+        $expected_result = $expected_stmt->fetch(PDO::FETCH_OBJ);
+        $stats->expected_payable = $expected_result->expected_payable;
+        
+        // Calculate actual balance due (expected payable - total paid)
+        $stats->actual_balance_due = $stats->expected_payable - $stats->total_paid;
+        
+        // Ensure non-negative (if overpaid, balance due is 0)
+        if ($stats->actual_balance_due < 0) {
+            $stats->actual_balance_due = 0;
+        }
+        
+        // Regular payments (non-advance)
+        $stats->regular_payments = $stats->total_paid - $stats->total_advance;
+        
+        return $stats;
+    }
+    
+    /**
+     * Update purchase order
+     * 
+     * @param int $po_id PO ID
+     * @param array $data Update data
+     * @return array Result
+     */
+    public function updatePurchaseOrder($po_id, $data) {
+        try {
+            $allowed_fields = ['expected_delivery_date', 'remarks', 'po_status'];
+            $update_fields = [];
+            $params = [];
+            
+            foreach ($allowed_fields as $field) {
+                if (isset($data[$field])) {
+                    $update_fields[] = "{$field} = ?";
+                    $params[] = $data[$field];
+                }
+            }
+            
+            if (empty($update_fields)) {
+                return ['success' => false, 'message' => 'No fields to update'];
+            }
+            
+            $params[] = $po_id;
+            $sql = "UPDATE purchase_orders_adnan SET " . implode(', ', $update_fields) . " WHERE id = ?";
+            
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute($params);
+            
+            return ['success' => true, 'message' => 'Purchase order updated successfully'];
+            
+        } catch (Exception $e) {
+            return ['success' => false, 'message' => 'Error updating PO: ' . $e->getMessage()];
+        }
+    }
+    
+    /**
+     * Get GRNs for a purchase order
+     * 
+     * @param int $po_id PO ID
+     * @return array GRN list
+     */
+    public function getGRNsByPO($po_id) {
+        $sql = "SELECT * FROM goods_received_adnan 
+                WHERE purchase_order_id = ? 
+                ORDER BY grn_date DESC, id DESC";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$po_id]);
+        return $stmt->fetchAll(PDO::FETCH_OBJ);
+    }
+    
+    /**
+     * Get payments for a purchase order
+     * 
+     * @param int $po_id PO ID
+     * @return array Payment list
+     */
+    public function getPaymentsByPO($po_id) {
+        $sql = "SELECT * FROM purchase_payments_adnan 
+                WHERE purchase_order_id = ? 
+                ORDER BY payment_date DESC, id DESC";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$po_id]);
+        return $stmt->fetchAll(PDO::FETCH_OBJ);
+    }
+    
+    /**
+     * Get supplier by ID
+     * 
+     * @param int $supplier_id Supplier ID
+     * @return object|null Supplier object
+     */
+    private function getSupplierById($supplier_id) {
+        $sql = "SELECT id, company_name as name FROM suppliers WHERE id = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$supplier_id]);
+        return $stmt->fetch(PDO::FETCH_OBJ);
+    }
+    
+    /**
+     * Get all suppliers with complete information
+     * 
+     * @return array Supplier list with all required fields
+     */
+    public function getAllSuppliers() {
+        $sql = "SELECT 
+                    id, 
+                    company_name as name,
+                    supplier_code,
+                    contact_person,
+                    phone,
+                    mobile,
+                    email,
+                    city,
+                    status,
+                    current_balance,
+                    credit_limit
+                FROM suppliers 
+                WHERE status = 'active' 
+                ORDER BY company_name ASC";
+        $stmt = $this->db->query($sql);
+        return $stmt->fetchAll(PDO::FETCH_OBJ);
+    }
+    
+    // =========================================================
+    // DELIVERY LOCK — Admin toggle to block / re-open GRNs
+    // =========================================================
+
+    /**
+     * Toggle delivery lock on a PO.
+     * Locks prevent any new GRNs from being recorded regardless of qty.
+     *
+     * @param int    $po_id    Purchase Order ID
+     * @param bool   $lock     true = lock, false = unlock
+     * @param string $reason   Mandatory reason (logged in audit trail)
+     * @param int    $userId   User performing the action
+     * @param string $userName User display name for audit log
+     * @return array ['success' => bool, 'message' => string]
+     */
+    public function toggleDeliveryLock($po_id, $lock, $reason, $userId, $userName) {
+        try {
+            $po = $this->getPurchaseOrder($po_id);
+            if (!$po) {
+                return ['success' => false, 'message' => 'Purchase order not found.'];
+            }
+
+            $newLock   = $lock ? 1 : 0;
+            $oldLock   = (int)$po->is_delivery_locked;
+            $lockLabel = $lock ? 'Locked' : 'Re-opened';
+
+            if ($oldLock === $newLock) {
+                return [
+                    'success' => false,
+                    'message' => 'Delivery is already ' . ($lock ? 'locked.' : 're-opened.'),
+                ];
+            }
+
+            $sql = "UPDATE purchase_orders_adnan
+                    SET is_delivery_locked         = ?,
+                        delivery_lock_reason       = ?,
+                        delivery_locked_by_user_id = ?,
+                        delivery_locked_at         = NOW(),
+                        updated_at                 = NOW()
+                    WHERE id = ?";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([$newLock, $reason, $userId, $po_id]);
+
+            // Audit trail
+            if (function_exists('auditLog')) {
+                auditLog(
+                    'purchase',
+                    $lock ? 'delivery_locked' : 'delivery_unlocked',
+                    "PO #{$po->po_number} delivery {$lockLabel} by {$userName}. Reason: {$reason}",
+                    [
+                        'record_type'      => 'purchase_order',
+                        'record_id'        => $po_id,
+                        'reference_number' => $po->po_number,
+                        'old_lock_status'  => $oldLock ? 'locked' : 'open',
+                        'new_lock_status'  => $newLock ? 'locked' : 'open',
+                        'reason'           => $reason,
+                        'changed_by'       => $userName,
+                    ]
+                );
+            }
+
+            return [
+                'success' => true,
+                'message' => "Delivery {$lockLabel} successfully.",
+                'new_lock' => $newLock,
+            ];
+
+        } catch (Exception $e) {
+            error_log("toggleDeliveryLock error: " . $e->getMessage());
+            return ['success' => false, 'message' => 'Error: ' . $e->getMessage()];
+        }
+    }
+
+    /**
+     * Recalculate PO delivery_status and financial totals after a field edit.
+     * Called when quantity_kg or unit_price_per_kg changes via the Edit PO page.
+     * Does NOT touch is_delivery_locked — that's a separate admin decision.
+     *
+     * @param int $po_id Purchase Order ID
+     * @return void
+     */
+    public function recalculatePOStatusAndTotals($po_id) {
+        try {
+            // Fresh PO row
+            $po_sql  = "SELECT unit_price_per_kg, quantity_kg, total_paid
+                        FROM purchase_orders_adnan WHERE id = ?";
+            $stmt    = $this->db->prepare($po_sql);
+            $stmt->execute([$po_id]);
+            $po      = $stmt->fetch(PDO::FETCH_OBJ);
+            if (!$po) return;
+
+            // Sum non-cancelled GRNs
+            $grn_sql = "SELECT COALESCE(SUM(quantity_received_kg), 0) AS total_received_qty
+                        FROM goods_received_adnan
+                        WHERE purchase_order_id = ? AND grn_status != 'cancelled'";
+            $stmt    = $this->db->prepare($grn_sql);
+            $stmt->execute([$po_id]);
+            $grn     = $stmt->fetch(PDO::FETCH_OBJ);
+
+            $total_received_qty   = (float)$grn->total_received_qty;
+            $total_received_value = $total_received_qty * (float)$po->unit_price_per_kg;
+            $balance_payable      = $total_received_value - (float)$po->total_paid;
+
+            // Determine delivery_status (pure math, no admin lock involved)
+            if ($total_received_qty <= 0) {
+                $delivery_status = 'pending';
+            } elseif ($total_received_qty < (float)$po->quantity_kg) {
+                $delivery_status = 'partial';
+            } elseif ($total_received_qty <= (float)$po->quantity_kg * 1.05) {
+                $delivery_status = 'completed';
+            } else {
+                $delivery_status = 'over_received';
+            }
+
+            $update_sql = "UPDATE purchase_orders_adnan
+                           SET total_received_qty   = ?,
+                               total_received_value = ?,
+                               balance_payable      = ?,
+                               delivery_status      = ?,
+                               updated_at           = NOW()
+                           WHERE id = ?";
+            $stmt = $this->db->prepare($update_sql);
+            $stmt->execute([
+                $total_received_qty,
+                $total_received_value,
+                $balance_payable,
+                $delivery_status,
+                $po_id,
+            ]);
+
+        } catch (Exception $e) {
+            error_log("recalculatePOStatusAndTotals error: " . $e->getMessage());
+        }
+    }
+
+    // =========================================================
+    // ADJUSTMENT NOTES — DAN (Debit) / CAN (Credit)
+    // =========================================================
+
+    /**
+     * Generate sequential note number: DAN-YYYY-NNNN or CAN-YYYY-NNNN
+     */
+    private function generateNoteNumber($type) {
+        $prefix = $type === 'debit' ? 'DAN' : 'CAN';
+        $year   = date('Y');
+        $sql    = "SELECT COUNT(*) as cnt FROM purchase_adjustment_notes
+                   WHERE note_type = ? AND YEAR(created_at) = ?";
+        $stmt   = $this->db->prepare($sql);
+        $stmt->execute([$type, $year]);
+        $result = $stmt->fetch(PDO::FETCH_OBJ);
+        $seq    = str_pad(($result->cnt + 1), 4, '0', STR_PAD_LEFT);
+        return "{$prefix}-{$year}-{$seq}";
+    }
+
+    /**
+     * Create a new Debit Adjustment Note (DAN) or Credit Adjustment Note (CAN).
+     *
+     * note_type = 'debit'  → DAN: we owe supplier more (over-delivery, price dispute)
+     * note_type = 'credit' → CAN: supplier owes us reduction (under-delivery closure,
+     *                              quality deduction, return)
+     *
+     * @param array $data {
+     *   note_type, reason_type, purchase_order_id,
+     *   quantity_kg (optional), unit_price_per_kg (optional),
+     *   amount, description
+     * }
+     * @return array ['success', 'note_id', 'note_number', 'message']
+     */
+    public function createAdjustmentNote($data) {
+        try {
+            $this->db->beginTransaction();
+
+            $po = $this->getPurchaseOrder($data['purchase_order_id']);
+            if (!$po) {
+                $this->db->rollBack();
+                return ['success' => false, 'message' => 'Purchase order not found'];
+            }
+
+            $note_type   = $data['note_type'];
+            $note_number = $this->generateNoteNumber($note_type);
+
+            $qty        = isset($data['quantity_kg'])       && $data['quantity_kg']       !== '' ? floatval($data['quantity_kg'])       : null;
+            $unit_price = isset($data['unit_price_per_kg']) && $data['unit_price_per_kg'] !== '' ? floatval($data['unit_price_per_kg']) : null;
+            $amount     = floatval($data['amount'] ?? 0);
+
+            // Auto-calculate amount from qty × price when amount not explicitly provided
+            if ($qty && $unit_price && $amount <= 0) {
+                $amount = $qty * $unit_price;
+            }
+
+            $current_user = getCurrentUser();
+            $user_id      = $current_user['id'] ?? null;
+
+            $sql = "INSERT INTO purchase_adjustment_notes (
+                        note_number, note_type, reason_type,
+                        purchase_order_id, po_number, supplier_id, supplier_name,
+                        quantity_kg, unit_price_per_kg, amount, description,
+                        status, created_by_user_id, created_at
+                    ) VALUES (
+                        ?, ?, ?,
+                        ?, ?, ?, ?,
+                        ?, ?, ?, ?,
+                        'draft', ?, NOW()
+                    )";
+
+            $this->db->prepare($sql)->execute([
+                $note_number,
+                $note_type,
+                $data['reason_type'],
+                $po->id,
+                $po->po_number,
+                $po->supplier_id,
+                $po->supplier_name,
+                $qty,
+                $unit_price,
+                $amount,
+                $data['description'] ?? null,
+                $user_id,
+            ]);
+
+            $note_id = $this->db->lastInsertId();
+            $this->db->commit();
+
+            if (function_exists('auditLog')) {
+                $typeLabel = $note_type === 'debit' ? 'Debit Adjustment Note (DAN)' : 'Credit Adjustment Note (CAN)';
+                auditLog('purchase', 'created',
+                    "{$typeLabel} {$note_number} created for PO #{$po->po_number} — Amount: ৳" . number_format($amount, 2),
+                    [
+                        'record_type'      => 'adjustment_note',
+                        'record_id'        => $note_id,
+                        'reference_number' => $note_number,
+                        'note_type'        => $note_type,
+                        'reason_type'      => $data['reason_type'],
+                        'po_number'        => $po->po_number,
+                        'supplier_name'    => $po->supplier_name,
+                        'amount'           => $amount,
+                    ]
+                );
+            }
+
+            return [
+                'success'     => true,
+                'note_id'     => $note_id,
+                'note_number' => $note_number,
+                'message'     => "Adjustment note {$note_number} created as draft.",
+            ];
+
+        } catch (Exception $e) {
+            if ($this->db->inTransaction()) $this->db->rollBack();
+            error_log("createAdjustmentNote error: " . $e->getMessage());
+            return ['success' => false, 'message' => 'Error: ' . $e->getMessage()];
+        }
+    }
+
+    /**
+     * Get a single adjustment note by ID (with created/approved user names)
+     */
+    public function getAdjustmentNote($id) {
+        $sql = "SELECT pan.*,
+                       uc.display_name AS created_by_name,
+                       ua.display_name AS approved_by_name
+                FROM purchase_adjustment_notes pan
+                LEFT JOIN users uc ON pan.created_by_user_id = uc.id
+                LEFT JOIN users ua ON pan.approved_by_user_id = ua.id
+                WHERE pan.id = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$id]);
+        return $stmt->fetch(PDO::FETCH_OBJ);
+    }
+
+    /**
+     * List adjustment notes with optional filters
+     *
+     * @param array $filters {purchase_order_id, supplier_id, note_type, status, date_from, date_to, limit}
+     * @return array
+     */
+    public function listAdjustmentNotes($filters = []) {
+        $sql    = "SELECT pan.*,
+                          uc.display_name AS created_by_name,
+                          ua.display_name AS approved_by_name
+                   FROM purchase_adjustment_notes pan
+                   LEFT JOIN users uc ON pan.created_by_user_id = uc.id
+                   LEFT JOIN users ua ON pan.approved_by_user_id = ua.id
+                   WHERE 1=1";
+        $params = [];
+
+        if (!empty($filters['purchase_order_id'])) {
+            $sql .= " AND pan.purchase_order_id = ?";
+            $params[] = $filters['purchase_order_id'];
+        }
+        if (!empty($filters['supplier_id'])) {
+            $sql .= " AND pan.supplier_id = ?";
+            $params[] = $filters['supplier_id'];
+        }
+        if (!empty($filters['note_type'])) {
+            $sql .= " AND pan.note_type = ?";
+            $params[] = $filters['note_type'];
+        }
+        if (!empty($filters['status'])) {
+            if (is_array($filters['status'])) {
+                $phs    = implode(',', array_fill(0, count($filters['status']), '?'));
+                $sql   .= " AND pan.status IN ({$phs})";
+                foreach ($filters['status'] as $s) $params[] = $s;
+            } else {
+                $sql .= " AND pan.status = ?";
+                $params[] = $filters['status'];
+            }
+        }
+        if (!empty($filters['date_from'])) {
+            $sql .= " AND DATE(pan.created_at) >= ?";
+            $params[] = $filters['date_from'];
+        }
+        if (!empty($filters['date_to'])) {
+            $sql .= " AND DATE(pan.created_at) <= ?";
+            $params[] = $filters['date_to'];
+        }
+
+        $sql .= " ORDER BY pan.created_at DESC";
+        if (!empty($filters['limit'])) {
+            $sql .= " LIMIT " . (int)$filters['limit'];
+        }
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll(PDO::FETCH_OBJ);
+    }
+
+    /**
+     * Approve an adjustment note (draft → approved).
+     * Requires admin/Superadmin privilege (enforced at controller level).
+     */
+    public function approveAdjustmentNote($id, $userId, $userName) {
+        try {
+            $note = $this->getAdjustmentNote($id);
+            if (!$note) return ['success' => false, 'message' => 'Adjustment note not found'];
+            if ($note->status !== 'draft') {
+                return ['success' => false, 'message' => "Cannot approve — note is already '{$note->status}'"];
+            }
+
+            $this->db->prepare(
+                "UPDATE purchase_adjustment_notes
+                 SET status = 'approved', approved_by_user_id = ?, approved_at = NOW(), updated_at = NOW()
+                 WHERE id = ?"
+            )->execute([$userId, $id]);
+
+            if (function_exists('auditLog')) {
+                auditLog('purchase', 'approved',
+                    "Adjustment Note {$note->note_number} approved by {$userName}",
+                    ['record_type' => 'adjustment_note', 'record_id' => $id, 'note_number' => $note->note_number]
+                );
+            }
+
+            return ['success' => true, 'message' => "Adjustment Note {$note->note_number} approved."];
+
+        } catch (Exception $e) {
+            return ['success' => false, 'message' => 'Error: ' . $e->getMessage()];
+        }
+    }
+
+    /**
+     * Post an adjustment note (approved → posted).
+     * Posting has financial effect:
+     *   - CAN: creates a credit entry in supplier_balance_adjustments
+     *   - DAN: increases PO balance_payable
+     *   Both update PO total_adjustment_amount.
+     */
+    public function postAdjustmentNote($id, $userId, $userName) {
+        try {
+            $this->db->beginTransaction();
+
+            $note = $this->getAdjustmentNote($id);
+            if (!$note) {
+                $this->db->rollBack();
+                return ['success' => false, 'message' => 'Adjustment note not found'];
+            }
+            if ($note->status !== 'approved') {
+                $this->db->rollBack();
+                return ['success' => false, 'message' => "Cannot post — note must be approved first (current: '{$note->status}')"];
+            }
+
+            // Mark posted
+            $this->db->prepare(
+                "UPDATE purchase_adjustment_notes
+                 SET status = 'posted', posted_at = NOW(), updated_at = NOW()
+                 WHERE id = ?"
+            )->execute([$id]);
+
+            // CAN (credit): supplier owes us a reduction → record credit in ledger
+            if ($note->note_type === 'credit') {
+                $this->db->prepare(
+                    "INSERT INTO supplier_balance_adjustments
+                         (supplier_id, purchase_order_id, adjustment_note_id, type, amount, description, created_by_user_id)
+                     VALUES (?, ?, ?, 'credit', ?, ?, ?)"
+                )->execute([
+                    $note->supplier_id,
+                    $note->purchase_order_id,
+                    $note->id,
+                    $note->amount,
+                    "Credit from CAN {$note->note_number}: " . ($note->description ?? ''),
+                    $userId,
+                ]);
+            }
+
+            // DAN = positive delta (we owe more); CAN = negative delta (we owe less)
+            $delta = $note->note_type === 'debit' ? $note->amount : -$note->amount;
+
+            $this->db->prepare(
+                "UPDATE purchase_orders_adnan
+                 SET total_adjustment_amount = COALESCE(total_adjustment_amount, 0) + ?,
+                     balance_payable         = COALESCE(balance_payable, 0) + ?,
+                     updated_at              = NOW()
+                 WHERE id = ?"
+            )->execute([$delta, $delta, $note->purchase_order_id]);
+
+            $this->db->commit();
+
+            if (function_exists('auditLog')) {
+                auditLog('purchase', 'posted',
+                    "Adjustment Note {$note->note_number} posted — ৳" . number_format($note->amount, 2) . " ({$note->note_type})",
+                    [
+                        'record_type' => 'adjustment_note',
+                        'record_id'   => $id,
+                        'note_number' => $note->note_number,
+                        'note_type'   => $note->note_type,
+                        'amount'      => $note->amount,
+                        'po_id'       => $note->purchase_order_id,
+                        'posted_by'   => $userName,
+                    ]
+                );
+            }
+
+            return ['success' => true, 'message' => "Adjustment Note {$note->note_number} posted successfully."];
+
+        } catch (Exception $e) {
+            if ($this->db->inTransaction()) $this->db->rollBack();
+            error_log("postAdjustmentNote error: " . $e->getMessage());
+            return ['success' => false, 'message' => 'Error: ' . $e->getMessage()];
+        }
+    }
+
+    /**
+     * Cancel an adjustment note (draft/approved → cancelled).
+     * Cannot cancel a posted note.
+     */
+    public function cancelAdjustmentNote($id, $reason, $userId, $userName) {
+        try {
+            $note = $this->getAdjustmentNote($id);
+            if (!$note) return ['success' => false, 'message' => 'Adjustment note not found'];
+            if ($note->status === 'posted') {
+                return ['success' => false, 'message' => 'Cannot cancel a posted adjustment note. Contact Superadmin.'];
+            }
+            if ($note->status === 'cancelled') {
+                return ['success' => false, 'message' => 'Note is already cancelled.'];
+            }
+
+            $cancel_note = "\n[CANCELLED by {$userName}: " . addslashes($reason) . "]";
+            $this->db->prepare(
+                "UPDATE purchase_adjustment_notes
+                 SET status = 'cancelled',
+                     description = CONCAT(COALESCE(description,''), ?),
+                     updated_at = NOW()
+                 WHERE id = ?"
+            )->execute([$cancel_note, $id]);
+
+            if (function_exists('auditLog')) {
+                auditLog('purchase', 'cancelled',
+                    "Adjustment Note {$note->note_number} cancelled by {$userName}. Reason: {$reason}",
+                    ['record_type' => 'adjustment_note', 'record_id' => $id, 'note_number' => $note->note_number, 'reason' => $reason]
+                );
+            }
+
+            return ['success' => true, 'message' => "Adjustment Note {$note->note_number} cancelled."];
+
+        } catch (Exception $e) {
+            return ['success' => false, 'message' => 'Error: ' . $e->getMessage()];
+        }
+    }
+
+    /**
+     * Delete an adjustment note (admin/superadmin only).
+     * Draft / Approved / Cancelled: hard-delete, no financial reversal needed.
+     * Posted: reverses the financial effect on the PO first, then hard-deletes.
+     */
+    public function deleteAdjustmentNote($id, $userId, $userName) {
+        try {
+            // Feature #3: recycle tables before the transaction (DDL implicit-commits).
+            ensureRecycleBinTables();
+
+            $this->db->beginTransaction();
+
+            $note = $this->getAdjustmentNote($id);
+            if (!$note) {
+                $this->db->rollBack();
+                return ['success' => false, 'message' => 'Adjustment note not found.'];
+            }
+
+            // Archive everything into one recycle batch so this is restorable.
+            $batch = recycleBegin('adjustment_note',
+                'Adjustment Note ' . ($note->note_number ?? "#$id") . ' — PO #' . ($note->purchase_order_id ?? '')
+                . ' · ৳' . number_format((float)$note->amount, 2));
+
+            if ($note->status === 'posted') {
+                // Reverse the delta that was applied when the note was posted.
+                // Snapshot the PO before-image so a restore re-applies the delta.
+                $delta = $note->note_type === 'debit' ? $note->amount : -$note->amount;
+
+                recycleSnapshotBefore($batch, 'purchase_orders_adnan', 'id', (int)$note->purchase_order_id);
+                $this->db->prepare(
+                    "UPDATE purchase_orders_adnan
+                     SET total_adjustment_amount = COALESCE(total_adjustment_amount, 0) - ?,
+                         balance_payable         = COALESCE(balance_payable, 0) - ?,
+                         updated_at              = NOW()
+                     WHERE id = ?"
+                )->execute([$delta, $delta, $note->purchase_order_id]);
+
+                // Archive the supplier credit entry if this was a CAN
+                if ($note->note_type === 'credit') {
+                    recycleArchiveDelete($batch, 'supplier_balance_adjustments', 'adjustment_note_id', $id);
+                }
+            }
+
+            // Archive the note record
+            recycleArchiveDelete($batch, 'purchase_adjustment_notes', 'id', $id);
+            recycleFinalize($batch);
+
+            $this->db->commit();
+
+            if (function_exists('auditLog')) {
+                auditLog('purchase', 'deleted',
+                    "Adjustment Note {$note->note_number} deleted by {$userName}" .
+                    ($note->status === 'posted' ? ' — financial effect reversed on PO ' . $note->purchase_order_id : ''),
+                    [
+                        'record_type' => 'adjustment_note',
+                        'record_id'   => $id,
+                        'note_number' => $note->note_number,
+                        'note_type'   => $note->note_type,
+                        'status_was'  => $note->status,
+                        'amount'      => $note->amount,
+                        'po_id'       => $note->purchase_order_id,
+                        'deleted_by'  => $userName,
+                    ]
+                );
+            }
+
+            $suffix = $note->status === 'posted' ? ' Financial effect has been reversed.' : '';
+            return ['success' => true, 'message' => "Adjustment Note {$note->note_number} deleted.{$suffix}"];
+
+        } catch (Exception $e) {
+            if ($this->db->inTransaction()) $this->db->rollBack();
+            error_log("deleteAdjustmentNote error: " . $e->getMessage());
+            return ['success' => false, 'message' => 'Error: ' . $e->getMessage()];
+        }
+    }
+
+    /**
+     * Get supplier's available credit balance
+     * = sum of posted CAN credits − already-applied debits
+     */
+    public function getSupplierCreditBalance($supplier_id) {
+        $sql = "SELECT
+                    COALESCE(SUM(CASE WHEN type = 'credit' THEN amount ELSE 0 END), 0) AS total_credit,
+                    COALESCE(SUM(CASE WHEN type = 'debit'  THEN amount ELSE 0 END), 0) AS total_used,
+                    COALESCE(SUM(CASE WHEN type = 'credit' THEN amount ELSE -amount END), 0) AS available_balance
+                FROM supplier_balance_adjustments
+                WHERE supplier_id = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$supplier_id]);
+        return $stmt->fetch(PDO::FETCH_OBJ);
+    }
+
+    /**
+     * Apply supplier credit against a recorded payment.
+     * Inserts a 'debit' row in supplier_balance_adjustments to consume the credit.
+     */
+    public function applySupplierCredit($supplier_id, $po_id, $payment_id, $credit_amount, $userId, $userName) {
+        try {
+            $this->db->prepare(
+                "INSERT INTO supplier_balance_adjustments
+                     (supplier_id, purchase_order_id, payment_id, type, amount, description, created_by_user_id)
+                 VALUES (?, ?, ?, 'debit', ?, ?, ?)"
+            )->execute([
+                $supplier_id,
+                $po_id,
+                $payment_id,
+                $credit_amount,
+                "Supplier credit applied against payment ID {$payment_id} by {$userName}",
+                $userId,
+            ]);
+
+            if (function_exists('auditLog')) {
+                auditLog('purchase', 'credit_applied',
+                    "Supplier credit ৳" . number_format($credit_amount, 2) . " applied for PO ID {$po_id} by {$userName}",
+                    ['supplier_id' => $supplier_id, 'po_id' => $po_id, 'payment_id' => $payment_id, 'amount' => $credit_amount]
+                );
+            }
+
+            return ['success' => true, 'message' => 'Supplier credit applied successfully.'];
+
+        } catch (Exception $e) {
+            error_log("applySupplierCredit error: " . $e->getMessage());
+            return ['success' => false, 'message' => 'Error applying credit: ' . $e->getMessage()];
+        }
+    }
+
+    /**
+     * Mark a PO's delivery as final.
+     * Locks delivery + optionally auto-creates a draft CAN for the shortfall.
+     */
+    public function markFinalDelivery($po_id, $create_can_for_shortfall, $userId, $userName) {
+        try {
+            $po = $this->getPurchaseOrder($po_id);
+            if (!$po) return ['success' => false, 'message' => 'PO not found'];
+
+            $shortfall = floatval($po->quantity_kg) - floatval($po->total_received_qty ?? 0);
+
+            // Lock delivery
+            $lock_result = $this->toggleDeliveryLock(
+                $po_id, true,
+                'Final delivery marked by admin — PO closed for further GRNs',
+                $userId, $userName
+            );
+            if (!$lock_result['success']) return $lock_result;
+
+            // Flag final delivery on the PO
+            $this->db->prepare(
+                "UPDATE purchase_orders_adnan SET final_delivery_marked = 1 WHERE id = ?"
+            )->execute([$po_id]);
+
+            $can_number = null;
+
+            // Auto-draft CAN for shortfall if requested and shortfall is meaningful (> 1 KG)
+            if ($create_can_for_shortfall && $shortfall > 1) {
+                $can_amount = $shortfall * floatval($po->unit_price_per_kg);
+                $can_result = $this->createAdjustmentNote([
+                    'note_type'         => 'credit',
+                    'reason_type'       => 'under_delivery_closure',
+                    'purchase_order_id' => $po_id,
+                    'quantity_kg'       => $shortfall,
+                    'unit_price_per_kg' => $po->unit_price_per_kg,
+                    'amount'            => $can_amount,
+                    'description'       => "Auto-generated CAN: PO closed with shortfall of "
+                                          . number_format($shortfall, 2) . " KG ("
+                                          . number_format($can_amount, 2) . " BDT) — marked as final delivery.",
+                ]);
+                if ($can_result['success']) {
+                    $can_number = $can_result['note_number'];
+                }
+            }
+
+            return [
+                'success'    => true,
+                'message'    => 'Final delivery marked and delivery locked.'
+                                . ($can_number ? " Draft CAN {$can_number} created for shortfall." : ''),
+                'can_number' => $can_number,
+                'shortfall'  => $shortfall,
+            ];
+
+        } catch (Exception $e) {
+            error_log("markFinalDelivery error: " . $e->getMessage());
+            return ['success' => false, 'message' => 'Error: ' . $e->getMessage()];
+        }
+    }
+
+    // =========================================================
+    // END ADJUSTMENT NOTES
+    // =========================================================
+
+    /**
+     * Get statistics by wheat origin
+     *
+     * @return array Origin-wise stats
+     */
+    public function getStatsByOrigin() {
+        $sql = "SELECT 
+            wheat_origin,
+            COUNT(*) as order_count,
+            SUM(quantity_kg) as total_quantity,
+            SUM(total_order_value) as total_value,
+            AVG(unit_price_per_kg) as avg_price
+        FROM purchase_orders_adnan
+        WHERE po_status != 'cancelled'
+        AND delivery_status != 'closed' 
+        GROUP BY wheat_origin";
+        
+        $stmt = $this->db->query($sql);
+        return $stmt->fetchAll(PDO::FETCH_OBJ);
+    }
+}

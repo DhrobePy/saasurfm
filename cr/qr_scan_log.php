@@ -1,0 +1,138 @@
+<?php
+/**
+ * QR Scan Log — read-only viewer for cr_qr_scan_log.
+ *
+ * This table has existed since the delivery-QR feature was built (recordQrScan()
+ * in helpers.php) and the admin dashboard's Exception Radar has counted "QR
+ * re-scans (7d)" from it the whole time — but no page ever displayed the actual
+ * rows; the radar tile linked to credit_dispatch.php, which has nothing to do
+ * with this data. Built 8 Aug 2026 after a live report that clicking the tile
+ * led nowhere useful.
+ *
+ * A "reused" scan means the delivery QR was scanned again AFTER the order was
+ * already marked delivered — worth a human look (could be a genuine re-check,
+ * or could be a duplicate-delivery/fraud attempt).
+ */
+require_once '../core/init.php';
+
+$allowed_roles = ['Superadmin', 'admin', 'Accounts', 'accounts-srg', 'accounts-demra', 'security', 'gate'];
+restrict_access($allowed_roles, 'credit_sales', 'qr_scan_log');
+
+global $db;
+$pageTitle = 'QR Scan Log';
+
+ensureQrScanLogTable();
+
+$date_from   = $_GET['date_from']   ?? date('Y-m-d', strtotime('-6 days'));
+$date_to     = $_GET['date_to']     ?? date('Y-m-d');
+$reused_only = isset($_GET['reused_only']) ? $_GET['reused_only'] === '1' : true;
+$search      = trim($_GET['search'] ?? '');
+
+$conditions = ["DATE(scanned_at) BETWEEN ? AND ?"];
+$params     = [$date_from, $date_to];
+if ($reused_only) $conditions[] = "reused = 1";
+if ($search !== '') { $conditions[] = "order_number LIKE ?"; $params[] = "%{$search}%"; }
+$where = implode(' AND ', $conditions);
+
+$rows = $db->query(
+    "SELECT sl.*, co.id AS credit_order_id
+     FROM cr_qr_scan_log sl
+     LEFT JOIN credit_orders co ON co.order_number = sl.order_number
+     WHERE {$where}
+     ORDER BY sl.scanned_at DESC
+     LIMIT 300",
+    $params
+)->results();
+
+$summary = $db->query(
+    "SELECT COUNT(*) AS total, SUM(reused) AS reused_count
+     FROM cr_qr_scan_log WHERE DATE(scanned_at) BETWEEN ? AND ?",
+    [$date_from, $date_to]
+)->first();
+
+$stage_labels = ['gate' => 'Gate', 'delivery' => 'Delivery', 'done' => 'Delivered (re-scan)', 'error' => 'Error'];
+
+require_once '../templates/header.php';
+?>
+<div class="max-w-screen-xl mx-auto px-4 sm:px-6 py-6">
+
+    <div class="mb-4">
+        <h1 class="text-2xl font-bold text-gray-900"><i class="fas fa-qrcode text-red-500 mr-2"></i>QR Scan Log</h1>
+        <p class="text-gray-600 mt-1 text-sm">Every scan of a delivery-confirmation QR code. A <strong>reused</strong> scan happened after the order was already marked delivered — worth checking for duplicate-delivery or tampering attempts.</p>
+    </div>
+
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+            <div class="text-2xl font-bold text-gray-800"><?php echo (int)($summary->total ?? 0); ?></div>
+            <div class="text-xs text-gray-500">Total scans in range</div>
+        </div>
+        <div class="bg-white rounded-xl shadow-sm border border-red-200 p-4">
+            <div class="text-2xl font-bold text-red-600"><?php echo (int)($summary->reused_count ?? 0); ?></div>
+            <div class="text-xs text-gray-500">Flagged as reused</div>
+        </div>
+    </div>
+
+    <form method="GET" class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-4 flex flex-wrap items-end gap-3">
+        <div>
+            <label class="block text-xs font-medium text-gray-600 mb-1">From</label>
+            <input type="date" name="date_from" value="<?php echo htmlspecialchars($date_from); ?>" class="px-3 py-1.5 border rounded-lg text-sm">
+        </div>
+        <div>
+            <label class="block text-xs font-medium text-gray-600 mb-1">To</label>
+            <input type="date" name="date_to" value="<?php echo htmlspecialchars($date_to); ?>" class="px-3 py-1.5 border rounded-lg text-sm">
+        </div>
+        <div>
+            <label class="block text-xs font-medium text-gray-600 mb-1">Order #</label>
+            <input type="text" name="search" value="<?php echo htmlspecialchars($search); ?>" placeholder="e.g. CR-20260801" class="px-3 py-1.5 border rounded-lg text-sm">
+        </div>
+        <label class="flex items-center gap-2 text-sm text-gray-700 pb-1.5">
+            <input type="checkbox" name="reused_only" value="1" <?php echo $reused_only ? 'checked' : ''; ?> class="rounded">
+            Reused only
+        </label>
+        <button type="submit" class="px-4 py-1.5 bg-red-600 text-white text-sm font-semibold rounded-lg hover:bg-red-700"><i class="fas fa-filter mr-1"></i>Filter</button>
+        <a href="qr_scan_log.php" class="px-4 py-1.5 border border-gray-300 text-gray-600 text-sm rounded-lg hover:bg-gray-50">Reset</a>
+    </form>
+
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-x-auto">
+        <table class="w-full text-sm">
+            <thead class="bg-gray-50 text-gray-500 text-xs uppercase">
+                <tr>
+                    <th class="text-left px-4 py-2">Order #</th>
+                    <th class="text-left px-4 py-2">Stage</th>
+                    <th class="text-left px-4 py-2">Scanned By</th>
+                    <th class="text-left px-4 py-2">IP</th>
+                    <th class="text-left px-4 py-2">Scanned At</th>
+                    <th class="text-left px-4 py-2">Flag</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+                <?php if (empty($rows)): ?>
+                <tr><td colspan="6" class="text-center py-10 text-gray-400">No scans in this range.</td></tr>
+                <?php else: foreach ($rows as $r): ?>
+                <tr class="<?php echo $r->reused ? 'bg-red-50' : ''; ?> hover:bg-gray-50">
+                    <td class="px-4 py-2 font-medium">
+                        <?php if ($r->credit_order_id): ?>
+                            <a href="credit_order_view.php?id=<?php echo (int)$r->credit_order_id; ?>" class="text-blue-600 hover:underline"><?php echo htmlspecialchars($r->order_number ?? '—'); ?></a>
+                        <?php else: ?>
+                            <?php echo htmlspecialchars($r->order_number ?? '—'); ?>
+                        <?php endif; ?>
+                    </td>
+                    <td class="px-4 py-2 text-gray-600"><?php echo htmlspecialchars($stage_labels[$r->stage] ?? $r->stage ?? '—'); ?></td>
+                    <td class="px-4 py-2 text-gray-600"><?php echo htmlspecialchars($r->scanned_by_name ?? '—'); ?></td>
+                    <td class="px-4 py-2 text-gray-400 font-mono text-xs"><?php echo htmlspecialchars($r->ip ?? '—'); ?></td>
+                    <td class="px-4 py-2 text-gray-500"><?php echo htmlspecialchars($r->scanned_at); ?></td>
+                    <td class="px-4 py-2">
+                        <?php if ($r->reused): ?>
+                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-100 text-red-700 text-xs font-semibold"><i class="fas fa-triangle-exclamation"></i> Reused</span>
+                        <?php else: ?>
+                            <span class="text-xs text-gray-400">—</span>
+                        <?php endif; ?>
+                    </td>
+                </tr>
+                <?php endforeach; endif; ?>
+            </tbody>
+        </table>
+    </div>
+    <p class="text-xs text-gray-400 mt-2">Showing up to 300 most recent scans matching the filter.</p>
+</div>
+<?php require_once '../templates/footer.php'; ?>

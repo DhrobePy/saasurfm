@@ -1,0 +1,688 @@
+<?php
+/**
+ * Commodity Sale — dedicated flow for reselling purchased commodities directly
+ * (e.g. surplus wheat), separate from the milled-flour Credit Sales pipeline.
+ * No production step: post directly, decrement real inventory, recognize both
+ * revenue AND cost of goods sold (weighted-average costing) so gross margin is
+ * real, not estimated.
+ *
+ * Design: /Users/apple/Desktop/saas/COMMODITY_TRADING_PLAN.md
+ *
+ * Approval: Superadmin/admin always post directly. A non-admin posts directly
+ * ONLY if they have a delegated 'commodity_sale' ৳ limit covering the amount
+ * AND the global "require approval for every commodity sale" policy is off —
+ * otherwise it queues in the shared Approval Requests inbox (cr/approval_requests.php),
+ * reusing the exact same maker/checker engine as payments/deliveries. A user
+ * with NO limit configured always queues — absence of a limit is never treated
+ * as unlimited trust (matches the collect_payment fix).
+ *
+ * Stock: warn + override, not a hard block — real trading sometimes sells
+ * against incoming stock not yet received.
+ */
+require_once '../core/init.php';
+
+restrict_access(['Superadmin', 'admin'], 'trading', 'commodity_sale');
+
+global $db;
+$currentUser = getCurrentUser();
+$user_id     = $currentUser['id'] ?? null;
+$is_admin    = in_array($currentUser['role'] ?? '', ['Superadmin', 'admin'], true);
+$can_delete  = $is_admin || userCanPageAction('trading', 'commodity_sale', 'can_delete');
+$pageTitle   = 'Commodity Sale';
+
+ensureBusinessPartnersTable();
+ensureCommodityIsSellableColumn();
+ensureCommodityInventoryTable();
+ensureCommoditySalesTable();
+
+$csrf = $_SESSION['csrf_token'] ?? '';
+
+// ── Checker executing an approved request? Load it for the prefill banner. ──
+$preq          = null;
+$preq_error    = null;
+$preq_id_get   = isset($_GET['pending_req']) ? (int)$_GET['pending_req'] : 0;
+if ($preq_id_get) {
+    $preq = getPendingRequest($preq_id_get, 'commodity_sale');
+    if (!$preq) {
+        $preq_error = "Request #{$preq_id_get} is not open — it may already be approved, rejected, or cancelled.";
+    } elseif (!$is_admin) {
+        $my_cap = getUserActionLimit((int)$user_id, 'commodity_sale');
+        if ($my_cap !== null && (float)$preq->amount > $my_cap) {
+            $preq_error = "Request #{$preq_id_get} (৳" . number_format((float)$preq->amount, 0) . ") exceeds your delegated limit (৳" . number_format($my_cap, 0) . ") — a more senior officer must post it.";
+            $preq = null;
+        }
+    }
+}
+
+// ── POST: create sale ────────────────────────────────────────────────────
+$error = null;
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'create_commodity_sale') {
+    try {
+        if (!hash_equals($csrf, $_POST['csrf_token'] ?? '')) {
+            throw new Exception('Invalid security token — refresh the page and try again.');
+        }
+
+        $customer_id   = (int)($_POST['customer_id'] ?? 0);
+        $commodity_id  = (int)($_POST['commodity_id'] ?? 0);
+        $branch_id     = (int)($_POST['branch_id'] ?? 0);
+        $origin        = trim($_POST['origin'] ?? '');
+        $source_po_id  = !empty($_POST['source_purchase_order_id']) ? (int)$_POST['source_purchase_order_id'] : null;
+        $quantity      = (float)($_POST['quantity'] ?? 0);
+        $unit_price    = (float)($_POST['unit_price'] ?? 0);
+        $advance_paid  = (float)($_POST['advance_paid'] ?? 0);
+        $notes         = trim($_POST['notes'] ?? '');
+        $stock_override = !empty($_POST['stock_override']);
+        $exec_pending_req_id = (int)($_POST['pending_req_id'] ?? 0);
+
+        // Backdated sale_date for reconciliation (Superadmin/admin only). Never
+        // trust the POST value for non-admins — always today, regardless of what
+        // was submitted (defense in depth, mirrors create_order.php's order_date).
+        // "backdated" means past, not pre-dated.
+        $today = date('Y-m-d');
+        $sale_date = $today;
+        if ($is_admin && !empty($_POST['sale_date'])) {
+            $posted_date = trim($_POST['sale_date']);
+            if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $posted_date) && strtotime($posted_date) !== false) {
+                if ($posted_date <= $today) {
+                    $sale_date = $posted_date;
+                } else {
+                    throw new Exception('Sale date cannot be in the future.');
+                }
+            }
+        }
+
+        if (!$customer_id)   throw new Exception('Please select a customer.');
+        if (!$commodity_id)  throw new Exception('Please select a commodity.');
+        if (!$branch_id)     throw new Exception('Please select a branch.');
+        if ($quantity <= 0)  throw new Exception('Quantity must be greater than zero.');
+        if ($unit_price < 0) throw new Exception('Unit price cannot be negative.');
+
+        $commodity = $db->query("SELECT * FROM purchase_commodities WHERE id = ? AND is_sellable = 1", [$commodity_id])->first();
+        if (!$commodity) throw new Exception('Commodity not found or not marked sellable.');
+        if (empty($commodity->inventory_account_id)) {
+            throw new Exception("\"{$commodity->name}\" has no Inventory account configured — set one in Purchase → Procurement Catalog before selling it.");
+        }
+
+        $customer = $db->query("SELECT id, name FROM customers WHERE id = ?", [$customer_id])->first();
+        if (!$customer) throw new Exception('Customer not found.');
+
+        // Stock guard: warn + override, not a hard block (design decision).
+        // Scoped to the chosen origin's OWN pool — different origins are costed
+        // and stocked separately, so "on hand" here means that origin only.
+        $stock = getCommodityInventory($commodity_id, $branch_id, $origin);
+        if ($quantity > $stock['quantity_on_hand'] && !$stock_override) {
+            throw new Exception(sprintf(
+                'This exceeds current stock (on hand: %s %s%s). Tick "sell anyway" to override if this is against incoming stock.',
+                number_format($stock['quantity_on_hand'], 3), $commodity->unit, $origin !== '' ? " of {$origin} origin" : ''
+            ));
+        }
+
+        $total_amount = round($quantity * $unit_price, 2);
+        $balance_due  = max(0, $total_amount - $advance_paid);
+
+        // ── Maker/checker gate (mirrors customer_payment.php exactly) ───────
+        if (!$is_admin) {
+            $my_limit  = getUserActionLimit((int)$user_id, 'commodity_sale');
+            $over_limit = $my_limit !== null && $total_amount > $my_limit;
+
+            if ($exec_pending_req_id) {
+                // Checker posting an approved request → never re-queue; only
+                // enforce that the checker's own limit covers it.
+                if ($over_limit) {
+                    throw new Exception('Your commodity-sale limit (৳' . number_format($my_limit, 0)
+                        . ') does not cover this ৳' . number_format($total_amount, 0) . ' sale — a more senior officer must post it.');
+                }
+            } else {
+                $no_limit_configured = $my_limit === null;
+                $needs_approval = commoditySaleApprovalRequiredForAll() || $over_limit || $no_limit_configured;
+                if ($needs_approval) {
+                    $req_id = submitPendingRequest('commodity_sale', $total_amount, [
+                        'customer_id'  => $customer_id,
+                        'commodity_id' => $commodity_id,
+                        'branch_id'    => $branch_id,
+                        'origin'       => $origin,
+                        'source_purchase_order_id' => $source_po_id,
+                        'sale_date'    => $sale_date,
+                        'quantity'     => $quantity,
+                        'unit_price'   => $unit_price,
+                        'advance_paid' => $advance_paid,
+                        'notes'        => $notes,
+                        'stock_override' => $stock_override ? 1 : 0,
+                    ], [
+                        'customer_id' => $customer_id,
+                        'summary'     => "Sell {$quantity} {$commodity->unit} {$commodity->name} to {$customer->name} @ ৳{$unit_price} = ৳" . number_format($total_amount, 0),
+                        'maker_limit' => $my_limit,
+                    ]);
+                    if (!$req_id) throw new Exception('Could not queue this sale for approval. Please try again.');
+                    $reason = $over_limit ? 'over ৳' . number_format($my_limit, 0) . ' limit' : ($no_limit_configured ? 'no commodity-sale limit configured for this user' : 'commodity sale approval policy');
+                    auditLog('other', 'created', "Commodity sale of {$quantity} {$commodity->unit} {$commodity->name} to {$customer->name} queued for approval ({$reason}) by " . ($currentUser['display_name'] ?? 'user'));
+                    $_SESSION['success_flash'] = "This sale (৳" . number_format($total_amount, 0) . ") was sent for approval. It will post once a senior officer approves it.";
+                    header('Location: commodity_sale.php');
+                    exit();
+                }
+            }
+        }
+
+        // ── Post directly (admin, or a checker/maker whose limit covers it) ──
+        $pdo = $db->getPdo();
+        $pdo->beginTransaction();
+
+        $date_prefix = date('Ymd', strtotime($sale_date));
+        $last = $db->query("SELECT sale_number FROM commodity_sales WHERE sale_number LIKE ? ORDER BY id DESC LIMIT 1", ["TR-{$date_prefix}-%"])->first();
+        $seq  = $last ? ((int)substr($last->sale_number, -4) + 1) : 1;
+        $sale_number = sprintf("TR-%s-%04d", $date_prefix, $seq);
+
+        // COGS at the moment of sale (also decrements commodity_inventory).
+        $cogs_amount = postCommoditySaleCost($commodity_id, $branch_id, $quantity, $origin);
+
+        // Credit the ORIGINAL maker when a checker is posting an approved request
+        // (audit trail should show who actually initiated the sale).
+        $sale_creator_id = $user_id;
+        if ($exec_pending_req_id && $preq && !empty($preq->maker_user_id)) {
+            $sale_creator_id = (int)$preq->maker_user_id;
+        }
+
+        $sale_id = $db->insert('commodity_sales', [
+            'sale_number'        => $sale_number,
+            'customer_id'        => $customer_id,
+            'commodity_id'       => $commodity_id,
+            'branch_id'          => $branch_id,
+            'origin'             => $origin,
+            'source_purchase_order_id' => $source_po_id,
+            'sale_date'          => $sale_date,
+            'quantity'           => $quantity,
+            'unit_price'         => $unit_price,
+            'total_amount'       => $total_amount,
+            'cogs_amount'        => $cogs_amount,
+            'advance_paid'       => $advance_paid,
+            'amount_paid'        => 0,
+            'balance_due'        => $balance_due,
+            'stock_overridden'   => $stock_override ? 1 : 0,
+            'status'             => 'approved',
+            'notes'              => $notes ?: null,
+            'created_by_user_id' => $sale_creator_id,
+            'approved_by_user_id'=> $user_id,
+        ]);
+        if (!$sale_id) throw new Exception('Failed to create the sale record.');
+
+        // ── One compound journal entry: DR AR / CR Revenue / DR COGS / CR Inventory ──
+        $ar_account = $db->query("SELECT id FROM chart_of_accounts WHERE account_type = 'Accounts Receivable' LIMIT 1")->first();
+        if (!$ar_account) throw new Exception("Chart of Accounts is missing an 'Accounts Receivable' account.");
+        $gl = ensureCommodityTradingAccounts();
+
+        $journal_desc = "Commodity sale {$sale_number}: {$quantity} {$commodity->unit} {$commodity->name} to {$customer->name}";
+        $journal_id = $db->insert('journal_entries', [
+            'transaction_date'      => $sale_date,
+            'description'           => $journal_desc,
+            'related_document_type' => 'commodity_sales',
+            'related_document_id'   => $sale_id,
+            'created_by_user_id'    => $user_id,
+        ]);
+        if (!$journal_id) throw new Exception('Failed to create the journal entry.');
+
+        $db->insert('transaction_lines', ['journal_entry_id' => $journal_id, 'account_id' => $ar_account->id, 'debit_amount' => $total_amount, 'credit_amount' => 0, 'description' => $journal_desc]);
+        $db->insert('transaction_lines', ['journal_entry_id' => $journal_id, 'account_id' => $gl['revenue_account_id'], 'debit_amount' => 0, 'credit_amount' => $total_amount, 'description' => $journal_desc]);
+        if ($cogs_amount > 0) {
+            $db->insert('transaction_lines', ['journal_entry_id' => $journal_id, 'account_id' => $gl['cogs_account_id'], 'debit_amount' => $cogs_amount, 'credit_amount' => 0, 'description' => $journal_desc . ' (COGS)']);
+            $db->insert('transaction_lines', ['journal_entry_id' => $journal_id, 'account_id' => $commodity->inventory_account_id, 'debit_amount' => 0, 'credit_amount' => $cogs_amount, 'description' => $journal_desc . ' (inventory drawdown)']);
+        }
+        $db->query("UPDATE commodity_sales SET journal_entry_id = ? WHERE id = ?", [$journal_id, $sale_id]);
+
+        // ── Customer ledger — transaction_type='invoice' so this behaves like
+        // any other invoice in the customer's statement/true-balance (ENUM-safe:
+        // 'invoice' is a valid customer_ledger.transaction_type value). ──
+        $agg = $db->query("SELECT COALESCE(SUM(debit_amount),0) td, COALESCE(SUM(credit_amount),0) tc FROM customer_ledger WHERE customer_id = ?", [$customer_id])->first();
+        $cust_init = $db->query("SELECT initial_due FROM customers WHERE id = ?", [$customer_id])->first();
+        $prev_balance = ((float)$agg->td > 0 || (float)$agg->tc > 0) ? ((float)$agg->td - (float)$agg->tc) : (float)($cust_init->initial_due ?? 0);
+        $balance_after = $prev_balance + $total_amount;
+
+        $db->insert('customer_ledger', [
+            'customer_id'        => $customer_id,
+            'transaction_date'   => $sale_date,
+            'transaction_type'   => 'invoice',
+            'reference_type'     => 'commodity_sales',
+            'reference_id'       => $sale_id,
+            'invoice_number'     => $sale_number,
+            'description'        => "Commodity sale — {$sale_number} ({$quantity} {$commodity->unit} {$commodity->name})",
+            'debit_amount'       => $total_amount,
+            'credit_amount'      => 0,
+            'balance_after'      => $balance_after,
+            'created_by_user_id' => $user_id,
+            'journal_entry_id'   => $journal_id,
+        ]);
+
+        if ($exec_pending_req_id) {
+            decidePendingRequest($exec_pending_req_id, 'approved', 'Posted by ' . ($currentUser['display_name'] ?? 'checker'), $sale_number);
+        }
+
+        $pdo->commit();
+
+        auditLog('other', 'created',
+            "Commodity sale {$sale_number}: {$quantity} {$commodity->unit} {$commodity->name} to {$customer->name} — ৳" . number_format($total_amount, 2)
+            . " (COGS ৳" . number_format($cogs_amount, 2) . ", margin ৳" . number_format($total_amount - $cogs_amount, 2) . ")"
+            . ($stock_override ? ' — STOCK OVERRIDDEN' : '') . " by " . ($currentUser['display_name'] ?? 'user'));
+
+        if (defined('TELEGRAM_NOTIFICATIONS_ENABLED') && TELEGRAM_NOTIFICATIONS_ENABLED
+            && defined('TELEGRAM_BOT_TOKEN') && defined('TELEGRAM_CHAT_ID')) {
+            try {
+                require_once '../core/classes/TelegramNotifier.php';
+                $margin = $total_amount - $cogs_amount;
+                (new TelegramNotifier(TELEGRAM_BOT_TOKEN, getTelegramChatId('orders')))->sendMessage(
+                    "<b>🔁 COMMODITY SALE POSTED</b>\n───────────────────────────────\n\n"
+                    . "• Sale: <code>{$sale_number}</code>\n• Customer: <b>" . htmlspecialchars($customer->name) . "</b>\n"
+                    . "• {$quantity} {$commodity->unit} {$commodity->name} @ ৳{$unit_price}\n"
+                    . "• Total: ৳" . number_format($total_amount, 0) . " · COGS: ৳" . number_format($cogs_amount, 0) . " · Margin: ৳" . number_format($margin, 0) . "\n"
+                    . ($stock_override ? "• ⚠ Stock override used (sold beyond on-hand quantity)\n" : '')
+                    . "• Posted by: " . ($currentUser['display_name'] ?? 'user')
+                );
+            } catch (\Throwable $te) { error_log('commodity_sale Telegram: ' . $te->getMessage()); }
+        }
+
+        $_SESSION['success_flash'] = "Commodity sale {$sale_number} posted — ৳" . number_format($total_amount, 2)
+            . " (margin ৳" . number_format($total_amount - $cogs_amount, 2) . "). Collect payment from the customer's ledger.";
+        header('Location: commodity_sale.php');
+        exit();
+
+    } catch (Exception $e) {
+        if (isset($pdo) && $pdo->inTransaction()) $pdo->rollBack();
+        $error = $e->getMessage();
+    }
+}
+
+// ── Data for render ──────────────────────────────────────────────────────
+$customers = $db->query(
+    "SELECT c.id, c.name, c.business_name, c.phone_number, c.business_partner_id,
+            COALESCE(c.initial_due,0) + COALESCE(cl.d,0) - COALESCE(cl.c,0) AS true_balance
+     FROM customers c
+     LEFT JOIN (SELECT customer_id, SUM(debit_amount) d, SUM(credit_amount) c FROM customer_ledger WHERE reference_type != 'initial_due' GROUP BY customer_id) cl ON cl.customer_id = c.id
+     WHERE c.status = 'active' ORDER BY c.name ASC"
+)->results();
+
+$commodities = $db->query("SELECT id, name, unit, inventory_account_id FROM purchase_commodities WHERE is_sellable = 1 AND status = 'active' ORDER BY name ASC")->results();
+$branches = $db->query("SELECT id, name FROM branches WHERE status = 'active' ORDER BY name ASC")->results();
+
+$origins_by_commodity = [];
+foreach ($db->query("SELECT commodity_id, origin_name FROM purchase_commodity_origins WHERE status = 'active' ORDER BY origin_name ASC")->results() as $o) {
+    $origins_by_commodity[(int)$o->commodity_id][] = $o->origin_name;
+}
+
+$pos_by_commodity = [];
+foreach ($db->query(
+    "SELECT id, commodity_id, po_number, supplier_name, wheat_origin, po_date
+     FROM purchase_orders_adnan WHERE commodity_id IS NOT NULL AND po_status != 'cancelled'
+     ORDER BY po_date DESC LIMIT 500"
+)->results() as $po) {
+    $pos_by_commodity[(int)$po->commodity_id][] = [
+        'id' => (int)$po->id, 'label' => "{$po->po_number} — {$po->supplier_name} ({$po->wheat_origin}, " . date('d M Y', strtotime($po->po_date)) . ')',
+    ];
+}
+
+$inventory_rows = $db->query("SELECT commodity_id, branch_id, origin, quantity_on_hand, weighted_avg_cost FROM commodity_inventory")->results();
+$last_sale_price = [];
+foreach ($db->query("SELECT commodity_id, unit_price FROM commodity_sales cs WHERE id IN (SELECT MAX(id) FROM commodity_sales GROUP BY commodity_id)")->results() as $r) {
+    $last_sale_price[(int)$r->commodity_id] = (float)$r->unit_price;
+}
+
+// Recent sales for the page footer.
+$recent_sales = $db->query(
+    "SELECT cs.*, c.name AS customer_name, pc.name AS commodity_name, pc.unit
+     FROM commodity_sales cs
+     JOIN customers c ON c.id = cs.customer_id
+     JOIN purchase_commodities pc ON pc.id = cs.commodity_id
+     ORDER BY cs.created_at DESC LIMIT 20"
+)->results();
+
+$flash = $_SESSION['success_flash'] ?? null; unset($_SESSION['success_flash']);
+
+require_once '../templates/header.php';
+?>
+<div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+    <div class="mb-4 flex flex-wrap items-center justify-between gap-2">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900"><i class="fas fa-money-bill-transfer text-rose-600 mr-2"></i>Commodity Sale</h1>
+            <p class="text-gray-600 mt-1 text-sm">Direct resale of purchased commodities (e.g. surplus wheat) — no production step. Posts revenue and real cost of goods sold immediately.</p>
+        </div>
+        <a href="commodity_inventory.php" class="px-3 py-2 text-sm border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"><i class="fas fa-warehouse mr-1"></i>Inventory</a>
+    </div>
+
+    <?php if ($flash): ?><div class="mb-4 rounded-lg border border-green-300 bg-green-50 px-4 py-2.5 text-sm text-green-800"><i class="fas fa-check-circle mr-1"></i><?php echo htmlspecialchars($flash); ?></div><?php endif; ?>
+    <?php if ($error): ?><div class="mb-4 rounded-lg border border-red-300 bg-red-50 px-4 py-2.5 text-sm text-red-800"><i class="fas fa-triangle-exclamation mr-1"></i><?php echo htmlspecialchars($error); ?></div><?php endif; ?>
+    <?php if ($preq_error): ?><div class="mb-4 rounded-lg border border-red-300 bg-red-50 px-4 py-2.5 text-sm text-red-800"><i class="fas fa-ban mr-1"></i><?php echo htmlspecialchars($preq_error); ?></div><?php endif; ?>
+    <?php if ($preq): ?>
+    <div class="mb-4 rounded-lg border border-blue-300 bg-blue-50 px-4 py-3 text-sm text-blue-900">
+        <i class="fas fa-user-check mr-1"></i>Reviewing pending request #<?php echo (int)$preq->id; ?> — form prefilled below. Submit to post it.
+    </div>
+    <?php endif; ?>
+
+    <form method="POST" id="commSaleForm" class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-5">
+        <input type="hidden" name="action" value="create_commodity_sale">
+        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf); ?>">
+        <?php if ($preq): ?><input type="hidden" name="pending_req_id" value="<?php echo (int)$preq->id; ?>"><?php endif; ?>
+
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Customer <span class="text-red-500">*</span></label>
+            <div class="relative">
+                <input type="text" id="cs_customer_search" autocomplete="off" required
+                       placeholder="Search by name, business or phone..."
+                       class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-rose-500"
+                       oninput="csSearchCustomers(this.value)" onfocus="csSearchCustomers(this.value)">
+                <div id="cs_customer_dropdown" class="absolute z-50 left-0 right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-64 overflow-y-auto hidden"></div>
+            </div>
+            <input type="hidden" name="customer_id" id="cs_customer_id" required>
+            <p id="cs_partner_hint" class="mt-1 text-xs text-amber-700 hidden"></p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Commodity <span class="text-red-500">*</span></label>
+                <select name="commodity_id" id="cs_commodity" required class="w-full px-4 py-2 border rounded-lg" onchange="csCommodityChanged()">
+                    <option value="">Select commodity</option>
+                    <?php foreach ($commodities as $c): ?>
+                    <option value="<?php echo (int)$c->id; ?>" data-unit="<?php echo htmlspecialchars($c->unit); ?>"><?php echo htmlspecialchars($c->name); ?> (<?php echo htmlspecialchars($c->unit); ?>)</option>
+                    <?php endforeach; ?>
+                </select>
+                <p class="mt-1 text-xs text-gray-500">Manage sellable goods in <a href="../purchase/procurement_catalog.php" class="text-rose-600 hover:underline">Procurement Catalog</a></p>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Branch / Warehouse / Dock <span class="text-red-500">*</span></label>
+                <select name="branch_id" id="cs_branch" required class="w-full px-4 py-2 border rounded-lg" onchange="csUpdateStock()">
+                    <option value="">Select source</option>
+                    <?php foreach ($branches as $b): ?>
+                    <option value="<?php echo (int)$b->id; ?>"><?php echo htmlspecialchars($b->name); ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Origin</label>
+                <select name="origin" id="cs_origin" class="w-full px-4 py-2 border rounded-lg" onchange="csUpdateStock()">
+                    <option value="">Not tracked / mixed</option>
+                </select>
+                <p class="mt-1 text-xs text-gray-500">Which origin's stock this sale draws from</p>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    Sale Date
+                    <?php if ($is_admin): ?><span class="ml-1 text-[10px] font-semibold uppercase tracking-wide text-amber-600 bg-amber-50 border border-amber-200 rounded-full px-2 py-0.5 align-middle">Reconciliation</span><?php endif; ?>
+                </label>
+                <?php if ($is_admin): ?>
+                <input type="date" name="sale_date" value="<?php echo date('Y-m-d'); ?>" max="<?php echo date('Y-m-d'); ?>" class="w-full px-4 py-2 border rounded-lg">
+                <p class="mt-1 text-xs text-gray-500"><i class="fas fa-clock-rotate-left mr-1"></i>Defaults to today.</p>
+                <?php else: ?>
+                <input type="text" value="<?php echo date('d M Y'); ?> (today)" disabled class="w-full px-4 py-2 border rounded-lg bg-gray-50 text-gray-500">
+                <?php endif; ?>
+            </div>
+        </div>
+
+        <div id="cs_stock_info" class="hidden rounded-lg border p-3 text-sm"></div>
+
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Link to Purchase Order <span class="text-gray-400 text-xs font-normal">(optional — traceability to what was originally procured)</span></label>
+            <select name="source_purchase_order_id" id="cs_source_po" class="w-full px-4 py-2 border rounded-lg">
+                <option value="">Not linked</option>
+            </select>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Quantity <span class="text-red-500">*</span> <span id="cs_qty_unit" class="text-gray-400 text-xs"></span></label>
+                <input type="number" name="quantity" id="cs_quantity" step="0.001" min="0.001" required class="w-full px-4 py-2 border rounded-lg" oninput="csUpdateStock(); csCalcTotal();">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Unit Price (৳) — manual <span class="text-red-500">*</span></label>
+                <input type="number" name="unit_price" id="cs_price" step="0.0001" min="0" required class="w-full px-4 py-2 border rounded-lg" oninput="csCalcTotal()">
+                <p id="cs_price_hint" class="mt-1 text-xs text-gray-500"></p>
+            </div>
+        </div>
+
+        <div id="cs_override_box" class="hidden rounded-lg border border-amber-300 bg-amber-50 p-3">
+            <label class="inline-flex items-start gap-2 text-sm text-amber-900 cursor-pointer">
+                <input type="checkbox" name="stock_override" value="1" id="cs_override_chk" class="mt-0.5">
+                <span>This exceeds current stock on hand. I understand and want to sell anyway (e.g. against incoming stock).</span>
+            </label>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Advance Paid</label>
+                <input type="number" name="advance_paid" id="cs_advance" step="0.01" min="0" value="0.00" class="w-full px-4 py-2 border rounded-lg" oninput="csCalcTotal()">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Notes</label>
+                <input type="text" name="notes" class="w-full px-4 py-2 border rounded-lg" placeholder="Optional">
+            </div>
+        </div>
+
+        <div class="bg-gray-50 rounded-lg p-4 flex flex-wrap gap-6 text-sm">
+            <div><span class="text-gray-500">Total Amount</span><div class="font-bold text-blue-700 text-lg" id="cs_total">৳0.00</div></div>
+            <div><span class="text-gray-500">Balance Due</span><div class="font-bold text-red-600 text-lg" id="cs_due">৳0.00</div></div>
+        </div>
+
+        <div class="flex justify-end gap-3 pt-2 border-t">
+            <button type="submit" class="px-5 py-2 bg-rose-600 text-white font-semibold rounded-lg hover:bg-rose-700 text-sm">
+                <i class="fas fa-check mr-1"></i>Record Sale
+            </button>
+        </div>
+    </form>
+
+    <!-- Recent sales -->
+    <div class="mt-6 bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div class="px-4 py-3 border-b border-gray-100"><h2 class="text-sm font-semibold text-gray-700">Recent Commodity Sales</h2></div>
+        <div class="overflow-x-auto">
+        <?php if (!empty($recent_sales)): ?>
+        <table class="min-w-full text-xs">
+            <thead class="bg-gray-50 border-b"><tr>
+                <th class="px-3 py-2 text-left text-[10px] font-semibold uppercase text-gray-500">Sale #</th>
+                <th class="px-3 py-2 text-left text-[10px] font-semibold uppercase text-gray-500">Date</th>
+                <th class="px-3 py-2 text-left text-[10px] font-semibold uppercase text-gray-500">Customer</th>
+                <th class="px-3 py-2 text-left text-[10px] font-semibold uppercase text-gray-500">Commodity</th>
+                <th class="px-3 py-2 text-right text-[10px] font-semibold uppercase text-gray-500">Qty</th>
+                <th class="px-3 py-2 text-right text-[10px] font-semibold uppercase text-gray-500">Total</th>
+                <th class="px-3 py-2 text-right text-[10px] font-semibold uppercase text-gray-500">Balance Due</th>
+                <th class="px-3 py-2 text-right text-[10px] font-semibold uppercase text-gray-500">Margin</th>
+                <th class="px-3 py-2 text-center text-[10px] font-semibold uppercase text-gray-500"></th>
+            </tr></thead>
+            <tbody class="divide-y divide-gray-50">
+                <?php foreach ($recent_sales as $s): $margin = (float)$s->total_amount - (float)$s->cogs_amount; $due = (float)$s->balance_due; ?>
+                <tr>
+                    <td class="px-3 py-2 font-mono"><a href="view_commodity_sale.php?id=<?php echo (int)$s->id; ?>" class="text-rose-600 hover:underline"><?php echo htmlspecialchars($s->sale_number); ?></a><?php if ($s->stock_overridden): ?> <i class="fas fa-triangle-exclamation text-amber-500" title="Stock override used"></i><?php endif; ?></td>
+                    <td class="px-3 py-2 text-gray-500"><?php echo date('d M Y', strtotime($s->sale_date)); ?></td>
+                    <td class="px-3 py-2"><?php echo htmlspecialchars($s->customer_name); ?></td>
+                    <td class="px-3 py-2"><?php echo htmlspecialchars($s->commodity_name); ?><?php if (!empty($s->origin)): ?> <span class="text-gray-400 text-[10px]">(<?php echo htmlspecialchars($s->origin); ?>)</span><?php endif; ?></td>
+                    <td class="px-3 py-2 text-right"><?php echo number_format((float)$s->quantity, 3); ?> <?php echo htmlspecialchars($s->unit); ?></td>
+                    <td class="px-3 py-2 text-right font-semibold">৳<?php echo number_format((float)$s->total_amount, 2); ?></td>
+                    <td class="px-3 py-2 text-right <?php echo $due > 0.01 ? 'text-amber-700 font-semibold' : 'text-gray-400'; ?>">৳<?php echo number_format($due, 2); ?></td>
+                    <td class="px-3 py-2 text-right <?php echo $margin >= 0 ? 'text-green-700' : 'text-red-700'; ?> font-semibold">৳<?php echo number_format($margin, 2); ?></td>
+                    <td class="px-3 py-2 text-center whitespace-nowrap">
+                        <?php if ($due > 0.01): ?>
+                        <a href="collect_commodity_payment.php?sale_id=<?php echo (int)$s->id; ?>" class="px-2 py-1 bg-rose-50 text-rose-700 border border-rose-200 rounded-md text-[11px] font-semibold hover:bg-rose-100"><i class="fas fa-hand-holding-dollar mr-1"></i>Collect</a>
+                        <?php endif; ?>
+                        <?php if ($can_delete): ?>
+                            <?php if ((float)$s->amount_paid <= 0.01): ?>
+                            <button type="button" onclick="csDeleteSale(<?php echo (int)$s->id; ?>, <?php echo htmlspecialchars(json_encode($s->sale_number), ENT_QUOTES); ?>)"
+                                    class="px-2 py-1 border-2 border-red-400 text-red-600 rounded-md text-[11px] font-bold hover:bg-red-50">
+                                <i class="fas fa-trash mr-1"></i>Delete
+                            </button>
+                            <?php else: ?>
+                            <span class="px-2 py-1 text-gray-300 text-[11px]" title="Payment already collected — reverse the payment(s) first, from Payment History on the Collect page.">
+                                <i class="fas fa-lock mr-1"></i>Delete
+                            </span>
+                            <?php endif; ?>
+                        <?php endif; ?>
+                    </td>
+                </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+        <?php else: ?>
+        <div class="p-8 text-center text-gray-500 text-xs">No commodity sales yet.</div>
+        <?php endif; ?>
+        </div>
+    </div>
+
+</div>
+
+<script>
+const csCustomers = <?php echo json_encode(array_map(function($c) {
+    return ['id' => $c->id, 'name' => $c->name, 'business' => $c->business_name ?? '', 'phone' => $c->phone_number ?? '',
+            'balance' => (float)$c->true_balance, 'isPartner' => !empty($c->business_partner_id)];
+}, $customers)); ?>;
+const csInventory = <?php echo json_encode(array_map(function($r) {
+    return ['commodity_id' => (int)$r->commodity_id, 'branch_id' => (int)$r->branch_id, 'origin' => $r->origin, 'qty' => (float)$r->quantity_on_hand, 'avgCost' => (float)$r->weighted_avg_cost];
+}, $inventory_rows)); ?>;
+const csLastSalePrice = <?php echo json_encode($last_sale_price); ?>;
+const csOriginsByCommodity = <?php echo json_encode($origins_by_commodity); ?>;
+const csPosByCommodity = <?php echo json_encode($pos_by_commodity); ?>;
+
+function csSearchCustomers(query) {
+    const dd = document.getElementById('cs_customer_dropdown');
+    const q = query.toLowerCase().trim();
+    const matches = q.length === 0 ? csCustomers.slice(0, 20) : csCustomers.filter(c =>
+        c.name.toLowerCase().includes(q) || c.business.toLowerCase().includes(q) || c.phone.includes(q)
+    ).slice(0, 20);
+    dd.innerHTML = matches.length === 0 ? '<div class="px-4 py-3 text-sm text-gray-500">No customers found</div>' :
+        matches.map(c => `<div class="px-4 py-2 hover:bg-rose-50 cursor-pointer text-sm border-b border-gray-100" onclick="csSelectCustomer(${c.id})">
+            <span class="font-medium text-gray-900">${c.name}</span>
+            ${c.business ? `<span class="text-gray-400 text-xs ml-1">(${c.business})</span>` : ''}
+            ${c.isPartner ? '<span class="ml-1 text-[10px] px-1.5 py-0.5 bg-amber-100 text-amber-700 rounded-full">Business Partner</span>' : ''}
+            <span class="text-gray-400 text-xs ml-2">${c.phone}</span>
+        </div>`).join('');
+    dd.classList.remove('hidden');
+}
+function csSelectCustomer(id) {
+    const c = csCustomers.find(x => x.id === id);
+    if (!c) return;
+    document.getElementById('cs_customer_id').value = c.id;
+    document.getElementById('cs_customer_search').value = c.name;
+    document.getElementById('cs_customer_dropdown').classList.add('hidden');
+    const hint = document.getElementById('cs_partner_hint');
+    if (c.isPartner) {
+        hint.textContent = 'This customer is a linked Business Partner — check Trading → Business Partners for their combined position.';
+        hint.classList.remove('hidden');
+    } else {
+        hint.classList.add('hidden');
+    }
+}
+document.addEventListener('click', e => {
+    if (!e.target.closest('#cs_customer_search') && !e.target.closest('#cs_customer_dropdown')) {
+        document.getElementById('cs_customer_dropdown').classList.add('hidden');
+    }
+});
+
+function csCommodityChanged() {
+    const commodityId = parseInt(document.getElementById('cs_commodity').value) || 0;
+    const originSel = document.getElementById('cs_origin');
+    const currentOrigin = originSel.value;
+    const origins = csOriginsByCommodity[commodityId] || [];
+    originSel.innerHTML = '<option value="">Not tracked / mixed</option>' + origins.map(o => `<option value="${o}">${o}</option>`).join('');
+    if (origins.includes(currentOrigin)) originSel.value = currentOrigin;
+
+    const poSel = document.getElementById('cs_source_po');
+    const currentPo = poSel.value;
+    const pos = csPosByCommodity[commodityId] || [];
+    poSel.innerHTML = '<option value="">Not linked</option>' + pos.map(p => `<option value="${p.id}">${p.label}</option>`).join('');
+    if (pos.some(p => String(p.id) === currentPo)) poSel.value = currentPo;
+
+    csUpdateStock();
+}
+
+function csUpdateStock() {
+    const commodityId = parseInt(document.getElementById('cs_commodity').value) || 0;
+    const branchId = parseInt(document.getElementById('cs_branch').value) || 0;
+    const origin = document.getElementById('cs_origin').value;
+    const opt = document.getElementById('cs_commodity').selectedOptions[0];
+    document.getElementById('cs_qty_unit').textContent = opt && opt.dataset.unit ? '(' + opt.dataset.unit + ')' : '';
+
+    const priceHint = document.getElementById('cs_price_hint');
+    const hints = [];
+    if (commodityId && csLastSalePrice[commodityId] !== undefined) hints.push('last sale price: ৳' + parseFloat(csLastSalePrice[commodityId]).toFixed(2));
+
+    const infoBox = document.getElementById('cs_stock_info');
+    const overrideBox = document.getElementById('cs_override_box');
+    if (!commodityId || !branchId) { infoBox.classList.add('hidden'); overrideBox.classList.add('hidden'); priceHint.textContent = hints.join(' · '); return; }
+
+    const inv = csInventory.find(i => i.commodity_id === commodityId && i.branch_id === branchId && i.origin === origin);
+    const qtyOnHand = inv ? inv.qty : 0;
+    const avgCost = inv ? inv.avgCost : 0;
+    if (avgCost > 0) hints.push('weighted-avg cost: ৳' + avgCost.toFixed(2));
+    priceHint.textContent = hints.join(' · ');
+
+    const unit = opt && opt.dataset.unit ? opt.dataset.unit : '';
+    const originLabel = origin ? ` (${origin})` : '';
+    infoBox.className = 'rounded-lg border p-3 text-sm ' + (qtyOnHand > 0 ? 'border-blue-200 bg-blue-50 text-blue-900' : 'border-gray-200 bg-gray-50 text-gray-600');
+    infoBox.textContent = `On hand at this source${originLabel}: ${qtyOnHand.toFixed(3)} ${unit}`;
+    infoBox.classList.remove('hidden');
+
+    const qty = parseFloat(document.getElementById('cs_quantity').value) || 0;
+    if (qty > qtyOnHand) {
+        overrideBox.classList.remove('hidden');
+    } else {
+        overrideBox.classList.add('hidden');
+        document.getElementById('cs_override_chk').checked = false;
+    }
+}
+
+function csCalcTotal() {
+    const qty = parseFloat(document.getElementById('cs_quantity').value) || 0;
+    const price = parseFloat(document.getElementById('cs_price').value) || 0;
+    const advance = parseFloat(document.getElementById('cs_advance').value) || 0;
+    const total = qty * price;
+    document.getElementById('cs_total').textContent = '৳' + total.toFixed(2);
+    document.getElementById('cs_due').textContent = '৳' + Math.max(0, total - advance).toFixed(2);
+}
+
+document.getElementById('commSaleForm').addEventListener('submit', function(e) {
+    if (!document.getElementById('cs_customer_id').value) {
+        e.preventDefault(); alert('Please select a customer.'); return;
+    }
+    const overrideBox = document.getElementById('cs_override_box');
+    if (!overrideBox.classList.contains('hidden') && !document.getElementById('cs_override_chk').checked) {
+        e.preventDefault();
+        alert('This sale exceeds current stock on hand. Tick the override checkbox to confirm, or reduce the quantity.');
+    }
+});
+
+function csDeleteSale(saleId, saleNumber) {
+    const reason = prompt('Delete/reverse sale ' + saleNumber + ' — this moves it to the Recycle Bin, restores the stock, and reverses the ledger entry. Reason (required):');
+    if (reason === null) return;
+    if (!reason.trim()) { alert('A reason is required.'); return; }
+    const fd = new FormData();
+    fd.append('sale_id', saleId);
+    fd.append('reason', reason.trim());
+    fd.append('csrf_token', <?php echo json_encode($csrf); ?>);
+    fetch('delete_commodity_sale.php', { method: 'POST', body: fd, headers: { 'X-CSRF-Token': <?php echo json_encode($csrf); ?> } })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) { alert(data.message); location.reload(); }
+            else { alert('Could not delete: ' + data.message); }
+        })
+        .catch(() => alert('Network error — please try again.'));
+}
+
+<?php if ($preq):
+    $pp = $preq->payload_arr;
+    $preq_customer = $db->query("SELECT id, name, business_name, phone_number FROM customers WHERE id = ?", [(int)($pp['customer_id'] ?? 0)])->first();
+?>
+document.addEventListener('DOMContentLoaded', () => {
+    <?php if ($preq_customer): ?>
+    csSelectCustomer(<?php echo (int)$preq_customer->id; ?>);
+    <?php endif; ?>
+    document.getElementById('cs_commodity').value = <?php echo json_encode((string)($pp['commodity_id'] ?? '')); ?>;
+    document.getElementById('cs_branch').value = <?php echo json_encode((string)($pp['branch_id'] ?? '')); ?>;
+    csCommodityChanged();
+    document.getElementById('cs_origin').value = <?php echo json_encode($pp['origin'] ?? ''); ?>;
+    document.getElementById('cs_source_po').value = <?php echo json_encode((string)($pp['source_purchase_order_id'] ?? '')); ?>;
+    const saleDateField = document.querySelector('input[name="sale_date"]');
+    if (saleDateField) saleDateField.value = <?php echo json_encode($pp['sale_date'] ?? date('Y-m-d')); ?>;
+    document.getElementById('cs_quantity').value = <?php echo json_encode((string)($pp['quantity'] ?? '')); ?>;
+    document.getElementById('cs_price').value = <?php echo json_encode((string)($pp['unit_price'] ?? '')); ?>;
+    document.getElementById('cs_advance').value = <?php echo json_encode((string)($pp['advance_paid'] ?? '0')); ?>;
+    document.querySelector('input[name="notes"]').value = <?php echo json_encode($pp['notes'] ?? ''); ?>;
+    csUpdateStock();
+    if (<?php echo !empty($pp['stock_override']) ? 'true' : 'false'; ?>) document.getElementById('cs_override_chk').checked = true;
+    csCalcTotal();
+});
+<?php endif; ?>
+</script>
+
+<?php require_once '../templates/footer.php'; ?>

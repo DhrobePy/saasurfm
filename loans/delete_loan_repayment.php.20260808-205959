@@ -1,0 +1,141 @@
+<?php
+/**
+ * Delete/reverse a single loan repayment — Recycle-Bin backed, restorable.
+ * Restores the loan's balance and re-opens it if it had been auto-closed.
+ */
+require_once '../core/init.php';
+
+$currentUser = getCurrentUser();
+$__is_admin_dlr = in_array(($currentUser['role'] ?? ''), ['Superadmin', 'admin'], true);
+if (!$__is_admin_dlr && !userCanPageAction('loans', 'loan', 'can_delete')) {
+    restrict_access(['Superadmin', 'admin']);
+}
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    http_response_code(405);
+    exit(json_encode(['success' => false, 'message' => 'Method not allowed']));
+}
+
+header('Content-Type: application/json');
+
+$session_token  = $_SESSION['csrf_token'] ?? '';
+$received_token = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? $_POST['csrf_token'] ?? '';
+if (!$session_token || !$received_token || !hash_equals($session_token, $received_token)) {
+    http_response_code(403);
+    exit(json_encode(['success' => false, 'message' => 'CSRF validation failed']));
+}
+
+$repayment_id = isset($_POST['repayment_id']) ? (int)$_POST['repayment_id'] : 0;
+$reason       = trim($_POST['reason'] ?? '');
+
+if ($repayment_id <= 0) {
+    http_response_code(400);
+    exit(json_encode(['success' => false, 'message' => 'Invalid repayment ID']));
+}
+
+global $db;
+$pdo = $db->getPdo();
+
+ensureRecycleBinTables();
+
+try {
+    $pdo->beginTransaction();
+
+    $rep = $db->query(
+        "SELECT lr.*, c.name AS customer_name, s.company_name AS supplier_name, l.loan_number, l.id AS loan_id
+         FROM loan_repayments lr
+         JOIN loans l ON l.id = lr.loan_id
+         LEFT JOIN customers c ON c.id = lr.customer_id
+         LEFT JOIN suppliers s ON s.id = lr.supplier_id
+         WHERE lr.id = ? FOR UPDATE",
+        [$repayment_id]
+    )->first();
+
+    if (!$rep) {
+        throw new Exception("Repayment #{$repayment_id} not found");
+    }
+
+    $party_name = $rep->customer_name ?? $rep->supplier_name ?? 'party';
+    $amount = (float)$rep->amount;
+    $repayment_number = $rep->repayment_number;
+    $loan_id = (int)$rep->loan_id;
+
+    $batch = recycleBegin(
+        'loan_repayment',
+        "Loan Repayment {$repayment_number} — {$party_name} · ৳" . number_format($amount, 2),
+        (int)($rep->customer_id ?: 0) ?: null
+    );
+
+    // ── 1. Restore the loan's amount_repaid / balance_due, re-open if closed ──
+    recycleSnapshotBefore($batch, 'loans', 'id', $loan_id);
+    $db->query(
+        "UPDATE loans
+         SET amount_repaid = GREATEST(0, amount_repaid - ?),
+             balance_due = principal_amount - amount_repaid,
+             status = CASE WHEN status = 'closed' THEN 'active' ELSE status END
+         WHERE id = ?",
+        [$amount, $loan_id]
+    );
+
+    // ── 2. Archive this repayment's journal entry + lines ──────────────────────
+    $journals = $db->query(
+        "SELECT id FROM journal_entries WHERE related_document_type = 'loan_repayments' AND related_document_id = ?",
+        [$repayment_id]
+    )->results();
+    foreach ($journals as $je) {
+        recycleArchiveDelete($batch, 'transaction_lines', 'journal_entry_id', (int)$je->id);
+        recycleArchiveDelete($batch, 'journal_entries', 'id', (int)$je->id);
+    }
+
+    // ── 3. Void a pending bank_transactions bridge row, if any ────────────────
+    foreach ($db->query(
+        "SELECT id FROM bank_transactions WHERE reference_number = ? AND status = 'pending'",
+        [$repayment_number]
+    )->results() as $bt) {
+        recycleArchiveDelete($batch, 'bank_transactions', 'id', (int)$bt->id);
+    }
+
+    // ── 4. Archive the repayment row itself ──────────────────────────────────
+    recycleArchiveDelete($batch, 'loan_repayments', 'id', $repayment_id);
+
+    recycleFinalize($batch);
+    $pdo->commit();
+
+    $deletedBy = $currentUser['display_name'] ?? ($currentUser['username'] ?? 'Unknown');
+    $reasonNote = $reason ? " — Reason: {$reason}" : '';
+
+    auditLog('other', 'deleted',
+        "Loan repayment {$repayment_number} (৳" . number_format($amount, 2) . ") against {$rep->loan_number} for {$party_name} "
+        . "moved to Recycle Bin (batch #{$batch}) by {$deletedBy}{$reasonNote}",
+        [
+            'severity' => 'critical', 'record_id' => $repayment_id, 'repayment_number' => $repayment_number,
+            'amount' => $amount, 'loan_id' => $loan_id, 'loan_number' => $rep->loan_number,
+            'deleted_by_id' => $currentUser['id'] ?? null, 'reason' => $reason ?: null,
+        ]);
+
+    if (defined('TELEGRAM_NOTIFICATIONS_ENABLED') && TELEGRAM_NOTIFICATIONS_ENABLED
+        && defined('TELEGRAM_BOT_TOKEN') && defined('TELEGRAM_CHAT_ID')) {
+        try {
+            require_once '../core/classes/TelegramNotifier.php';
+            $reason_note = $reason ? "\n• Reason: <i>{$reason}</i>" : '';
+            (new TelegramNotifier(TELEGRAM_BOT_TOKEN, getTelegramChatId('payment_received')))->sendMessage(
+                "<b>🗑️ LOAN REPAYMENT DELETED</b>\n───────────────────────────────\n\n"
+                . "• Receipt: <code>{$repayment_number}</code>\n• Loan: {$rep->loan_number}\n"
+                . "• From: <b>" . htmlspecialchars($party_name) . "</b>\n• Amount: ৳" . number_format($amount, 2) . "\n"
+                . "• Deleted by: <b>{$deletedBy}</b>" . $reason_note
+                . "\n\n<i>Loan balance reversed. Restorable from the Recycle Bin.</i>"
+            );
+        } catch (\Throwable $te) { error_log('delete_loan_repayment Telegram: ' . $te->getMessage()); }
+    }
+
+    exit(json_encode([
+        'success' => true,
+        'message' => "Repayment {$repayment_number} reversed and moved to Recycle Bin (batch #{$batch}) — restorable by Superadmin.",
+    ]));
+
+} catch (Exception $e) {
+    if ($pdo->inTransaction()) $pdo->rollBack();
+    http_response_code(400);
+    error_log('delete_loan_repayment.php error: ' . $e->getMessage());
+    exit(json_encode(['success' => false, 'message' => $e->getMessage()]));
+}

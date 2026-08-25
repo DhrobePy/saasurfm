@@ -1,0 +1,435 @@
+<?php
+/**
+ * Collect Commodity Payment — payment collection against a commodity_sales
+ * balance. Deliberately its OWN flow (not customer_payments/payment_allocations
+ * — see ensureCommoditySalePaymentsTable()'s docblock for why), but reuses the
+ * SAME 'collect_payment' ৳ limit and the SAME global "require approval for
+ * every payment" toggle as every other collection page in the app — collecting
+ * money is one conceptual action regardless of which module you're in; giving
+ * Trading its own separate policy would just be a loophole around the existing
+ * one.
+ */
+require_once '../core/init.php';
+
+restrict_access(['Superadmin', 'admin'], 'trading', 'commodity_sale');
+
+global $db;
+$currentUser = getCurrentUser();
+$user_id     = $currentUser['id'] ?? null;
+$is_admin    = in_array($currentUser['role'] ?? '', ['Superadmin', 'admin'], true);
+$can_delete  = $is_admin || userCanPageAction('trading', 'commodity_sale', 'can_delete');
+$pageTitle   = 'Collect Commodity Payment';
+
+ensureCommoditySalesTable();
+ensureCommoditySalePaymentsTable();
+
+$csrf = $_SESSION['csrf_token'] ?? '';
+
+$ar_account = $db->query("SELECT id FROM chart_of_accounts WHERE account_type = 'Accounts Receivable' LIMIT 1")->first();
+$cash_account = $db->query(
+    "SELECT id, name FROM chart_of_accounts
+     WHERE account_type = 'Petty Cash' OR name = 'Undeposited Funds'
+     ORDER BY CASE WHEN name = 'Undeposited Funds' THEN 0 ELSE 1 END LIMIT 1"
+)->first();
+$bank_accounts = $db->query(
+    "SELECT ba.id, ba.chart_of_account_id, ba.bank_name, ba.account_name
+     FROM bank_accounts ba JOIN chart_of_accounts coa ON ba.chart_of_account_id = coa.id
+     WHERE ba.status = 'active' AND coa.account_type = 'Bank' ORDER BY ba.account_name"
+)->results();
+
+// ── Checker executing an approved request? ──────────────────────────────
+$preq        = null;
+$preq_error  = null;
+$preq_id_get = isset($_GET['pending_req']) ? (int)$_GET['pending_req'] : 0;
+if ($preq_id_get) {
+    $preq = getPendingRequest($preq_id_get, 'commodity_payment');
+    if (!$preq) {
+        $preq_error = "Request #{$preq_id_get} is not open — it may already be approved, rejected, or cancelled.";
+    } elseif (!$is_admin) {
+        $my_cap = getUserActionLimit((int)$user_id, 'collect_payment');
+        if ($my_cap !== null && (float)$preq->amount > $my_cap) {
+            $preq_error = "Request #{$preq_id_get} exceeds your collection limit — a more senior officer must post it.";
+            $preq = null;
+        }
+    }
+}
+
+$sale_id_get = isset($_GET['sale_id']) ? (int)$_GET['sale_id'] : ($preq ? (int)($preq->payload_arr['sale_id'] ?? 0) : 0);
+$sale = null;
+if ($sale_id_get) {
+    $sale = $db->query(
+        "SELECT cs.*, c.name AS customer_name, pc.name AS commodity_name, pc.unit
+         FROM commodity_sales cs JOIN customers c ON c.id = cs.customer_id JOIN purchase_commodities pc ON pc.id = cs.commodity_id
+         WHERE cs.id = ?", [$sale_id_get]
+    )->first();
+}
+
+// ── POST: collect ────────────────────────────────────────────────────────
+$error = null;
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'collect_commodity_payment') {
+    try {
+        if (!hash_equals($csrf, $_POST['csrf_token'] ?? '')) {
+            throw new Exception('Invalid security token — refresh the page and try again.');
+        }
+        $sid            = (int)($_POST['sale_id'] ?? 0);
+        $amount         = (float)($_POST['amount'] ?? 0);
+        $payment_date   = trim($_POST['payment_date'] ?? '');
+        $payment_method = trim($_POST['payment_method'] ?? '');
+        $bank_account_id = !empty($_POST['bank_account_id']) ? (int)$_POST['bank_account_id'] : null;
+        $reference      = trim($_POST['reference_number'] ?? '');
+        $notes          = trim($_POST['notes'] ?? '');
+        $exec_pending_req_id = (int)($_POST['pending_req_id'] ?? 0);
+
+        if (!$sid) throw new Exception('No sale selected.');
+        if ($amount <= 0) throw new Exception('Amount must be greater than zero.');
+        if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $payment_date) || strtotime($payment_date) === false) throw new Exception('Invalid payment date.');
+        if ($payment_method === '') throw new Exception('Select a payment method.');
+        if ($payment_method !== 'Cash' && !$bank_account_id) throw new Exception('Select the bank account for a non-cash payment.');
+        if (!$ar_account || !$cash_account) throw new Exception("Chart of Accounts is missing 'Accounts Receivable' or a cash/undeposited-funds account.");
+
+        $sale_row = $db->query(
+            "SELECT cs.*, c.name AS customer_name FROM commodity_sales cs JOIN customers c ON c.id = cs.customer_id WHERE cs.id = ?", [$sid]
+        )->first();
+        if (!$sale_row) throw new Exception('Sale not found.');
+        if ($amount > (float)$sale_row->balance_due + 0.01) {
+            throw new Exception('Amount (৳' . number_format($amount, 2) . ') exceeds the outstanding balance (৳' . number_format((float)$sale_row->balance_due, 2) . ').');
+        }
+
+        // ── Maker/checker: same collect_payment limit + global policy as everywhere else ──
+        if (!$is_admin) {
+            $my_limit = getUserActionLimit((int)$user_id, 'collect_payment');
+            $over_limit = $my_limit !== null && $amount > $my_limit;
+
+            if ($exec_pending_req_id) {
+                if ($over_limit) {
+                    throw new Exception('Your collection limit (৳' . number_format($my_limit, 0) . ') does not cover this ৳' . number_format($amount, 0) . ' payment — a more senior officer must post it.');
+                }
+            } else {
+                $no_limit_configured = $my_limit === null;
+                $needs_approval = paymentApprovalRequiredForAll() || $over_limit || $no_limit_configured;
+                if ($needs_approval) {
+                    $req_id = submitPendingRequest('commodity_payment', $amount, [
+                        'sale_id' => $sid, 'payment_date' => $payment_date, 'payment_method' => $payment_method,
+                        'bank_account_id' => $bank_account_id, 'reference_number' => $reference, 'notes' => $notes,
+                    ], [
+                        'customer_id' => (int)$sale_row->customer_id,
+                        'summary'     => "Collect ৳" . number_format($amount, 0) . " against commodity sale {$sale_row->sale_number} from {$sale_row->customer_name}",
+                        'maker_limit' => $my_limit,
+                    ]);
+                    if (!$req_id) throw new Exception('Could not queue this payment for approval. Please try again.');
+                    $reason = $over_limit ? 'over ৳' . number_format($my_limit, 0) . ' limit' : ($no_limit_configured ? 'no collection limit configured for this user' : 'payment approval policy');
+                    auditLog('other', 'created', "Commodity sale payment of ৳" . number_format($amount, 2) . " ({$sale_row->sale_number}) queued for approval ({$reason}) by " . ($currentUser['display_name'] ?? 'user'));
+                    $_SESSION['success_flash'] = "This payment (৳" . number_format($amount, 0) . ") was sent for approval. It will post once a senior officer approves it.";
+                    header('Location: commodity_sale.php');
+                    exit();
+                }
+            }
+        }
+
+        // ── Post directly ──
+        $pdo = $db->getPdo();
+        $pdo->beginTransaction();
+
+        $date_prefix = date('Ymd', strtotime($payment_date));
+        $last = $db->query("SELECT payment_number FROM commodity_sale_payments WHERE payment_number LIKE ? ORDER BY id DESC LIMIT 1", ["TRP-{$date_prefix}-%"])->first();
+        $seq  = $last ? ((int)substr($last->payment_number, -4) + 1) : 1;
+        $payment_number = sprintf("TRP-%s-%04d", $date_prefix, $seq);
+
+        if ($payment_method === 'Cash') {
+            $deposit_account_id = $cash_account->id;
+        } else {
+            $selected_bank = $db->query("SELECT chart_of_account_id FROM bank_accounts WHERE id = ?", [$bank_account_id])->first();
+            if (!$selected_bank) throw new Exception('Invalid bank account.');
+            $deposit_account_id = $selected_bank->chart_of_account_id;
+        }
+
+        $journal_desc = "Commodity sale payment {$payment_number} — {$sale_row->sale_number} from {$sale_row->customer_name}";
+        $journal_id = $db->insert('journal_entries', [
+            'transaction_date' => $payment_date, 'description' => $journal_desc,
+            'related_document_type' => 'commodity_sale_payments', 'related_document_id' => null, 'created_by_user_id' => $user_id,
+        ]);
+        if (!$journal_id) throw new Exception('Failed to create the journal entry.');
+        $db->insert('transaction_lines', ['journal_entry_id' => $journal_id, 'account_id' => $deposit_account_id, 'debit_amount' => $amount, 'credit_amount' => 0, 'description' => $journal_desc]);
+        $db->insert('transaction_lines', ['journal_entry_id' => $journal_id, 'account_id' => $ar_account->id, 'debit_amount' => 0, 'credit_amount' => $amount, 'description' => $journal_desc]);
+
+        $agg = $db->query("SELECT COALESCE(SUM(debit_amount),0) td, COALESCE(SUM(credit_amount),0) tc FROM customer_ledger WHERE customer_id = ?", [$sale_row->customer_id])->first();
+        $cust_init = $db->query("SELECT initial_due FROM customers WHERE id = ?", [$sale_row->customer_id])->first();
+        $prev_balance = ((float)$agg->td > 0 || (float)$agg->tc > 0) ? ((float)$agg->td - (float)$agg->tc) : (float)($cust_init->initial_due ?? 0);
+        $new_balance  = $prev_balance - $amount;
+
+        $cl_id = $db->insert('customer_ledger', [
+            'customer_id' => $sale_row->customer_id, 'transaction_date' => $payment_date,
+            'transaction_type' => 'payment', 'reference_type' => 'commodity_sales', 'reference_id' => $sid,
+            'invoice_number' => $sale_row->sale_number,
+            'description' => "Payment received (Receipt #{$payment_number}) — commodity sale {$sale_row->sale_number}",
+            'debit_amount' => 0, 'credit_amount' => $amount, 'balance_after' => $new_balance,
+            'created_by_user_id' => $user_id, 'journal_entry_id' => $journal_id,
+        ]);
+        $db->query("UPDATE customers SET current_balance = ? WHERE id = ?", [$new_balance, $sale_row->customer_id]);
+
+        // Self-healing: balance_due recomputed from total_amount − advance_paid − amount_paid
+        // (advance_paid is tracked separately from amount_paid — see commodity_sale.php's create handler).
+        $db->query(
+            "UPDATE commodity_sales SET amount_paid = amount_paid + ?, balance_due = total_amount - advance_paid - amount_paid WHERE id = ?",
+            [$amount, $sid]
+        );
+
+        $pay_creator_id = $user_id;
+        if ($exec_pending_req_id && $preq && !empty($preq->maker_user_id)) $pay_creator_id = (int)$preq->maker_user_id;
+
+        $payment_id = $db->insert('commodity_sale_payments', [
+            'payment_number' => $payment_number, 'sale_id' => $sid, 'customer_id' => $sale_row->customer_id,
+            'amount' => $amount, 'payment_method' => $payment_method, 'bank_account_id' => $bank_account_id,
+            'reference_number' => $reference ?: null, 'notes' => $notes ?: null,
+            'customer_ledger_id' => $cl_id, 'journal_entry_id' => $journal_id,
+            'created_by_user_id' => $pay_creator_id, 'payment_date' => $payment_date,
+        ]);
+        if (!$payment_id) throw new Exception('Failed to record the payment.');
+        $db->query("UPDATE journal_entries SET related_document_type = 'commodity_sale_payments', related_document_id = ? WHERE id = ?", [$payment_id, $journal_id]);
+
+        // Best-effort bank bridge (never blocks the payment).
+        if ($payment_method !== 'Cash' && $bank_account_id) {
+            try {
+                require_once dirname(__DIR__) . '/bank/BankManager.php';
+                $bm_bridge = $db->query(
+                    "SELECT bta.id AS bta_id FROM bank_tx_accounts bta INNER JOIN bank_accounts ba ON ba.account_number = bta.account_number
+                     WHERE ba.id = ? AND bta.status = 'active' LIMIT 1", [$bank_account_id]
+                )->first();
+                if ($bm_bridge) {
+                    $bankMgr = new BankManager();
+                    $bankMgr->createTransaction([
+                        'transaction_date' => $payment_date, 'entry_type' => 'credit',
+                        'bank_tx_account_id' => (int)$bm_bridge->bta_id, 'amount' => $amount,
+                        'reference_number' => $payment_number,
+                        'payee_payer_name' => $sale_row->customer_name,
+                        'description' => "Commodity sale payment — {$sale_row->customer_name} — Receipt #{$payment_number}",
+                    ], $user_id, $currentUser['display_name'] ?? 'System');
+                }
+            } catch (\Throwable $bm_ex) { error_log('BankManager bridge (collect_commodity_payment): ' . $bm_ex->getMessage()); }
+        }
+
+        if ($exec_pending_req_id) {
+            decidePendingRequest($exec_pending_req_id, 'approved', 'Posted by ' . ($currentUser['display_name'] ?? 'checker'), $payment_number);
+        }
+
+        $pdo->commit();
+
+        auditLog('other', 'created', "Commodity sale payment {$payment_number}: ৳" . number_format($amount, 2) . " against {$sale_row->sale_number} from {$sale_row->customer_name} by " . ($currentUser['display_name'] ?? 'user'));
+
+        if (defined('TELEGRAM_NOTIFICATIONS_ENABLED') && TELEGRAM_NOTIFICATIONS_ENABLED && defined('TELEGRAM_BOT_TOKEN') && defined('TELEGRAM_CHAT_ID')) {
+            try {
+                require_once '../core/classes/TelegramNotifier.php';
+                (new TelegramNotifier(TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID))->sendMessage(
+                    "<b>💰 COMMODITY SALE PAYMENT RECEIVED</b>\n───────────────────────────────\n\n"
+                    . "• Receipt: <code>{$payment_number}</code>\n• Sale: {$sale_row->sale_number}\n"
+                    . "• Customer: <b>" . htmlspecialchars($sale_row->customer_name) . "</b>\n• Amount: ৳" . number_format($amount, 2) . "\n"
+                    . "• Method: {$payment_method}\n• Collected by: " . ($currentUser['display_name'] ?? 'user')
+                );
+            } catch (\Throwable $te) { error_log('collect_commodity_payment Telegram: ' . $te->getMessage()); }
+        }
+
+        $_SESSION['success_flash'] = "Payment {$payment_number} of ৳" . number_format($amount, 2) . " recorded against {$sale_row->sale_number}.";
+        header('Location: commodity_sale.php');
+        exit();
+
+    } catch (Exception $e) {
+        if (isset($pdo) && $pdo->inTransaction()) $pdo->rollBack();
+        $error = $e->getMessage();
+    }
+}
+
+// Unpaid sales for the picker (when not deep-linked to one specific sale).
+$open_sales = $db->query(
+    "SELECT cs.id, cs.sale_number, cs.balance_due, c.name AS customer_name, pc.name AS commodity_name
+     FROM commodity_sales cs JOIN customers c ON c.id = cs.customer_id JOIN purchase_commodities pc ON pc.id = cs.commodity_id
+     WHERE cs.balance_due > 0.01 ORDER BY cs.created_at DESC"
+)->results();
+
+// Payment history for the currently-selected sale (reverse/delete lives here).
+$payment_history = [];
+if ($sale_id_get) {
+    $payment_history = $db->query(
+        "SELECT csp.*, u.display_name AS collected_by
+         FROM commodity_sale_payments csp
+         LEFT JOIN users u ON u.id = csp.created_by_user_id
+         WHERE csp.sale_id = ? ORDER BY csp.created_at DESC",
+        [$sale_id_get]
+    )->results();
+}
+
+$flash = $_SESSION['success_flash'] ?? null; unset($_SESSION['success_flash']);
+
+require_once '../templates/header.php';
+?>
+<div class="max-w-screen-md mx-auto px-4 sm:px-6 py-6">
+
+    <div class="mb-4">
+        <h1 class="text-2xl font-bold text-gray-900"><i class="fas fa-hand-holding-dollar text-rose-600 mr-2"></i>Collect Commodity Payment</h1>
+        <p class="text-gray-600 mt-1 text-sm">Record a payment against an outstanding commodity sale balance.</p>
+    </div>
+
+    <?php if ($flash): ?><div class="mb-4 rounded-lg border border-green-300 bg-green-50 px-4 py-2.5 text-sm text-green-800"><i class="fas fa-check-circle mr-1"></i><?php echo htmlspecialchars($flash); ?></div><?php endif; ?>
+    <?php if ($error): ?><div class="mb-4 rounded-lg border border-red-300 bg-red-50 px-4 py-2.5 text-sm text-red-800"><i class="fas fa-triangle-exclamation mr-1"></i><?php echo htmlspecialchars($error); ?></div><?php endif; ?>
+    <?php if ($preq_error): ?><div class="mb-4 rounded-lg border border-red-300 bg-red-50 px-4 py-2.5 text-sm text-red-800"><i class="fas fa-ban mr-1"></i><?php echo htmlspecialchars($preq_error); ?></div><?php endif; ?>
+    <?php if ($preq): ?><div class="mb-4 rounded-lg border border-blue-300 bg-blue-50 px-4 py-3 text-sm text-blue-900"><i class="fas fa-user-check mr-1"></i>Reviewing pending payment request #<?php echo (int)$preq->id; ?> — prefilled below.</div><?php endif; ?>
+
+    <form method="POST" class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-4" id="ccpForm">
+        <input type="hidden" name="action" value="collect_commodity_payment">
+        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf); ?>">
+        <?php if ($preq): ?><input type="hidden" name="pending_req_id" value="<?php echo (int)$preq->id; ?>"><?php endif; ?>
+
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Commodity Sale</label>
+            <select name="sale_id" required class="w-full px-4 py-2 border rounded-lg" onchange="ccpUpdate()" id="ccp_sale">
+                <option value="">Select a sale with a balance due</option>
+                <?php foreach ($open_sales as $s): ?>
+                <option value="<?php echo (int)$s->id; ?>" data-due="<?php echo (float)$s->balance_due; ?>"
+                        <?php echo (int)$sale_id_get === (int)$s->id ? 'selected' : ''; ?>>
+                    <?php echo htmlspecialchars($s->sale_number . ' — ' . $s->customer_name . ' (' . $s->commodity_name . ') — Due ৳' . number_format((float)$s->balance_due, 2)); ?>
+                </option>
+                <?php endforeach; ?>
+            </select>
+            <p id="ccp_due_hint" class="mt-1 text-xs text-gray-500"></p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Amount (৳) <span class="text-red-500">*</span></label>
+                <input type="number" name="amount" id="ccp_amount" step="0.01" min="0.01" required class="w-full px-4 py-2 border rounded-lg">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Payment Date <span class="text-red-500">*</span></label>
+                <input type="date" name="payment_date" required value="<?php echo date('Y-m-d'); ?>" max="<?php echo date('Y-m-d'); ?>" class="w-full px-4 py-2 border rounded-lg">
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Payment Method <span class="text-red-500">*</span></label>
+                <select name="payment_method" id="ccp_method" required class="w-full px-4 py-2 border rounded-lg" onchange="ccpToggleBank()">
+                    <option value="Cash">Cash</option>
+                    <option value="Bank Transfer">Bank Transfer</option>
+                    <option value="Cheque">Cheque</option>
+                </select>
+            </div>
+            <div id="ccp_bank_box" class="hidden">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Bank Account <span class="text-red-500">*</span></label>
+                <select name="bank_account_id" class="w-full px-4 py-2 border rounded-lg">
+                    <option value="">Select bank account</option>
+                    <?php foreach ($bank_accounts as $b): ?>
+                    <option value="<?php echo (int)$b->id; ?>"><?php echo htmlspecialchars($b->bank_name . ' — ' . $b->account_name); ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Reference Number</label>
+                <input type="text" name="reference_number" class="w-full px-4 py-2 border rounded-lg" placeholder="Cheque no, TXN ID, etc.">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Notes</label>
+                <input type="text" name="notes" class="w-full px-4 py-2 border rounded-lg" placeholder="Optional">
+            </div>
+        </div>
+
+        <div class="flex justify-end pt-2 border-t">
+            <button type="submit" class="px-5 py-2 bg-rose-600 text-white font-semibold rounded-lg hover:bg-rose-700 text-sm"><i class="fas fa-check mr-1"></i>Record Payment</button>
+        </div>
+    </form>
+
+    <?php if ($sale_id_get): ?>
+    <div class="mt-6 bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div class="px-4 py-3 border-b border-gray-100"><h2 class="text-sm font-semibold text-gray-700">Payment History for this Sale</h2></div>
+        <div class="overflow-x-auto">
+        <?php if (!empty($payment_history)): ?>
+        <table class="min-w-full text-xs">
+            <thead class="bg-gray-50 border-b"><tr>
+                <th class="px-3 py-2 text-left text-[10px] font-semibold uppercase text-gray-500">Receipt #</th>
+                <th class="px-3 py-2 text-left text-[10px] font-semibold uppercase text-gray-500">Date</th>
+                <th class="px-3 py-2 text-right text-[10px] font-semibold uppercase text-gray-500">Amount</th>
+                <th class="px-3 py-2 text-left text-[10px] font-semibold uppercase text-gray-500">Method</th>
+                <th class="px-3 py-2 text-left text-[10px] font-semibold uppercase text-gray-500">Collected By</th>
+                <?php if ($can_delete): ?><th class="px-3 py-2 text-center text-[10px] font-semibold uppercase text-gray-500">Action</th><?php endif; ?>
+            </tr></thead>
+            <tbody class="divide-y divide-gray-50">
+                <?php foreach ($payment_history as $ph): ?>
+                <tr id="ph_row_<?php echo (int)$ph->id; ?>">
+                    <td class="px-3 py-2 font-mono text-rose-600"><?php echo htmlspecialchars($ph->payment_number); ?></td>
+                    <td class="px-3 py-2 text-gray-500"><?php echo date('d M Y', strtotime($ph->payment_date)); ?></td>
+                    <td class="px-3 py-2 text-right font-semibold">৳<?php echo number_format((float)$ph->amount, 2); ?></td>
+                    <td class="px-3 py-2"><?php echo htmlspecialchars($ph->payment_method); ?></td>
+                    <td class="px-3 py-2 text-gray-500"><?php echo htmlspecialchars($ph->collected_by ?? '—'); ?></td>
+                    <?php if ($can_delete): ?>
+                    <td class="px-3 py-2 text-center">
+                        <button type="button" onclick="ccpReversePayment(<?php echo (int)$ph->id; ?>, <?php echo htmlspecialchars(json_encode($ph->payment_number), ENT_QUOTES); ?>)"
+                                class="px-2 py-1 border-2 border-red-400 text-red-600 rounded-md text-[11px] font-bold hover:bg-red-50">
+                            <i class="fas fa-rotate-left mr-1"></i>Reverse
+                        </button>
+                    </td>
+                    <?php endif; ?>
+                </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+        <?php else: ?>
+        <div class="p-6 text-center text-gray-500 text-xs">No payments recorded against this sale yet.</div>
+        <?php endif; ?>
+        </div>
+    </div>
+    <?php endif; ?>
+</div>
+<script>
+function ccpReversePayment(paymentId, paymentNumber) {
+    const reason = prompt('Reverse payment ' + paymentNumber + ' — this moves it to the Recycle Bin and puts the sale balance back. Reason (required):');
+    if (reason === null) return;
+    if (!reason.trim()) { alert('A reason is required.'); return; }
+    const fd = new FormData();
+    fd.append('payment_id', paymentId);
+    fd.append('reason', reason.trim());
+    fd.append('csrf_token', <?php echo json_encode($csrf); ?>);
+    fetch('delete_commodity_payment.php', { method: 'POST', body: fd, headers: { 'X-CSRF-Token': <?php echo json_encode($csrf); ?> } })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) { alert(data.message); location.reload(); }
+            else { alert('Could not reverse: ' + data.message); }
+        })
+        .catch(() => alert('Network error — please try again.'));
+}
+</script>
+<script>
+function ccpUpdate() {
+    const sel = document.getElementById('ccp_sale');
+    const opt = sel.selectedOptions[0];
+    const hint = document.getElementById('ccp_due_hint');
+    if (opt && opt.value) {
+        const due = parseFloat(opt.dataset.due) || 0;
+        hint.textContent = 'Outstanding: ৳' + due.toFixed(2);
+        document.getElementById('ccp_amount').max = due;
+        if (!document.getElementById('ccp_amount').value) document.getElementById('ccp_amount').value = due.toFixed(2);
+    } else {
+        hint.textContent = '';
+    }
+}
+function ccpToggleBank() {
+    const method = document.getElementById('ccp_method').value;
+    document.getElementById('ccp_bank_box').classList.toggle('hidden', method === 'Cash');
+}
+document.addEventListener('DOMContentLoaded', () => { ccpUpdate(); ccpToggleBank();
+<?php if ($preq):
+    $pp = $preq->payload_arr;
+?>
+    document.querySelector('input[name="amount"]').value = <?php echo json_encode((string)($preq->amount ?? '')); ?>;
+    document.querySelector('input[name="payment_date"]').value = <?php echo json_encode($pp['payment_date'] ?? date('Y-m-d')); ?>;
+    document.getElementById('ccp_method').value = <?php echo json_encode($pp['payment_method'] ?? 'Cash'); ?>;
+    document.querySelector('input[name="reference_number"]').value = <?php echo json_encode($pp['reference_number'] ?? ''); ?>;
+    document.querySelector('input[name="notes"]').value = <?php echo json_encode($pp['notes'] ?? ''); ?>;
+    ccpToggleBank();
+    <?php if (!empty($pp['bank_account_id'])): ?>
+    document.querySelector('select[name="bank_account_id"]').value = <?php echo json_encode((string)$pp['bank_account_id']); ?>;
+    <?php endif; ?>
+<?php endif; ?>
+});
+</script>
+<?php require_once '../templates/footer.php'; ?>

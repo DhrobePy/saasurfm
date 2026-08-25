@@ -1,0 +1,301 @@
+<?php
+/**
+ * Business Partners — links a customer record and a supplier record that are
+ * the same real-world party (Ujjal both buys from and sells to them). This is
+ * an ADDITIVE linking layer, not a merge: customers.business_partner_id and
+ * suppliers.business_partner_id are nullable columns pointing at one shared
+ * business_partners row. Every existing customer/supplier page keeps working
+ * completely unchanged.
+ *
+ * Design: /Users/apple/Desktop/saas/COMMODITY_TRADING_PLAN.md §2
+ */
+require_once '../core/init.php';
+
+restrict_access(['Superadmin', 'admin'], 'trading', 'business_partners');
+
+global $db;
+$currentUser = getCurrentUser();
+$user_id     = $currentUser['id'] ?? null;
+$pageTitle   = 'Business Partners';
+
+ensureBusinessPartnersTable();
+
+$csrf = $_SESSION['csrf_token'] ?? '';
+
+// ── POST actions ─────────────────────────────────────────────────────────
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $action = $_POST['action'] ?? '';
+    try {
+        if (!hash_equals($csrf, $_POST['csrf_token'] ?? '')) {
+            throw new Exception('Invalid security token — refresh the page and try again.');
+        }
+
+        if ($action === 'create_link') {
+            $customer_id  = (int)($_POST['customer_id'] ?? 0);
+            $supplier_id  = (int)($_POST['supplier_id'] ?? 0);
+            $partner_name = trim($_POST['partner_name'] ?? '');
+            if (!$customer_id || !$supplier_id) throw new Exception('Pick both a customer and a supplier to link.');
+
+            $cust = $db->query("SELECT id, name, business_partner_id FROM customers WHERE id = ?", [$customer_id])->first();
+            $supp = $db->query("SELECT id, company_name, business_partner_id FROM suppliers WHERE id = ?", [$supplier_id])->first();
+            if (!$cust) throw new Exception('Customer not found.');
+            if (!$supp) throw new Exception('Supplier not found.');
+
+            $cust_pid = $cust->business_partner_id ? (int)$cust->business_partner_id : null;
+            $supp_pid = $supp->business_partner_id ? (int)$supp->business_partner_id : null;
+
+            if ($cust_pid && $supp_pid && $cust_pid !== $supp_pid) {
+                throw new Exception('This customer and supplier are already linked to two DIFFERENT partners — unlink one side first.');
+            }
+
+            // Reuse whichever side already has a partner; otherwise create one.
+            $partner_id = $cust_pid ?: $supp_pid;
+            if (!$partner_id) {
+                $partner_id = $db->insert('business_partners', [
+                    'partner_name'       => $partner_name !== '' ? $partner_name : $cust->name,
+                    'created_by_user_id' => $user_id,
+                ]);
+                if (!$partner_id) throw new Exception('Failed to create the partner record.');
+            }
+
+            $db->query("UPDATE customers SET business_partner_id = ? WHERE id = ?", [$partner_id, $customer_id]);
+            $db->query("UPDATE suppliers SET business_partner_id = ? WHERE id = ?", [$partner_id, $supplier_id]);
+
+            auditLog('customer', 'updated',
+                "Linked customer '{$cust->name}' (#{$customer_id}) with supplier '{$supp->company_name}' (#{$supplier_id}) "
+                . "as Business Partner #{$partner_id} by " . ($currentUser['display_name'] ?? 'admin'), []);
+
+            $_SESSION['success_flash'] = "Linked \"{$cust->name}\" (customer) with \"{$supp->company_name}\" (supplier) as one Business Partner.";
+
+        } elseif ($action === 'unlink') {
+            $partner_id = (int)($_POST['partner_id'] ?? 0);
+            $side       = $_POST['side'] ?? '';
+            if (!$partner_id || !in_array($side, ['customer', 'supplier'], true)) throw new Exception('Invalid unlink request.');
+
+            if ($side === 'customer') {
+                $db->query("UPDATE customers SET business_partner_id = NULL WHERE business_partner_id = ?", [$partner_id]);
+            } else {
+                $db->query("UPDATE suppliers SET business_partner_id = NULL WHERE business_partner_id = ?", [$partner_id]);
+            }
+            auditLog('customer', 'updated',
+                "Business Partner #{$partner_id} — {$side} side unlinked by " . ($currentUser['display_name'] ?? 'admin'), []);
+            $_SESSION['success_flash'] = 'Unlinked. (Re-link any time — nothing was deleted.)';
+        }
+    } catch (Exception $e) {
+        $_SESSION['error_flash'] = $e->getMessage();
+    }
+    header('Location: business_partners.php');
+    exit;
+}
+
+// ── Data for render ──────────────────────────────────────────────────────
+$linked = getLinkedBusinessPartners();
+
+// Unlinked customers/suppliers, for the link form + auto-suggest.
+$unlinked_customers = $db->query(
+    "SELECT id, name, business_name, phone_number FROM customers
+     WHERE status = 'active' AND business_partner_id IS NULL ORDER BY name ASC"
+)->results();
+$unlinked_suppliers = $db->query(
+    "SELECT id, company_name, phone, mobile FROM suppliers
+     WHERE status = 'active' AND business_partner_id IS NULL ORDER BY company_name ASC"
+)->results();
+
+// Suggest matches by phone number — suggestion only, never auto-linked.
+$suggestions = [];
+foreach ($unlinked_customers as $c) {
+    if (empty($c->phone_number)) continue;
+    foreach ($unlinked_suppliers as $s) {
+        if ($c->phone_number === $s->phone || $c->phone_number === $s->mobile) {
+            $suggestions[] = ['customer' => $c, 'supplier' => $s, 'reason' => 'same phone number'];
+        }
+    }
+}
+
+$flash = $_SESSION['success_flash'] ?? null; unset($_SESSION['success_flash']);
+$err   = $_SESSION['error_flash']   ?? null; unset($_SESSION['error_flash']);
+
+require_once '../templates/header.php';
+?>
+<div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+    <div class="mb-4">
+        <h1 class="text-2xl font-bold text-gray-900"><i class="fas fa-handshake text-rose-600 mr-2"></i>Business Partners</h1>
+        <p class="text-gray-600 mt-1 text-sm">Link a customer and a supplier record that are the same real-world party — you buy from them AND sell to them. Linking never merges or deletes data; it's a reversible pointer.</p>
+    </div>
+
+    <?php if ($flash): ?><div class="mb-4 rounded-lg border border-green-300 bg-green-50 px-4 py-2.5 text-sm text-green-800"><i class="fas fa-check-circle mr-1"></i><?php echo htmlspecialchars($flash); ?></div><?php endif; ?>
+    <?php if ($err): ?><div class="mb-4 rounded-lg border border-red-300 bg-red-50 px-4 py-2.5 text-sm text-red-800"><i class="fas fa-triangle-exclamation mr-1"></i><?php echo htmlspecialchars($err); ?></div><?php endif; ?>
+
+    <!-- Linked partners -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 mb-6">
+        <h2 class="text-sm font-bold text-gray-800 mb-3">Linked Partners (<?php echo count($linked); ?>)</h2>
+        <?php if (empty($linked)): ?>
+        <p class="text-sm text-gray-400 italic">No linked partners yet — link one below.</p>
+        <?php else: ?>
+        <div class="overflow-x-auto">
+        <table class="min-w-full text-sm">
+            <thead class="bg-gray-50 border-b">
+                <tr>
+                    <th class="px-3 py-2 text-left text-xs font-semibold text-gray-500 uppercase">Partner</th>
+                    <th class="px-3 py-2 text-left text-xs font-semibold text-gray-500 uppercase">Customer side (AR — they owe us)</th>
+                    <th class="px-3 py-2 text-left text-xs font-semibold text-gray-500 uppercase">Supplier side (AP — we owe them)</th>
+                    <th class="px-3 py-2 text-right text-xs font-semibold text-gray-500 uppercase">Net position</th>
+                    <th class="px-3 py-2 text-center text-xs font-semibold text-gray-500 uppercase">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-50">
+                <?php foreach ($linked as $p):
+                    $ar = (float)$p->customer_balance;
+                    $ap = (float)$p->supplier_balance;
+                    $net = $ar - $ap; // positive = net owed TO us, negative = net owed BY us
+                ?>
+                <tr class="hover:bg-gray-50">
+                    <td class="px-3 py-2 font-semibold text-gray-800"><?php echo htmlspecialchars($p->partner_name); ?></td>
+                    <td class="px-3 py-2">
+                        <?php echo htmlspecialchars($p->customer_name); ?>
+                        <span class="text-<?php echo $ar > 0 ? 'red' : 'gray'; ?>-600 font-medium">— ৳<?php echo number_format($ar, 2); ?></span>
+                        <form method="POST" class="inline" onsubmit="return confirm('Unlink the customer side?');">
+                            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf); ?>">
+                            <input type="hidden" name="action" value="unlink">
+                            <input type="hidden" name="partner_id" value="<?php echo (int)$p->business_partner_id; ?>">
+                            <input type="hidden" name="side" value="customer">
+                            <button type="submit" class="ml-1 text-gray-300 hover:text-red-500" title="Unlink customer side"><i class="fas fa-link-slash text-xs"></i></button>
+                        </form>
+                    </td>
+                    <td class="px-3 py-2">
+                        <?php echo htmlspecialchars($p->supplier_name); ?>
+                        <span class="text-<?php echo $ap > 0 ? 'amber' : 'gray'; ?>-600 font-medium">— ৳<?php echo number_format($ap, 2); ?></span>
+                        <form method="POST" class="inline" onsubmit="return confirm('Unlink the supplier side?');">
+                            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf); ?>">
+                            <input type="hidden" name="action" value="unlink">
+                            <input type="hidden" name="partner_id" value="<?php echo (int)$p->business_partner_id; ?>">
+                            <input type="hidden" name="side" value="supplier">
+                            <button type="submit" class="ml-1 text-gray-300 hover:text-red-500" title="Unlink supplier side"><i class="fas fa-link-slash text-xs"></i></button>
+                        </form>
+                    </td>
+                    <td class="px-3 py-2 text-right font-bold <?php echo $net >= 0 ? 'text-green-700' : 'text-red-700'; ?>">
+                        <?php echo $net >= 0 ? 'Owed to us: ' : 'We owe: '; ?>৳<?php echo number_format(abs($net), 2); ?>
+                    </td>
+                    <td class="px-3 py-2 text-center">
+                        <?php if (abs($net) > 0.01): ?>
+                        <a href="partner_settlement.php?partner_id=<?php echo (int)$p->business_partner_id; ?>"
+                           class="text-xs px-2.5 py-1 bg-rose-50 text-rose-700 border border-rose-200 rounded-lg hover:bg-rose-100">
+                           <i class="fas fa-scale-balanced mr-1"></i>Settle
+                        </a>
+                        <?php endif; ?>
+                    </td>
+                </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+        </div>
+        <?php endif; ?>
+    </div>
+
+    <?php if (!empty($suggestions)): ?>
+    <!-- Suggested matches -->
+    <div class="bg-amber-50 border border-amber-200 rounded-xl p-5 mb-6">
+        <h2 class="text-sm font-bold text-amber-800 mb-3"><i class="fas fa-lightbulb mr-1"></i>Suggested matches (same phone number) — review before linking, never automatic</h2>
+        <div class="space-y-2">
+            <?php foreach ($suggestions as $sg): ?>
+            <form method="POST" class="flex items-center gap-3 text-sm bg-white rounded-lg px-3 py-2 border border-amber-100">
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf); ?>">
+                <input type="hidden" name="action" value="create_link">
+                <input type="hidden" name="customer_id" value="<?php echo (int)$sg['customer']->id; ?>">
+                <input type="hidden" name="supplier_id" value="<?php echo (int)$sg['supplier']->id; ?>">
+                <span class="flex-1"><?php echo htmlspecialchars($sg['customer']->name); ?> <i class="fas fa-arrow-right-arrow-left mx-1 text-gray-300"></i> <?php echo htmlspecialchars($sg['supplier']->company_name); ?></span>
+                <span class="text-xs text-gray-400"><?php echo htmlspecialchars($sg['reason']); ?></span>
+                <button type="submit" class="px-3 py-1 bg-amber-600 text-white text-xs font-semibold rounded-lg hover:bg-amber-700">Link</button>
+            </form>
+            <?php endforeach; ?>
+        </div>
+    </div>
+    <?php endif; ?>
+
+    <!-- Manual link -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+        <h2 class="text-sm font-bold text-gray-800 mb-3">Link a customer and a supplier manually</h2>
+        <form method="POST" id="bpLinkForm" class="grid grid-cols-1 md:grid-cols-4 gap-3">
+            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf); ?>">
+            <input type="hidden" name="action" value="create_link">
+            <div class="relative">
+                <label class="block text-xs font-medium text-gray-600 mb-1">Customer</label>
+                <input type="text" id="bp_cust_search" autocomplete="off" required placeholder="Search name, business, phone..."
+                       class="w-full px-3 py-2 border rounded-lg text-sm" oninput="bpSearchCustomers(this.value)" onfocus="bpSearchCustomers(this.value)">
+                <div id="bp_cust_dropdown" class="absolute z-50 left-0 right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-56 overflow-y-auto hidden"></div>
+                <input type="hidden" name="customer_id" id="bp_cust_id" required>
+            </div>
+            <div class="relative">
+                <label class="block text-xs font-medium text-gray-600 mb-1">Supplier</label>
+                <input type="text" id="bp_sup_search" autocomplete="off" required placeholder="Search company, phone..."
+                       class="w-full px-3 py-2 border rounded-lg text-sm" oninput="bpSearchSuppliers(this.value)" onfocus="bpSearchSuppliers(this.value)">
+                <div id="bp_sup_dropdown" class="absolute z-50 left-0 right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-56 overflow-y-auto hidden"></div>
+                <input type="hidden" name="supplier_id" id="bp_sup_id" required>
+            </div>
+            <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Partner display name <span class="text-gray-400">(optional)</span></label>
+                <input type="text" name="partner_name" placeholder="Defaults to customer name" class="w-full px-3 py-2 border rounded-lg text-sm">
+            </div>
+            <div class="flex items-end">
+                <button type="submit" class="w-full px-4 py-2 bg-rose-600 text-white text-sm font-semibold rounded-lg hover:bg-rose-700">
+                    <i class="fas fa-link mr-1"></i>Link
+                </button>
+            </div>
+        </form>
+    </div>
+
+</div>
+<script>
+const bpCustomers = <?php echo json_encode(array_map(function($c) {
+    return ['id' => $c->id, 'name' => $c->name, 'business' => $c->business_name ?? '', 'phone' => $c->phone_number ?? ''];
+}, $unlinked_customers)); ?>;
+const bpSuppliers = <?php echo json_encode(array_map(function($s) {
+    return ['id' => $s->id, 'name' => $s->company_name, 'phone' => trim(($s->phone ?? '') . ' ' . ($s->mobile ?? ''))];
+}, $unlinked_suppliers)); ?>;
+
+function bpSearchCustomers(query) {
+    const dd = document.getElementById('bp_cust_dropdown');
+    const q = query.toLowerCase().trim();
+    if (q.length === 0) { dd.classList.add('hidden'); document.getElementById('bp_cust_id').value = ''; return; }
+    const matches = bpCustomers.filter(c => c.name.toLowerCase().includes(q) || c.business.toLowerCase().includes(q) || c.phone.includes(q)).slice(0, 20);
+    dd.innerHTML = matches.length === 0 ? '<div class="px-3 py-2 text-sm text-gray-500">No unlinked customers found</div>' :
+        matches.map(c => `<div class="px-3 py-2 hover:bg-rose-50 cursor-pointer text-sm border-b border-gray-100" onclick="bpSelectCustomer(${c.id})">
+            <span class="font-medium text-gray-900">${c.name}</span>${c.business ? `<span class="text-gray-400 text-xs ml-1">(${c.business})</span>` : ''}
+            <span class="text-gray-400 text-xs ml-2">${c.phone}</span></div>`).join('');
+    dd.classList.remove('hidden');
+}
+function bpSelectCustomer(id) {
+    const c = bpCustomers.find(x => x.id === id);
+    if (!c) return;
+    document.getElementById('bp_cust_id').value = c.id;
+    document.getElementById('bp_cust_search').value = c.name;
+    document.getElementById('bp_cust_dropdown').classList.add('hidden');
+}
+function bpSearchSuppliers(query) {
+    const dd = document.getElementById('bp_sup_dropdown');
+    const q = query.toLowerCase().trim();
+    if (q.length === 0) { dd.classList.add('hidden'); document.getElementById('bp_sup_id').value = ''; return; }
+    const matches = bpSuppliers.filter(s => s.name.toLowerCase().includes(q) || s.phone.includes(q)).slice(0, 20);
+    dd.innerHTML = matches.length === 0 ? '<div class="px-3 py-2 text-sm text-gray-500">No unlinked suppliers found</div>' :
+        matches.map(s => `<div class="px-3 py-2 hover:bg-rose-50 cursor-pointer text-sm border-b border-gray-100" onclick="bpSelectSupplier(${s.id})">
+            <span class="font-medium text-gray-900">${s.name}</span><span class="text-gray-400 text-xs ml-2">${s.phone}</span></div>`).join('');
+    dd.classList.remove('hidden');
+}
+function bpSelectSupplier(id) {
+    const s = bpSuppliers.find(x => x.id === id);
+    if (!s) return;
+    document.getElementById('bp_sup_id').value = s.id;
+    document.getElementById('bp_sup_search').value = s.name;
+    document.getElementById('bp_sup_dropdown').classList.add('hidden');
+}
+document.addEventListener('click', e => {
+    if (!e.target.closest('#bp_cust_search') && !e.target.closest('#bp_cust_dropdown')) document.getElementById('bp_cust_dropdown').classList.add('hidden');
+    if (!e.target.closest('#bp_sup_search') && !e.target.closest('#bp_sup_dropdown')) document.getElementById('bp_sup_dropdown').classList.add('hidden');
+});
+document.getElementById('bpLinkForm').addEventListener('submit', function(e) {
+    if (!document.getElementById('bp_cust_id').value) { e.preventDefault(); alert('Please select a customer from the dropdown.'); return; }
+    if (!document.getElementById('bp_sup_id').value) { e.preventDefault(); alert('Please select a supplier from the dropdown.'); }
+});
+</script>
+<?php require_once '../templates/footer.php'; ?>
