@@ -191,10 +191,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             foreach ($items as $item) {
                 $line_total = ($item['quantity'] * $item['unit_price']) - $item['discount_amount'] + $item['tax_amount'];
 
+                // Guard added 2 Sep 2026 — same class of bug found live on
+                // CR-20260902-0019 (created via create_order.php, see the matching
+                // guard there): a NULL variant_id for a product that HAS variants
+                // defined is never legitimate here (every real product in this app
+                // has ≥1 variant), and it silently breaks production_requirement.php's
+                // per-variant totals (INNER JOIN on variant_id excludes NULL rows —
+                // the whole line's quantity vanishes from Today's Requirement with no
+                // error). Fail loudly here instead of saving bad data.
+                $item_variant_id = !empty($item['variant_id']) ? (int)$item['variant_id'] : null;
+                if ($item_variant_id === null) {
+                    $has_variants = $db->query(
+                        "SELECT COUNT(*) c FROM product_variants WHERE product_id = ?",
+                        [(int)($item['product_id'] ?? 0)]
+                    )->first();
+                    if ($has_variants && (int)$has_variants->c > 0) {
+                        $p_name = $db->query("SELECT base_name FROM products WHERE id = ?", [(int)($item['product_id'] ?? 0)])->first();
+                        throw new Exception('"' . ($p_name->base_name ?? 'One of the products')
+                            . '" requires a variant to be selected, but none was chosen for one of the line items. '
+                            . 'Please re-select the specific variant (grade/weight) for that row, then save again — '
+                            . 'if the variant was only just added, refresh this page first so the new option loads.');
+                    }
+                }
+
                 $item_inserted = $db->insert('credit_order_items', [
                     'order_id' => $order_id,
                     'product_id' => $item['product_id'],
-                    'variant_id' => !empty($item['variant_id']) ? $item['variant_id'] : null,
+                    'variant_id' => $item_variant_id,
                     'quantity' => $item['quantity'],
                     'unit_price' => $item['unit_price'],
                     'discount_amount' => $item['discount_amount'],
@@ -364,28 +387,54 @@ $branches = $db->query(
 // Fetch all products with variants
 // Fetch all products with variants and their specific branch/variant prices
 // Fetch all products with variants and their current prices
+//
+// BUG FIX 2 Sep 2026 (live complaint: "amending a credit order gets it wrongly
+// updated, variant is saving NULL"): this list used to be ACTIVE products/
+// variants only. If an order's existing line item referenced a product or
+// variant that had since been deactivated (confirmed live: 24 line items across
+// ~20 orders reference now-inactive products — Wheat, Chala, Nosto Gom, আটা,
+// Crushing Charge), that item's <select> had NO matching <option> to mark
+// `selected`, so the browser silently defaulted to the blank "Select..."
+// option. The submit handler's `if (!selectedValue) return;` then dropped that
+// line item from items_json entirely on save — a real order gets a line item
+// silently deleted (or, if the admin then manually re-picked a substitute
+// product for that row, effectively "variant became something else / NULL")
+// just from opening and saving Admin Edit, with no error or warning shown.
+// Fix: always include a product/variant here if it's ACTIVE, OR if it's
+// currently used by THIS order's own items — inactive-but-in-use ones are
+// still offered (marked "[INACTIVE]" in the label) so the existing selection
+// has something to bind to and is preserved by default, instead of vanishing.
 $products = $db->query(
-    "SELECT 
+    "SELECT
         p.id,
-        p.base_name as name,
+        CASE WHEN p.status = 'active' THEN p.base_name ELSE CONCAT(p.base_name, ' [INACTIVE]') END as name,
         p.base_sku as sku,
         GROUP_CONCAT(
             CONCAT(
-                pv.id, '|', 
-                CONCAT_WS(' ', pv.grade, pv.weight_variant), '|', 
-                pv.sku, '|', 
+                pv.id, '|',
+                CASE WHEN pv.status = 'active'
+                     THEN CONCAT_WS(' ', pv.grade, pv.weight_variant)
+                     ELSE CONCAT(CONCAT_WS(' ', pv.grade, pv.weight_variant), ' [INACTIVE]')
+                END, '|',
+                pv.sku, '|',
                 COALESCE(pp.unit_price, 0.00)
             )
             SEPARATOR '||'
         ) as variants
     FROM products p
-    LEFT JOIN product_variants pv ON p.id = pv.product_id AND pv.status = 'active'
-    LEFT JOIN product_prices pp ON pv.id = pp.variant_id 
-        AND pp.is_active = 1 
+    LEFT JOIN product_variants pv ON p.id = pv.product_id
+        AND (pv.status = 'active' OR pv.id IN (
+            SELECT variant_id FROM credit_order_items WHERE order_id = ? AND variant_id IS NOT NULL
+        ))
+    LEFT JOIN product_prices pp ON pv.id = pp.variant_id
+        AND pp.is_active = 1
         AND pp.status = 'active'
-    WHERE p.status = 'active'
+    WHERE p.status = 'active' OR p.id IN (
+        SELECT product_id FROM credit_order_items WHERE order_id = ?
+    )
     GROUP BY p.id
-    ORDER BY p.base_name"
+    ORDER BY p.base_name",
+    [$order_id, $order_id]
 )->results();
 
 // Fetch audit history
@@ -1139,15 +1188,26 @@ function recalculateAllTotals() {
 // Form submission - collect all items data
 document.getElementById('orderEditForm').addEventListener('submit', function(e) {
     const items = [];
-    
+    let blankRowCount = 0;
+
     document.querySelectorAll('.item-row').forEach(row => {
         const productSelect = row.querySelector('.item-product');
         const selectedValue = productSelect.value;
-        
-        if (!selectedValue) return;
-        
+
+        // Added 2 Sep 2026: a row with no product selected used to be silently
+        // dropped here (`return` = skip, never added to items[]) — the server
+        // then deletes+reinserts ALL items for the order from whatever's in
+        // items[], so a silently-skipped row meant the line item vanished from
+        // the order with zero warning. The server-side dropdown fix (see
+        // $products query above) now always offers a matching option for any
+        // product/variant the order's items actually reference, even inactive
+        // ones, so this should no longer trigger in practice — kept as a loud
+        // failsafe instead of a silent one for any other way a row could end
+        // up unselected.
+        if (!selectedValue) { blankRowCount++; return; }
+
         const [product_id, variant_id] = selectedValue.split('|');
-        
+
         items.push({
             product_id: parseInt(product_id),
             variant_id: parseInt(variant_id) || null,
@@ -1158,7 +1218,15 @@ document.getElementById('orderEditForm').addEventListener('submit', function(e) 
             notes: null
         });
     });
-    
+
+    if (blankRowCount > 0) {
+        e.preventDefault();
+        alert('⚠ ' + blankRowCount + ' item row' + (blankRowCount > 1 ? 's have' : ' has') +
+              ' no product selected and would be REMOVED from the order if you save now. ' +
+              'Please select a product for every row (or click Remove on rows you actually want deleted) before saving.');
+        return false;
+    }
+
     if (items.length === 0) {
         e.preventDefault();
         alert('Please add at least one item to the order');

@@ -94,6 +94,7 @@ $branches = $expenseManager->getAllBranches();
 
 // Get bank accounts
 $bankAccounts = $expenseManager->getAllBankAccounts();
+$canSeeBalance = canViewBankBalances();
 
 // Get cash accounts
 $cashAccounts = $expenseManager->getAllCashAccounts();
@@ -246,7 +247,7 @@ require_once '../templates/header.php';
                         <option value="">Select Bank Account</option>
                         <?php foreach ($bankAccounts as $account): ?>
                             <option value="<?php echo $account->id; ?>">
-                                <?php echo htmlspecialchars($account->bank_name . ' - ' . $account->account_name); ?>
+                                <?php echo htmlspecialchars(bankAccountOptionLabel($account->bank_name, $account->account_name, $account->account_number, (float)$account->current_balance, $canSeeBalance)); ?>
                             </option>
                         <?php endforeach; ?>
                     </select>

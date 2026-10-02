@@ -13,6 +13,16 @@ $pageTitle   = 'Delivery Schedule';
 
 $is_admin = in_array($user_role, ['Superadmin', 'admin']);
 
+$can_change_priority = $is_admin || userCanPageAction('production', 'delivery_schedule', 'can_change_priority');
+
+// Edit (truck type / required date / branch) — was hardcoded to $is_admin
+// with no delegable action at all, so a Superadmin had no way to grant it to
+// anyone via Access Manager/Privileges (flagged directly by the user). Now
+// delegable the same way can_change_priority already is; the actual write
+// (cr/ajax_handler.php's delivery_schedule_edit_order case) enforces the
+// same check server-side, not just this UI gate.
+$can_edit_delivery = $is_admin || userCanPageAction('production', 'delivery_schedule', 'can_edit');
+
 // Self-migrating schema — delivery_priority drives THIS page's drag-drop
 // ordering. Deliberately a separate column from production_schedule.priority_order
 // (that one is scoped to production-START scheduling, keyed by scheduled_date,
@@ -21,27 +31,16 @@ $is_admin = in_array($user_role, ['Superadmin', 'admin']);
 try { $db->getPdo()->exec("ALTER TABLE `credit_orders` ADD COLUMN `delivery_priority` INT NOT NULL DEFAULT 0"); } catch (\Throwable $e) {}
 
 // ── Branch detection ─────────────────────────────────────────────────────────
-$user_branch = null;
-if (!$is_admin) {
-    $emp = $db->query("SELECT branch_id FROM employees WHERE user_id = ?", [$user_id])->first();
-    if ($emp && $emp->branch_id) {
-        $user_branch = $emp->branch_id;
-    } else {
-        $ur = $db->query("SELECT branch_id FROM users WHERE id = ?", [$user_id])->first();
-        if ($ur && isset($ur->branch_id)) $user_branch = $ur->branch_id;
-    }
-}
-
-$filter_branch_id   = 0;
-$filter_branch_name = '';
-$all_branches       = [];
-if ($is_admin) {
-    $all_branches     = $db->query("SELECT id, name FROM branches WHERE status = 'active' ORDER BY name")->results();
-    $filter_branch_id = (int)($_GET['branch_id'] ?? 0);
-    foreach ($all_branches as $br) {
-        if ((int)$br->id === $filter_branch_id) { $filter_branch_name = $br->name; break; }
-    }
-}
+// Access-Manager-aware (was: hardcoded to the user's own employees.branch_id
+// for every non-admin, ignoring any Access Manager data_scope grant — see
+// resolveBranchFilterUI()/getUserBranchScope() in helpers.php).
+$bf = resolveBranchFilterUI('production', 'co.assigned_branch_id');
+$branch_filter       = $bf['filter_sql'];
+$branch_params       = $bf['filter_params'];
+$all_branches        = $bf['picker_branches'];
+$filter_branch_id    = $bf['selected_branch_id'];
+$filter_branch_name  = $bf['selected_branch_name'];
+$show_branch_picker  = $bf['show_picker'];
 
 // ── Filters ───────────────────────────────────────────────────────────────────
 $fo_order      = trim($_GET['fo_order']      ?? '');
@@ -57,7 +56,7 @@ $active_tab = ($_GET['tab'] ?? 'schedule') === 'overdue' ? 'overdue' : 'schedule
 $today      = date('Y-m-d');
 
 function dsConditions(
-    string $boundary_op, string $today, bool $is_admin, $user_branch, int $filter_branch_id,
+    string $boundary_op, string $today, string $branchFilterSql, array $branchFilterParams,
     string $fo_order, string $fo_odate_from, string $fo_odate_to, string $fo_rdate_from, string $fo_rdate_to,
     string $fo_vehicle, string $fo_customer, string $fo_product
 ): array {
@@ -69,8 +68,7 @@ function dsConditions(
     $where  = ["co.status IN ('approved','in_production','produced','ready_to_ship','shipped')", 'co.assigned_branch_id IS NOT NULL', "co.required_date {$boundary_op} ?"];
     $params = [$today];
 
-    if (!$is_admin && $user_branch) { $where[] = 'co.assigned_branch_id = ?'; $params[] = $user_branch; }
-    elseif ($is_admin && $filter_branch_id > 0) { $where[] = 'co.assigned_branch_id = ?'; $params[] = $filter_branch_id; }
+    if ($branchFilterSql !== '') { $where[] = substr($branchFilterSql, 4); array_push($params, ...$branchFilterParams); }
 
     if ($fo_order !== '')      { $where[] = 'co.order_number LIKE ?';   $params[] = '%' . $fo_order . '%'; }
     if ($fo_odate_from !== '') { $where[] = 'co.order_date >= ?';       $params[] = $fo_odate_from; }
@@ -88,7 +86,7 @@ function dsConditions(
     return [implode(' AND ', $where), $params, $join];
 }
 
-$filter_args = [$is_admin, $user_branch, $filter_branch_id, $fo_order, $fo_odate_from, $fo_odate_to,
+$filter_args = [$branch_filter, $branch_params, $fo_order, $fo_odate_from, $fo_odate_to,
                  $fo_rdate_from, $fo_rdate_to, $fo_vehicle, $fo_customer, $fo_product];
 
 $schedule_orders = [];
@@ -210,7 +208,7 @@ $day_label = function (string $date, string $today) {
             <?php endif; ?>
         </h1>
         <p class="text-xs text-gray-500 mt-0.5">
-            Ordered by closest delivery date<?php echo $is_admin ? ' — drag rows to reorder or reschedule' : ''; ?>
+            Ordered by closest delivery date<?php echo $can_change_priority ? ' — drag rows to reorder or reschedule' : ''; ?>
         </p>
     </div>
     <div class="flex gap-2 flex-wrap items-center">
@@ -229,7 +227,7 @@ $day_label = function (string $date, string $today) {
 <form method="GET" class="bg-white rounded-lg border border-gray-200 shadow-sm px-4 py-3 mb-4">
     <input type="hidden" name="tab" value="<?php echo htmlspecialchars($active_tab); ?>">
     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-        <?php if ($is_admin): ?>
+        <?php if ($show_branch_picker): ?>
         <div class="flex flex-col gap-0.5">
             <label class="text-xs text-gray-500 font-medium">Branch</label>
             <select name="branch_id" class="text-xs px-2 py-1.5 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500">
@@ -309,7 +307,7 @@ $qs_str = $qs_str !== '' ? '&' . $qs_str : '';
 <?php
 function renderDeliveryBoard(array $rows, string $tab_key, bool $is_overdue_tab, bool $is_admin, array $items_by_order,
                               array $status_cls, array $status_labels, array $day_palette, Closure $vehicle_badge, Closure $day_label, string $today,
-                              array $hold_reason_by_order = []) {
+                              array $hold_reason_by_order = [], bool $can_change_priority = false, bool $can_edit_delivery = false) {
     if (empty($rows)) {
         echo '<div class="bg-white rounded-lg border border-gray-200 shadow-sm p-12 text-center">
                 <i class="fas fa-calendar-check text-5xl text-gray-300 mb-4"></i>
@@ -329,7 +327,7 @@ function renderDeliveryBoard(array $rows, string $tab_key, bool $is_overdue_tab,
         <table class="w-full text-xs">
             <thead>
                 <tr class="bg-gray-50 border-b border-gray-200 text-left">
-                    <?php if ($is_admin): ?><th class="px-2 py-2 w-6"></th><?php endif; ?>
+                    <?php if ($can_change_priority): ?><th class="px-2 py-2 w-6"></th><?php endif; ?>
                     <th class="px-3 py-2 font-semibold text-gray-500 uppercase tracking-wide whitespace-nowrap text-center">#</th>
                     <th class="px-3 py-2 font-semibold text-gray-500 uppercase tracking-wide whitespace-nowrap">Order</th>
                     <th class="px-3 py-2 font-semibold text-gray-500 uppercase tracking-wide whitespace-nowrap">Customer</th>
@@ -347,7 +345,7 @@ function renderDeliveryBoard(array $rows, string $tab_key, bool $is_overdue_tab,
                 $days_overdue = $is_overdue_tab ? (int)floor((strtotime('today') - strtotime($date)) / 86400) : 0;
             ?>
                 <tr class="day-sep <?php echo $palette['bg']; ?> border-l-4 <?php echo $palette['accent']; ?>" data-date="<?php echo $date; ?>">
-                    <td colspan="<?php echo $is_admin ? 9 : 8; ?>" class="px-3 py-1.5 font-bold text-gray-700">
+                    <td colspan="<?php echo $can_change_priority ? 9 : 8; ?>" class="px-3 py-1.5 font-bold text-gray-700">
                         <i class="fas fa-calendar-day mr-1.5 text-gray-400"></i><?php echo $day_label($date, $today); ?>
                         <span class="font-normal text-gray-400">(<?php echo date('d M Y', strtotime($date)); ?>)</span>
                         <span class="ml-2 px-1.5 py-0.5 rounded-full bg-white/70 text-[10px] font-semibold"><?php echo count($day_orders); ?> order<?php echo count($day_orders) !== 1 ? 's' : ''; ?></span>
@@ -360,9 +358,9 @@ function renderDeliveryBoard(array $rows, string $tab_key, bool $is_overdue_tab,
                     $order_items = $items_by_order[$o->id] ?? [];
                     $items_txt   = implode(', ', $order_items);
                 ?>
-                <tr class="order-row <?php echo $palette['bg']; ?> hover:brightness-95 transition-colors <?php echo $is_admin ? 'cursor-move' : ''; ?>"
-                    <?php echo $is_admin ? 'draggable="true"' : ''; ?> data-order-id="<?php echo $o->id; ?>">
-                    <?php if ($is_admin): ?>
+                <tr class="order-row <?php echo $palette['bg']; ?> hover:brightness-95 transition-colors <?php echo $can_change_priority ? 'cursor-move' : ''; ?>"
+                    <?php echo $can_change_priority ? 'draggable="true"' : ''; ?> data-order-id="<?php echo $o->id; ?>">
+                    <?php if ($can_change_priority): ?>
                     <td class="px-2 py-2 text-center text-gray-300"><i class="fas fa-grip-vertical"></i></td>
                     <?php endif; ?>
                     <td class="px-3 py-2.5 text-center whitespace-nowrap">
@@ -398,7 +396,7 @@ function renderDeliveryBoard(array $rows, string $tab_key, bool $is_overdue_tab,
                     <td class="px-3 py-2.5 text-center whitespace-nowrap">
                         <div class="inline-flex items-center gap-1">
                             <a href="credit_order_view.php?id=<?php echo $o->id; ?>" class="inline-flex items-center px-2 py-1 border border-gray-300 text-gray-600 rounded hover:bg-gray-100 cursor-pointer" title="View"><i class="fas fa-eye text-xs"></i></a>
-                            <?php if ($is_admin): ?>
+                            <?php if ($can_edit_delivery): ?>
                             <button type="button" title="Edit"
                                     onclick='openEditModal(<?php echo json_encode([
                                         'id' => (int)$o->id, 'order_number' => $o->order_number,
@@ -422,15 +420,15 @@ function renderDeliveryBoard(array $rows, string $tab_key, bool $is_overdue_tab,
 }
 
 echo '<div class="' . ($active_tab !== 'schedule' ? 'hidden' : '') . '">';
-renderDeliveryBoard($schedule_orders, 'schedule', false, $is_admin, $items_by_order, $status_cls, $status_labels, $day_palette, $vehicle_badge, $day_label, $today, $hold_reason_by_order);
+renderDeliveryBoard($schedule_orders, 'schedule', false, $is_admin, $items_by_order, $status_cls, $status_labels, $day_palette, $vehicle_badge, $day_label, $today, $hold_reason_by_order, $can_change_priority, $can_edit_delivery);
 echo '</div>';
 
 echo '<div class="' . ($active_tab !== 'overdue' ? 'hidden' : '') . '">';
-renderDeliveryBoard($overdue_orders, 'overdue', true, $is_admin, $items_by_order, $status_cls, $status_labels, $day_palette, $vehicle_badge, $day_label, $today, $hold_reason_by_order);
+renderDeliveryBoard($overdue_orders, 'overdue', true, $is_admin, $items_by_order, $status_cls, $status_labels, $day_palette, $vehicle_badge, $day_label, $today, $hold_reason_by_order, $can_change_priority, $can_edit_delivery);
 echo '</div>';
 ?>
 
-<?php if ($is_admin): ?>
+<?php if ($can_edit_delivery): ?>
 <!-- Edit Modal -->
 <div id="editModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/50">
     <div class="bg-white rounded-2xl shadow-xl max-w-md w-full p-6">

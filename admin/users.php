@@ -69,6 +69,10 @@ require_once '../templates/header.php';
     </div>
     <div class="flex gap-2">
         <?php if ($is_superadmin): ?>
+        <a href="access_manager.php"
+           class="inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 transition-colors">
+            <i class="fas fa-user-shield mr-2"></i>Access Manager
+        </a>
         <a href="privileges.php"
            class="inline-flex items-center px-4 py-2 border border-purple-300 rounded-lg text-sm font-medium text-purple-700 bg-purple-50 hover:bg-purple-100 transition-colors">
             <i class="fas fa-shield-alt mr-2"></i>Roles & Privileges
@@ -231,8 +235,12 @@ require_once '../templates/header.php';
                     <!-- Actions -->
                     <td class="px-5 py-4 whitespace-nowrap text-right space-x-3">
                         <?php if ($is_superadmin): ?>
+                        <a href="access_manager.php?user_id=<?php echo $user->id; ?>"
+                           class="text-purple-500 hover:text-purple-700" title="Access Manager (guided)">
+                            <i class="fas fa-user-shield text-sm"></i>
+                        </a>
                         <a href="privileges.php?user_id=<?php echo $user->id; ?>"
-                           class="text-purple-500 hover:text-purple-700" title="Set Privileges">
+                           class="text-purple-400 hover:text-purple-700" title="Set Privileges (classic)">
                             <i class="fas fa-shield-alt text-sm"></i>
                         </a>
                         <?php endif; ?>

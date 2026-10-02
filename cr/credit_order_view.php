@@ -66,6 +66,36 @@ if (!$order) {
     exit();
 }
 
+// Branch scope — this page previously let any allowed role view ANY order by
+// URL id regardless of branch (a real gap this file's own comment used to
+// admit explicitly). Superadmin/admin and any data_scope='all' grant see
+// everything as before. A sales rep can always view an order THEY created,
+// regardless of branch (matches all_sales.php/index.php's own created_by
+// scoping for sales roles — an order can get assigned to a different branch
+// at approval time, and that shouldn't lock the rep out of their own order).
+// Everyone else is blocked from an order outside their branch scope, falling
+// back to the creating rep's own employees.branch_id when
+// co.assigned_branch_id isn't set yet (a pending/escalated order) — the same
+// resolution used on the approval queue, since customers/users carry no
+// branch field of their own to fall back on.
+if (!in_array($currentUser['role'] ?? '', ['Superadmin', 'admin'], true)
+    && (int)($order->created_by_user_id ?? 0) !== (int)($currentUser['id'] ?? 0)) {
+    $view_scope = getUserBranchScope('credit_sales');
+    if ($view_scope !== null) {
+        $resolved = $db->query(
+            "SELECT COALESCE(co.assigned_branch_id, (SELECT e.branch_id FROM employees e WHERE e.user_id = co.created_by_user_id)) AS b
+             FROM credit_orders co WHERE co.id = ?",
+            [$order_id]
+        )->first();
+        $resolved_branch_id = $resolved ? $resolved->b : null;
+        if ($resolved_branch_id === null || !in_array((int)$resolved_branch_id, $view_scope, true)) {
+            $_SESSION['error_flash'] = "You don't have access to this order — it belongs to a different branch.";
+            header('Location: index.php');
+            exit();
+        }
+    }
+}
+
 // Get order items
 $items = $db->query(
     "SELECT coi.*, 
@@ -155,6 +185,22 @@ try {
          LEFT JOIN users u ON r.changed_by_user_id = u.id
          WHERE r.order_id = ?
          ORDER BY r.created_at DESC",
+        [$order_id]
+    )->results();
+} catch (Exception $e) {}
+
+// Amendment history (cr/order_amendment.php) — approved + pending/rejected,
+// so staff see the full picture without leaving this page. Not shown at all
+// on this page before 8 Sep 2026 (only linked out via the "Amend Order" button).
+$order_amendments_view = [];
+try {
+    $order_amendments_view = $db->query(
+        "SELECT a.*, ru.display_name AS requested_by_name, au.display_name AS approved_by_name
+         FROM order_amendments a
+         LEFT JOIN users ru ON a.requested_by_user_id = ru.id
+         LEFT JOIN users au ON a.approved_by_user_id  = au.id
+         WHERE a.order_id = ?
+         ORDER BY a.created_at DESC",
         [$order_id]
     )->results();
 } catch (Exception $e) {}
@@ -1148,6 +1194,58 @@ if ($gate['has_conditions'] && (int)($gate['row']->dispatch_hold ?? 0) === 1 && 
                             </td>
                             <td class="px-3 py-2 text-gray-700 max-w-xs"><?php echo nl2br(htmlspecialchars($pr->reason)); ?></td>
                             <td class="px-3 py-2 text-xs text-gray-500"><?php echo htmlspecialchars($pr->changed_by_name ?? '—'); ?></td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <?php endif; ?>
+
+        <!-- Amendment History (cr/order_amendment.php) -->
+        <?php if (!empty($order_amendments_view)): ?>
+        <?php $oa_status_meta = ['pending' => 'bg-yellow-100 text-yellow-800', 'approved' => 'bg-green-100 text-green-800', 'rejected' => 'bg-red-100 text-red-800']; ?>
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-bold text-gray-800 mb-4"><i class="fas fa-file-signature mr-2 text-cyan-600"></i>Amendment History</h2>
+            <div class="overflow-x-auto">
+                <table class="min-w-full text-sm divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
+                            <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">AMD #</th>
+                            <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Type</th>
+                            <th class="px-3 py-2 text-right text-xs font-medium text-gray-500 uppercase">Change</th>
+                            <th class="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase">Status</th>
+                            <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Reason / Consent</th>
+                            <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">By</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200">
+                        <?php foreach ($order_amendments_view as $oa): $oa_delta = (float)$oa->delta_amount; ?>
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-3 py-2 text-gray-600 whitespace-nowrap"><?php echo date('d-M-Y g:ia', strtotime($oa->created_at)); ?></td>
+                            <td class="px-3 py-2 font-mono font-semibold text-cyan-700"><?php echo htmlspecialchars($oa->amd_number); ?></td>
+                            <td class="px-3 py-2 text-xs text-gray-600"><?php echo ucwords(str_replace('_', ' ', $oa->amendment_type)); ?>
+                                <div class="text-[10px] text-gray-400 uppercase"><?php echo $oa->mode === 'post' ? 'Post-delivery' : 'Pre-dispatch'; ?></div>
+                            </td>
+                            <td class="px-3 py-2 text-right font-semibold <?php echo $oa_delta >= 0 ? 'text-red-600' : 'text-green-600'; ?>">
+                                <?php echo ($oa_delta >= 0 ? '+' : '−') . '৳' . number_format(abs($oa_delta), 2); ?>
+                            </td>
+                            <td class="px-3 py-2 text-center">
+                                <span class="px-2 py-0.5 rounded text-xs font-semibold <?php echo $oa_status_meta[$oa->status] ?? ''; ?>"><?php echo ucfirst($oa->status); ?></span>
+                            </td>
+                            <td class="px-3 py-2 text-gray-700 max-w-xs">
+                                <?php echo nl2br(htmlspecialchars($oa->reason)); ?>
+                                <?php if (!empty($oa->customer_consent_note)): ?>
+                                <div class="text-[10px] text-amber-700 mt-0.5"><i class="fas fa-user-check mr-0.5"></i>Consent: <?php echo htmlspecialchars($oa->customer_consent_note); ?></div>
+                                <?php endif; ?>
+                            </td>
+                            <td class="px-3 py-2 text-xs text-gray-500">
+                                <?php echo htmlspecialchars($oa->requested_by_name ?? '—'); ?>
+                                <?php if ($oa->status !== 'pending' && $oa->approved_by_name): ?>
+                                <div class="text-[10px] text-gray-400"><?php echo $oa->status === 'approved' ? '✓' : '✗'; ?> <?php echo htmlspecialchars($oa->approved_by_name); ?></div>
+                                <?php endif; ?>
+                            </td>
                         </tr>
                         <?php endforeach; ?>
                     </tbody>

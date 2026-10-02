@@ -231,6 +231,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         } catch (\Throwable $e) {
             $error = 'Failed to save dispatch hold setting: ' . $e->getMessage();
         }
+    } elseif ($_POST['action'] === 'save_dispatch_stage_hold_recheck') {
+        // Added 2 Sep 2026 per instruction: "every payment-dispatch held type
+        // conditions will be on credit_production page, for now, credit_dispatch
+        // will not require any second level or third level approval." OFF by
+        // default — credit_production.php's Ready-to-Ship check (unaffected by
+        // this toggle) is the sole required gate. Turning this ON makes
+        // credit_dispatch.php's Ship and Deliver actions ALSO re-verify the same
+        // payment/dispatch hold before proceeding — an extra safety layer, not a
+        // replacement for the production-stage check.
+        try {
+            $db->getPdo()->exec("CREATE TABLE IF NOT EXISTS `settings` (
+                `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+                `name` varchar(100) NOT NULL,
+                `value` text DEFAULT NULL,
+                PRIMARY KEY (`id`), UNIQUE KEY `uk_settings_name` (`name`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+            $val = !empty($_POST['dispatch_stage_hold_recheck']) ? '1' : '0';
+            $db->query(
+                "INSERT INTO settings (name, value) VALUES ('dispatch_stage_hold_recheck', ?)
+                 ON DUPLICATE KEY UPDATE value = VALUES(value)",
+                [$val]
+            );
+            auditLog('company_settings', 'dispatch_stage_hold_recheck_toggled',
+                'Dispatch-page hold re-check ' . ($val === '1' ? 'ENABLED' : 'DISABLED') . ' by ' . ($currentUser['display_name'] ?? 'admin'), []);
+            $success = 'Dispatch-page hold re-check saved: credit_dispatch.php\'s Ship/Deliver actions '
+                     . ($val === '1'
+                        ? 'now ALSO re-verify the payment/dispatch hold (second/third-level check, in addition to credit_production.php\'s Ready-to-Ship check).'
+                        : 'no longer re-verify the hold — credit_production.php\'s Ready-to-Ship check is the only required gate.');
+        } catch (\Throwable $e) {
+            $error = 'Failed to save dispatch-stage hold re-check setting: ' . $e->getMessage();
+        }
     } elseif ($_POST['action'] === 'save_invoice_outstanding_display') {
         // Show/hide "Previous Due" and "Total Due" (total outstanding) on the printed credit invoice
         try {
@@ -276,6 +307,88 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                         : 'go back to the standard approval-gate behavior (no automatic ship hold).');
         } catch (\Throwable $e) {
             $error = 'Failed to save credit-limit auto-release setting: ' . $e->getMessage();
+        }
+    } elseif ($_POST['action'] === 'save_order_full_amendment') {
+        // Master switch for correcting WHICH product/variant a line item was
+        // on an already-dispatched order (cr/order_amendment.php), not just
+        // its qty/price. Off by default; delegate per-user via Privileges
+        // once on (credit_sales / order_amendment / can_change_products).
+        try {
+            $db->getPdo()->exec("CREATE TABLE IF NOT EXISTS `settings` (
+                `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+                `name` varchar(100) NOT NULL,
+                `value` text DEFAULT NULL,
+                PRIMARY KEY (`id`), UNIQUE KEY `uk_settings_name` (`name`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+            $val = !empty($_POST['order_full_amendment_enabled']) ? '1' : '0';
+            $db->query(
+                "INSERT INTO settings (name, value) VALUES ('order_full_amendment_enabled', ?)
+                 ON DUPLICATE KEY UPDATE value = VALUES(value)",
+                [$val]
+            );
+            auditLog('company_settings', 'order_full_amendment_toggled',
+                'Order product/quantity correction feature ' . ($val === '1' ? 'ENABLED' : 'DISABLED') . ' by ' . ($currentUser['display_name'] ?? 'admin'), []);
+            $success = 'Order product/quantity correction feature is now '
+                     . ($val === '1'
+                        ? 'ON — grant the "Correct Product/Quantity on Delivered Orders" action in Privileges to allow specific users.'
+                        : 'OFF — nobody, including admin, can correct a line\'s product/quantity on a dispatched order.');
+        } catch (\Throwable $e) {
+            $error = 'Failed to save order-amendment setting: ' . $e->getMessage();
+        }
+    } elseif ($_POST['action'] === 'save_hide_invoice_from_collection') {
+        // Master switch for hiding/recalling specific outstanding invoices
+        // from the Collect Payment outstanding-invoice list. Off by default;
+        // delegate per-user via Privileges once on (credit_sales /
+        // customer_payment / can_hide_invoice). Visibility-only — never
+        // touches money/ledger.
+        try {
+            $db->getPdo()->exec("CREATE TABLE IF NOT EXISTS `settings` (
+                `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+                `name` varchar(100) NOT NULL,
+                `value` text DEFAULT NULL,
+                PRIMARY KEY (`id`), UNIQUE KEY `uk_settings_name` (`name`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+            $val = !empty($_POST['hide_invoice_from_collection_enabled']) ? '1' : '0';
+            $db->query(
+                "INSERT INTO settings (name, value) VALUES ('hide_invoice_from_collection_enabled', ?)
+                 ON DUPLICATE KEY UPDATE value = VALUES(value)",
+                [$val]
+            );
+            auditLog('company_settings', 'hide_invoice_from_collection_toggled',
+                'Hide/recall outstanding invoices (Collect Payment) feature ' . ($val === '1' ? 'ENABLED' : 'DISABLED') . ' by ' . ($currentUser['display_name'] ?? 'admin'), []);
+            $success = 'Hide/recall outstanding invoices feature is now '
+                     . ($val === '1'
+                        ? 'ON — grant the "Hide/Recall Invoices from Collection" action in Privileges to allow specific users.'
+                        : 'OFF — nobody, including admin, can hide an invoice from the Collect Payment list; any previously-hidden invoices stay hidden in the database but no longer have any effect.');
+        } catch (\Throwable $e) {
+            $error = 'Failed to save hide-invoice setting: ' . $e->getMessage();
+        }
+    } elseif ($_POST['action'] === 'save_pricing_engine_auto_apply') {
+        // 8 Sep 2026: whether a Pricing Engine catalog price change propagates
+        // automatically to open (not yet shipped/delivered) orders, or stays
+        // the pre-existing human-reviewed-only model (admin_edit.php manual
+        // re-price + mandatory reason). OFF = current/original behavior.
+        try {
+            $db->getPdo()->exec("CREATE TABLE IF NOT EXISTS `settings` (
+                `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+                `name` varchar(100) NOT NULL,
+                `value` text DEFAULT NULL,
+                PRIMARY KEY (`id`), UNIQUE KEY `uk_settings_name` (`name`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+            $val = !empty($_POST['pricing_engine_auto_apply_to_orders']) ? '1' : '0';
+            $db->query(
+                "INSERT INTO settings (name, value) VALUES ('pricing_engine_auto_apply_to_orders', ?)
+                 ON DUPLICATE KEY UPDATE value = VALUES(value)",
+                [$val]
+            );
+            auditLog('company_settings', 'pricing_engine_auto_apply_toggled',
+                'Pricing Engine auto-apply-to-open-orders ' . ($val === '1' ? 'ENABLED' : 'DISABLED') . ' by ' . ($currentUser['display_name'] ?? 'admin'), []);
+            $success = 'Pricing policy saved: catalog price changes '
+                     . ($val === '1'
+                        ? 'now automatically shift the price on every open order (not yet shipped/delivered/cancelled) for that product — logged to that order\'s Price Revision History, no per-order approval.'
+                        : 'no longer touch open orders automatically — re-price an open order manually via Admin Edit (mandatory reason required, visible in Price Revision History).');
+        } catch (\Throwable $e) {
+            $error = 'Failed to save pricing-engine auto-apply setting: ' . $e->getMessage();
         }
     } elseif ($_POST['action'] === 'save_commodity_sale_approval') {
         // Commodity Trading: require approval for every commodity sale posted
@@ -332,12 +445,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 
 // Current dispatch-hold policy for the toggle UI
 $dispatch_hold_on = dispatchGlobalHoldEnabled();
+// Current dispatch-stage hold re-check policy for the toggle UI (OFF by default)
+$dispatch_stage_recheck_on = dispatchStageHoldRecheckEnabled();
 // Current invoice outstanding-display policy for the toggle UI
 $invoice_outstanding_on = showInvoiceOutstandingEnabled();
 // Current payment-approval policy for the toggle UI
 $payment_approval_on = paymentApprovalRequiredForAll();
 // Current credit-limit auto-release policy for the toggle UI
 $credit_limit_auto_release_on = creditLimitAutoReleaseEnabled();
+$order_full_amendment_on = orderFullAmendmentEnabled();
+$hide_invoice_from_collection_on = hideInvoiceFromCollectionEnabled();
+// Current pricing-engine auto-apply-to-open-orders policy for the toggle UI (OFF by default)
+$pricing_engine_auto_apply_on = pricingEngineAutoApplyEnabled();
 // Current commodity-sale approval policy for the toggle UI
 $commodity_sale_approval_on = commoditySaleApprovalRequiredForAll();
 $loan_disbursement_approval_on = loanDisbursementApprovalRequiredForAll();
@@ -583,6 +702,40 @@ require_once '../templates/header.php';
     </form>
 </div>
 
+<!-- ═══ Dispatch Page — Hold Re-check (added 2 Sep 2026) ═══════════════════════ -->
+<div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+    <h2 class="text-lg font-bold text-gray-800 mb-1 flex items-center gap-2">
+        <i class="fas fa-layer-group text-orange-600"></i> Dispatch Page — Hold Re-check
+    </h2>
+    <p class="text-sm text-gray-500 mb-4">
+        Production's <strong>Ready to Ship</strong> action always checks the payment/dispatch hold before
+        an order can move forward — that check is required and this toggle does not affect it.
+        This toggle controls whether the <strong>Dispatch page</strong> (Ship and Deliver actions) ALSO
+        re-verifies the same hold a second/third time before proceeding. <strong>OFF by default</strong> —
+        Production's check is treated as the single required gate, and Dispatch no longer re-checks it.
+        Turn ON to add that extra re-check back as a second safety layer.
+    </p>
+    <form method="POST" class="flex items-center gap-4">
+        <input type="hidden" name="action" value="save_dispatch_stage_hold_recheck">
+        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrfToken); ?>">
+        <input type="hidden" name="dispatch_stage_hold_recheck" value="0">
+        <label class="inline-flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" name="dispatch_stage_hold_recheck" value="1"
+                   <?php echo $dispatch_stage_recheck_on ? 'checked' : ''; ?>
+                   class="w-5 h-5 accent-orange-600">
+            <span class="text-sm font-medium text-gray-700">
+                Re-verify payment/dispatch hold on the Dispatch page too
+                <span class="ml-1 text-xs px-2 py-0.5 rounded-full <?php echo $dispatch_stage_recheck_on ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'; ?>">
+                    <?php echo $dispatch_stage_recheck_on ? 'ON' : 'OFF'; ?>
+                </span>
+            </span>
+        </label>
+        <button type="submit" class="px-4 py-2 bg-orange-600 text-white text-sm font-semibold rounded-lg hover:bg-orange-700">
+            <i class="fas fa-save mr-1"></i>Save Policy
+        </button>
+    </form>
+</div>
+
 <!-- ═══ Credit Invoice — Outstanding Display ═══════════════════════════════════ -->
 <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
     <h2 class="text-lg font-bold text-gray-800 mb-1 flex items-center gap-2">
@@ -610,6 +763,42 @@ require_once '../templates/header.php';
             </span>
         </label>
         <button type="submit" class="px-4 py-2 bg-teal-600 text-white text-sm font-semibold rounded-lg hover:bg-teal-700">
+            <i class="fas fa-save mr-1"></i>Save Policy
+        </button>
+    </form>
+</div>
+
+<!-- ═══ Pricing Engine → Open Orders Policy ════════════════════════════════════ -->
+<div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+    <h2 class="text-lg font-bold text-gray-800 mb-1 flex items-center gap-2">
+        <i class="fas fa-tags text-rose-600"></i> Pricing Engine → Open Orders
+    </h2>
+    <p class="text-sm text-gray-500 mb-4">
+        An order's line-item price is locked in when it's placed — the Pricing Engine changing a
+        product's catalog price does <strong>not</strong> touch it by default.
+        When ON, a catalog price change <strong>automatically shifts the price</strong> (by the same
+        amount the catalog moved) on every open order for that product — any order not yet
+        Goods on Board / Shipped / Delivered / Cancelled / Rejected — with no per-order approval;
+        each change is still logged to that order's Price Revision History for after-the-fact review.
+        When OFF (default), a catalog price change never touches an already-placed order — re-pricing
+        one requires an admin to manually edit it (Admin Edit → mandatory reason), same as today.
+    </p>
+    <form method="POST" class="flex items-center gap-4">
+        <input type="hidden" name="action" value="save_pricing_engine_auto_apply">
+        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrfToken); ?>">
+        <input type="hidden" name="pricing_engine_auto_apply_to_orders" value="0">
+        <label class="inline-flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" name="pricing_engine_auto_apply_to_orders" value="1"
+                   <?php echo $pricing_engine_auto_apply_on ? 'checked' : ''; ?>
+                   class="w-5 h-5 accent-rose-600">
+            <span class="text-sm font-medium text-gray-700">
+                Auto-apply Pricing Engine changes to open orders
+                <span class="ml-1 text-xs px-2 py-0.5 rounded-full <?php echo $pricing_engine_auto_apply_on ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'; ?>">
+                    <?php echo $pricing_engine_auto_apply_on ? 'ON' : 'OFF'; ?>
+                </span>
+            </span>
+        </label>
+        <button type="submit" class="px-4 py-2 bg-rose-600 text-white text-sm font-semibold rounded-lg hover:bg-rose-700">
             <i class="fas fa-save mr-1"></i>Save Policy
         </button>
     </form>
@@ -643,6 +832,81 @@ require_once '../templates/header.php';
             </span>
         </label>
         <button type="submit" class="px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700">
+            <i class="fas fa-save mr-1"></i>Save Policy
+        </button>
+    </form>
+</div>
+
+<!-- ═══ Order Product/Quantity Correction ═══════════════════════════════════════ -->
+<div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+    <h2 class="text-lg font-bold text-gray-800 mb-1 flex items-center gap-2">
+        <i class="fas fa-file-pen text-cyan-600"></i> Order Product/Quantity Correction
+    </h2>
+    <p class="text-sm text-gray-500 mb-4">
+        Master switch for correcting WHICH product/variant (not just quantity or price) a line item actually
+        was on an order that has already been dispatched — for a fully delivered, fully paid order that turns
+        out to have been entered against the wrong product entirely. When ON, Superadmin/admin get a
+        "Product/Quantity Correction" option in <strong>Order Amendment</strong>, and can delegate it to
+        specific users via Privileges (<em>Correct Product/Quantity on Delivered Orders</em>, under Credit
+        Sales → Order Amendment). Every use still requires a mandatory reason, customer-consent confirmation,
+        a full audit trail, and posts a correcting entry to the customer ledger — this toggle only controls
+        whether the capability exists at all. <strong>OFF by default</strong> — when OFF, nobody (including
+        admin) can change a line's product/variant on a dispatched order.
+    </p>
+    <form method="POST" class="flex items-center gap-4">
+        <input type="hidden" name="action" value="save_order_full_amendment">
+        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrfToken); ?>">
+        <input type="hidden" name="order_full_amendment_enabled" value="0">
+        <label class="inline-flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" name="order_full_amendment_enabled" value="1"
+                   <?php echo $order_full_amendment_on ? 'checked' : ''; ?>
+                   class="w-5 h-5 accent-cyan-600">
+            <span class="text-sm font-medium text-gray-700">
+                Allow product/quantity correction on dispatched orders
+                <span class="ml-1 text-xs px-2 py-0.5 rounded-full <?php echo $order_full_amendment_on ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'; ?>">
+                    <?php echo $order_full_amendment_on ? 'ON' : 'OFF'; ?>
+                </span>
+            </span>
+        </label>
+        <button type="submit" class="px-4 py-2 bg-cyan-600 text-white text-sm font-semibold rounded-lg hover:bg-cyan-700">
+            <i class="fas fa-save mr-1"></i>Save Policy
+        </button>
+    </form>
+</div>
+
+<!-- ═══ Hide/Recall Outstanding Invoices (Collect Payment) ═══════════════════════ -->
+<div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+    <h2 class="text-lg font-bold text-gray-800 mb-1 flex items-center gap-2">
+        <i class="fas fa-eye-slash text-indigo-600"></i> Hide/Recall Outstanding Invoices (Collect Payment)
+    </h2>
+    <p class="text-sm text-gray-500 mb-4">
+        Master switch for hiding a specific outstanding invoice from a customer's list on the
+        <strong>Collect Payment</strong> page, so it can't be accidentally allocated a payment — and recalling
+        it back into view later, from the same page. Purely a visibility control: it never changes any
+        amount, never touches the customer ledger, and the invoice still shows normally everywhere else
+        (Outstanding Invoices report, statements, etc.). When ON, Superadmin/admin get Hide/Recall controls
+        on Collect Payment, and can delegate the capability to specific users via Privileges
+        (<em>Hide/Recall Invoices from Collection</em>, under Credit Sales → Collect Payment). Every
+        hide/recall is logged with who and when, with an optional reason. <strong>OFF by default</strong> —
+        when OFF, nobody (including admin) can hide an invoice, and any invoices hidden from an earlier ON
+        period stop being hidden (the record isn't deleted, it just has no effect while the toggle is off).
+    </p>
+    <form method="POST" class="flex items-center gap-4">
+        <input type="hidden" name="action" value="save_hide_invoice_from_collection">
+        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrfToken); ?>">
+        <input type="hidden" name="hide_invoice_from_collection_enabled" value="0">
+        <label class="inline-flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" name="hide_invoice_from_collection_enabled" value="1"
+                   <?php echo $hide_invoice_from_collection_on ? 'checked' : ''; ?>
+                   class="w-5 h-5 accent-indigo-600">
+            <span class="text-sm font-medium text-gray-700">
+                Allow hiding/recalling outstanding invoices on Collect Payment
+                <span class="ml-1 text-xs px-2 py-0.5 rounded-full <?php echo $hide_invoice_from_collection_on ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'; ?>">
+                    <?php echo $hide_invoice_from_collection_on ? 'ON' : 'OFF'; ?>
+                </span>
+            </span>
+        </label>
+        <button type="submit" class="px-4 py-2 bg-indigo-600 text-white text-sm font-semibold rounded-lg hover:bg-indigo-700">
             <i class="fas fa-save mr-1"></i>Save Policy
         </button>
     </form>

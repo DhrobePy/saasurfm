@@ -12,6 +12,12 @@ $is_admin = in_array($currentUser['role'] ?? '', ['Superadmin', 'admin']);
 // Feature #1: editing a posted receipt — admins, or anyone granted
 // Payment History → Edit Posted Payment in Privileges.
 $can_edit_posted_payment = $is_admin || userCanPageAction('credit_sales', 'payment_history', 'can_edit');
+// Hide/recall specific outstanding invoices from this page's lists — master
+// toggle (admin/settings.php) AND per-user delegation, same convention as
+// order_amendment's can_change_products. Visibility-only, never touches
+// money/ledger.
+$can_hide_invoice = hideInvoiceFromCollectionEnabled()
+    && ($is_admin || userCanPageAction('credit_sales', 'customer_payment', 'can_hide_invoice'));
 $pageTitle = 'Record Customer Payment';
 $error = null;
 $success = null;
@@ -42,12 +48,13 @@ $customers = $db->query(
 
 // --- DATA: Get Bank Accounts ---
 $bank_accounts = $db->query(
-    "SELECT ba.id, ba.chart_of_account_id, ba.bank_name, ba.account_name, ba.account_number
+    "SELECT ba.id, ba.chart_of_account_id, ba.bank_name, ba.account_name, ba.account_number, ba.current_balance
      FROM bank_accounts ba
      JOIN chart_of_accounts coa ON ba.chart_of_account_id = coa.id
      WHERE ba.status = 'active' AND coa.account_type = 'Bank'
      ORDER BY ba.account_name"
 )->results();
+$canSeeBalance = canViewBankBalances();
 
 // --- DATA: Get Accounting Accounts (for Journal Entry) ---
 $cash_account = $db->query(
@@ -91,6 +98,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         $bank_account_id = !empty($_POST['bank_account_id']) ? (int)$_POST['bank_account_id'] : null;
         $reference_number = trim($_POST['reference_number'] ?? '');
         $notes = trim($_POST['notes'] ?? '');
+        $bank_transaction_type = ($payment_method === 'Bank Transfer' && !empty($_POST['bank_transaction_type']))
+            ? $_POST['bank_transaction_type'] : null;
         
         $payment_type = $_POST['payment_type']; // 'advance' or 'invoice_payment'
         $payment_amount = floatval($_POST['paymentAmount']); // The single total amount
@@ -130,6 +139,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                         'payment_date'     => $payment_date,
                         'payment_method'   => $payment_method,
                         'bank_account_id'  => $bank_account_id,
+                        'bank_transaction_type' => $bank_transaction_type,
                         'reference_number' => $reference_number,
                         'notes'            => $notes,
                         'payment_type'     => $payment_type,
@@ -190,6 +200,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             'payment_method' => $payment_method,
             'payment_type' => $payment_type,
             'bank_account_id' => $bank_account_id,
+            'bank_transaction_type' => $bank_transaction_type,
             'reference_number' => $reference_number,
             'notes' => $notes,
             'allocated_to_invoices' => ($payment_type === 'invoice_payment') ? json_encode($allocations) : null,
@@ -528,9 +539,12 @@ if ($edit_pay_id_get) {
         }
         if (!empty($edit_pay->bank_account_id)) {
             $edit_pay_bank = $db->query(
-                "SELECT id, CONCAT(bank_name, ' — ', account_name) AS label FROM bank_accounts WHERE id = ?",
+                "SELECT id, bank_name, account_name, account_number, current_balance FROM bank_accounts WHERE id = ?",
                 [(int)$edit_pay->bank_account_id]
             )->first();
+            if ($edit_pay_bank) {
+                $edit_pay_bank->label = bankAccountOptionLabel($edit_pay_bank->bank_name, $edit_pay_bank->account_name, $edit_pay_bank->account_number, (float)$edit_pay_bank->current_balance, $canSeeBalance);
+            }
         }
     }
 }
@@ -829,6 +843,18 @@ require_once '../templates/header.php';
                         </div>
                         <p id="bank_selected_label" class="mt-1 text-[11px] text-green-700 font-medium hidden"></p>
                     </div>
+                    <div id="bankTxTypeDiv" style="display:none;" class="mt-3">
+                        <label class="block text-[10px] font-semibold uppercase tracking-wider text-gray-500 mb-1">Transaction Type</label>
+                        <select name="bank_transaction_type"
+                                class="w-full px-2.5 py-1.5 text-sm border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-primary-500">
+                            <option value="">— Select —</option>
+                            <option value="RTGS">RTGS</option>
+                            <option value="BEFTN">BEFTN</option>
+                            <option value="NPSB">NPSB</option>
+                            <option value="Online">Online</option>
+                            <option value="Deposit">Deposit</option>
+                        </select>
+                    </div>
                     <div id="cashAccountDiv" style="display:block;" class="mt-3">
                         <label class="block text-[10px] font-semibold uppercase tracking-wider text-gray-500 mb-1">Deposit To Account</label>
                         <p class="w-full px-2.5 py-1.5 text-sm border border-gray-100 bg-gray-50 rounded-lg text-gray-600"><?php echo htmlspecialchars($cash_account->name ?? 'N/A'); ?></p>
@@ -893,7 +919,7 @@ require_once '../templates/header.php';
                                     <th class="px-3 py-2 text-right text-[10px] font-semibold uppercase tracking-wider text-gray-500">Already Paid</th>
                                     <th class="px-3 py-2 text-right text-[10px] font-semibold uppercase tracking-wider text-gray-500">Due Left</th>
                                     <th class="px-3 py-2 text-right text-[10px] font-semibold uppercase tracking-wider text-gray-500 w-32">Amount to Pay</th>
-                                    <?php if ($is_admin): ?><th class="px-2 py-2 w-16"></th><?php endif; ?>
+                                    <?php if ($is_admin || $can_hide_invoice): ?><th class="px-2 py-2 w-20"></th><?php endif; ?>
                                 </tr>
                             </thead>
                             <tbody>
@@ -922,8 +948,9 @@ require_once '../templates/header.php';
                                                    x-model.number="order.amountToPay"
                                                    @input="calculateTotal">
                                         </td>
-                                        <?php if ($is_admin): ?>
+                                        <?php if ($is_admin || $can_hide_invoice): ?>
                                         <td class="px-2 py-2 text-center whitespace-nowrap">
+                                            <?php if ($is_admin): ?>
                                             <button type="button" @click="removeOrder(order.id)"
                                                     class="text-gray-300 hover:text-amber-500" title="Exclude from this payment's allocation only (does not delete the order)">
                                                 <i class="fas fa-times"></i>
@@ -932,6 +959,13 @@ require_once '../templates/header.php';
                                                     class="text-gray-300 hover:text-red-600 ml-1" title="Permanently delete this order (Recycle Bin — reversible)">
                                                 <i class="fas fa-trash-alt"></i>
                                             </button>
+                                            <?php endif; ?>
+                                            <?php if ($can_hide_invoice): ?>
+                                            <button type="button" @click="hideInvoiceFromCollection(order.id, order.order_number)"
+                                                    class="text-gray-300 hover:text-indigo-600 ml-1" title="Hide from this outstanding list until recalled (Collect Payment only — does not affect the order or ledger)">
+                                                <i class="fas fa-eye-slash"></i>
+                                            </button>
+                                            <?php endif; ?>
                                         </td>
                                         <?php endif; ?>
                                     </tr>
@@ -940,6 +974,46 @@ require_once '../templates/header.php';
                         </table>
                     </div>
                 </div>
+
+                <?php if ($can_hide_invoice): ?>
+                <div x-show="hiddenInvoices.length > 0" class="px-4 py-2 border-t border-gray-100">
+                    <button type="button" @click="showHiddenPanel = !showHiddenPanel"
+                            class="text-xs font-semibold text-indigo-600 hover:text-indigo-800 flex items-center gap-1.5">
+                        <i class="fas fa-eye-slash"></i>
+                        <span x-text="hiddenInvoices.length + ' hidden invoice' + (hiddenInvoices.length === 1 ? '' : 's')"></span>
+                        <i class="fas fa-chevron-down text-[9px] transition-transform" :class="{ 'rotate-180': showHiddenPanel }"></i>
+                    </button>
+                    <div x-show="showHiddenPanel" x-transition class="mt-2 overflow-x-auto">
+                        <table class="min-w-full text-xs border border-indigo-100 rounded-lg overflow-hidden">
+                            <thead class="bg-indigo-50">
+                                <tr>
+                                    <th class="px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wider text-indigo-500">Order #</th>
+                                    <th class="px-3 py-2 text-right text-[10px] font-semibold uppercase tracking-wider text-indigo-500">Due Left</th>
+                                    <th class="px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wider text-indigo-500">Hidden By</th>
+                                    <th class="px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wider text-indigo-500">Reason</th>
+                                    <th class="px-2 py-2 w-20"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template x-for="order in hiddenInvoices" :key="order.id">
+                                    <tr class="border-b border-indigo-50">
+                                        <td class="px-3 py-2 font-medium text-primary-700" x-text="order.order_number"></td>
+                                        <td class="px-3 py-2 text-right text-red-600 font-medium" x-text="'৳' + parseFloat(order.balance_due).toFixed(2)"></td>
+                                        <td class="px-3 py-2 text-gray-500" x-text="(order.hidden_by_name || '—') + ' · ' + new Date(order.hidden_at).toLocaleDateString('en-GB')"></td>
+                                        <td class="px-3 py-2 text-gray-500" x-text="order.reason || '—'"></td>
+                                        <td class="px-2 py-2 text-center whitespace-nowrap">
+                                            <button type="button" @click="recallInvoice(order.id)"
+                                                    class="text-indigo-500 hover:text-indigo-700 text-[10px] font-semibold" title="Recall — bring this invoice back into the outstanding list">
+                                                <i class="fas fa-undo mr-0.5"></i>Recall
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <?php endif; ?>
 
                 <div class="px-4 py-3 bg-gray-50 border-t border-gray-100 flex justify-end rounded-b-lg">
                     <button type="submit"
@@ -1150,6 +1224,7 @@ require_once '../templates/header.php';
 </div>
 
 <script>
+const CAN_HIDE_INVOICE = <?php echo $can_hide_invoice ? 'true' : 'false'; ?>;
 // ── Customer live-search ────────────────────────────────────
 const cpCustomerData = <?php echo json_encode(array_map(function($c) {
     return [
@@ -1221,10 +1296,10 @@ document.addEventListener('click', function(e) {
 });
 
 // ── Bank account live-search ────────────────────────────────
-const bankAccountData = <?php echo json_encode(array_map(function($a) {
+const bankAccountData = <?php echo json_encode(array_map(function($a) use ($canSeeBalance) {
     return [
         'id'     => $a->id,
-        'label'  => $a->bank_name . ' – ' . $a->account_name . ' (' . $a->account_number . ')',
+        'label'  => bankAccountOptionLabel($a->bank_name, $a->account_name, $a->account_number, (float)$a->current_balance, $canSeeBalance),
     ];
 }, $bank_accounts)); ?>;
 
@@ -1260,6 +1335,7 @@ function toggleBankAccount(select) {
     const bankDiv = document.getElementById('bankAccountDiv');
     const cashDiv = document.getElementById('cashAccountDiv');
     const bankHidden = document.getElementById('bank_account_id_hidden');
+    const txTypeDiv = document.getElementById('bankTxTypeDiv');
 
     if (select.value && select.value !== 'Cash') {
         bankDiv.style.display = 'block';
@@ -1271,6 +1347,14 @@ function toggleBankAccount(select) {
         document.getElementById('bank_search_box').value = '';
         document.getElementById('bank_selected_label').classList.add('hidden');
     }
+
+    if (txTypeDiv) {
+        txTypeDiv.style.display = select.value === 'Bank Transfer' ? 'block' : 'none';
+        if (select.value !== 'Bank Transfer') {
+            const txSel = txTypeDiv.querySelector('select[name="bank_transaction_type"]');
+            if (txSel) txSel.value = '';
+        }
+    }
 }
 
 // Alpine.js component
@@ -1279,10 +1363,12 @@ function paymentForm() {
         customer: { id: null, name: '', balance: '0.00', credit_limit: '0.00', available: '0.00' },
         outstandingOrders: [],
         isLoadingInvoices: false,
-        paymentAmount: 0, 
-        totalAllocated: 0, 
+        hiddenInvoices: [],
+        showHiddenPanel: false,
+        paymentAmount: 0,
+        totalAllocated: 0,
         paymentType: 'advance', // Default to 'advance'
-        
+
         // **FIX 1:** This function is now called by our new custom event
         selectCustomer(customerData) {
             // Check if customerData is valid
@@ -1298,11 +1384,13 @@ function paymentForm() {
                 available: parseFloat(customerData.available || 0).toFixed(2)
             };
             this.fetchOutstandingOrders();
+            if (CAN_HIDE_INVOICE) this.fetchHiddenInvoices();
         },
-        
+
         resetCustomer() {
             this.customer = { id: null, name: '', balance: '0.00', credit_limit: '0.00', available: '0.00' };
             this.outstandingOrders = [];
+            this.hiddenInvoices = [];
             this.paymentAmount = 0;
             this.totalAllocated = 0;
             this.paymentType = 'advance';
@@ -1363,6 +1451,65 @@ function paymentForm() {
                 this.isLoadingInvoices = false;
                 alert('An error occurred while fetching invoices.');
             });
+        },
+
+        fetchHiddenInvoices() {
+            if (!this.customer.id) return;
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
+            fetch('../cr/ajax_handler.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrfToken },
+                body: JSON.stringify({ action: 'get_hidden_invoices', customer_id: this.customer.id, csrf_token: csrfToken })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    this.hiddenInvoices = data.orders;
+                } else {
+                    console.error('get_hidden_invoices error:', data.error);
+                }
+            })
+            .catch(err => console.error(err));
+        },
+
+        hideInvoiceFromCollection(orderId, orderNumber) {
+            const reason = prompt('Hide invoice ' + orderNumber + ' from this outstanding list? Optional reason:');
+            if (reason === null) return; // cancelled
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
+            fetch('../cr/ajax_handler.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrfToken },
+                body: JSON.stringify({ action: 'hide_invoice_from_collection', order_id: orderId, reason: reason, csrf_token: csrfToken })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    this.outstandingOrders = this.outstandingOrders.filter(o => o.id !== orderId);
+                    this.fetchHiddenInvoices();
+                } else {
+                    alert('Error hiding invoice: ' + (data.error || 'Unknown error'));
+                }
+            })
+            .catch(err => { console.error(err); alert('An error occurred while hiding the invoice.'); });
+        },
+
+        recallInvoice(orderId) {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
+            fetch('../cr/ajax_handler.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrfToken },
+                body: JSON.stringify({ action: 'unhide_invoice_from_collection', order_id: orderId, csrf_token: csrfToken })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    this.fetchHiddenInvoices();
+                    this.fetchOutstandingOrders();
+                } else {
+                    alert('Error recalling invoice: ' + (data.error || 'Unknown error'));
+                }
+            })
+            .catch(err => { console.error(err); alert('An error occurred while recalling the invoice.'); });
         },
 
         calculateTotal() {

@@ -124,6 +124,7 @@ if (isset($_GET['ajax'])) {
 // Load dropdown data
 $categories = $expenseManager->getAllCategories();
 $bank_accounts = $expenseManager->getAllBankAccounts();
+$canSeeBalance = canViewBankBalances();
 $cash_accounts = $expenseManager->getAllCashAccounts();
 $branches = $expenseManager->getAllBranches();
 $employees = $expenseManager->getAllEmployees();
@@ -336,9 +337,9 @@ require_once '../templates/header.php';
                             class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500">
                         <option value="">-- Select Bank Account --</option>
                         <?php foreach ($bank_accounts as $account): ?>
-                            <option value="<?php echo $account->id; ?>" data-balance="<?php echo $account->current_balance; ?>">
-                                <?php echo htmlspecialchars($account->bank_name . ' - ' . $account->account_name); ?>
-                                (Balance: ৳<?php echo number_format($account->current_balance, 2); ?>)
+                            <option value="<?php echo $account->id; ?>"
+                                <?php if ($canSeeBalance): ?>data-balance="<?php echo $account->current_balance; ?>"<?php endif; ?>>
+                                <?php echo htmlspecialchars(bankAccountOptionLabel($account->bank_name, $account->account_name, $account->account_number, (float)$account->current_balance, $canSeeBalance)); ?>
                             </option>
                         <?php endforeach; ?>
                     </select>

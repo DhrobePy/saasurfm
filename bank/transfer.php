@@ -19,14 +19,17 @@ $userName     = $currentUser['display_name'];
 $ipAddress    = $_SERVER['REMOTE_ADDR'] ?? null;
 $isFullAdmin  = in_array($userRole, ['Superadmin', 'admin'], true);
 
-// Superadmin/admin see the short "Bank Name — Account Name" label; everyone
-// else gets the account number included too, so they can positively identify
-// the right account without needing balance/admin-only context to disambiguate.
-function bankAccountLabel(object $a, bool $isFullAdmin): string {
-    return $isFullAdmin
-        ? ($a->bank_name . ' — ' . $a->account_name)
-        : ($a->bank_name . ' - ' . $a->account_number . ' - ' . $a->account_name);
+// Every account picker always shows bank name, account name, and account
+// number to everyone — balance is the only thing gated (canViewBankBalances(),
+// core/functions/helpers.php), applied separately at each call site below.
+// Previously this varied the label itself by admin status (admins got a
+// SHORTER label without the account number, oddly the opposite of showing
+// more detail to non-admins) — replaced per explicit request that every
+// bank-account picker show the same identifying fields to everyone.
+function bankAccountLabel(object $a): string {
+    return bankAccountOptionLabel($a->bank_name, $a->account_name, $a->account_number, null, false);
 }
+$canSeeBalance = canViewBankBalances();
 
 $bankManager  = new BankManager();
 $db           = Database::getInstance();
@@ -170,7 +173,7 @@ require_once dirname(__DIR__) . '/templates/header.php';
                     <option value="">All</option>
                     <?php foreach ($accounts as $a): ?>
                     <option value="<?php echo $a->id; ?>" <?php echo $filters['from_account_id'] == $a->id ? 'selected' : ''; ?>>
-                        <?php echo htmlspecialchars(bankAccountLabel($a, $isFullAdmin)); ?>
+                        <?php echo htmlspecialchars(bankAccountLabel($a)); ?>
                     </option>
                     <?php endforeach; ?>
                 </select>
@@ -183,7 +186,7 @@ require_once dirname(__DIR__) . '/templates/header.php';
                     <option value="">All</option>
                     <?php foreach ($accounts as $a): ?>
                     <option value="<?php echo $a->id; ?>" <?php echo $filters['to_account_id'] == $a->id ? 'selected' : ''; ?>>
-                        <?php echo htmlspecialchars(bankAccountLabel($a, $isFullAdmin)); ?>
+                        <?php echo htmlspecialchars(bankAccountLabel($a)); ?>
                     </option>
                     <?php endforeach; ?>
                 </select>
@@ -413,10 +416,10 @@ require_once dirname(__DIR__) . '/templates/header.php';
                         $bal = (float)$a->opening_balance + (float)$a->module_balance;
                     ?>
                     <option value="<?php echo $a->id; ?>"
-                            data-name="<?php echo htmlspecialchars(bankAccountLabel($a, $isFullAdmin)); ?>"
-                            <?php if ($isFullAdmin): ?>data-balance="<?php echo $bal; ?>"<?php endif; ?>>
-                        <?php echo htmlspecialchars(bankAccountLabel($a, $isFullAdmin)); ?>
-                        <?php if ($isFullAdmin): ?>(Bal: ৳<?php echo number_format($bal, 0); ?>)<?php endif; ?>
+                            data-name="<?php echo htmlspecialchars(bankAccountLabel($a)); ?>"
+                            <?php if ($canSeeBalance): ?>data-balance="<?php echo $bal; ?>"<?php endif; ?>>
+                        <?php echo htmlspecialchars(bankAccountLabel($a)); ?>
+                        <?php if ($canSeeBalance): ?>(Bal: ৳<?php echo number_format($bal, 0); ?>)<?php endif; ?>
                     </option>
                     <?php endforeach; ?>
                 </select>
@@ -435,8 +438,8 @@ require_once dirname(__DIR__) . '/templates/header.php';
                     <option value="">— Select destination account —</option>
                     <?php foreach ($accounts as $a): ?>
                     <option value="<?php echo $a->id; ?>"
-                            data-name="<?php echo htmlspecialchars(bankAccountLabel($a, $isFullAdmin)); ?>">
-                        <?php echo htmlspecialchars(bankAccountLabel($a, $isFullAdmin)); ?>
+                            data-name="<?php echo htmlspecialchars(bankAccountLabel($a)); ?>">
+                        <?php echo htmlspecialchars(bankAccountLabel($a)); ?>
                     </option>
                     <?php endforeach; ?>
                 </select>

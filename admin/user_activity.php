@@ -102,37 +102,6 @@ $sql .= " ORDER BY sal.created_at DESC LIMIT " . $limit;
 
 $activities = $db->query($sql, $params)->results();
 
-// Get statistics
-$statsSQL = "SELECT 
-        COUNT(*) as total_actions,
-        COUNT(DISTINCT user_id) as unique_users,
-        COUNT(DISTINCT DATE(created_at)) as active_days,
-        COUNT(CASE WHEN severity = 'critical' THEN 1 END) as critical_count,
-        COUNT(CASE WHEN module = 'user_management' AND record_type = 'user_session' THEN 1 END) as auth_count
-    FROM system_audit_log
-    WHERE 1=1";
-
-$statsParams = [];
-
-if ($startDate && $endDate) {
-    $statsSQL .= " AND DATE(created_at) BETWEEN ? AND ?";
-    $statsParams[] = $startDate;
-    $statsParams[] = $endDate;
-} elseif ($startDate) {
-    $statsSQL .= " AND DATE(created_at) >= ?";
-    $statsParams[] = $startDate;
-} elseif ($endDate) {
-    $statsSQL .= " AND DATE(created_at) <= ?";
-    $statsParams[] = $endDate;
-}
-
-if ($selectedUserId) {
-    $statsSQL .= " AND user_id = ?";
-    $statsParams[] = $selectedUserId;
-}
-
-$stats = $db->query($statsSQL, $statsParams)->first();
-
 // Get all users for dropdown
 $allUsers = $db->query("SELECT id, display_name, role, email FROM users WHERE status = 'active' ORDER BY display_name")->results();
 
@@ -235,70 +204,6 @@ include '../templates/header.php';
             <button onclick="window.print()" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors">
                 <i class="fas fa-print mr-2"></i>Print
             </button>
-        </div>
-    </div>
-
-    <!-- Statistics Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
-        <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg p-6 text-white">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-blue-100 text-sm font-medium mb-1">Total Actions</p>
-                    <p class="text-3xl font-bold"><?= number_format($stats->total_actions ?? 0) ?></p>
-                </div>
-                <div class="bg-white bg-opacity-20 p-3 rounded-lg">
-                    <i class="fas fa-chart-line text-2xl"></i>
-                </div>
-            </div>
-        </div>
-
-        <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg p-6 text-white">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-green-100 text-sm font-medium mb-1">Active Users</p>
-                    <p class="text-3xl font-bold"><?= number_format($stats->unique_users ?? 0) ?></p>
-                </div>
-                <div class="bg-white bg-opacity-20 p-3 rounded-lg">
-                    <i class="fas fa-users text-2xl"></i>
-                </div>
-            </div>
-        </div>
-
-        <div class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl shadow-lg p-6 text-white">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-purple-100 text-sm font-medium mb-1">Active Days</p>
-                    <p class="text-3xl font-bold"><?= number_format($stats->active_days ?? 0) ?></p>
-                </div>
-                <div class="bg-white bg-opacity-20 p-3 rounded-lg">
-                    <i class="fas fa-calendar-alt text-2xl"></i>
-                </div>
-            </div>
-        </div>
-
-        <div class="bg-gradient-to-br from-red-500 to-red-600 rounded-xl shadow-lg p-6 text-white">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-red-100 text-sm font-medium mb-1">Critical Actions</p>
-                    <p class="text-3xl font-bold"><?= number_format($stats->critical_count ?? 0) ?></p>
-                </div>
-                <div class="bg-white bg-opacity-20 p-3 rounded-lg">
-                    <i class="fas fa-exclamation-triangle text-2xl"></i>
-                </div>
-            </div>
-        </div>
-
-        <!-- ✅ NEW: Authentication Statistics -->
-        <div class="bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl shadow-lg p-6 text-white">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-indigo-100 text-sm font-medium mb-1">Login/Logout</p>
-                    <p class="text-3xl font-bold"><?= number_format($stats->auth_count ?? 0) ?></p>
-                </div>
-                <div class="bg-white bg-opacity-20 p-3 rounded-lg">
-                    <i class="fas fa-sign-in-alt text-2xl"></i>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -576,7 +481,7 @@ include '../templates/header.php';
                                         <?= ucfirst(str_replace('_', ' ', $displayAction)) ?>
                                     </span>
                                 </td>
-                                <td class="px-6 py-4 text-sm text-gray-900 max-w-md truncate" title="<?= htmlspecialchars($activity->description) ?>">
+                                <td class="px-6 py-4 text-sm text-gray-900 min-w-[20rem] max-w-xl whitespace-normal break-words">
                                     <?= htmlspecialchars($activity->description) ?>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm">

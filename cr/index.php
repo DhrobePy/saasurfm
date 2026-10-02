@@ -29,11 +29,18 @@ $is_dispatcher  = in_array($user_role, ['dispatch-srg', 'dispatch-demra', 'dispa
 /* -----------------------------
    USER BRANCH DETECTION
 ----------------------------- */
-$user_branch = null;
-if (!$is_admin && !$is_accounts && $user_id) {
-    $emp = $db->query("SELECT branch_id FROM employees WHERE user_id = ?", [$user_id])->first();
-    $user_branch = $emp ? $emp->branch_id : null;
-}
+// Access-Manager-aware (was: hardcoded to the user's own employees.branch_id,
+// ignoring any Access Manager data_scope grant — see getUserBranchScope() in
+// helpers.php). Module differs by role: production managers scope under
+// 'production', dispatchers under 'dispatch'; $is_sales bypasses this
+// entirely via its own created_by_user_id filter below.
+$branch_module = $is_production ? 'production' : ($is_dispatcher ? 'dispatch' : 'credit_sales');
+$branch_scope  = (!$is_admin && !$is_accounts) ? getUserBranchScope($branch_module) : null;
+// Legacy single-branch alias kept for the two "IF exactly one branch" spots
+// below that predate multi-branch grants; null when unrestricted OR when the
+// scope covers more than one branch (those spots then show the full set via
+// branchScopeSql() instead).
+$user_branch = ($branch_scope !== null && count($branch_scope) === 1) ? $branch_scope[0] : null;
 
 /* -----------------------------
    DASHBOARD STATISTICS
@@ -50,37 +57,23 @@ if ($is_accounts || $is_admin) {
 
 // Production queue (Production Managers)
 if ($is_production) {
-    if ($user_branch !== null) {
-        $in_prod = $db->query("
-            SELECT COUNT(*) AS count
-            FROM credit_orders
-            WHERE status IN ('approved', 'in_production') AND assigned_branch_id = ?
-        ", [$user_branch])->first();
-    } else {
-        $in_prod = $db->query("
-            SELECT COUNT(*) AS count
-            FROM credit_orders
-            WHERE status IN ('approved', 'in_production')
-        ")->first();
-    }
+    [$pf_sql, $pf_params] = branchScopeSql($branch_module, 'assigned_branch_id');
+    $in_prod = $db->query("
+        SELECT COUNT(*) AS count
+        FROM credit_orders
+        WHERE status IN ('approved', 'in_production') {$pf_sql}
+    ", $pf_params)->first();
     $stats['for_production'] = $in_prod->count ?? 0;
 }
 
 // Ready to ship (Dispatchers)
 if ($is_dispatcher) {
-    if ($user_branch !== null) {
-        $ready = $db->query("
-            SELECT COUNT(*) AS count
-            FROM credit_orders
-            WHERE status = 'ready_to_ship' AND assigned_branch_id = ?
-        ", [$user_branch])->first();
-    } else {
-        $ready = $db->query("
-            SELECT COUNT(*) AS count
-            FROM credit_orders
-            WHERE status = 'ready_to_ship'
-        ")->first();
-    }
+    [$rf_sql, $rf_params] = branchScopeSql($branch_module, 'assigned_branch_id');
+    $ready = $db->query("
+        SELECT COUNT(*) AS count
+        FROM credit_orders
+        WHERE status = 'ready_to_ship' {$rf_sql}
+    ", $rf_params)->first();
     $stats['ready_to_ship'] = $ready->count ?? 0;
 }
 
@@ -121,12 +114,14 @@ if (!empty($status_filter)) {
 if ($is_sales && $user_id) {
     $sql_conditions[] = "co.created_by_user_id = ?";
     $sql_params[] = $user_id;
-} elseif (($is_production || $is_dispatcher) && $user_branch !== null) {
-    $sql_conditions[] = "co.assigned_branch_id = ?";
-    $sql_params[] = $user_branch;
-    
-    // Filter specific statuses for production/dispatch views if needed, 
-    // or let them see everything history-wise for their branch.
+} elseif ($is_production || $is_dispatcher) {
+    [$hist_sql, $hist_params] = branchScopeSql($branch_module, 'co.assigned_branch_id');
+    if ($hist_sql !== '') {
+        $sql_conditions[] = ltrim(substr($hist_sql, 4)); // strip the leading "AND "
+        array_push($sql_params, ...$hist_params);
+    }
+    // Filter specific statuses for production/dispatch views if needed,
+    // or let them see everything history-wise for their branch(es).
 }
 
 $where_clause = implode(' AND ', $sql_conditions);

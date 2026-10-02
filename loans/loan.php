@@ -34,10 +34,11 @@ $cash_account = $db->query(
      ORDER BY CASE WHEN name = 'Undeposited Funds' THEN 0 ELSE 1 END LIMIT 1"
 )->first();
 $bank_accounts = $db->query(
-    "SELECT ba.id, ba.chart_of_account_id, ba.bank_name, ba.account_name
+    "SELECT ba.id, ba.chart_of_account_id, ba.bank_name, ba.account_name, ba.account_number, ba.current_balance
      FROM bank_accounts ba JOIN chart_of_accounts coa ON ba.chart_of_account_id = coa.id
      WHERE ba.status = 'active' AND coa.account_type = 'Bank' ORDER BY ba.account_name"
 )->results();
+$canSeeBalance = canViewBankBalances();
 
 // ── Checker executing an approved request? ──────────────────────────────
 $preq        = null;
@@ -337,7 +338,7 @@ require_once '../templates/header.php';
                 <select name="bank_account_id" class="w-full px-4 py-2 border rounded-lg">
                     <option value="">Select bank account</option>
                     <?php foreach ($bank_accounts as $b): ?>
-                    <option value="<?php echo (int)$b->id; ?>"><?php echo htmlspecialchars($b->bank_name . ' — ' . $b->account_name); ?></option>
+                    <option value="<?php echo (int)$b->id; ?>"><?php echo htmlspecialchars(bankAccountOptionLabel($b->bank_name, $b->account_name, $b->account_number, (float)$b->current_balance, $canSeeBalance)); ?></option>
                     <?php endforeach; ?>
                 </select>
             </div>

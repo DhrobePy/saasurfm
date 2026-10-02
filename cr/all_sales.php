@@ -62,7 +62,31 @@ if (!empty($customer_q)) {
     $params[]      = "%{$customer_q}%";
     $params[]      = "%{$customer_q}%";
 }
-if ($branch_filter) {
+// Branch filter — was a bare, unrestricted `?branch_id=` GET param: any role
+// on the allowed-roles list (accounts-srg, dispatch-demra, production
+// manager-srg, ...) could freely view any OTHER branch's sales by editing
+// the URL, with nothing tying it to their own branch or an Access Manager
+// grant. Admin/Accounts keep full access (existing, intended); everyone
+// else is now bound to getUserBranchScope('credit_sales').
+if (!$is_admin && !$is_accounts) {
+    $branch_scope = getUserBranchScope('credit_sales');
+    if ($branch_scope !== null) {
+        if ($branch_filter > 0 && !in_array($branch_filter, $branch_scope, true)) {
+            $branch_filter = 0; // ignore a pick outside this user's scope
+        }
+        if ($branch_filter > 0) {
+            $conditions[] = "co.assigned_branch_id = ?"; $params[] = $branch_filter;
+        } elseif (!empty($branch_scope)) {
+            $ph = implode(',', array_fill(0, count($branch_scope), '?'));
+            $conditions[] = "co.assigned_branch_id IN ({$ph})";
+            foreach ($branch_scope as $bid) $params[] = $bid;
+        } else {
+            $conditions[] = "0=1"; // fail closed: resolved to zero branches
+        }
+    } elseif ($branch_filter) {
+        $conditions[] = "co.assigned_branch_id = ?"; $params[] = $branch_filter;
+    }
+} elseif ($branch_filter) {
     $conditions[] = "co.assigned_branch_id = ?";
     $params[]      = $branch_filter;
 }
@@ -232,7 +256,16 @@ require_once '../templates/header.php';
         </div>
         <div>
             <label class="block text-xs font-medium text-gray-600 mb-1">Branch</label>
-            <?php $sales_branches = $db->query("SELECT id, name FROM branches WHERE status='active' ORDER BY name")->results(); ?>
+            <?php
+            // Only offer branches this user can actually see, so the dropdown
+            // never presents a choice the query above would silently ignore.
+            $sales_branches = (!$is_admin && !$is_accounts && ($branch_scope ?? null) !== null)
+                ? (empty($branch_scope) ? [] : $db->query(
+                    "SELECT id, name FROM branches WHERE status='active' AND id IN (" . implode(',', array_fill(0, count($branch_scope), '?')) . ") ORDER BY name",
+                    $branch_scope
+                  )->results())
+                : $db->query("SELECT id, name FROM branches WHERE status='active' ORDER BY name")->results();
+            ?>
             <select name="branch_id" class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500">
                 <option value="0">All branches</option>
                 <?php foreach ($sales_branches as $sb): ?>

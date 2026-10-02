@@ -115,7 +115,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     } else {
         try {
             $db->getPdo()->beginTransaction();
-            
+
+            // Resolve the underlying GL (chart_of_accounts) account for double-entry
+            // posting. $bank_account_id here is a bank_accounts.id — it must match
+            // what credit_payment_receipt.php and customer_payment.php's approval
+            // path expect (both JOIN customer_payments.bank_account_id to bank_accounts.id)
+            // — so it is NOT the same id space as chart_of_accounts, which is what
+            // transaction_lines.account_id actually requires.
+            $bank_coa_id = null;
+            if (in_array($payment_method, ['Bank Transfer', 'Cheque']) && $bank_account_id) {
+                $selected_bank_acct = $db->query("SELECT chart_of_account_id FROM bank_accounts WHERE id = ?", [$bank_account_id])->first();
+                if (!$selected_bank_acct || !$selected_bank_acct->chart_of_account_id) {
+                    throw new Exception("Selected bank account has no linked ledger account. Please contact admin.");
+                }
+                $bank_coa_id = (int)$selected_bank_acct->chart_of_account_id;
+            }
+
             // Get customer current balance
             $customer = $db->query("SELECT * FROM customers WHERE id = ?", [$customer_id])->first();
             if (!$customer) throw new Exception("Customer not found");
@@ -252,7 +267,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             } elseif (in_array($payment_method, ['Bank Transfer', 'Cheque']) && $bank_account_id) {
                 $db->insert('transaction_lines', [
                     'journal_entry_id' => $journal_id,
-                    'account_id' => $bank_account_id,
+                    'account_id' => $bank_coa_id,
                     'debit_amount' => $payment_amount,
                     'credit_amount' => 0,
                     'description' => "Payment received via {$payment_method} - Receipt #{$receipt_number}" .
@@ -337,15 +352,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 
             // ── Bridge: mirror to bank_transactions so this payment appears in
             //    the Bank Statement module.  Matched by account_number between
-            //    chart_of_accounts and bank_tx_accounts.  Fails silently.
+            //    bank_accounts and bank_tx_accounts.  Fails silently.
             if (in_array($payment_method, ['Bank Transfer', 'Cheque']) && $bank_account_id) {
                 try {
                     require_once dirname(__DIR__) . '/bank/BankManager.php';
                     $bm_bridge = $db->query(
                         "SELECT bta.id AS bta_id
                          FROM bank_tx_accounts bta
-                         INNER JOIN chart_of_accounts coa ON coa.account_number = bta.account_number
-                         WHERE coa.id = ? AND bta.status = 'active'
+                         INNER JOIN bank_accounts ba ON ba.account_number = bta.account_number
+                         WHERE ba.id = ? AND bta.status = 'active'
                          LIMIT 1",
                         [$bank_account_id]
                     )->first();
@@ -526,13 +541,15 @@ $cash_accounts = $db->query(
      ORDER BY name ASC"
 )->results();
 
-// Get bank accounts from chart of accounts
+// Get bank accounts — bank_accounts is the canonical table (has account_number
+// and a live balance); customer_payments.bank_account_id and the receipt page
+// both key off bank_accounts.id, not chart_of_accounts.id.
+$canSeeBalance = canViewBankBalances();
 $bank_accounts = $db->query(
-    "SELECT id, account_number, name 
-     FROM chart_of_accounts 
-     WHERE account_type = 'Bank'
-     AND status = 'active'
-     ORDER BY name ASC"
+    "SELECT id, bank_name, account_name, account_number, current_balance
+     FROM bank_accounts
+     WHERE status = 'active'
+     ORDER BY bank_name ASC"
 )->results();
 
 require_once '../templates/header.php';
@@ -759,8 +776,7 @@ require_once '../templates/header.php';
                         <option value="">-- Select Bank Account --</option>
                         <?php foreach ($bank_accounts as $acc): ?>
                         <option value="<?php echo $acc->id; ?>">
-                            <?php if ($acc->account_number): ?>[<?php echo htmlspecialchars($acc->account_number); ?>] <?php endif; ?>
-                            <?php echo htmlspecialchars($acc->name); ?>
+                            <?php echo htmlspecialchars(bankAccountOptionLabel($acc->bank_name, $acc->account_name, $acc->account_number, (float)$acc->current_balance, $canSeeBalance)); ?>
                         </option>
                         <?php endforeach; ?>
                     </select>

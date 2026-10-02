@@ -10,6 +10,21 @@ $user_id     = $currentUser['id']   ?? null;
 $user_role   = $currentUser['role'] ?? 'guest';
 $pageTitle   = 'Dashboard';
 
+// ── Un-reverted accounting fix batches — surfaced here so a Superadmin can
+// find and undo a recent data fix without having to know the Recycle Bin
+// page exists. Generic by entity_type='balance_fix' rather than hardcoding
+// a batch id, so any future fix script that opens a batch the same way
+// shows up automatically. Banner disappears on its own once reverted (status
+// flips away from 'deleted') or once the batch ages past 14 days.
+$open_fix_batches = [];
+try {
+    $open_fix_batches = $db->query(
+        "SELECT id, label, row_count, deleted_at, deleted_by_name FROM cr_recycle_bin
+         WHERE entity_type = 'balance_fix' AND status = 'deleted' AND deleted_at >= DATE_SUB(NOW(), INTERVAL 14 DAY)
+         ORDER BY deleted_at DESC"
+    )->results();
+} catch (\Throwable $e) { /* recycle bin tables not migrated yet — fine, just no banner */ }
+
 // ── Safe scalar query — always returns a scalar or default ───────────────────
 function dq(string $sql, array $p, $default = 0) {
     global $db;
@@ -131,6 +146,28 @@ require_once '../templates/header.php';
                 </div>
             </div>
 
+            <?php if (!empty($open_fix_batches)): ?>
+            <!-- Recent accounting fix batch(es) — one-click revert -->
+            <?php foreach ($open_fix_batches as $fb): ?>
+            <div class="flex flex-wrap items-center justify-between gap-3 px-4 py-3 bg-amber-50 border border-amber-200 rounded-xl">
+                <div class="flex items-start gap-3 min-w-0">
+                    <i class="fas fa-triangle-exclamation text-amber-500 mt-0.5"></i>
+                    <div class="min-w-0">
+                        <p class="text-sm font-semibold text-amber-900"><?php echo htmlspecialchars($fb->label); ?></p>
+                        <p class="text-xs text-amber-700 mt-0.5">
+                            <?php echo (int)$fb->row_count; ?> record(s) changed by <?php echo htmlspecialchars($fb->deleted_by_name ?? 'System'); ?>
+                            on <?php echo date('d M Y, g:i A', strtotime($fb->deleted_at)); ?>.
+                        </p>
+                    </div>
+                </div>
+                <a href="recycle_bin.php?batch=<?php echo (int)$fb->id; ?>"
+                   class="flex-shrink-0 inline-flex items-center gap-2 px-4 py-2 bg-white border border-amber-300 text-amber-800 text-sm font-semibold rounded-lg hover:bg-amber-100 transition-colors">
+                    <i class="fas fa-trash-restore"></i>Review / Revert
+                </a>
+            </div>
+            <?php endforeach; ?>
+            <?php endif; ?>
+
             <!-- Daily Brief Banner -->
             <div x-show="dailyBriefBanner && !aiOpen"
                  x-transition:enter="transition ease-out duration-300"
@@ -156,7 +193,14 @@ require_once '../templates/header.php';
             </div>
 
             <!-- ── EXCEPTION RADAR — what needs a human ────────────────────── -->
-            <?php $radar = getExceptionRadar(); $radar_total = array_sum($radar); ?>
+            <?php
+            $radar = getExceptionRadar();
+            // Added 2 Sep 2026 alongside admin/customer_balance_reconciliation.php —
+            // "Ujjal Flour Mill's" and "Sirajganj Mills" excluded (internal mill/HQ
+            // accounts, not real customers; see that page's own header comment).
+            $radar['balance_mismatches'] = count(getCustomerBalanceMismatches([149, 158]));
+            $radar_total = array_sum($radar);
+            ?>
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
                 <div class="flex items-center justify-between mb-3">
                     <h2 class="text-sm font-bold text-gray-800"><i class="fas fa-triangle-exclamation text-amber-500 mr-1"></i>Exception Radar — what needs a human</h2>
@@ -173,6 +217,7 @@ require_once '../templates/header.php';
                         ['QR re-scans (7d)', $radar['qr_reuses'],            url('cr/qr_scan_log.php?reused_only=1'), 'fa-qrcode',         'text-red-600',    'bg-red-50 border-red-200'],
                         ['Negative stock (commodities)', $radar['negative_stock'] ?? 0, url('trading/commodity_inventory.php'), 'fa-warehouse',   'text-rose-600',   'bg-rose-50 border-rose-200'],
                         ['Overdue loans', $radar['overdue_loans'] ?? 0, url('loans/dashboard.php'), 'fa-hand-holding-dollar', 'text-amber-600', 'bg-amber-50 border-amber-200'],
+                        ['Balance mismatches', $radar['balance_mismatches'] ?? 0, url('admin/customer_balance_reconciliation.php'), 'fa-scale-balanced', 'text-indigo-600', 'bg-indigo-50 border-indigo-200'],
                     ];
                     foreach ($radar_items as [$label, $n, $href, $icon, $hotText, $hotBg]):
                         $hot = $n > 0;
@@ -443,6 +488,7 @@ require_once '../templates/header.php';
                         ['../cr/all_sales.php',                 'fa-list',            'gray',   'All Orders'],
                         ['db_viewer.php',                       'fa-database',        'slate',  'DB Viewer'],
                         ['../cr/credit_history_export.php',     'fa-file-excel',      'emerald','Export'],
+                        ['chairman_reports.php',                'fa-file-invoice',    'indigo', "Chairman's Reports"],
                         ['settings.php',                        'fa-cog',             'blue',   'Customize'],
                     ];
                     $bg_map = ['blue'=>'bg-blue-50 hover:bg-blue-100 text-blue-600','green'=>'bg-green-50 hover:bg-green-100 text-green-600','indigo'=>'bg-indigo-50 hover:bg-indigo-100 text-indigo-600','purple'=>'bg-purple-50 hover:bg-purple-100 text-purple-600','yellow'=>'bg-yellow-50 hover:bg-yellow-100 text-yellow-600','red'=>'bg-red-50 hover:bg-red-100 text-red-600','gray'=>'bg-gray-50 hover:bg-gray-100 text-gray-600','slate'=>'bg-slate-50 hover:bg-slate-100 text-slate-600','emerald'=>'bg-emerald-50 hover:bg-emerald-100 text-emerald-600'];

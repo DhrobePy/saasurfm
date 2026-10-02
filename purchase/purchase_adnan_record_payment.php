@@ -569,17 +569,17 @@ require_once '../templates/header.php';
                             <select name="bank_account_id" id="bank_account_id" 
                                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
                                 <option value="">-- Select Bank Account --</option>
-                                <?php 
+                                <?php
                                 $current_user = getCurrentUser();
-                                $can_see_balance = in_array($current_user['role'], ['Superadmin', 'Accounts']);
-                                foreach ($bank_accounts as $bank): 
+                                // Was hardcoded ['Superadmin','Accounts'] — a DIFFERENT, inconsistent
+                                // list from bank/transfer.php's own ['Superadmin','admin'] hardcode for
+                                // the exact same concept, and neither delegable via Access Manager. Now
+                                // one shared, delegable check (core/functions/helpers.php).
+                                $can_see_balance = canViewBankBalances();
+                                foreach ($bank_accounts as $bank):
                                 ?>
                                 <option value="<?php echo $bank->id; ?>">
-                                    <?php echo htmlspecialchars($bank->bank_name); ?> - <?php echo htmlspecialchars($bank->account_name); ?> 
-                                    (<?php echo htmlspecialchars($bank->account_number); ?>)
-                                    <?php if ($can_see_balance): ?>
-                                        - Bal: ৳<?php echo number_format($bank->current_balance, 2); ?>
-                                    <?php endif; ?>
+                                    <?php echo htmlspecialchars(bankAccountOptionLabel($bank->bank_name, $bank->account_name, $bank->account_number, (float)$bank->current_balance, $can_see_balance)); ?>
                                 </option>
                                 <?php endforeach; ?>
                             </select>
@@ -896,8 +896,7 @@ require_once '../templates/header.php';
                                 <option value="">-- Select Bank Account --</option>
                                 <?php foreach ($bank_accounts as $bank): ?>
                                 <option value="<?php echo $bank->id; ?>">
-                                    <?php echo htmlspecialchars($bank->bank_name . ' - ' . $bank->account_name . ' (' . $bank->account_number . ')'); ?>
-                                    <?php if ($can_see_balance): ?> — Bal: ৳<?php echo number_format($bank->current_balance, 2); ?><?php endif; ?>
+                                    <?php echo htmlspecialchars(bankAccountOptionLabel($bank->bank_name, $bank->account_name, $bank->account_number, (float)$bank->current_balance, $can_see_balance)); ?>
                                 </option>
                                 <?php endforeach; ?>
                             </select>

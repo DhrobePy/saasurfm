@@ -383,9 +383,15 @@ $color_classes = [
         </h1>
         <p class="text-gray-500 mt-1">Configure module, page, and action access per user. Only Superadmin and Admin have full access by default — all other users see only what you enable here.</p>
     </div>
-    <a href="users.php" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 text-sm">
-        <i class="fas fa-arrow-left mr-2"></i>Back to Users
-    </a>
+    <div class="flex gap-2">
+        <a href="access_manager.php<?php echo $selected_user_id ? '?user_id=' . $selected_user_id : ''; ?>"
+           class="px-4 py-2 rounded-lg text-white bg-purple-600 hover:bg-purple-700 text-sm">
+            <i class="fas fa-user-shield mr-2"></i>Try the Guided Access Manager
+        </a>
+        <a href="users.php" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 text-sm">
+            <i class="fas fa-arrow-left mr-2"></i>Back to Users
+        </a>
+    </div>
 </div>
 
 <!-- Flash messages -->
@@ -675,6 +681,7 @@ $color_classes = [
                                     <div class="mt-2 ml-6 grid grid-cols-2 gap-1">
                                         <?php foreach ($page_actions as $action_key => $action_label):
                                             $action_checked = !empty($saved_actions[$page_key][$action_key]);
+                                            $action_is_cosmetic = !isActionEnforced($module_key, $page_key, $action_key);
                                         ?>
                                         <label class="flex items-center gap-1 text-xs text-gray-600 cursor-pointer action-checkbox-<?php echo $module_key; ?>-wrap">
                                             <input type="checkbox"
@@ -683,6 +690,12 @@ $color_classes = [
                                                    <?php echo ($action_checked && $is_enabled) ? 'checked' : ''; ?>
                                                    class="action-checkbox-<?php echo $module_key; ?> rounded text-green-600 w-3 h-3">
                                             <span><?php echo htmlspecialchars($action_label); ?></span>
+                                            <?php if ($action_is_cosmetic): ?>
+                                            <span class="inline-flex items-center gap-0.5 px-1 py-0.5 rounded bg-amber-100 text-amber-700 text-[9px] font-semibold leading-none"
+                                                  title="This checkbox saves fine, but no page in the app currently checks it — the page it belongs to hasn't been wired up to enforce it yet, so toggling it has no real effect right now.">
+                                                <i class="fas fa-circle-exclamation"></i> not yet enforced
+                                            </span>
+                                            <?php endif; ?>
                                         </label>
                                         <?php endforeach; ?>
                                     </div>

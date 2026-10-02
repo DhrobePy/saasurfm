@@ -19,6 +19,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <?php if (isLoggedIn()) require_once __DIR__ . '/chat_widget.php'; ?>
+<?php if (isLoggedIn()) require_once __DIR__ . '/session_announcement.php'; ?>
 
 </body>
 </html>

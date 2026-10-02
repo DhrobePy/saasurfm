@@ -43,6 +43,7 @@ $transactions = $bankManager->getTransactionsForBulkManage($filters);
 $totalTx      = count($transactions);
 $bankAccounts = $bankManager->getBankAccounts(false);
 $txTypes      = $bankManager->getTransactionTypes(false);
+$canSeeBalance = canViewBankBalances();
 
 $pageTitle = 'Bulk Transaction Management';
 require_once dirname(__DIR__) . '/templates/header.php';
@@ -106,10 +107,12 @@ require_once dirname(__DIR__) . '/templates/header.php';
                     <select name="bank_tx_account_id"
                             class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary-500 outline-none">
                         <option value="">All Accounts</option>
-                        <?php foreach ($bankAccounts as $ba): ?>
+                        <?php foreach ($bankAccounts as $ba):
+                            $baBal = (float)$ba->opening_balance + (float)$ba->module_balance;
+                        ?>
                         <option value="<?php echo $ba->id; ?>"
                             <?php echo $filters['bank_tx_account_id'] == $ba->id ? 'selected' : ''; ?>>
-                            <?php echo htmlspecialchars($ba->bank_name . ' – ' . $ba->account_name); ?>
+                            <?php echo htmlspecialchars(bankAccountOptionLabel($ba->bank_name, $ba->account_name, $ba->account_number, $baBal, $canSeeBalance)); ?>
                         </option>
                         <?php endforeach; ?>
                     </select>

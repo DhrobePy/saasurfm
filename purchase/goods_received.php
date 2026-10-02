@@ -19,6 +19,17 @@ $is_superadmin = ($user_role === 'Superadmin');
 
 $pageTitle = "Goods Received Notes";
 
+// Branch scope — this page had NO branch restriction at all: accounts-srg and
+// accounts-demra (branch-named roles) could see every branch's GRNs. Resolved
+// BEFORE $db gets reassigned to a raw PDO handle below (getUserBranchScope()
+// needs the app's Database wrapper, not raw PDO). Plain 'Accounts'/admin stay
+// company-wide, matching the same convention used on payment_watch.php.
+$grn_branch_sql = '';
+$grn_branch_params = [];
+if (!in_array($user_role, ['Superadmin', 'admin', 'Accounts'], true)) {
+    [$grn_branch_sql, $grn_branch_params] = branchScopeSql('purchase', 'grn.unload_point_branch_id');
+}
+
 // Initialize manager
 $grn_manager = new GoodsReceivedAdnanManager();
 $db = Database::getInstance()->getPdo();
@@ -30,15 +41,22 @@ $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
 $items_per_page = isset($_GET['per_page']) ? (int)$_GET['per_page'] : 50;
 $offset = ($page - 1) * $items_per_page;
 
-// Get filter parameters
+// Get filter parameters. Supplier/Origin/Status/Unload Point are now
+// multi-select (name="x[]") — normalize to a clean array either way (a
+// pagination/clear-filters link or an old bookmark may still send a plain
+// scalar), stripping blanks.
+$multiSelectFilter = function ($raw) {
+    $arr = is_array($raw) ? $raw : ($raw !== null && $raw !== '' ? [$raw] : []);
+    return array_values(array_filter(array_map('trim', $arr), fn($v) => $v !== ''));
+};
 $filters = [
     'date_from' => $_GET['date_from'] ?? '',
     'date_to' => $_GET['date_to'] ?? '',
-    'supplier_id' => $_GET['supplier_id'] ?? '',
-    'wheat_origin' => $_GET['wheat_origin'] ?? '',
-    'grn_status' => $_GET['grn_status'] ?? '',
+    'supplier_id' => $multiSelectFilter($_GET['supplier_id'] ?? null),
+    'wheat_origin' => $multiSelectFilter($_GET['wheat_origin'] ?? null),
+    'grn_status' => $multiSelectFilter($_GET['grn_status'] ?? null),
     'truck_number' => $_GET['truck_number'] ?? '',
-    'unload_point' => $_GET['unload_point'] ?? '',
+    'unload_point' => $multiSelectFilter($_GET['unload_point'] ?? null),
     'search' => $_GET['search'] ?? ''
 ];
 
@@ -56,24 +74,28 @@ if ($filters['date_to']) {
     $params[] = $filters['date_to'];
 }
 if ($filters['supplier_id']) {
-    $where_conditions[] = "grn.supplier_id = ?";
-    $params[] = $filters['supplier_id'];
+    $ph = implode(',', array_fill(0, count($filters['supplier_id']), '?'));
+    $where_conditions[] = "grn.supplier_id IN ($ph)";
+    array_push($params, ...$filters['supplier_id']);
 }
 if ($filters['wheat_origin']) {
-    $where_conditions[] = "po.wheat_origin = ?";
-    $params[] = $filters['wheat_origin'];
+    $ph = implode(',', array_fill(0, count($filters['wheat_origin']), '?'));
+    $where_conditions[] = "po.wheat_origin IN ($ph)";
+    array_push($params, ...$filters['wheat_origin']);
 }
 if ($filters['grn_status']) {
-    $where_conditions[] = "grn.grn_status = ?";
-    $params[] = $filters['grn_status'];
+    $ph = implode(',', array_fill(0, count($filters['grn_status']), '?'));
+    $where_conditions[] = "grn.grn_status IN ($ph)";
+    array_push($params, ...$filters['grn_status']);
 }
 if ($filters['truck_number']) {
     $where_conditions[] = "grn.truck_number LIKE ?";
     $params[] = '%' . $filters['truck_number'] . '%';
 }
 if ($filters['unload_point']) {
-    $where_conditions[] = "grn.unload_point_name = ?";
-    $params[] = $filters['unload_point'];
+    $ph = implode(',', array_fill(0, count($filters['unload_point']), '?'));
+    $where_conditions[] = "grn.unload_point_name IN ($ph)";
+    array_push($params, ...$filters['unload_point']);
 }
 if ($filters['search']) {
     $where_conditions[] = "(grn.grn_number LIKE ? OR po.po_number LIKE ? OR grn.truck_number LIKE ?)";
@@ -81,6 +103,10 @@ if ($filters['search']) {
     $params[] = $search_term;
     $params[] = $search_term;
     $params[] = $search_term;
+}
+if ($grn_branch_sql !== '') {
+    $where_conditions[] = ltrim(substr($grn_branch_sql, 4)); // strip the leading "AND "
+    array_push($params, ...$grn_branch_params);
 }
 
 $where_clause = implode(' AND ', $where_conditions);
@@ -171,14 +197,14 @@ $unload_points = $db->query($unload_points_sql)->fetchAll(PDO::FETCH_OBJ);
 
 // Check if any filter is active
 $active_filters = array_filter($filters, function($value) {
-    return $value !== '' && $value !== null;
+    return is_array($value) ? !empty($value) : ($value !== '' && $value !== null);
 });
 
 // Helper function to build pagination URL
 function getPaginationUrl($page_num, $filters, $per_page) {
     $params = array_merge($filters, ['page' => $page_num, 'per_page' => $per_page]);
     $params = array_filter($params, function($value) {
-        return $value !== '' && $value !== null;
+        return is_array($value) ? !empty($value) : ($value !== '' && $value !== null);
     });
     return 'goods_received.php?' . http_build_query($params);
 }
@@ -344,53 +370,49 @@ require_once '../templates/header.php';
                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
             </div>
 
-            <!-- Supplier -->
+            <!-- Supplier (multi-select) -->
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Supplier</label>
-                <select name="supplier_id" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
-                    <option value="">All Suppliers</option>
+                <select name="supplier_id[]" multiple class="grn-multiselect w-full" data-placeholder="All Suppliers">
                     <?php foreach ($suppliers as $supplier): ?>
-                    <option value="<?php echo $supplier->id; ?>" <?php echo $filters['supplier_id'] == $supplier->id ? 'selected' : ''; ?>>
+                    <option value="<?php echo $supplier->id; ?>" <?php echo in_array((string)$supplier->id, $filters['supplier_id'], true) ? 'selected' : ''; ?>>
                         <?php echo htmlspecialchars($supplier->company_name); ?>
                     </option>
                     <?php endforeach; ?>
                 </select>
             </div>
 
-            <!-- Wheat Origin -->
+            <!-- Wheat Origin (multi-select) -->
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Wheat Origin</label>
-                <select name="wheat_origin" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
-                    <option value="">All Origins</option>
+                <select name="wheat_origin[]" multiple class="grn-multiselect w-full" data-placeholder="All Origins">
                     <?php foreach ($wheat_origins as $origin): ?>
-                    <option value="<?php echo htmlspecialchars($origin->wheat_origin); ?>" 
-                            <?php echo $filters['wheat_origin'] == $origin->wheat_origin ? 'selected' : ''; ?>>
+                    <option value="<?php echo htmlspecialchars($origin->wheat_origin); ?>"
+                            <?php echo in_array($origin->wheat_origin, $filters['wheat_origin'], true) ? 'selected' : ''; ?>>
                         <?php echo htmlspecialchars($origin->wheat_origin); ?>
                     </option>
                     <?php endforeach; ?>
                 </select>
             </div>
 
-            <!-- Status -->
+            <!-- Status (multi-select) -->
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                <select name="grn_status" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
-                    <option value="">All Statuses</option>
-                    <option value="draft" <?php echo $filters['grn_status'] == 'draft' ? 'selected' : ''; ?>>Draft</option>
-                    <option value="verified" <?php echo $filters['grn_status'] == 'verified' ? 'selected' : ''; ?>>Verified</option>
-                    <option value="posted" <?php echo $filters['grn_status'] == 'posted' ? 'selected' : ''; ?>>Posted</option>
-                    <option value="cancelled" <?php echo $filters['grn_status'] == 'cancelled' ? 'selected' : ''; ?>>Cancelled</option>
+                <select name="grn_status[]" multiple class="grn-multiselect w-full" data-placeholder="All Statuses">
+                    <option value="draft" <?php echo in_array('draft', $filters['grn_status'], true) ? 'selected' : ''; ?>>Draft</option>
+                    <option value="verified" <?php echo in_array('verified', $filters['grn_status'], true) ? 'selected' : ''; ?>>Verified</option>
+                    <option value="posted" <?php echo in_array('posted', $filters['grn_status'], true) ? 'selected' : ''; ?>>Posted</option>
+                    <option value="cancelled" <?php echo in_array('cancelled', $filters['grn_status'], true) ? 'selected' : ''; ?>>Cancelled</option>
                 </select>
             </div>
 
-            <!-- Unload Point -->
+            <!-- Unload Point (multi-select) -->
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Unload Point</label>
-                <select name="unload_point" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
-                    <option value="">All Locations</option>
+                <select name="unload_point[]" multiple class="grn-multiselect w-full" data-placeholder="All Locations">
                     <?php foreach ($unload_points as $point): ?>
-                    <option value="<?php echo htmlspecialchars($point->unload_point_name); ?>" 
-                            <?php echo $filters['unload_point'] == $point->unload_point_name ? 'selected' : ''; ?>>
+                    <option value="<?php echo htmlspecialchars($point->unload_point_name); ?>"
+                            <?php echo in_array($point->unload_point_name, $filters['unload_point'], true) ? 'selected' : ''; ?>>
                         <?php echo htmlspecialchars($point->unload_point_name); ?>
                     </option>
                     <?php endforeach; ?>
@@ -740,6 +762,16 @@ require_once '../templates/header.php';
 </div>
 
 <script>
+// Multi-select filters (Supplier / Wheat Origin / Status / Unload Point)
+jQuery(function($) {
+    $('.grn-multiselect').select2({
+        width: '100%',
+        closeOnSelect: false,
+        placeholder: function () { return $(this).data('placeholder'); },
+        allowClear: true
+    });
+});
+
 // Delete GRN Function
 function deleteGRN(grnId, grnNumber) {
     document.getElementById('deleteGRNId').value = grnId;

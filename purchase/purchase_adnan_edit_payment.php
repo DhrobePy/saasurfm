@@ -42,7 +42,11 @@ if (!$payment) {
 }
 
 // Get bank accounts for dropdown
-$bank_accounts = $db->query("SELECT id, account_name FROM bank_accounts WHERE status = 1 ORDER BY account_name")->fetchAll(PDO::FETCH_OBJ);
+// Was "WHERE status = 1" against status ENUM('active','inactive','closed') —
+// only worked because MySQL happens to map 'active' to internal index 1;
+// fixed to the real value while touching this query for the balance/label fix.
+$bank_accounts = $db->query("SELECT id, bank_name, account_name, account_number, current_balance FROM bank_accounts WHERE status = 'active' ORDER BY account_name")->fetchAll(PDO::FETCH_OBJ);
+$canSeeBalance = canViewBankBalances();
 
 $pageTitle = "Edit Payment: " . $payment->payment_voucher_number;
 ?>
@@ -172,7 +176,7 @@ $pageTitle = "Edit Payment: " . $payment->payment_voucher_number;
                                     <option value="">Select Bank Account</option>
                                     <?php foreach ($bank_accounts as $account): ?>
                                         <option value="<?= $account->id ?>" <?= $payment->bank_account_id == $account->id ? 'selected' : '' ?>>
-                                            <?= htmlspecialchars($account->account_name) ?>
+                                            <?= htmlspecialchars(bankAccountOptionLabel($account->bank_name, $account->account_name, $account->account_number, (float)$account->current_balance, $canSeeBalance)) ?>
                                         </option>
                                     <?php endforeach; ?>
                                 </select>

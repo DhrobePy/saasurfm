@@ -38,28 +38,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     try { sendProductionShortfallAlert(false); } catch (Throwable $e) { error_log('production_requirement fallback alert: ' . $e->getMessage()); }
 }
 
-// ── Branch detection (same pattern as credit_production.php) ─────────────────
-$user_branch = null;
-if (!$is_admin) {
-    $emp = $db->query("SELECT branch_id FROM employees WHERE user_id = ?", [$user_id])->first();
-    if ($emp && $emp->branch_id) {
-        $user_branch = $emp->branch_id;
-    } else {
-        $ur = $db->query("SELECT branch_id FROM users WHERE id = ?", [$user_id])->first();
-        if ($ur && isset($ur->branch_id)) $user_branch = $ur->branch_id;
-    }
-}
-
-$all_branches       = [];
-$filter_branch_id   = 0;
-$filter_branch_name = '';
-if ($is_admin) {
-    $all_branches     = $db->query("SELECT id, name FROM branches WHERE status = 'active' ORDER BY name")->results();
-    $filter_branch_id = (int)($_GET['branch_id'] ?? 0);
-    foreach ($all_branches as $br) {
-        if ((int)$br->id === $filter_branch_id) { $filter_branch_name = $br->name; break; }
-    }
-}
+// ── Branch detection ──────────────────────────────────────────────────────────
+// Access-Manager-aware (was: hardcoded to the user's own employees.branch_id
+// for every non-admin, ignoring any Access Manager data_scope grant — see
+// resolveBranchFilterUI()/getUserBranchScope() in helpers.php).
+$bf = resolveBranchFilterUI('production', 'co.assigned_branch_id');
+$all_branches        = $bf['picker_branches'];
+$filter_branch_id    = $bf['selected_branch_id'];
+$filter_branch_name  = $bf['selected_branch_name'];
+$show_branch_picker  = $bf['show_picker'];
 
 // ── Date range ───────────────────────────────────────────────────────────────
 // Accepts date_from/date_to (with quick presets below), and stays compatible
@@ -78,19 +65,21 @@ if ($date_to < $date_from) { [$date_from, $date_to] = [$date_to, $date_from]; }
 $is_single_day = ($date_from === $date_to);
 $prod_date     = $date_from;   // single-day compatibility alias — the (single-day-only) edit POST handler below still reads this
 
-// The single branch this view/edit is scoped to. Non-admin: always their own
-// branch. Admin: only once they've picked one — "All Branches" is a read-only
-// aggregate, since a stock update has to land on one specific production floor.
+// The single branch this view/edit is scoped to. Resolved by
+// resolveBranchFilterUI() above: a single-branch scope (the normal non-admin
+// case) or a picked branch_id already lands here; "All Branches"/nothing
+// picked yet from a multi-branch scope is a read-only aggregate (0), since a
+// stock update has to land on one specific production floor.
 // Editing always applies to $date_from specifically (the "From" date) — even
 // when viewing a multi-day range, since in-hand/produced is a point-in-time
 // snapshot for one date. It's just not blocked outright on a range anymore —
 // blocking it turned out to break the normal daily update workflow whenever a
 // preset other than "Today" was selected.
-$scope_branch_id   = $is_admin ? $filter_branch_id : (int)($user_branch ?? 0);
+$scope_branch_id   = $filter_branch_id;
 $editing_enabled   = $can_update && $scope_branch_id > 0;
 
 $redirect_qs = 'date_from=' . urlencode($date_from) . '&date_to=' . urlencode($date_to)
-             . ($is_admin && $filter_branch_id > 0 ? '&branch_id=' . $filter_branch_id : '');
+             . ($show_branch_picker && $filter_branch_id > 0 ? '&branch_id=' . $filter_branch_id : '');
 
 /**
  * Best-effort Telegram notification for a single production update/edit —
@@ -176,16 +165,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'updat
             )->first();
             if ($ctx) {
                 $label = trim($ctx->product_name . ' (' . trim(($ctx->grade ? $ctx->grade . ' ' : '') . $ctx->weight_variant . $ctx->unit_of_measure) . ')');
-                // Includes 'shipped' (partially delivered) orders, net of what's
-                // already gone out per item — a partial shipment still has a real
-                // remaining requirement, it just isn't the FULL original quantity.
+                // Changed 2 Sep 2026 per explicit instruction: Today's Requirement is a
+                // PRODUCTION page — once an order has shipped, production on it is
+                // done, so it no longer belongs here regardless of delivery
+                // completeness (that's a dispatch/delivery concern, not production).
                 $req = $db->query(
                     "SELECT COALESCE(SUM(coi.quantity - COALESCE(
                          (SELECT SUM(di.qty_delivered) FROM credit_order_delivery_items di WHERE di.order_item_id = coi.id), 0
                      )), 0) req
                      FROM credit_order_items coi
                      JOIN credit_orders co ON coi.order_id = co.id
-                     WHERE co.required_date = ? AND co.status IN ('approved','in_production','shipped')
+                     WHERE co.required_date = ? AND co.status IN ('approved','in_production')
                        AND co.assigned_branch_id = ? AND coi.variant_id = ?",
                     [$post_date, $scope_branch_id, $variant_id]
                 )->first();
@@ -320,37 +310,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'edit_
 // ── Required aggregation for the date range, grouped by variant ──────────────
 $params = [$date_from, $date_to];
 $branch_sql = '';
-if ($scope_branch_id > 0) { $branch_sql = 'AND co.assigned_branch_id = ?'; $params[] = $scope_branch_id; }
+if ($scope_branch_id > 0) {
+    $branch_sql = 'AND co.assigned_branch_id = ?'; $params[] = $scope_branch_id;
+} else {
+    // Nothing specific picked — still must not leak branches outside a
+    // multi-branch grant (unrestricted scopes get '' here, same as before).
+    [$branch_sql, $bp] = branchScopeSql('production', 'co.assigned_branch_id');
+    array_push($params, ...$bp);
+}
 
-// 'shipped' = partially delivered (credit_order_deliveries recorded a trip but
-// not all of it yet — see updateOrderDeliveryStatus()). Those orders used to
-// vanish from this page entirely once any partial delivery went out, even
-// with real quantity still outstanding. Included here net of what's already
-// delivered per item, so it's the REMAINING requirement, not the full order.
+// Only 'approved'/'in_production' orders ever belong on this PRODUCTION page —
+// per explicit instruction 2 Sep 2026, once an order reaches 'shipped' (or
+// produced/ready_to_ship/goods_on_board) it's excluded entirely: production on
+// it is done, and any remaining-delivery tracking belongs on the dispatch/
+// delivery pages (credit_dispatch.php, partial_delivery.php), not here. (An
+// earlier same-day fix had instead kept net-remaining 'shipped' orders visible
+// here — superseded; see git history / implementation-backlog memory.) With
+// 'shipped' out of the filter, every remaining row is simply its full ordered
+// quantity — no delivery-tracking joins needed.
 $required_rows = $db->query(
     "SELECT pv.id AS variant_id, p.base_name AS product_name, pv.grade, pv.weight_variant, pv.unit_of_measure,
-            SUM(coi.quantity - COALESCE(dlv.qty_delivered, 0)) AS required_qty, COUNT(DISTINCT co.id) AS order_count
+            SUM(coi.quantity) AS required_qty,
+            COUNT(DISTINCT co.id) AS order_count
      FROM credit_order_items coi
      JOIN credit_orders co ON coi.order_id = co.id
      JOIN product_variants pv ON coi.variant_id = pv.id
      JOIN products p ON coi.product_id = p.id
-     LEFT JOIN (
-         SELECT order_item_id, SUM(qty_delivered) AS qty_delivered
-         FROM credit_order_delivery_items GROUP BY order_item_id
-     ) dlv ON dlv.order_item_id = coi.id
      WHERE co.required_date BETWEEN ? AND ?
-       AND co.status IN ('approved','in_production','shipped')
+       AND co.status IN ('approved','in_production')
        AND co.assigned_branch_id IS NOT NULL
-       AND (coi.quantity - COALESCE(dlv.qty_delivered, 0)) > 0.001
        $branch_sql
      GROUP BY pv.id
+     HAVING required_qty > 0.001
      ORDER BY p.base_name, pv.grade, pv.weight_variant",
     $params
 )->results();
 
 // ── Orders under production, due within the range ─────────────────────────────
-// Includes 'shipped' (partially delivered, still has remaining qty per the
-// required_rows query above) so they don't silently disappear from this page.
+// Changed 2 Sep 2026 per explicit instruction: this is a PRODUCTION page — once
+// an order reaches 'shipped' (or produced/ready_to_ship/goods_on_board, already
+// excluded), production is done and it has nothing left to do here. Delivery
+// completeness (partial vs. full) is a dispatch/delivery-page concern, tracked
+// on credit_dispatch.php / partial_delivery.php instead. Supersedes an earlier
+// same-day fix that kept genuinely-partial 'shipped' orders visible here.
 $orders_today = $db->query(
     "SELECT co.id, co.order_number, co.status, co.required_date,
             c.name AS customer_name, b.name AS branch_name,
@@ -360,19 +362,17 @@ $orders_today = $db->query(
      LEFT JOIN branches b ON co.assigned_branch_id = b.id
      LEFT JOIN production_schedule ps ON co.id = ps.order_id
      WHERE co.required_date BETWEEN ? AND ?
-       AND co.status IN ('approved','in_production','shipped')
+       AND co.status IN ('approved','in_production')
        AND co.assigned_branch_id IS NOT NULL
        $branch_sql
      ORDER BY co.required_date, co.status, co.id",
     $params
 )->results();
 foreach ($orders_today as $o) {
-    // Overdue = required_date has passed and it's still not fully delivered —
-    // a partially-shipped order that's past due is exactly the case this page
-    // used to hide entirely (status flipped to 'shipped', dropped out of the
-    // old 'approved'/'in_production'-only filter).
+    // Overdue = required_date has passed and it's still not in a shipped-or-later
+    // status (those are excluded from this list entirely now, so any row here by
+    // definition still needs producing).
     $o->is_overdue = $o->required_date && strtotime($o->required_date) < strtotime('today');
-    $o->is_partial = ($o->status === 'shipped');
 }
 
 // ── Existing in-hand / produced state for the range (+ branch scope) ─────────
@@ -382,7 +382,12 @@ foreach ($orders_today as $o) {
 // already makes when summing across multiple branch rows.
 $stock_params = [$date_from, $date_to];
 $stock_branch_sql = '';
-if ($scope_branch_id > 0) { $stock_branch_sql = 'AND branch_id = ?'; $stock_params[] = $scope_branch_id; }
+if ($scope_branch_id > 0) {
+    $stock_branch_sql = 'AND branch_id = ?'; $stock_params[] = $scope_branch_id;
+} else {
+    [$stock_branch_sql, $sbp] = branchScopeSql('production', 'branch_id');
+    array_push($stock_params, ...$sbp);
+}
 
 $stock_rows = $db->query(
     "SELECT variant_id, SUM(in_hand_qty) AS in_hand_qty, SUM(produced_qty) AS produced_qty, MAX(updated_at) AS updated_at
@@ -477,7 +482,12 @@ unset($row);
 // ── Recent activity log (last 30, this range + branch scope) ─────────────────
 $log_params = [$date_from, $date_to];
 $log_branch_sql = '';
-if ($scope_branch_id > 0) { $log_branch_sql = 'AND pdl.branch_id = ?'; $log_params[] = $scope_branch_id; }
+if ($scope_branch_id > 0) {
+    $log_branch_sql = 'AND pdl.branch_id = ?'; $log_params[] = $scope_branch_id;
+} else {
+    [$log_branch_sql, $lbp] = branchScopeSql('production', 'pdl.branch_id');
+    array_push($log_params, ...$lbp);
+}
 $recent_log = $db->query(
     "SELECT pdl.id, pdl.variant_id, pdl.event_type, pdl.qty, pdl.created_at, pdl.updated_at, pdl.edit_count,
             p.base_name AS product_name, pv.grade, pv.weight_variant,
@@ -523,7 +533,7 @@ require_once '../templates/header.php';
 
     <?php
     // Quick presets — each is a self-contained date_from/date_to pair.
-    $branch_qs = ($is_admin && $filter_branch_id > 0) ? '&branch_id=' . $filter_branch_id : '';
+    $branch_qs = ($show_branch_picker && $filter_branch_id > 0) ? '&branch_id=' . $filter_branch_id : '';
     $presets = [
         'previous'  => ['label' => 'Previous',  'from' => date('Y-m-d', strtotime('-1 day')),               'to' => date('Y-m-d', strtotime('-1 day'))],
         'today'     => ['label' => 'Today',     'from' => $today,                                            'to' => $today],
@@ -555,7 +565,7 @@ require_once '../templates/header.php';
             <label class="block text-xs font-medium text-gray-600 mb-1">To</label>
             <input type="date" name="date_to" value="<?php echo htmlspecialchars($date_to); ?>" class="px-3 py-1.5 border rounded-lg text-sm">
         </div>
-        <?php if ($is_admin): ?>
+        <?php if ($show_branch_picker): ?>
         <div>
             <label class="block text-xs font-medium text-gray-600 mb-1">Branch</label>
             <select name="branch_id" class="px-3 py-1.5 border rounded-lg text-sm min-w-[10rem]">
@@ -572,7 +582,7 @@ require_once '../templates/header.php';
         <?php elseif (!$is_single_day && $editing_enabled): ?>
         <span class="text-xs text-amber-600 pb-2"><i class="fas fa-circle-info mr-1"></i>Viewing a range — updates below apply to <?php echo date('d M Y', strtotime($date_from)); ?> (the "From" date) only.</span>
         <?php else: ?>
-        <a href="production_requirement.php<?php echo $is_admin && $filter_branch_id > 0 ? '?branch_id=' . $filter_branch_id : ''; ?>" class="text-xs text-amber-700 pb-2 hover:underline">Jump to today</a>
+        <a href="production_requirement.php<?php echo $show_branch_picker && $filter_branch_id > 0 ? '?branch_id=' . $filter_branch_id : ''; ?>" class="text-xs text-amber-700 pb-2 hover:underline">Jump to today</a>
         <?php endif; ?>
     </form>
 
@@ -583,7 +593,7 @@ require_once '../templates/header.php';
     <div class="mb-4 px-4 py-2.5 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm"><i class="fas fa-triangle-exclamation mr-1"></i><?php echo htmlspecialchars($_SESSION['error_flash']); unset($_SESSION['error_flash']); ?></div>
     <?php endif; ?>
 
-    <?php if ($is_admin && $scope_branch_id === 0): ?>
+    <?php if ($show_branch_picker && $scope_branch_id === 0): ?>
     <div class="mb-4 px-4 py-2.5 bg-blue-50 border border-blue-200 text-blue-700 rounded-lg text-sm">
         <i class="fas fa-circle-info mr-1"></i>Viewing all branches combined — figures are read-only. Select a specific branch above to update on-hand / produced quantities.
     </div>
@@ -625,7 +635,7 @@ require_once '../templates/header.php';
                     <tr>
                         <th class="text-left px-4 py-2">Order #</th>
                         <th class="text-left px-4 py-2">Customer</th>
-                        <?php if ($is_admin && $scope_branch_id === 0): ?><th class="text-left px-4 py-2">Branch</th><?php endif; ?>
+                        <?php if ($show_branch_picker && $scope_branch_id === 0): ?><th class="text-left px-4 py-2">Branch</th><?php endif; ?>
                         <?php if (!$is_single_day): ?><th class="text-left px-4 py-2">Required</th><?php endif; ?>
                         <th class="text-left px-4 py-2">Order Status</th>
                         <th class="text-left px-4 py-2">Production</th>
@@ -636,11 +646,14 @@ require_once '../templates/header.php';
                     <tr class="<?php echo $o->is_overdue ? 'bg-red-50/40 hover:bg-red-50' : 'hover:bg-gray-50'; ?>">
                         <td class="px-4 py-2 font-medium"><a href="credit_order_view.php?id=<?php echo (int)$o->id; ?>" class="text-blue-600 hover:underline"><?php echo htmlspecialchars($o->order_number); ?></a></td>
                         <td class="px-4 py-2 text-gray-600"><?php echo htmlspecialchars($o->customer_name); ?></td>
-                        <?php if ($is_admin && $scope_branch_id === 0): ?><td class="px-4 py-2 text-gray-500"><?php echo htmlspecialchars($o->branch_name ?? '—'); ?></td><?php endif; ?>
+                        <?php if ($show_branch_picker && $scope_branch_id === 0): ?><td class="px-4 py-2 text-gray-500"><?php echo htmlspecialchars($o->branch_name ?? '—'); ?></td><?php endif; ?>
                         <?php if (!$is_single_day): ?><td class="px-4 py-2 text-gray-500"><?php echo $o->required_date ? date('d M', strtotime($o->required_date)) : '—'; ?></td><?php endif; ?>
                         <td class="px-4 py-2">
-                            <span class="inline-flex px-2 py-0.5 rounded-full text-xs font-semibold <?php echo $o->is_partial ? 'bg-indigo-100 text-indigo-700' : ($o->status === 'in_production' ? 'bg-amber-100 text-amber-700' : 'bg-blue-100 text-blue-700'); ?>">
-                                <?php echo $o->is_partial ? 'Partially Delivered' : htmlspecialchars(ucwords(str_replace('_', ' ', $o->status))); ?>
+                            <!-- Only 'approved'/'in_production' ever reach this list now
+                                 (see $orders_today query above) — no partial/shipped
+                                 badge cases needed here any more. -->
+                            <span class="inline-flex px-2 py-0.5 rounded-full text-xs font-semibold <?php echo $o->status === 'in_production' ? 'bg-amber-100 text-amber-700' : 'bg-blue-100 text-blue-700'; ?>">
+                                <?php echo htmlspecialchars(ucwords(str_replace('_', ' ', $o->status))); ?>
                             </span>
                             <?php if ($o->is_overdue): ?>
                             <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold bg-red-100 text-red-700 ml-1">
@@ -739,7 +752,7 @@ require_once '../templates/header.php';
                 <thead class="bg-gray-50 text-gray-500 text-xs uppercase">
                     <tr>
                         <th class="text-left px-4 py-2">Product</th>
-                        <?php if ($is_admin && $scope_branch_id === 0): ?><th class="text-left px-4 py-2">Branch</th><?php endif; ?>
+                        <?php if ($show_branch_picker && $scope_branch_id === 0): ?><th class="text-left px-4 py-2">Branch</th><?php endif; ?>
                         <th class="text-left px-4 py-2">Event</th>
                         <th class="text-right px-4 py-2">Qty</th>
                         <th class="text-left px-4 py-2">By</th>
@@ -751,7 +764,7 @@ require_once '../templates/header.php';
                     <?php foreach ($recent_log as $l): $has_edits = (int)$l->edit_count > 0; ?>
                     <tr>
                         <td class="px-4 py-2 text-gray-700"><?php echo htmlspecialchars($l->product_name . ' (' . trim(($l->grade ? $l->grade . ' ' : '') . $l->weight_variant) . ')'); ?></td>
-                        <?php if ($is_admin && $scope_branch_id === 0): ?><td class="px-4 py-2 text-gray-500"><?php echo htmlspecialchars($l->branch_name ?? '—'); ?></td><?php endif; ?>
+                        <?php if ($show_branch_picker && $scope_branch_id === 0): ?><td class="px-4 py-2 text-gray-500"><?php echo htmlspecialchars($l->branch_name ?? '—'); ?></td><?php endif; ?>
                         <td class="px-4 py-2 text-gray-500"><?php echo $l->event_type === 'produced_added' ? 'Produced +added' : 'In-hand set'; ?></td>
                         <td class="px-4 py-2 text-right font-medium">
                             <?php echo number_format((float)$l->qty, 2); ?>
@@ -772,7 +785,7 @@ require_once '../templates/header.php';
                     </tr>
                     <?php if ($editing_enabled): ?>
                     <tr id="editform-<?php echo $l->id; ?>" class="hidden bg-amber-50/50">
-                        <td colspan="<?php echo 5 + ($is_admin && $scope_branch_id === 0 ? 1 : 0) + 1; ?>" class="px-4 py-3">
+                        <td colspan="<?php echo 5 + ($show_branch_picker && $scope_branch_id === 0 ? 1 : 0) + 1; ?>" class="px-4 py-3">
                             <form method="POST" class="flex flex-wrap items-end gap-2">
                                 <input type="hidden" name="action" value="edit_log_entry">
                                 <input type="hidden" name="log_id" value="<?php echo $l->id; ?>">
@@ -791,7 +804,7 @@ require_once '../templates/header.php';
                     <?php endif; ?>
                     <?php if ($has_edits): ?>
                     <tr id="edithist-<?php echo $l->id; ?>" class="hidden">
-                        <td colspan="<?php echo 5 + ($is_admin && $scope_branch_id === 0 ? 1 : 0) + ($editing_enabled ? 1 : 0); ?>" class="px-4 py-2 bg-gray-50">
+                        <td colspan="<?php echo 5 + ($show_branch_picker && $scope_branch_id === 0 ? 1 : 0) + ($editing_enabled ? 1 : 0); ?>" class="px-4 py-2 bg-gray-50">
                             <div class="text-[10px] uppercase tracking-wide text-gray-400 mb-1">Correction history</div>
                             <ul class="text-xs text-gray-600 space-y-0.5">
                                 <?php foreach (($edits_by_log[$l->id] ?? []) as $e): ?>

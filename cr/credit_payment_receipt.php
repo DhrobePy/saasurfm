@@ -29,14 +29,16 @@ $payment = $db->query(
             b.name as branch_name,
             b.address as branch_address,
             ca_cash.name as cash_account_name,
-            ca_bank.name as bank_account_name
+            ba.bank_name as bank_account_bank_name,
+            ba.account_name as bank_account_holder_name,
+            ba.account_number as bank_account_number
      FROM customer_payments cp
      LEFT JOIN customers c ON cp.customer_id = c.id
      LEFT JOIN users u ON cp.created_by_user_id = u.id
      LEFT JOIN employees e ON cp.collected_by_employee_id = e.id
      LEFT JOIN branches b ON cp.branch_id = b.id
      LEFT JOIN chart_of_accounts ca_cash ON cp.cash_account_id = ca_cash.id
-     LEFT JOIN chart_of_accounts ca_bank ON cp.bank_account_id = ca_bank.id
+     LEFT JOIN bank_accounts ba ON cp.bank_account_id = ba.id
      WHERE cp.id = ?",
     [$payment_id]
 )->first();
@@ -406,8 +408,9 @@ $company = [
                 <p><span class="label">Deposited To:</span> <span class="value"><?php echo htmlspecialchars($payment->cash_account_name); ?></span></p>
                 <?php endif; ?>
                 
-                <?php if (in_array($payment->payment_method, ['Bank Transfer', 'Cheque']) && $payment->bank_account_name): ?>
-                <p><span class="label">Bank Account:</span> <span class="value"><?php echo htmlspecialchars($payment->bank_account_name); ?></span></p>
+                <?php if (in_array($payment->payment_method, ['Bank Transfer', 'Cheque']) && $payment->bank_account_bank_name): ?>
+                <p><span class="label">Bank:</span> <span class="value"><?php echo htmlspecialchars($payment->bank_account_bank_name); ?></span></p>
+                <p><span class="label">Account:</span> <span class="value"><?php echo htmlspecialchars($payment->bank_account_holder_name); ?><?php echo $payment->bank_account_number ? ' — ' . htmlspecialchars($payment->bank_account_number) : ''; ?></span></p>
                 <?php endif; ?>
                 
                 <?php if ($payment->cheque_number): ?>

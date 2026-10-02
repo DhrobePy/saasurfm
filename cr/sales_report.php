@@ -20,12 +20,11 @@ $pageTitle   = 'Sales Report';
 
 $is_admin = in_array($user_role, ['Superadmin', 'admin']);
 
-// ── User branch (non-admin sees their factory only) ──────────────────────────
-$user_branch = null;
-if (!$is_admin && $user_id) {
-    $emp = $db->query("SELECT branch_id FROM employees WHERE user_id = ?", [$user_id])->first();
-    if ($emp && $emp->branch_id) $user_branch = (int)$emp->branch_id;
-}
+// ── User branch — Access-Manager-aware (was: hardcoded to the user's own
+// employees.branch_id for every non-admin — a real, forced restriction, just
+// never configurable via Access Manager). See resolveBranchFilterUI() /
+// getUserBranchScope() in helpers.php.
+$bf_scope = resolveBranchFilterUI('production', 'co.assigned_branch_id');
 
 // ── Date range ───────────────────────────────────────────────────────────────
 $date_from = !empty($_GET['date_from']) ? $_GET['date_from'] : date('Y-m-01');
@@ -39,12 +38,10 @@ if ($date_from > $date_to) [$date_from, $date_to] = [$date_to, $date_from];
 $drill_product_id = isset($_GET['pdid']) ? (int)$_GET['pdid'] : 0;
 $drill_variant_id = isset($_GET['pvid']) ? (int)$_GET['pvid'] : 0;
 
-$filter_branch = $is_admin
-    ? (isset($_GET['branch_id']) && (int)$_GET['branch_id'] > 0 ? (int)$_GET['branch_id'] : null)
-    : $user_branch;
+$filter_branch = $bf_scope['selected_branch_id'] ?: null;
 
-$branch_sql  = $filter_branch ? "AND co.assigned_branch_id = ?" : "";
-$base_params = $filter_branch ? [$date_from, $date_to, $filter_branch] : [$date_from, $date_to];
+$branch_sql  = $bf_scope['filter_sql'];
+$base_params = array_merge([$date_from, $date_to], $bf_scope['filter_params']);
 
 $filter_qs = 'date_from=' . urlencode($date_from) . '&date_to=' . urlencode($date_to)
     . ($filter_branch ? '&branch_id=' . $filter_branch : '');
@@ -57,7 +54,20 @@ $filter_qs = 'date_from=' . urlencode($date_from) . '&date_to=' . urlencode($dat
 // for Aug 2026 alone). shipped_date is a far more stable, workflow-meaningful
 // fallback than updated_at, and order_date (immutable) is the final fallback
 // for the handful of orders with no shipping record at all.
-$sale_date_expr = "COALESCE(DATE(cos.delivered_date), DATE(cos.shipped_date), DATE(co.order_date))";
+//
+// Now prioritized over delivered_date entirely: a "sale" is recognized the
+// moment goods ship, not when the order is fully delivered. shipped_date is
+// set once, at the first shipment/dispatch event, and — confirmed against
+// partial_delivery.php — is never touched again by later partial or final
+// deliveries, so this keeps an order's sale date pinned to its original ship
+// date even after it later transitions from 'shipped' to 'delivered'.
+$sale_date_expr = "COALESCE(DATE(cos.shipped_date), DATE(co.order_date))";
+
+// A sale is recognized the moment goods are shipped to the customer — not
+// only once the order is 100% delivered — so partially-delivered orders
+// (status 'shipped') and in-transit orders ('goods_on_board') both count,
+// matching the scope already established on dispatch_report.php.
+$sale_status_sql = "co.status IN ('shipped','goods_on_board','delivered')";
 
 // ── CSV Export ───────────────────────────────────────────────────────────────
 if (isset($_GET['export']) && $_GET['export'] === 'csv') {
@@ -77,7 +87,7 @@ if (isset($_GET['export']) && $_GET['export'] === 'csv') {
         JOIN products p ON coi.product_id = p.id
         LEFT JOIN product_variants pv ON coi.variant_id = pv.id
         LEFT JOIN credit_order_shipping cos ON co.id = cos.order_id
-        WHERE co.status = 'delivered'
+        WHERE $sale_status_sql
           AND $sale_date_expr BETWEEN ? AND ?
           $branch_sql
         ORDER BY sale_date DESC, co.id, coi.id
@@ -100,10 +110,8 @@ if (isset($_GET['export']) && $_GET['export'] === 'csv') {
     exit();
 }
 
-// ── Branches (admin filter dropdown) ─────────────────────────────────────────
-$branches = $is_admin
-    ? $db->query("SELECT id, name FROM branches WHERE status='active' ORDER BY name")->results()
-    : [];
+// ── Branches (filter dropdown — admins, and any non-admin granted 2+ branches) ──
+$branches = $bf_scope['picker_branches'];
 
 // ── Product summary for period ────────────────────────────────────────────────
 // Gross = qty*unit_price (before discount) — Revenue (net) already reflects
@@ -124,7 +132,7 @@ $product_summary = $db->query("
     JOIN products p ON coi.product_id = p.id
     LEFT JOIN product_variants pv ON coi.variant_id = pv.id
     LEFT JOIN credit_order_shipping cos ON co.id = cos.order_id
-    WHERE co.status = 'delivered'
+    WHERE $sale_status_sql
       AND $sale_date_expr BETWEEN ? AND ?
       $branch_sql
     GROUP BY p.id, pv.id
@@ -144,13 +152,61 @@ $customer_summary = $db->query("
     JOIN credit_orders co ON coi.order_id = co.id
     JOIN customers c ON co.customer_id = c.id
     LEFT JOIN credit_order_shipping cos ON co.id = cos.order_id
-    WHERE co.status = 'delivered'
+    WHERE $sale_status_sql
       AND $sale_date_expr BETWEEN ? AND ?
       $branch_sql
     GROUP BY c.id
     ORDER BY total_revenue DESC
 ", $base_params)->results();
 $period_discount = array_sum(array_map(fn($p) => (float)$p->total_discount, $product_summary));
+
+// ── Customer-wise product breakdown — which products each customer ordered
+//    over the period, mirroring $product_summary's per-product aggregation
+//    but grouped by customer first, then product/variant within customer.
+//    Same scope ($sale_status_sql/$sale_date_expr/$branch_sql) as every other
+//    breakdown on this page for consistency.
+$customer_product_rows = $db->query("
+    SELECT
+        c.id AS customer_id, c.name AS customer_name,
+        p.id AS product_id, COALESCE(pv.id, 0) AS variant_id,
+        p.base_name AS product_name,
+        COALESCE(pv.weight_variant,'—') AS weight_variant,
+        COALESCE(pv.grade,'') AS grade,
+        SUM(coi.quantity) AS total_qty,
+        SUM(coi.quantity * coi.unit_price) AS total_gross,
+        SUM(coi.discount_amount) AS total_discount,
+        SUM(coi.line_total) AS total_revenue
+    FROM credit_order_items coi
+    JOIN credit_orders co ON coi.order_id = co.id
+    JOIN customers c ON co.customer_id = c.id
+    JOIN products p ON coi.product_id = p.id
+    LEFT JOIN product_variants pv ON coi.variant_id = pv.id
+    LEFT JOIN credit_order_shipping cos ON co.id = cos.order_id
+    WHERE $sale_status_sql
+      AND $sale_date_expr BETWEEN ? AND ?
+      $branch_sql
+    GROUP BY c.id, p.id, pv.id
+    ORDER BY c.name ASC, total_qty DESC
+", $base_params)->results();
+
+// Nest into customer -> products, keyed in the same order as $customer_summary
+// (by revenue desc) so the two breakdowns list customers identically.
+$customer_products = [];
+foreach ($customer_product_rows as $cpr) {
+    $cid = $cpr->customer_id;
+    if (!isset($customer_products[$cid])) {
+        $customer_products[$cid] = ['name' => $cpr->customer_name, 'products' => []];
+    }
+    $customer_products[$cid]['products'][] = [
+        'product'  => $cpr->product_name,
+        'variant'  => $cpr->weight_variant,
+        'grade'    => $cpr->grade,
+        'qty'      => (float)$cpr->total_qty,
+        'gross'    => (float)$cpr->total_gross,
+        'discount' => (float)$cpr->total_discount,
+        'revenue'  => (float)$cpr->total_revenue,
+    ];
+}
 
 // ── Daily summary ─────────────────────────────────────────────────────────────
 $daily_summary = $db->query("
@@ -162,7 +218,7 @@ $daily_summary = $db->query("
     FROM credit_orders co
     JOIN credit_order_items coi ON coi.order_id = co.id
     LEFT JOIN credit_order_shipping cos ON co.id = cos.order_id
-    WHERE co.status = 'delivered'
+    WHERE $sale_status_sql
       AND $sale_date_expr BETWEEN ? AND ?
       $branch_sql
     GROUP BY sale_date
@@ -188,7 +244,7 @@ $order_rows = $db->query("
     JOIN products p ON coi.product_id = p.id
     LEFT JOIN product_variants pv ON coi.variant_id = pv.id
     LEFT JOIN credit_order_shipping cos ON co.id = cos.order_id
-    WHERE co.status = 'delivered'
+    WHERE $sale_status_sql
       AND $sale_date_expr BETWEEN ? AND ?
       $branch_sql
     ORDER BY sale_date DESC, co.id, coi.id
@@ -240,16 +296,7 @@ $period_qty     = array_sum(array_column((array)$daily_summary, 'total_qty'));
 $period_revenue = array_sum(array_column((array)$daily_summary, 'total_revenue'));
 
 $period_label = date('d M Y', strtotime($date_from)) . ' to ' . date('d M Y', strtotime($date_to));
-$branch_label = 'All Factories';
-if ($filter_branch) {
-    foreach ($branches as $br) {
-        if ((int)$br->id === (int)$filter_branch) { $branch_label = $br->name; break; }
-    }
-    if ($branch_label === 'All Factories' && $user_branch) {
-        $ub = $db->query("SELECT name FROM branches WHERE id = ?", [$filter_branch])->first();
-        if ($ub) $branch_label = $ub->name;
-    }
-}
+$branch_label = $filter_branch ? ($bf_scope['selected_branch_name'] ?: 'All Factories') : 'All Factories';
 
 // ── XLSX Export (real formatted workbook — bold shaded headers, number
 //    formats, borders, frozen header row, bold totals) ────────────────────────
@@ -283,6 +330,21 @@ if (isset($_GET['export']) && $_GET['export'] === 'xlsx') {
     }
     $xlsx->totalRow($sCust, ['Total', $cTotOrders, $cTotQty, $cTotGross, $cTotDisc, $cTotRev],
         [ST_TEXT, ST_INT, ST_INT, ST_MONEY, ST_MONEY, ST_MONEY]);
+
+    $sCustProd = $xlsx->addSheet('Customer x Product', [30, 26, 12, 10, 12, 15, 13, 15]);
+    $xlsx->titleRow($sCustProd, 'Ujjal Flour Mills — Sales Report (' . $period_label . ', ' . $branch_label . ')');
+    $xlsx->blankRow($sCustProd);
+    $xlsx->headerRow($sCustProd, ['Customer', 'Product', 'Variant', 'Grade', 'Qty (bags)', 'Gross (৳)', 'Discount (৳)', 'Net Revenue (৳)']);
+    foreach ($customer_summary as $cs) {
+        $cp = $customer_products[$cs->customer_id] ?? null;
+        if (!$cp) continue;
+        foreach ($cp['products'] as $row) {
+            $xlsx->row($sCustProd, [$cs->customer_name, $row['product'], $row['variant'], $row['grade'], $row['qty'], $row['gross'], $row['discount'], $row['revenue']],
+                [ST_TEXT, ST_TEXT, ST_TEXT, ST_TEXT, ST_INT, ST_MONEY, ST_MONEY, ST_MONEY]);
+        }
+    }
+    $xlsx->totalRow($sCustProd, ['Total', '', '', '', $cTotQty, $cTotGross, $cTotDisc, $cTotRev],
+        [ST_TEXT, ST_TEXT, ST_TEXT, ST_TEXT, ST_INT, ST_MONEY, ST_MONEY, ST_MONEY]);
 
     $sDaily = $xlsx->addSheet('Daily Summary', [16, 12, 14, 16]);
     $xlsx->titleRow($sDaily, 'Ujjal Flour Mills — Sales Report (' . $period_label . ', ' . $branch_label . ')');
@@ -348,6 +410,23 @@ if (isset($_GET['export']) && $_GET['export'] === 'pdf') {
         ['Total', (string)$cTotOrders, number_format($cTotQty), SalesReportPdf::money($cTotGross), SalesReportPdf::money($cTotDisc), SalesReportPdf::money($cTotRev)]
     );
 
+    $pdf->sectionTitle('Customer x Product Breakdown');
+    $cpRows = [];
+    foreach ($customer_summary as $cs) {
+        $cp = $customer_products[$cs->customer_id] ?? null;
+        if (!$cp) continue;
+        foreach ($cp['products'] as $row) {
+            $cpRows[] = [$cs->customer_name, $row['product'], $row['variant'], $row['grade'] ?: '-', number_format($row['qty']), SalesReportPdf::money($row['gross']), SalesReportPdf::money($row['discount']), SalesReportPdf::money($row['revenue'])];
+        }
+    }
+    $pdf->table(
+        ['Customer', 'Product', 'Variant', 'Grade', 'Qty (bags)', 'Gross', 'Discount', 'Net Revenue'],
+        [55, 50, 25, 20, 25, 32, 30, 33],
+        ['L', 'L', 'L', 'L', 'R', 'R', 'R', 'R'],
+        $cpRows,
+        ['Total', '', '', '', number_format($cTotQty), SalesReportPdf::money($cTotGross), SalesReportPdf::money($cTotDisc), SalesReportPdf::money($cTotRev)]
+    );
+
     $pdf->sectionTitle('Daily Summary');
     $dRows = [];
     foreach ($daily_summary as $ds) {
@@ -376,7 +455,7 @@ require_once '../templates/header.php';
         <h1 class="text-lg font-bold text-gray-900 flex items-center gap-2">
             <i class="fas fa-chart-bar text-primary-500 text-base"></i> Sales Report
         </h1>
-        <p class="text-xs text-gray-400 mt-0.5">Delivered goods — per day breakdown</p>
+        <p class="text-xs text-gray-400 mt-0.5">Goods shipped to customers — per day breakdown</p>
     </div>
 
     <!-- Filter form -->
@@ -386,7 +465,7 @@ require_once '../templates/header.php';
         <span class="text-gray-300 text-xs">→</span>
         <input type="date" name="date_to" value="<?php echo $date_to; ?>"
                class="px-2.5 py-1.5 text-xs border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-300 outline-none shadow-sm">
-        <?php if ($is_admin && !empty($branches)): ?>
+        <?php if ($bf_scope['show_picker'] && !empty($branches)): ?>
         <select name="branch_id" class="px-2.5 py-1.5 text-xs border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-300 outline-none shadow-sm">
             <option value="">All Factories</option>
             <?php foreach ($branches as $br): ?>
@@ -448,7 +527,7 @@ require_once '../templates/header.php';
     <div class="flex items-center gap-2 px-3 py-2 bg-white border border-gray-100 rounded-xl shadow-sm">
         <i class="fas fa-boxes text-indigo-400 text-sm"></i>
         <div>
-            <div class="text-[10px] text-gray-400 font-semibold uppercase leading-none">Orders Delivered</div>
+            <div class="text-[10px] text-gray-400 font-semibold uppercase leading-none">Orders Shipped</div>
             <div class="text-sm font-bold text-gray-800 mt-0.5"><?php echo number_format($period_orders); ?></div>
         </div>
     </div>
@@ -657,6 +736,79 @@ require_once '../templates/header.php';
 </div>
 <?php endif; ?>
 
+<!-- ── Customer-wise Product Breakdown ────────────────────────────────────── -->
+<?php if (!empty($customer_summary)): ?>
+<div class="mb-5">
+    <div class="text-[10px] font-semibold text-gray-400 uppercase tracking-wide mb-2">Customer-wise Product Breakdown — <?php echo date('d M', strtotime($date_from)); ?> to <?php echo date('d M Y', strtotime($date_to)); ?></div>
+    <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+        <table class="w-full" id="customerProductTable">
+            <thead>
+                <tr class="bg-gray-50 border-b border-gray-100">
+                    <th class="px-4 py-2 text-left text-[10px] font-semibold text-gray-400 uppercase tracking-wide">Customer</th>
+                    <th class="px-3 py-2 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">Orders</th>
+                    <th class="px-3 py-2 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">Bags / Units</th>
+                    <th class="px-3 py-2 text-right text-[10px] font-semibold text-gray-400 uppercase tracking-wide">Net Revenue (৳)</th>
+                    <th class="px-3 py-2 w-10"></th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($customer_summary as $ci => $cs):
+                $cp_row_id = 'custprod-' . $cs->customer_id;
+                $cp = $customer_products[$cs->customer_id] ?? null;
+            ?>
+            <tr class="border-b border-gray-50 last:border-0 hover:bg-blue-50/20 transition-colors cursor-pointer <?php echo $ci % 2 === 0 ? '' : 'bg-gray-50/30'; ?>"
+                onclick="toggleCustomerProducts('<?php echo $cp_row_id; ?>')" title="Click to see products ordered">
+                <td class="px-4 py-2 text-xs font-bold text-gray-800"><?php echo htmlspecialchars($cs->customer_name); ?></td>
+                <td class="px-3 py-2 text-right text-xs text-gray-500"><?php echo (int)$cs->order_count; ?></td>
+                <td class="px-3 py-2 text-right"><span class="text-sm font-extrabold text-indigo-700"><?php echo number_format($cs->total_qty, 0); ?></span></td>
+                <td class="px-3 py-2 text-right"><span class="text-sm font-extrabold text-green-700">৳<?php echo number_format($cs->total_revenue, 0); ?></span></td>
+                <td class="px-3 py-2 text-center">
+                    <?php if ($cp): ?>
+                    <i id="<?php echo $cp_row_id; ?>-icon" class="fas fa-chevron-down text-gray-300 text-[10px] transition-transform duration-200"></i>
+                    <?php endif; ?>
+                </td>
+            </tr>
+            <?php if ($cp): ?>
+            <tr id="<?php echo $cp_row_id; ?>" class="hidden">
+                <td colspan="5" class="p-0">
+                    <div class="bg-gray-50 border-y border-gray-100 px-6 py-2">
+                        <table class="w-full">
+                            <thead>
+                                <tr>
+                                    <th class="py-1 text-left text-[9px] font-semibold text-gray-400 uppercase tracking-wide">Product</th>
+                                    <th class="py-1 text-left text-[9px] font-semibold text-gray-400 uppercase tracking-wide">Variant</th>
+                                    <th class="py-1 text-left text-[9px] font-semibold text-gray-400 uppercase tracking-wide">Grade</th>
+                                    <th class="py-1 text-right text-[9px] font-semibold text-gray-400 uppercase tracking-wide">Qty</th>
+                                    <th class="py-1 text-right text-[9px] font-semibold text-gray-400 uppercase tracking-wide">Discount (৳)</th>
+                                    <th class="py-1 text-right text-[9px] font-semibold text-gray-400 uppercase tracking-wide">Net Revenue (৳)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <?php foreach ($cp['products'] as $row): ?>
+                                <tr>
+                                    <td class="py-1 text-[10px] font-medium text-gray-700"><?php echo htmlspecialchars($row['product']); ?></td>
+                                    <td class="py-1 text-[10px]"><span class="px-1.5 py-0 bg-gray-200 text-gray-600 rounded text-[9px] font-semibold"><?php echo htmlspecialchars($row['variant']); ?></span></td>
+                                    <td class="py-1 text-[10px] text-gray-500"><?php echo htmlspecialchars($row['grade'] ?: '—'); ?></td>
+                                    <td class="py-1 text-right text-[10px] font-bold text-orange-600"><?php echo number_format($row['qty'], 0); ?></td>
+                                    <td class="py-1 text-right text-[10px] <?php echo $row['discount'] > 0 ? 'text-rose-600 font-semibold' : 'text-gray-300'; ?>">
+                                        <?php echo $row['discount'] > 0 ? '−৳' . number_format($row['discount'], 0) : '—'; ?>
+                                    </td>
+                                    <td class="py-1 text-right text-[10px] font-bold text-green-700">৳<?php echo number_format($row['revenue'], 0); ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </td>
+            </tr>
+            <?php endif; ?>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+<?php endif; ?>
+
 <!-- ── Daily Breakdown Table ──────────────────────────────────────────────── -->
 <div class="text-[10px] font-semibold text-gray-400 uppercase tracking-wide mb-2">Day-by-Day Breakdown</div>
 
@@ -790,6 +942,17 @@ require_once '../templates/header.php';
 
 <script>
 function toggleDay(id) {
+    const row  = document.getElementById(id);
+    const icon = document.getElementById(id + '-icon');
+    if (!row) return;
+    const hidden = row.classList.toggle('hidden');
+    if (icon) {
+        icon.style.transform = hidden ? '' : 'rotate(180deg)';
+        icon.classList.toggle('text-primary-500', !hidden);
+        icon.classList.toggle('text-gray-300', hidden);
+    }
+}
+function toggleCustomerProducts(id) {
     const row  = document.getElementById(id);
     const icon = document.getElementById(id + '-icon');
     if (!row) return;

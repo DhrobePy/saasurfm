@@ -68,6 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $bankAccounts = $bankManager->getBankAccounts(true);
 $txTypes      = $bankManager->getTransactionTypes(true);
+$canSeeBalance = canViewBankBalances();
 $branches     = [];
 try {
     $db = Database::getInstance();
@@ -144,10 +145,12 @@ require_once dirname(__DIR__) . '/templates/header.php';
             <select name="bank_tx_account_id" required
                     class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary-500 outline-none">
                 <option value="">— Select Bank Account —</option>
-                <?php foreach ($bankAccounts as $ba): ?>
+                <?php foreach ($bankAccounts as $ba):
+                    $baBal = (float)$ba->opening_balance + (float)$ba->module_balance;
+                ?>
                 <option value="<?php echo $ba->id; ?>"
                         <?php echo ($editMode && $editTx->bank_tx_account_id == $ba->id) ? 'selected' : ''; ?>>
-                    <?php echo htmlspecialchars($ba->bank_name . ' | ' . $ba->account_name . ' | ' . $ba->account_number); ?>
+                    <?php echo htmlspecialchars(bankAccountOptionLabel($ba->bank_name, $ba->account_name, $ba->account_number, $baBal, $canSeeBalance)); ?>
                 </option>
                 <?php endforeach; ?>
             </select>

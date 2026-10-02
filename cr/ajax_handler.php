@@ -16,7 +16,25 @@ $user_id = $_SESSION['user_id'];
 
 global $db;
 $user_role = $_SESSION['user_role'] ?? '';
+$is_admin  = in_array($user_role, ['Superadmin', 'admin']);
 $data = [];
+
+// Self-migrating: hide/recall specific outstanding invoices from the Collect
+// Payment list (get_outstanding_orders below) — probe first, cheap no-op
+// once the table exists (matches this codebase's ensure*Table() convention).
+try {
+    $db->getPdo()->exec("CREATE TABLE IF NOT EXISTS `credit_order_collection_hides` (
+        `id`               bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+        `order_id`         bigint UNSIGNED NOT NULL,
+        `customer_id`      bigint UNSIGNED NOT NULL,
+        `hidden_by_user_id` bigint UNSIGNED NOT NULL,
+        `hidden_at`        timestamp NOT NULL DEFAULT current_timestamp(),
+        `reason`           text DEFAULT NULL,
+        PRIMARY KEY (`id`),
+        UNIQUE KEY `uk_coch_order` (`order_id`),
+        KEY `idx_coch_customer` (`customer_id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+} catch (\Throwable $e) { /* best-effort; the actions below will surface a real error if it's actually missing */ }
 
 try {
     // Read request body
@@ -250,13 +268,22 @@ try {
                 $extra_sql = ' OR id IN (' . implode(',', array_fill(0, count($extra_ids), '?')) . ')';
                 $params    = array_merge($params, $extra_ids);
             }
+            // Hide/recall (admin/delegated, toggle-gated): an invoice an admin
+            // hid from Collect Payment is excluded from this list, UNLESS it's
+            // part of the specific receipt being edited (same $extra_sql
+            // addback bypass that already overrides the balance filter above —
+            // a hidden invoice on the payment you're correcting must still show).
+            $hide_sql = '';
+            if (hideInvoiceFromCollectionEnabled()) {
+                $hide_sql = ' AND NOT EXISTS (SELECT 1 FROM credit_order_collection_hides h WHERE h.order_id = credit_orders.id)';
+            }
             $orders = $db->query(
                 "SELECT id, order_number, order_date, status, total_amount, amount_paid,
                         GREATEST(0, total_amount - amount_paid) AS balance_due
                  FROM credit_orders
                  WHERE customer_id = ?
                    AND status NOT IN ('draft', 'rejected', 'cancelled')
-                   AND ((total_amount - amount_paid) > 0.01{$extra_sql})
+                   AND ((total_amount - amount_paid) > 0.01{$hide_sql}{$extra_sql})
                  ORDER BY
                     FIELD(status, 'delivered', 'shipped', 'ready_to_ship', 'produced',
                                   'in_production', 'approved', 'escalated', 'pending_approval'),
@@ -274,6 +301,89 @@ try {
             }
 
             $result = ['success' => true, 'orders' => $orders];
+            break;
+
+        // ── Hide/recall outstanding invoices on Collect Payment (visibility
+        //    only — never touches money/ledger). Toggle-gated + delegable via
+        //    'can_hide_invoice' (credit_sales / customer_payment), same
+        //    pattern as 'can_change_products' on order_amendment.
+        case 'get_hidden_invoices':
+            if (!hideInvoiceFromCollectionEnabled() || (!$is_admin && !userCanPageAction('credit_sales', 'customer_payment', 'can_hide_invoice'))) {
+                throw new Exception('You do not have permission to view hidden invoices.');
+            }
+            if (!isset($data['customer_id'])) {
+                throw new Exception('Customer ID is required.');
+            }
+            $hidden = $db->query(
+                "SELECT co.id, co.order_number, co.order_date, co.total_amount, co.amount_paid,
+                        GREATEST(0, co.total_amount - co.amount_paid) AS balance_due,
+                        h.hidden_at, h.reason, u.display_name AS hidden_by_name
+                 FROM credit_order_collection_hides h
+                 JOIN credit_orders co ON co.id = h.order_id
+                 LEFT JOIN users u ON u.id = h.hidden_by_user_id
+                 WHERE h.customer_id = ?
+                 ORDER BY h.hidden_at DESC",
+                [(int)$data['customer_id']]
+            )->results();
+            $result = ['success' => true, 'orders' => $hidden];
+            break;
+
+        case 'hide_invoice_from_collection':
+            if (!hideInvoiceFromCollectionEnabled() || (!$is_admin && !userCanPageAction('credit_sales', 'customer_payment', 'can_hide_invoice'))) {
+                throw new Exception('You do not have permission to hide invoices.');
+            }
+            $hide_order_id = (int)($data['order_id'] ?? 0);
+            if (!$hide_order_id) throw new Exception('Order ID is required.');
+            $hide_order = $db->query("SELECT id, order_number, customer_id, status FROM credit_orders WHERE id = ?", [$hide_order_id])->first();
+            if (!$hide_order) throw new Exception('Order not found.');
+            $hide_reason = trim((string)($data['reason'] ?? ''));
+
+            $db->query(
+                "INSERT INTO credit_order_collection_hides (order_id, customer_id, hidden_by_user_id, reason)
+                 VALUES (?, ?, ?, ?)
+                 ON DUPLICATE KEY UPDATE hidden_by_user_id = VALUES(hidden_by_user_id), hidden_at = CURRENT_TIMESTAMP, reason = VALUES(reason)",
+                [$hide_order_id, $hide_order->customer_id, $user_id, $hide_reason !== '' ? $hide_reason : null]
+            );
+            $db->insert('credit_order_workflow', [
+                'order_id'             => $hide_order_id,
+                'from_status'          => $hide_order->status,
+                'to_status'            => $hide_order->status,
+                'action'               => 'hidden_from_collection',
+                'performed_by_user_id' => $user_id,
+                'comments'             => 'Hidden from Collect Payment outstanding list' . ($hide_reason !== '' ? " — {$hide_reason}" : ''),
+            ]);
+            // system_audit_log.action is a strict ENUM without a 'hidden'-style
+            // value — use the documented 'other' catch-all and keep the real
+            // semantics in description/metadata (same fix pattern as the
+            // order_amendments ENUM issue found this session).
+            auditLog('credit_orders', 'other',
+                "Order {$hide_order->order_number} hidden from Collect Payment" . ($hide_reason !== '' ? " — {$hide_reason}" : ''),
+                ['order_id' => $hide_order_id, 'sub_action' => 'hidden_from_collection']);
+            $result = ['success' => true];
+            break;
+
+        case 'unhide_invoice_from_collection':
+            if (!hideInvoiceFromCollectionEnabled() || (!$is_admin && !userCanPageAction('credit_sales', 'customer_payment', 'can_hide_invoice'))) {
+                throw new Exception('You do not have permission to recall invoices.');
+            }
+            $unhide_order_id = (int)($data['order_id'] ?? 0);
+            if (!$unhide_order_id) throw new Exception('Order ID is required.');
+            $unhide_order = $db->query("SELECT id, order_number, status FROM credit_orders WHERE id = ?", [$unhide_order_id])->first();
+            if (!$unhide_order) throw new Exception('Order not found.');
+
+            $db->query("DELETE FROM credit_order_collection_hides WHERE order_id = ?", [$unhide_order_id]);
+            $db->insert('credit_order_workflow', [
+                'order_id'             => $unhide_order_id,
+                'from_status'          => $unhide_order->status,
+                'to_status'            => $unhide_order->status,
+                'action'               => 'unhidden_from_collection',
+                'performed_by_user_id' => $user_id,
+                'comments'             => 'Recalled back into Collect Payment outstanding list',
+            ]);
+            auditLog('credit_orders', 'other',
+                "Order {$unhide_order->order_number} recalled into Collect Payment",
+                ['order_id' => $unhide_order_id, 'sub_action' => 'unhidden_from_collection']);
+            $result = ['success' => true];
             break;
 
         // ── Backfill: manually allocate an existing, previously-unallocated
@@ -644,7 +754,14 @@ try {
 
         case 'delivery_schedule_edit_order': {
             $role = $_SESSION['user_role'] ?? '';
-            if (!in_array($role, ['Superadmin', 'admin'])) throw new Exception('Permission denied.');
+            // Was hardcoded Superadmin/admin-only with no delegable action at
+            // all, so there was nothing an admin could grant here via Access
+            // Manager/Privileges (flagged directly by the user) — matches the
+            // can_edit action now registered for this page in the module
+            // registry, and the UI gate in cr/delivery_schedule.php.
+            if (!in_array($role, ['Superadmin', 'admin']) && !userCanPageAction('production', 'delivery_schedule', 'can_edit')) {
+                throw new Exception('Permission denied.');
+            }
 
             $order_id      = (int)($data['order_id'] ?? 0);
             $required_date = trim($data['required_date'] ?? '');
@@ -728,8 +845,13 @@ try {
         }
 
         case 'delivery_schedule_reorder': {
-            $role = $_SESSION['user_role'] ?? '';
-            if (!in_array($role, ['Superadmin', 'admin'])) throw new Exception('Permission denied.');
+            // Delegable via Privileges (production > Delivery Schedule > Reorder /
+            // Reschedule Delivery Priority) — userCanPageAction() already covers
+            // Superadmin/admin internally, so this one check replaces the old
+            // hardcoded role list rather than being layered on top of it.
+            if (!userCanPageAction('production', 'delivery_schedule', 'can_change_priority')) {
+                throw new Exception('Permission denied.');
+            }
 
             $items = $data['items'] ?? [];
             if (!is_array($items) || empty($items)) throw new Exception('Nothing to reorder.');

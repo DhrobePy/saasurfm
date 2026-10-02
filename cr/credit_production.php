@@ -29,41 +29,44 @@ $can_edit_orders       = $is_admin || userCanPageAction('production', 'credit_pr
 $can_partial_delivery  = $is_admin || userCanPageAction('production', 'credit_production', 'can_partial_delivery');
 $can_return            = $is_admin || userCanPageAction('production', 'credit_production', 'can_return');
 $can_production_report = $is_admin || userCanPageAction('production', 'credit_production', 'can_production_report');
+$can_change_priority   = $is_admin || userCanPageAction('production', 'credit_production', 'can_change_priority');
 
 // ── Branch detection ─────────────────────────────────────────────────────────
-$user_branch = null;
-if (!$is_admin) {
-    $emp = $db->query("SELECT branch_id FROM employees WHERE user_id = ?", [$user_id])->first();
-    if ($emp && $emp->branch_id) {
-        $user_branch = $emp->branch_id;
-    } else {
-        $ur = $db->query("SELECT branch_id FROM users WHERE id = ?", [$user_id])->first();
-        if ($ur && isset($ur->branch_id)) $user_branch = $ur->branch_id;
-    }
-}
+// Access-Manager-aware (was: hardcoded to the user's own employees.branch_id
+// for every non-admin, so an explicit "All Branches" or "specific branches"
+// data_scope grant in Access Manager had no effect at all — see
+// resolveBranchFilterUI()/getUserBranchScope() in core/functions/helpers.php).
+$bf = resolveBranchFilterUI('production', 'co.assigned_branch_id');
+$branch_filter       = $bf['filter_sql'];
+$branch_params       = $bf['filter_params'];
+$all_branches        = $bf['picker_branches'];
+$filter_branch_id    = $bf['selected_branch_id'];
+$filter_branch_name  = $bf['selected_branch_name'];
+$show_branch_picker  = $bf['show_picker'];
 
-$branch_filter = '';
-$branch_params = [];
-if (!$is_admin && $user_branch) {
-    $branch_filter = 'AND co.assigned_branch_id = ?';
-    $branch_params[] = $user_branch;
-}
+// ── Production queue date filter ─────────────────────────────────────────────
+// Off by default (empty $pq_from/$pq_to) so the page's normal, live behavior
+// — the current active queue, unfiltered — is exactly unchanged. Filtering by
+// required_date is what actually answers "was this overdue" for a past
+// period, so applying a range also broadens the status list beyond the
+// active-only 4 statuses: without that, an order that WAS overdue in the
+// queue during the selected window but has since shipped/delivered (or was
+// cancelled) would silently vanish the moment it left 'ready_to_ship' —
+// exactly the "mended queues" the date filter is meant to let users find.
+$pq_from = trim($_GET['pq_from'] ?? '');
+$pq_to   = trim($_GET['pq_to']   ?? '');
+$pq_date_filter_active = ($pq_from !== '' || $pq_to !== '');
 
-// Admin branch picker
-$filter_branch_id   = 0;
-$filter_branch_name = '';
-$all_branches       = [];
-if ($is_admin) {
-    $all_branches     = $db->query("SELECT id, name FROM branches WHERE status = 'active' ORDER BY name")->results();
-    $filter_branch_id = (int)($_GET['branch_id'] ?? 0);
-    if ($filter_branch_id > 0) {
-        $branch_filter = 'AND co.assigned_branch_id = ?';
-        $branch_params = [$filter_branch_id];
-        foreach ($all_branches as $br) {
-            if ((int)$br->id === $filter_branch_id) { $filter_branch_name = $br->name; break; }
-        }
-    }
-}
+$pq_status_list = $pq_date_filter_active
+    ? ['approved','in_production','produced','ready_to_ship','shipped','delivered','cancelled']
+    : ['approved','in_production','produced','ready_to_ship'];
+$pq_status_ph = implode(',', array_fill(0, count($pq_status_list), '?'));
+
+$pq_where      = [];
+$pq_date_params = [];
+if ($pq_from !== '') { $pq_where[] = 'co.required_date >= ?'; $pq_date_params[] = $pq_from; }
+if ($pq_to   !== '') { $pq_where[] = 'co.required_date <= ?'; $pq_date_params[] = $pq_to; }
+$pq_where_sql = $pq_where ? ('AND ' . implode(' AND ', $pq_where)) : '';
 
 // ── Production queue query ───────────────────────────────────────────────────
 $orders = $db->query(
@@ -81,19 +84,23 @@ $orders = $db->query(
      LEFT JOIN branches b ON co.assigned_branch_id = b.id
      LEFT JOIN users u ON co.created_by_user_id = u.id
      LEFT JOIN production_schedule ps ON co.id = ps.order_id
-     WHERE co.status IN ('approved','in_production','produced','ready_to_ship')
+     WHERE co.status IN ($pq_status_ph)
        AND co.assigned_branch_id IS NOT NULL
        $branch_filter
+       $pq_where_sql
      ORDER BY
         CASE co.status
             WHEN 'approved'      THEN 1
             WHEN 'in_production' THEN 2
             WHEN 'produced'      THEN 3
             WHEN 'ready_to_ship' THEN 4
+            WHEN 'shipped'       THEN 5
+            WHEN 'delivered'     THEN 6
+            WHEN 'cancelled'     THEN 7
         END,
         ps.priority_order ASC,
         co.required_date ASC",
-    $branch_params
+    array_merge($pq_status_list, $branch_params, $pq_date_params)
 )->results();
 
 // ── Handle POST actions ──────────────────────────────────────────────────────
@@ -111,6 +118,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $workflow_action = '';
 
         if ($action === 'start' && $can_update_status) {
+            // Precondition guard — confirmed live 2 Sep 2026 that without this, a
+            // double-click / duplicate submit (or a stale page re-submitting after
+            // someone else already advanced the order) blindly re-applies the
+            // transition regardless of the order's actual current status, writing
+            // duplicate credit_order_workflow rows, re-sending duplicate Telegram
+            // notifications, and — worse — overwriting production_started_at with
+            // a later timestamp, or even regressing an already-produced/shipped/
+            // delivered order straight back to 'in_production'. $order was freshly
+            // re-queried just above, so a second/late request correctly sees the
+            // status the first request already wrote.
+            if ($order->status !== 'approved') {
+                throw new Exception("Cannot start production — this order is already '"
+                    . str_replace('_', ' ', $order->status) . "' (was it already started, possibly by a duplicate click?). Refresh the page.");
+            }
             // Server-side production gate — admin may have held production at approval
             $gate = getOrderGateState($order_id);
             if ($gate['production'] === 'held') {
@@ -179,6 +200,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
         } elseif ($action === 'complete' && $can_update_status) {
+            // Same duplicate-submit / regression guard as 'start' above.
+            if ($order->status !== 'in_production') {
+                throw new Exception("Cannot mark as produced — this order is already '"
+                    . str_replace('_', ' ', $order->status) . "' (was it already completed, possibly by a duplicate click?). Refresh the page.");
+            }
             $new_status      = 'produced';
             $workflow_action = 'complete_production';
             $db->query("UPDATE credit_orders SET status = ? WHERE id = ?", [$new_status, $order_id]);
@@ -233,6 +259,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
         } elseif ($action === 'ready' && $can_update_status) {
+            // Same duplicate-submit / regression guard as 'start'/'complete' above.
+            if ($order->status !== 'produced') {
+                throw new Exception("Cannot mark ready to ship — this order is already '"
+                    . str_replace('_', ' ', $order->status) . "' (was it already marked ready, possibly by a duplicate click?). Refresh the page.");
+            }
+            // Same dispatch-hold gate credit_dispatch.php's own "Ship" action
+            // already enforces — checked here too so a held order can't even be
+            // staged as Ready to Ship first; the production manager only sees
+            // it become available once Accounts clears the same hold that
+            // later gates the actual truck dispatch / Goods on Board step.
+            if (!orderDispatchAllowed($order_id)) {
+                $reason = getOrderDispatchHoldReason($order_id) ?? 'awaiting payment clearance from Accounts';
+                throw new Exception('Cannot mark Ready to Ship — dispatch is HELD for this order (' . $reason . '). Contact Accounts to release the hold.');
+            }
             $new_status      = 'ready_to_ship';
             $workflow_action = 'mark_ready_to_ship';
             try { $db->query("CALL sp_calculate_order_weight(?)", [$order_id]); } catch (Exception $e) { error_log("Weight calc: " . $e->getMessage()); }
@@ -278,7 +318,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 } catch (Exception $e) { error_log('Telegram ready to ship: ' . $e->getMessage()); }
             }
 
-        } elseif ($action === 'update_priority' && $is_admin) {
+        } elseif ($action === 'update_priority' && $can_change_priority) {
             $priority = (int)$_POST['priority'];
             $sched = $db->query("SELECT id FROM production_schedule WHERE order_id = ?", [$order_id])->first();
             if ($sched) {
@@ -438,7 +478,14 @@ foreach (array_merge($due_today_orders, $overdue_orders) as $o) {
 
 // ── "All Orders" tab data ────────────────────────────────────────────────────
 $all_orders  = [];
-$ao_status   = trim($_GET['ao_status']   ?? '');
+// Multiple selection: ao_status[]=a&ao_status[]=b (matches the pattern already
+// established on all_sales.php). Validated against the known status list
+// defined later in this file ($status_labels) — duplicated here as a plain
+// key list so it's available before that point without reordering the file.
+$ao_status_valid_keys = ['pending_approval','approved','in_production','produced','ready_to_ship','shipped','dispatched','delivered','cancelled'];
+$ao_status_raw = $_GET['ao_status'] ?? [];
+if (!is_array($ao_status_raw)) $ao_status_raw = $ao_status_raw !== '' ? [$ao_status_raw] : [];
+$ao_status = array_values(array_intersect(array_map('strval', $ao_status_raw), $ao_status_valid_keys));
 $ao_from     = trim($_GET['ao_from']     ?? '');
 $ao_to       = trim($_GET['ao_to']       ?? '');
 $ao_product  = trim($_GET['ao_product']  ?? '');
@@ -448,15 +495,15 @@ if ($can_view_orders) {
     $ao_where  = ['co.assigned_branch_id IS NOT NULL'];
     $ao_params = [];
 
-    if (!$is_admin && $user_branch) {
-        $ao_where[]  = 'co.assigned_branch_id = ?';
-        $ao_params[] = $user_branch;
-    } elseif ($is_admin && $filter_branch_id > 0) {
-        $ao_where[]  = 'co.assigned_branch_id = ?';
-        $ao_params[] = $filter_branch_id;
+    if ($branch_filter !== '') {
+        $ao_where[]  = substr($branch_filter, 4); // strip the leading "AND "
+        array_push($ao_params, ...$branch_params);
     }
 
-    if ($ao_status   !== '') { $ao_where[] = 'co.status = ?';      $ao_params[] = $ao_status; }
+    if (!empty($ao_status)) {
+        $ao_where[] = 'co.status IN (' . implode(',', array_fill(0, count($ao_status), '?')) . ')';
+        foreach ($ao_status as $s) { $ao_params[] = $s; }
+    }
     if ($ao_from     !== '') { $ao_where[] = 'co.order_date >= ?'; $ao_params[] = $ao_from; }
     if ($ao_to       !== '') { $ao_where[] = 'co.order_date <= ?'; $ao_params[] = $ao_to; }
     if ($ao_customer !== '') { $ao_where[] = 'c.name LIKE ?';      $ao_params[] = '%' . $ao_customer . '%'; }
@@ -496,9 +543,8 @@ $pt_to   = trim($_GET['pt_to']   ?? date('Y-m-d'));
 
 if ($can_production_report) {
     $pt_params = [$pt_from, $pt_to];
-    $pt_branch = '';
-    if (!$is_admin && $user_branch) { $pt_branch = 'AND co.assigned_branch_id = ?'; $pt_params[] = $user_branch; }
-    elseif ($is_admin && $filter_branch_id > 0) { $pt_branch = 'AND co.assigned_branch_id = ?'; $pt_params[] = $filter_branch_id; }
+    $pt_branch = $branch_filter;
+    array_push($pt_params, ...$branch_params);
 
     // Query by order_date for orders that have reached production-complete or beyond
     try {
@@ -612,6 +658,29 @@ $status_labels = [
     'delivered'        => 'Delivered',
     'cancelled'        => 'Cancelled',
 ];
+
+// 'shipped' unconditionally meant "Partially Delivered" everywhere on this page
+// — confirmed live 2 Sep 2026 that's wrong for the vast majority of them: this
+// app has two unrelated delivery mechanisms, and only orders that went through
+// the tracked one (partial_delivery.php, real per-item qty in
+// credit_order_deliveries) are genuinely partial. Orders shipped via the
+// gate-scan flow (verify_delivery.php) have zero tracked rows and sit at
+// 'shipped' purely because nobody clicked the separate "confirm delivery"
+// step — they're not partial, they're fully shipped and just unconfirmed.
+// Same distinction already applied to production_requirement.php's badge;
+// applied here too since every real order-status badge on this page (queue
+// tab, delivery schedule tab, all-orders tab) reused the same static label.
+$tracked_delivery_order_ids = array_column(
+    $db->query("SELECT DISTINCT order_id FROM credit_order_deliveries")->results(), 'order_id'
+);
+function shippedStatusLabel(string $status, int $order_id, array $tracked_ids, array $labels): string {
+    if ($status !== 'shipped') return $labels[$status] ?? ucfirst(str_replace('_', ' ', $status));
+    return in_array($order_id, $tracked_ids) ? 'Partially Delivered' : 'Shipped — Awaiting Confirmation';
+}
+function shippedStatusClass(string $status, int $order_id, array $tracked_ids, array $classes): string {
+    if ($status !== 'shipped') return $classes[$status] ?? 'bg-gray-100 text-gray-700';
+    return in_array($order_id, $tracked_ids) ? 'bg-indigo-100 text-indigo-800' : 'bg-teal-100 text-teal-800';
+}
 ?>
 
 <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -655,8 +724,8 @@ $status_labels = [
 </div>
 <?php endif; ?>
 
-<!-- Branch filter (admin only) -->
-<?php if ($is_admin && !empty($all_branches)): ?>
+<!-- Branch filter (admins, and any non-admin granted 2+ branches) -->
+<?php if ($show_branch_picker && !empty($all_branches)): ?>
 <form method="GET" class="flex flex-wrap items-end gap-2 mb-4 bg-white rounded-lg border border-gray-200 shadow-sm px-4 py-3">
     <input type="hidden" name="tab" value="<?php echo htmlspecialchars($active_tab); ?>">
     <div class="flex flex-col gap-0.5">
@@ -711,6 +780,56 @@ if ($can_view_payments)     $tabs[] = ['key' => 'payments', 'label' => 'Payment 
 ══════════════════════════════════════════════════════════ -->
 <div class="<?php echo $active_tab !== 'queue' ? 'hidden' : ''; ?>">
 
+<!-- Date range filter — off by default (live active queue, unchanged). Set
+     either date to also pull in shipped/delivered/cancelled orders whose
+     Req. Date falls in range, so a resolved ("mended") or now-completed
+     overdue order doesn't just vanish once it moves out of the active
+     4-status queue. -->
+<form method="GET" class="bg-white rounded-lg border border-gray-200 shadow-sm px-4 py-3 mb-4">
+    <input type="hidden" name="tab" value="queue">
+    <?php if ($filter_branch_id > 0): ?><input type="hidden" name="branch_id" value="<?php echo $filter_branch_id; ?>"><?php endif; ?>
+    <div class="flex flex-wrap items-end gap-2">
+        <div class="flex flex-col gap-0.5">
+            <label class="text-xs text-gray-500 font-medium">Req. Date From</label>
+            <input type="date" name="pq_from" value="<?php echo htmlspecialchars($pq_from); ?>"
+                   class="text-xs px-2 py-1.5 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500">
+        </div>
+        <div class="flex flex-col gap-0.5">
+            <label class="text-xs text-gray-500 font-medium">Req. Date To</label>
+            <input type="date" name="pq_to" value="<?php echo htmlspecialchars($pq_to); ?>"
+                   class="text-xs px-2 py-1.5 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500">
+        </div>
+        <button type="submit" class="px-3 py-1.5 bg-blue-600 text-white text-xs font-medium rounded hover:bg-blue-700 transition-colors cursor-pointer">
+            <i class="fas fa-filter mr-1"></i>Apply
+        </button>
+        <?php if ($pq_date_filter_active): ?>
+        <a href="?tab=queue<?php echo $filter_branch_id ? '&branch_id=' . $filter_branch_id : ''; ?>"
+           class="px-3 py-1.5 bg-gray-100 text-gray-600 text-xs rounded hover:bg-gray-200 transition-colors cursor-pointer">
+            <i class="fas fa-times mr-1"></i>Clear
+        </a>
+        <?php endif; ?>
+        <!-- Quick ranges -->
+        <?php
+        $pq_quick = [
+            'This Week'  => [date('Y-m-d', strtotime('monday this week')), date('Y-m-d', strtotime('sunday this week'))],
+            'Last 7 Days' => [date('Y-m-d', strtotime('-6 days')), date('Y-m-d')],
+            'This Month' => [date('Y-m-01'), date('Y-m-t')],
+            'Last Month' => [date('Y-m-01', strtotime('first day of last month')), date('Y-m-t', strtotime('last month'))],
+        ];
+        foreach ($pq_quick as $pq_label => [$pq_qf, $pq_qt]): ?>
+        <a href="?tab=queue&pq_from=<?php echo $pq_qf; ?>&pq_to=<?php echo $pq_qt; ?><?php echo $filter_branch_id ? '&branch_id=' . $filter_branch_id : ''; ?>"
+           class="px-2.5 py-1.5 text-[11px] font-semibold border border-gray-200 text-gray-500 rounded hover:bg-gray-50 transition-colors whitespace-nowrap
+                  <?php echo ($pq_from === $pq_qf && $pq_to === $pq_qt) ? 'bg-gray-100 border-gray-300 text-gray-700' : ''; ?>">
+            <?php echo $pq_label; ?>
+        </a>
+        <?php endforeach; ?>
+        <span class="ml-auto self-end text-xs text-gray-400 pb-1"><strong><?php echo count($orders); ?></strong> orders</span>
+    </div>
+    <?php if ($pq_date_filter_active): ?>
+    <p class="text-[11px] text-blue-600 mt-2"><i class="fas fa-circle-info mr-1"></i>Showing all statuses (including Shipped, Delivered, Cancelled) required in this date range — not just the live active queue.</p>
+    <?php endif; ?>
+</form>
+
 <?php if (!empty($orders)): ?>
 <div class="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
     <div class="overflow-x-auto">
@@ -737,11 +856,16 @@ if ($can_view_payments)     $tabs[] = ['key' => 'payments', 'label' => 'Payment 
                             strtotime($order->required_date) < strtotime('today') &&
                             in_array($order->status, ['approved', 'in_production']);
             $priority_val = $order->priority_order ?? ($idx + 1);
+            // Same dispatch-hold state that gates the actual "Ship" step in
+            // credit_dispatch.php, surfaced here too since 'ready' now enforces
+            // it server-side — only relevant for a 'produced' order about to
+            // show the Ready button, so skip the query for every other status.
+            $order_hold_reason = $order->status === 'produced' ? getOrderDispatchHoldReason((int)$order->id) : null;
         ?>
         <tr class="hover:bg-blue-50/30 transition-colors">
             <!-- Priority # -->
             <td class="px-3 py-2.5 text-center whitespace-nowrap">
-                <?php if ($is_admin): ?>
+                <?php if ($can_change_priority): ?>
                 <form method="POST" class="inline-flex items-center gap-1">
                     <input type="hidden" name="order_id" value="<?php echo $order->id; ?>">
                     <input type="number" name="priority" value="<?php echo $priority_val; ?>" min="1"
@@ -800,8 +924,8 @@ if ($can_view_payments)     $tabs[] = ['key' => 'payments', 'label' => 'Payment 
             <!-- Status -->
             <td class="px-3 py-2.5 whitespace-nowrap">
                 <span class="inline-flex items-center px-2 py-0.5 rounded-full font-semibold text-xs
-                             <?php echo $status_cls[$order->status] ?? 'bg-gray-100 text-gray-700'; ?>">
-                    <?php echo $status_labels[$order->status] ?? ucfirst($order->status); ?>
+                             <?php echo shippedStatusClass($order->status, (int)$order->id, $tracked_delivery_order_ids, $status_cls); ?>">
+                    <?php echo shippedStatusLabel($order->status, (int)$order->id, $tracked_delivery_order_ids, $status_labels); ?>
                 </span>
             </td>
             <!-- Timeline -->
@@ -845,17 +969,33 @@ if ($can_view_payments)     $tabs[] = ['key' => 'payments', 'label' => 'Payment 
                             <i class="fas fa-check text-xs"></i> Complete
                         </button>
                         <?php elseif ($order->status === 'produced'): ?>
+                            <?php if ($order_hold_reason !== null): ?>
+                        <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-red-100 text-red-700 rounded font-semibold"
+                              title="<?php echo htmlspecialchars($order_hold_reason); ?>">
+                            <i class="fas fa-lock text-xs"></i> HOLD
+                        </span>
+                            <?php else: ?>
                         <button type="submit" name="action" value="ready"
                                 onclick="return confirm('Mark <?php echo addslashes($order->order_number); ?> as ready to ship?')"
                                 class="inline-flex items-center gap-1 px-2.5 py-1 bg-orange-600 text-white rounded hover:bg-orange-700 font-semibold transition-colors cursor-pointer">
                             <i class="fas fa-truck text-xs"></i> Ready
                         </button>
+                            <?php endif; ?>
                         <?php elseif ($order->status === 'ready_to_ship'): ?>
                         <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-orange-100 text-orange-700 rounded font-medium">
                             <i class="fas fa-check-circle text-xs"></i> Ready
                         </span>
                         <?php endif; ?>
                     </form>
+                    <?php elseif (in_array($order->status, ['approved', 'in_production', 'produced'])): ?>
+                    <!-- Status action hidden because the user lacks can_update_status —
+                         name why instead of just omitting the button (standing pattern,
+                         2 Sep 2026: explain every blocked action, with the exact
+                         Access Management steps to grant it). -->
+                    <span class="inline-flex items-center gap-1 px-2 py-1 text-gray-400 rounded cursor-help"
+                          title="<?php echo htmlspecialchars(permissionDenialReason('production', 'credit_production', 'can_update_status')); ?>">
+                        <i class="fas fa-lock text-xs"></i>
+                    </span>
                     <?php endif; ?>
 
                     <a href="credit_order_view.php?id=<?php echo $order->id; ?>"
@@ -868,6 +1008,11 @@ if ($can_view_payments)     $tabs[] = ['key' => 'payments', 'label' => 'Payment 
                        class="inline-flex items-center px-2 py-1 border border-blue-300 text-blue-600 rounded hover:bg-blue-50 transition-colors cursor-pointer" title="Edit Order">
                         <i class="fas fa-edit text-xs"></i>
                     </a>
+                    <?php else: ?>
+                    <span class="inline-flex items-center px-2 py-1 text-gray-300 rounded cursor-help"
+                          title="<?php echo htmlspecialchars(permissionDenialReason('production', 'credit_production', 'can_edit_orders')); ?>">
+                        <i class="fas fa-edit text-xs"></i>
+                    </span>
                     <?php endif; ?>
 
                     <?php if ($can_collect_payment): ?>
@@ -875,13 +1020,25 @@ if ($can_view_payments)     $tabs[] = ['key' => 'payments', 'label' => 'Payment 
                        class="inline-flex items-center px-2 py-1 border border-green-300 text-green-700 rounded hover:bg-green-50 transition-colors cursor-pointer" title="Collect Payment">
                         <i class="fas fa-money-bill-wave text-xs"></i>
                     </a>
+                    <?php elseif (floatval($order->balance_due ?? 0) > 0): ?>
+                    <span class="inline-flex items-center px-2 py-1 text-gray-300 rounded cursor-help"
+                          title="<?php echo htmlspecialchars(permissionDenialReason('production', 'credit_production', 'can_collect_payment')); ?>">
+                        <i class="fas fa-money-bill-wave text-xs"></i>
+                    </span>
                     <?php endif; ?>
 
-                    <?php if ($can_partial_delivery && in_array($order->status, ['produced', 'ready_to_ship'])): ?>
+                    <?php if (in_array($order->status, ['produced', 'ready_to_ship'])): ?>
+                        <?php if ($can_partial_delivery): ?>
                     <a href="partial_delivery.php?order_id=<?php echo $order->id; ?>"
                        class="inline-flex items-center px-2 py-1 border border-teal-300 text-teal-700 rounded hover:bg-teal-50 transition-colors cursor-pointer" title="Partial Delivery">
                         <i class="fas fa-dolly text-xs"></i>
                     </a>
+                        <?php else: ?>
+                    <span class="inline-flex items-center px-2 py-1 text-gray-300 rounded cursor-help"
+                          title="<?php echo htmlspecialchars(permissionDenialReason('production', 'credit_production', 'can_partial_delivery')); ?>">
+                        <i class="fas fa-dolly text-xs"></i>
+                    </span>
+                        <?php endif; ?>
                     <?php endif; ?>
 
                     <?php if ($can_return): ?>
@@ -920,7 +1077,7 @@ $delivery_vehicle_badge = function ($type) {
     }
     return '<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 font-semibold whitespace-nowrap"><i class="fas fa-truck text-xs"></i>Big Truck</span>';
 };
-$render_delivery_table = function ($rows, $show_days_overdue) use ($status_cls, $status_labels, $delivery_vehicle_badge, $hold_reason_by_order) {
+$render_delivery_table = function ($rows, $show_days_overdue) use ($status_cls, $status_labels, $delivery_vehicle_badge, $hold_reason_by_order, $tracked_delivery_order_ids) {
     if (empty($rows)) {
         echo '<div class="bg-white rounded-lg border border-gray-200 shadow-sm p-6 text-center text-sm text-gray-400">No orders in this list.</div>';
         return;
@@ -974,8 +1131,8 @@ $render_delivery_table = function ($rows, $show_days_overdue) use ($status_cls, 
                 <?php endif; ?>
                 <td class="px-3 py-2.5 text-right font-semibold text-gray-900 whitespace-nowrap">৳<?php echo number_format($o->total_amount, 0); ?></td>
                 <td class="px-3 py-2.5 whitespace-nowrap">
-                    <span class="inline-flex items-center px-2 py-0.5 rounded-full font-semibold text-xs <?php echo $status_cls[$o->status] ?? 'bg-gray-100 text-gray-700'; ?>">
-                        <?php echo $status_labels[$o->status] ?? ucfirst($o->status); ?>
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-full font-semibold text-xs <?php echo shippedStatusClass($o->status, (int)$o->id, $tracked_delivery_order_ids, $status_cls); ?>">
+                        <?php echo shippedStatusLabel($o->status, (int)$o->id, $tracked_delivery_order_ids, $status_labels); ?>
                     </span>
                 </td>
                 <td class="px-3 py-2.5 text-center whitespace-nowrap">
@@ -1021,14 +1178,36 @@ $render_delivery_table = function ($rows, $show_days_overdue) use ($status_cls, 
     <input type="hidden" name="tab" value="orders">
     <?php if ($filter_branch_id > 0): ?><input type="hidden" name="branch_id" value="<?php echo $filter_branch_id; ?>"><?php endif; ?>
     <div class="flex flex-wrap gap-3 items-end">
-        <div class="flex flex-col gap-0.5">
+        <div class="flex flex-col gap-0.5 relative" id="aoStatusMsWrap">
             <label class="text-xs text-gray-500 font-medium">Status</label>
-            <select name="ao_status" class="text-xs px-2 py-1.5 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 min-w-[160px]">
-                <option value="">All Statuses</option>
+            <button type="button" onclick="toggleAoStatusMs()"
+                    class="text-xs px-2 py-1.5 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 min-w-[160px] bg-white text-left flex items-center justify-between gap-2 cursor-pointer">
+                <span id="aoStatusMsLabel" class="truncate">
+                    <?php
+                    if (empty($ao_status)) {
+                        echo 'All Statuses';
+                    } elseif (count($ao_status) <= 2) {
+                        echo htmlspecialchars(implode(', ', array_map(fn($s) => $status_labels[$s] ?? $s, $ao_status)));
+                    } else {
+                        echo count($ao_status) . ' statuses selected';
+                    }
+                    ?>
+                </span>
+                <i class="fas fa-chevron-down text-[10px] text-gray-400"></i>
+            </button>
+            <div id="aoStatusMsPanel" class="hidden absolute z-20 top-full mt-1 w-56 max-h-72 overflow-y-auto bg-white border border-gray-200 rounded-lg shadow-lg p-2">
+                <div class="flex justify-between items-center px-1 pb-1.5 mb-1 border-b border-gray-100">
+                    <button type="button" onclick="setAllAoStatusMs(true)" class="text-xs text-blue-600 hover:underline cursor-pointer">Select all</button>
+                    <button type="button" onclick="setAllAoStatusMs(false)" class="text-xs text-gray-500 hover:underline cursor-pointer">Clear</button>
+                </div>
                 <?php foreach ($status_labels as $val => $lbl): ?>
-                <option value="<?php echo $val; ?>" <?php echo $ao_status === $val ? 'selected' : ''; ?>><?php echo $lbl; ?></option>
+                <label class="flex items-center gap-2 px-1 py-1 text-xs text-gray-700 hover:bg-gray-50 rounded cursor-pointer">
+                    <input type="checkbox" name="ao_status[]" value="<?php echo $val; ?>" class="ao-status-ms-cb rounded"
+                           <?php echo in_array($val, $ao_status, true) ? 'checked' : ''; ?>>
+                    <?php echo $lbl; ?>
+                </label>
                 <?php endforeach; ?>
-            </select>
+            </div>
         </div>
         <div class="flex flex-col gap-0.5">
             <label class="text-xs text-gray-500 font-medium">From Date</label>
@@ -1096,8 +1275,8 @@ $render_delivery_table = function ($rows, $show_days_overdue) use ($status_cls, 
             </td>
             <td class="px-3 py-2.5 whitespace-nowrap text-gray-500"><?php echo htmlspecialchars($o->branch_name ?? '—'); ?></td>
             <td class="px-3 py-2.5 whitespace-nowrap">
-                <span class="inline-flex items-center px-2 py-0.5 rounded-full font-semibold text-xs <?php echo $status_cls[$o->status] ?? 'bg-gray-100 text-gray-700'; ?>">
-                    <?php echo $status_labels[$o->status] ?? ucfirst($o->status); ?>
+                <span class="inline-flex items-center px-2 py-0.5 rounded-full font-semibold text-xs <?php echo shippedStatusClass($o->status, (int)$o->id, $tracked_delivery_order_ids, $status_cls); ?>">
+                    <?php echo shippedStatusLabel($o->status, (int)$o->id, $tracked_delivery_order_ids, $status_labels); ?>
                 </span>
             </td>
             <td class="px-3 py-2.5 text-right font-semibold text-gray-900 whitespace-nowrap">৳<?php echo number_format($o->total_amount, 0); ?></td>
@@ -1115,18 +1294,37 @@ $render_delivery_table = function ($rows, $show_days_overdue) use ($status_cls, 
                        class="inline-flex items-center px-2 py-1 border border-blue-300 text-blue-600 rounded hover:bg-blue-50 cursor-pointer" title="Edit">
                         <i class="fas fa-edit text-xs"></i>
                     </a>
+                    <?php else: ?>
+                    <span class="inline-flex items-center px-2 py-1 text-gray-300 rounded cursor-help"
+                          title="<?php echo htmlspecialchars(permissionDenialReason('production', 'credit_production', 'can_edit_orders')); ?>">
+                        <i class="fas fa-edit text-xs"></i>
+                    </span>
                     <?php endif; ?>
-                    <?php if ($can_collect_payment && floatval($o->balance_due) > 0): ?>
+                    <?php if (floatval($o->balance_due) > 0): ?>
+                        <?php if ($can_collect_payment): ?>
                     <a href="credit_payment_collect.php?order_id=<?php echo $o->id; ?>"
                        class="inline-flex items-center px-2 py-1 border border-green-300 text-green-700 rounded hover:bg-green-50 cursor-pointer" title="Collect Payment">
                         <i class="fas fa-money-bill-wave text-xs"></i>
                     </a>
+                        <?php else: ?>
+                    <span class="inline-flex items-center px-2 py-1 text-gray-300 rounded cursor-help"
+                          title="<?php echo htmlspecialchars(permissionDenialReason('production', 'credit_production', 'can_collect_payment')); ?>">
+                        <i class="fas fa-money-bill-wave text-xs"></i>
+                    </span>
+                        <?php endif; ?>
                     <?php endif; ?>
-                    <?php if ($can_partial_delivery && in_array($o->status, ['produced', 'ready_to_ship'])): ?>
+                    <?php if (in_array($o->status, ['produced', 'ready_to_ship'])): ?>
+                        <?php if ($can_partial_delivery): ?>
                     <a href="partial_delivery.php?order_id=<?php echo $o->id; ?>"
                        class="inline-flex items-center px-2 py-1 border border-teal-300 text-teal-700 rounded hover:bg-teal-50 cursor-pointer" title="Partial Delivery">
                         <i class="fas fa-dolly text-xs"></i>
                     </a>
+                        <?php else: ?>
+                    <span class="inline-flex items-center px-2 py-1 text-gray-300 rounded cursor-help"
+                          title="<?php echo htmlspecialchars(permissionDenialReason('production', 'credit_production', 'can_partial_delivery')); ?>">
+                        <i class="fas fa-dolly text-xs"></i>
+                    </span>
+                        <?php endif; ?>
                     <?php endif; ?>
                     <?php if ($can_return): ?>
                     <a href="returns.php?order_id=<?php echo $o->id; ?>"
@@ -1377,6 +1575,36 @@ $render_delivery_table = function ($rows, $show_days_overdue) use ($status_cls, 
 </div>
 
 <script>
+var AO_STATUS_LABELS = <?php echo json_encode($status_labels, JSON_UNESCAPED_UNICODE); ?>;
+
+function toggleAoStatusMs() {
+    document.getElementById('aoStatusMsPanel').classList.toggle('hidden');
+}
+function setAllAoStatusMs(checked) {
+    document.querySelectorAll('.ao-status-ms-cb').forEach(function (cb) { cb.checked = checked; });
+    updateAoStatusMsLabel();
+}
+function updateAoStatusMsLabel() {
+    var checked = Array.from(document.querySelectorAll('.ao-status-ms-cb:checked')).map(function (cb) { return cb.value; });
+    var label = document.getElementById('aoStatusMsLabel');
+    if (checked.length === 0) {
+        label.textContent = 'All Statuses';
+    } else if (checked.length <= 2) {
+        label.textContent = checked.map(function (v) { return AO_STATUS_LABELS[v] || v; }).join(', ');
+    } else {
+        label.textContent = checked.length + ' statuses selected';
+    }
+}
+document.querySelectorAll('.ao-status-ms-cb').forEach(function (cb) {
+    cb.addEventListener('change', updateAoStatusMsLabel);
+});
+document.addEventListener('click', function (e) {
+    var wrap = document.getElementById('aoStatusMsWrap');
+    if (wrap && !wrap.contains(e.target)) {
+        document.getElementById('aoStatusMsPanel').classList.add('hidden');
+    }
+});
+
 const _prodData = {
 <?php foreach ($orders as $o):
     $oi    = $all_items_by_order[$o->id] ?? [];

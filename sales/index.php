@@ -32,11 +32,11 @@ $is_dispatcher  = in_array($user_role, ['dispatch-srg', 'dispatch-demra', 'dispa
 /* -----------------------------
    USER BRANCH DETECTION
 ----------------------------- */
-$user_branch = null;
-if (!$is_admin && !$is_accounts && $user_id) {
-    $emp = $db->query("SELECT branch_id FROM employees WHERE user_id = ?", [$user_id])->first();
-    $user_branch = $emp ? $emp->branch_id : null;
-}
+// Access-Manager-aware (was: hardcoded to the user's own employees.branch_id,
+// ignoring any Access Manager data_scope grant — see getUserBranchScope() in
+// helpers.php).
+$branch_module = $is_production ? 'production' : ($is_dispatcher ? 'dispatch' : 'credit_sales');
+$branch_scope  = (!$is_admin && !$is_accounts) ? getUserBranchScope($branch_module) : null;
 
 /* -----------------------------
    ROLE-BASED STATISTICS
@@ -53,27 +53,23 @@ if ($is_accounts || $is_admin) {
 
 // Production queue (Production Managers)
 if ($is_production) {
-    $branch_filter = $user_branch
-        ? "AND assigned_branch_id = {$db->getPdo()->quote($user_branch)}"
-        : "";
+    [$pf_sql, $pf_params] = branchScopeSql($branch_module, 'assigned_branch_id');
     $in_prod = $db->query("
         SELECT COUNT(*) AS count
         FROM credit_orders
-        WHERE status IN ('approved', 'in_production') $branch_filter
-    ")->first();
+        WHERE status IN ('approved', 'in_production') {$pf_sql}
+    ", $pf_params)->first();
     $stats['for_production'] = $in_prod->count ?? 0;
 }
 
 // Ready to ship (Dispatchers)
 if ($is_dispatcher) {
-    $branch_filter = $user_branch
-        ? "AND assigned_branch_id = {$db->getPdo()->quote($user_branch)}"
-        : "";
+    [$rf_sql, $rf_params] = branchScopeSql($branch_module, 'assigned_branch_id');
     $ready = $db->query("
         SELECT COUNT(*) AS count
         FROM credit_orders
-        WHERE status = 'ready_to_ship' $branch_filter
-    ")->first();
+        WHERE status = 'ready_to_ship' {$rf_sql}
+    ", $rf_params)->first();
     $stats['ready_to_ship'] = $ready->count ?? 0;
 }
 
@@ -111,8 +107,8 @@ if ($is_admin || $is_accounts) {
         ORDER BY co.created_at DESC
         LIMIT $limit
     ", [$user_id])->results();
-} elseif (($is_production || $is_dispatcher) && $user_branch !== null) {
-    $branch_filter = "AND co.assigned_branch_id = {$db->getPdo()->quote($user_branch)}";
+} elseif ($is_production || $is_dispatcher) {
+    [$branch_filter, $bf_params] = branchScopeSql($branch_module, 'co.assigned_branch_id');
     $status_filter = $is_production
         ? "IN ('approved', 'in_production', 'produced')"
         : "IN ('ready_to_ship', 'shipped')";
@@ -123,7 +119,7 @@ if ($is_admin || $is_accounts) {
         WHERE co.status $status_filter $branch_filter
         ORDER BY co.updated_at DESC
         LIMIT $limit
-    ")->results();
+    ", $bf_params)->results();
 }
 
 require_once '../templates/header.php';

@@ -10,6 +10,7 @@ restrict_access($allowed_roles);
 
 global $db;
 $current_user_name = $_SESSION['user_display_name'] ?? 'System';
+$current_user_id = (int)($_SESSION['user_id'] ?? 0);
 
 // Feature #1: price CHANGES are Superadmin/Admin only. Accounts roles keep
 // read access (they need to see prices) but cannot set/update/archive them.
@@ -116,8 +117,18 @@ try {
                 'changed_at'  => date('Y-m-d H:i:s'),
             ]); } catch (\Throwable $e) {}
 
-            $_SESSION['success_flash'] = 'Price successfully set. Old price (if any) has been archived.';
-            header('Location: pricing.php?variant_id=' . $variant_id); 
+            // 4. Optionally propagate to open (not yet shipped/delivered) orders —
+            // OFF by default, see settings.pricing_engine_auto_apply_to_orders.
+            $sync = applyPricingEngineChangeToOpenOrders(
+                $variant_id, $branch_id, $log_old, (float)$unit_price, $current_user_id, $current_user_name
+            );
+
+            $flash = 'Price successfully set. Old price (if any) has been archived.';
+            if (!$sync['skipped'] && $sync['applied_orders'] > 0) {
+                $flash .= " Also auto-applied to {$sync['applied_orders']} open order(s) ({$sync['applied_items']} line item(s)).";
+            }
+            $_SESSION['success_flash'] = $flash;
+            header('Location: pricing.php?variant_id=' . $variant_id);
             exit();
         }
 

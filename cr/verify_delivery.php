@@ -172,6 +172,20 @@ if ($order && !$gate_done && $_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['a
                     $db->query("UPDATE credit_orders SET status = 'shipped' WHERE id = ?", [$order->id]);
                     $order->status = 'shipped';
                 }
+                // Same gap as partial_delivery.php had: this gate scan can be the
+                // very first fulfillment event an order ever gets (credit_dispatch.php
+                // is not a hard prerequisite — $blocked_status above allows
+                // approved/in_production/produced/ready_to_ship straight through).
+                // postCreditOrderDispatchAccounting() is idempotent, so calling it
+                // here is a safe no-op if credit_dispatch.php (or partial_delivery.php)
+                // already posted this order's invoice.
+                postCreditOrderDispatchAccounting($db, (int)$order->id, $user_id, [
+                    'transaction_date' => date('Y-m-d'),
+                    'snapshot_trigger' => 'gate_scan',
+                    'truck_number'     => $gate_vehicle,
+                    'driver_name'      => $gate_driver,
+                    'shipped_date'     => date('Y-m-d H:i:s'),
+                ]);
                 auditLogOrder('gate_out', (int)$order->id, $order->order_number,
                     "Gate pass — goods released at gate by {$user_name} (driver {$gate_driver}, vehicle {$gate_vehicle})"
                     . ($is_delivery_scan ? " for delivery {$delivery->delivery_number}" : ''),

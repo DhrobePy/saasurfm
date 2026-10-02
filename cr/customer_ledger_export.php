@@ -17,30 +17,42 @@ if (!$customer_id) {
 
 // Fetch Customer Data
 $customer = $db->query(
-    "SELECT name, phone_number, business_name FROM customers WHERE id = ?",
+    "SELECT name, phone_number, business_name, initial_due FROM customers WHERE id = ?",
     [$customer_id]
 )->first();
 
 if (!$customer) {
     die("Customer not found");
 }
+$initial_due = (float)($customer->initial_due ?? 0);
 
-// Fetch Opening Balance
-$opening = $db->query(
-    "SELECT COALESCE(MAX(balance_after), 0) as balance
+// Opening balance — computed live from raw debit/credit sums, NEVER from the
+// stored balance_after column. The old query here was `MAX(balance_after)`,
+// which grabs whatever the highest balance ever recorded before date_from
+// happened to be (not the actual balance AT date_from), and additionally
+// trusts a column already confirmed to drift after historical edits/deletes
+// (a deletion recomputes balance_after going forward from that point, but
+// MAX() can still latch onto a stale pre-recompute peak). This is the exact
+// fix already applied to the main Customer Ledger page (cr/customer_ledger.php)
+// — this export file was simply missed at the time.
+// initial_due-type rows excluded from the aggregate (added explicitly instead)
+// so it's never double-counted.
+$agg_before = $db->query(
+    "SELECT COALESCE(SUM(debit_amount), 0) AS td, COALESCE(SUM(credit_amount), 0) AS tc
      FROM customer_ledger
-     WHERE customer_id = ? AND transaction_date < ?",
+     WHERE customer_id = ? AND transaction_date < ? AND reference_type != 'initial_due'",
     [$customer_id, $date_from]
 )->first();
+$opening_balance = $initial_due + (float)($agg_before->td ?? 0) - (float)($agg_before->tc ?? 0);
 
-$opening_balance = $opening ? (float)$opening->balance : 0.00;
-
-// Fetch Transactions
+// Fetch Transactions — initial_due rows excluded (already folded into the
+// opening balance above), same convention as the main ledger page.
 $entries = $db->query(
-    "SELECT transaction_date, transaction_type, description, invoice_number, debit_amount, credit_amount, balance_after 
-     FROM customer_ledger 
-     WHERE customer_id = ? 
+    "SELECT transaction_date, transaction_type, description, invoice_number, debit_amount, credit_amount, balance_after
+     FROM customer_ledger
+     WHERE customer_id = ?
      AND transaction_date BETWEEN ? AND ?
+     AND reference_type != 'initial_due'
      ORDER BY transaction_date ASC, id ASC",
     [$customer_id, $date_from, $date_to]
 )->results();
@@ -75,15 +87,16 @@ fputcsv($output, [
     number_format($opening_balance, 2, '.', '')
 ]);
 
-// Transactions
+// Transactions — running balance computed live (opening_balance + cumulative
+// debit/credit), same reason as above: never trust stored balance_after.
 $total_debit = 0;
 $total_credit = 0;
-$closing_balance = $opening_balance;
+$running_balance = $opening_balance;
 
 foreach ($entries as $entry) {
     $total_debit += $entry->debit_amount;
     $total_credit += $entry->credit_amount;
-    $closing_balance = $entry->balance_after; // Ledger stores running balance, so use it
+    $running_balance += (float)$entry->debit_amount - (float)$entry->credit_amount;
 
     fputcsv($output, [
         $entry->transaction_date,
@@ -92,9 +105,10 @@ foreach ($entries as $entry) {
         $entry->invoice_number,
         $entry->debit_amount > 0 ? number_format($entry->debit_amount, 2, '.', '') : '-',
         $entry->credit_amount > 0 ? number_format($entry->credit_amount, 2, '.', '') : '-',
-        number_format($entry->balance_after, 2, '.', '')
+        number_format($running_balance, 2, '.', '')
     ]);
 }
+$closing_balance = $running_balance;
 
 // Closing Balance Row
 fputcsv($output, [

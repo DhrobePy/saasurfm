@@ -24,12 +24,13 @@ $customers = $db->query(
 
 // --- DATA: Get Bank Accounts ---
 $bank_accounts = $db->query(
-    "SELECT ba.id, ba.chart_of_account_id, ba.bank_name, ba.account_name, ba.account_number
+    "SELECT ba.id, ba.chart_of_account_id, ba.bank_name, ba.account_name, ba.account_number, ba.current_balance
      FROM bank_accounts ba
      JOIN chart_of_accounts coa ON ba.chart_of_account_id = coa.id
      WHERE ba.status = 'active' AND coa.account_type = 'Bank'
      ORDER BY ba.account_name"
 )->results();
+$canSeeBalance = canViewBankBalances();
 
 // --- DATA: Get Accounting Accounts (for Journal Entry) ---
 $cash_account = $db->query(
@@ -679,7 +680,7 @@ require_once '../templates/header.php';
                         <option value="">-- Select Bank Account --</option>
                         <?php foreach ($bank_accounts as $account): ?>
                         <option value="<?php echo $account->id; ?>">
-                            <?php echo htmlspecialchars($account->bank_name . ' - ' . $account->account_name . ' (' . $account->account_number . ')'); ?>
+                            <?php echo htmlspecialchars(bankAccountOptionLabel($account->bank_name, $account->account_name, $account->account_number, (float)$account->current_balance, $canSeeBalance)); ?>
                         </option>
                         <?php endforeach; ?>
                     </select>

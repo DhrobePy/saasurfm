@@ -186,6 +186,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                     throw new Exception('Invalid status');
                 }
 
+                // 26 Sep 2026: putting an order On Hold now REQUIRES a reason (nobody could say
+                // why CR-20260925-0019 had been held — this page recorded nothing). A reason is
+                // optional for any other manual change but is logged when given.
+                $status_reason = trim($_POST['reason'] ?? '');
+                if ($new_status === 'hold' && mb_strlen($status_reason) < 5) {
+                    throw new Exception('A reason (at least 5 characters) is required to put an order on Hold.');
+                }
+
                 // Bug 19 fix: Enforce valid workflow transitions — arbitrary status jumps
                 // are not allowed even for admins.
                 $current_order = $db->query("SELECT status FROM credit_orders WHERE id = ?", [$order_id])->first();
@@ -207,7 +215,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                     'cancelled'        => [],
                     'rejected'         => [],
                 ];
-                $allowed_next = $valid_transitions[$current] ?? [];
+                // 26 Sep 2026: an order put On Hold could only go to approved/cancelled, so
+                // a held order that was already produced/invoiced/loaded (e.g. CR-20260925-0019,
+                // held from goods_on_board) couldn't be resumed without redoing production.
+                // Allow "resume" to the exact status it was held FROM (last workflow row that
+                // moved it into 'hold') — still admin-only, still logged, and nothing else about
+                // the transition guard is loosened. Pure status restore: no accounting is
+                // re-posted (an invoice already posted at goods_on_board stays as it was).
+                $resume_to = null;
+                if ($current === 'hold') {
+                    $held_from = $db->query(
+                        "SELECT from_status FROM credit_order_workflow
+                         WHERE order_id = ? AND to_status = 'hold' ORDER BY id DESC LIMIT 1",
+                        [$order_id]
+                    )->first();
+                    if ($held_from && in_array($held_from->from_status,
+                            ['approved','in_production','produced','ready_to_ship','goods_on_board'], true)) {
+                        $resume_to = $held_from->from_status;
+                        $valid_transitions['hold'][] = $resume_to;
+                    }
+                }
+                $allowed_next = array_values(array_unique($valid_transitions[$current] ?? []));
                 if (!in_array($new_status, $allowed_next)) {
                     throw new Exception("Invalid transition: '{$current}' → '{$new_status}' is not permitted.");
                 }
@@ -224,12 +252,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                     'to_status'           => $new_status,
                     'action'              => 'admin_override',
                     'performed_by_user_id'=> $user_id,
-                    'comments'            => 'Admin manual status update via Order Status page',
+                    'comments'            => (($new_status === 'hold')
+                        ? 'Admin put order ON HOLD via Order Status page'
+                        : (($current === 'hold' && $new_status === $resume_to)
+                            ? "Admin resumed order from Hold back to '{$new_status}' via Order Status page"
+                            : 'Admin manual status update via Order Status page'))
+                        . ($status_reason !== '' ? " — reason: {$status_reason}" : ''),
                 ]);
 
                 echo json_encode(['success' => true, 'message' => 'Order status updated', 'new_status' => $new_status]);
                 break;
                 
+            case 'reverse_dispatch':
+                // 26 Sep 2026: admin-only guarded reversal of a goods_on_board dispatch (removes the
+                // posted invoice, restores the customer's balance, back to ready_to_ship for a
+                // corrected re-dispatch). All checks + the Recycle Bin backup live in
+                // reverseOrderDispatch() (helpers.php).
+                if (!$is_admin) {
+                    throw new Exception('Unauthorized action');
+                }
+                $rd = reverseOrderDispatch($db, (int)($_POST['order_id'] ?? 0), (int)$user_id, (string)($_POST['reason'] ?? ''));
+                if (!$rd['success']) {
+                    throw new Exception($rd['message']);
+                }
+                echo json_encode(['success' => true, 'message' => $rd['message'], 'batch' => $rd['batch']]);
+                break;
+
             case 'bulk_update_status':
                 if (!$is_admin) {
                     throw new Exception('Unauthorized action');
@@ -251,6 +299,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                                            'produced','ready_to_ship','goods_on_board','shipped','delivered','cancelled','hold'];
                 if (!in_array($new_status, $bulk_allowed_statuses, true)) {
                     throw new Exception("Invalid status '{$new_status}'. Must be one of: " . implode(', ', $bulk_allowed_statuses));
+                }
+                if ($new_status === 'hold') {
+                    throw new Exception("Bulk update can't put orders on Hold — a reason is required per order. Use each order's Change Status button.");
                 }
 
                 $db->getPdo()->beginTransaction();
@@ -1613,6 +1664,15 @@ require_once '../templates/header.php';
                             </button>
                             <?php endif; ?>
                             
+                            <!-- Reverse Dispatch (Admin only, goods on board) -->
+                            <?php if ($is_admin && $order->status === 'goods_on_board'): ?>
+                            <button onclick="openReverseModal(<?php echo $order->id; ?>, '<?php echo htmlspecialchars($order->order_number, ENT_QUOTES); ?>')"
+                                    class="action-btn bg-amber-600 text-white hover:bg-amber-700"
+                                    title="Reverse Dispatch — remove the posted invoice and send back to Ready to Ship">
+                                <i class="fas fa-undo"></i>
+                            </button>
+                            <?php endif; ?>
+
                             <!-- Timeline -->
                             <button onclick="showTimeline(<?php echo $order->id; ?>)" 
                                     class="action-btn bg-indigo-600 text-white hover:bg-indigo-700"
@@ -1854,6 +1914,38 @@ require_once '../templates/header.php';
     </div>
 </div>
 
+<!-- Reverse Dispatch Modal (admin) -->
+<div id="reverseModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-lg shadow-2xl max-w-md w-full p-6">
+        <div class="flex items-center justify-between mb-3">
+            <h3 class="text-xl font-bold text-gray-900 flex items-center gap-2">
+                <i class="fas fa-undo text-amber-600"></i> Reverse Dispatch
+            </h3>
+            <button type="button" onclick="closeReverseModal()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times text-xl"></i></button>
+        </div>
+        <p class="text-sm text-gray-600 mb-1">Order <strong id="reverse_order_number"></strong></p>
+        <p class="text-xs text-gray-500 mb-4">
+            Removes the invoice posted when this order went on board (ledger entry, journal and invoice snapshot — kept in the
+            Recycle Bin), restores the customer's balance and sends the order back to <strong>Ready to Ship</strong> so it can be
+            re-shipped (e.g. with a dispatcher discount). Refused automatically if a payment, gate scan, delivery, return, trip or any
+            later ledger entry for this customer exists.
+        </p>
+        <form id="reverseForm" onsubmit="submitReverseDispatch(event)">
+            <input type="hidden" id="reverse_order_id" name="order_id">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Reason <span class="text-red-500">*</span></label>
+            <textarea id="reverse_reason" name="reason" rows="3" required minlength="5"
+                      placeholder="e.g. Customer agreed a discount — re-dispatching with the discount"
+                      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500"></textarea>
+            <div class="flex gap-3 mt-5">
+                <button type="button" onclick="closeReverseModal()" class="flex-1 px-4 py-2 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-semibold">Cancel</button>
+                <button type="submit" class="flex-1 px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 font-semibold">
+                    <i class="fas fa-undo mr-1"></i>Reverse Dispatch
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <!-- Status Change Modal -->
 <div id="statusModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
     <div class="bg-white rounded-lg shadow-2xl max-w-md w-full p-6 animate-fade-in">
@@ -1898,6 +1990,14 @@ require_once '../templates/header.php';
                         <option value="hold">⏸️ On Hold</option>
                         <option value="cancelled">🚫 Cancelled</option>
                     </select>
+                </div>
+                <div id="status_reason_wrap" class="hidden">
+                    <label for="status_reason" class="block text-sm font-medium text-gray-700 mb-1">
+                        Reason for Hold <span class="text-red-500">*</span>
+                    </label>
+                    <textarea id="status_reason" name="reason" rows="2" minlength="5"
+                              placeholder="Why is this order being held? (shown in the order timeline)"
+                              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"></textarea>
                 </div>
             </div>
             
@@ -2293,6 +2393,51 @@ function changeStatus(orderId, currentStatus) {
 function closeStatusModal() {
     document.getElementById('statusModal').classList.add('hidden');
     document.getElementById('statusForm').reset();
+    document.getElementById('status_reason_wrap').classList.add('hidden');
+    document.getElementById('status_reason').required = false;
+}
+
+// Hold needs a reason — reveal + require the reason box only for it.
+document.addEventListener('DOMContentLoaded', () => {
+    const sel = document.getElementById('new_status');
+    if (!sel) return;
+    sel.addEventListener('change', () => {
+        const isHold = sel.value === 'hold';
+        document.getElementById('status_reason_wrap').classList.toggle('hidden', !isHold);
+        document.getElementById('status_reason').required = isHold;
+    });
+});
+
+// ── Reverse Dispatch (admin) ─────────────────────────────────────────
+function openReverseModal(orderId, orderNumber) {
+    document.getElementById('reverse_order_id').value = orderId;
+    document.getElementById('reverse_order_number').textContent = orderNumber;
+    document.getElementById('reverse_reason').value = '';
+    document.getElementById('reverseModal').classList.remove('hidden');
+}
+function closeReverseModal() {
+    document.getElementById('reverseModal').classList.add('hidden');
+}
+function submitReverseDispatch(event) {
+    event.preventDefault();
+    if (!confirm('Reverse this dispatch? The posted invoice will be removed and the order returns to Ready to Ship.')) return;
+    const formData = new FormData(event.target);
+    formData.append('action', 'reverse_dispatch');
+    formData.append('csrf_token', CSRF_TOKEN);
+    showLoading();
+    fetch(window.location.href, { method: 'POST', body: formData })
+    .then(r => r.json())
+    .then(data => {
+        hideLoading();
+        if (data.success) {
+            showNotification(data.message, 'success');
+            closeReverseModal();
+            setTimeout(() => location.reload(), 1800);
+        } else {
+            showNotification(data.message || 'Failed to reverse dispatch', 'error');
+        }
+    })
+    .catch(() => { hideLoading(); showNotification('Network error occurred', 'error'); });
 }
 
 function submitStatusChange(event) {

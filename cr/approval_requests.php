@@ -48,6 +48,39 @@ function req_checker_covers(object $r, bool $is_admin, ?float $collect_cap, ?flo
     return $cap === null || (float)$r->amount <= $cap;
 }
 
+// The "Recently Decided" table's Ref/Note column just prints executed_ref (the
+// receipt/delivery/sale/loan number posted at approval — see cr_pending_requests
+// schema comment) as plain text with no link. executed_ref is a human-readable
+// number, not the target row's id, so each request type needs its own lookup to
+// resolve it to an actual detail/receipt page. Returns null (render as plain
+// text, not a link) when the type has no dedicated page or the record can't be
+// found — e.g. a payment later removed via the recycle-bin delete flow.
+function req_receipt_url($db, string $request_type, ?string $ref): ?string {
+    if (!$ref) return null;
+    switch ($request_type) {
+        case 'payment':
+        case 'advance':
+            $row = $db->query("SELECT id FROM customer_payments WHERE payment_number = ?", [$ref])->first();
+            return $row ? 'credit_payment_receipt.php?id=' . (int)$row->id : null;
+        case 'commodity_sale':
+        case 'commodity_sale_edit':
+            $row = $db->query("SELECT id FROM commodity_sales WHERE sale_number = ?", [$ref])->first();
+            return $row ? '../trading/view_commodity_sale.php?id=' . (int)$row->id : null;
+        case 'commodity_payment':
+            $row = $db->query("SELECT sale_id FROM commodity_sale_payments WHERE payment_number = ?", [$ref])->first();
+            return $row ? '../trading/view_commodity_sale.php?id=' . (int)$row->sale_id : null;
+        case 'loan_disbursement':
+            $row = $db->query("SELECT id FROM loans WHERE loan_number = ?", [$ref])->first();
+            return $row ? '../loans/view_loan.php?id=' . (int)$row->id : null;
+        case 'loan_repayment':
+            $row = $db->query("SELECT loan_id FROM loan_repayments WHERE repayment_number = ?", [$ref])->first();
+            return $row ? '../loans/view_loan.php?id=' . (int)$row->loan_id : null;
+        default: // delivery
+            $row = $db->query("SELECT id, order_id FROM credit_order_deliveries WHERE delivery_number = ?", [$ref])->first();
+            return $row ? 'credit_invoice_print.php?id=' . (int)$row->order_id . '&delivery_id=' . (int)$row->id : null;
+    }
+}
+
 /* ─── POST: reject / cancel ─────────────────────────────────── */
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['req_action'])) {
     $req_id = (int)($_POST['request_id'] ?? 0);
@@ -325,7 +358,18 @@ $status_badge = [
                         <?php if ($r->decided_at): ?><span class="text-gray-400"><?php echo date('d M, g:i A', strtotime($r->decided_at)); ?></span><?php endif; ?>
                     </td>
                     <td class="px-4 py-2 text-xs text-gray-500">
-                        <?php if ($r->executed_ref): ?><span class="font-mono text-green-700"><?php echo htmlspecialchars($r->executed_ref); ?></span><?php endif; ?>
+                        <?php if ($r->executed_ref):
+                            $ref_url = req_receipt_url($db, $r->request_type, $r->executed_ref);
+                        ?>
+                            <?php if ($ref_url): ?>
+                            <a href="<?php echo htmlspecialchars($ref_url); ?>" target="_blank"
+                               class="font-mono text-green-700 hover:underline hover:text-green-800">
+                                <?php echo htmlspecialchars($r->executed_ref); ?>
+                            </a>
+                            <?php else: ?>
+                            <span class="font-mono text-green-700"><?php echo htmlspecialchars($r->executed_ref); ?></span>
+                            <?php endif; ?>
+                        <?php endif; ?>
                         <?php if ($r->checker_note): ?><?php echo htmlspecialchars($r->checker_note); ?><?php endif; ?>
                     </td>
                 </tr>

@@ -280,6 +280,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $total_updated  = 0;
             $grades_changed = [];
             $custom_changed = [];
+            // (variant_id, branch_id, old_price, new_price) — applied to open
+            // orders AFTER commit (see below), never from inside this
+            // transaction: auditLogOrder() can run its own DDL, and DDL forces
+            // an implicit commit that would corrupt an open transaction.
+            $price_change_tuples = [];
 
             // ── 1. Grade-based (50/74 formula) ───────────────────────────────
             foreach ($grades as $grade) {
@@ -326,6 +331,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 'changed_by'  => $engine_user,
                                 'note'        => "Smart Pricing — Grade {$grade}",
                             ]);
+                            $price_change_tuples[] = [(int)$item['variant_id'], (int)$b->id, $old_price, $final];
                             $total_updated++;
                         }
                     }
@@ -377,24 +383,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         'changed_by'  => $engine_user,
                         'note'        => 'Smart Pricing — custom weight',
                     ]);
+                    $price_change_tuples[] = [(int)$row->variant_id, (int)$b->id, $old_price2, $custom_price];
                     $total_updated++;
                 }
                 $custom_changed[] = $row->product_name . ' (' . $row->weight_variant . 'kg)';
             }
 
+            $pdo->commit();
+
+            // auditLog() deliberately moved to AFTER commit (8 Sep 2026 fix) —
+            // AuditLogger::ensureTable() can run its own CREATE TABLE IF NOT
+            // EXISTS DDL internally, and MySQL DDL forces an implicit commit,
+            // which would silently commit this transaction early (or otherwise
+            // corrupt its atomicity) the first time that table needs creating/
+            // migrating. Same reasoning as applyPricingEngineChangeToOpenOrders()
+            // below, which was placed post-commit from the start for this exact
+            // reason — this call simply hadn't been moved yet.
             auditLog('settings', 'updated',
                 "Smart Pricing Engine applied: {$total_updated} price records updated. " .
                 implode(', ', array_merge($grades_changed, $custom_changed)),
                 ['grades' => $grades_changed, 'custom' => $custom_changed, 'records' => $total_updated]
             );
 
-            $pdo->commit();
+            // Optionally propagate to open orders — deliberately AFTER commit,
+            // never inside the transaction (see $price_change_tuples comment
+            // above). OFF by default, see settings.pricing_engine_auto_apply_to_orders.
+            $sync_orders = 0; $sync_items = 0;
+            foreach ($price_change_tuples as [$sv_id, $sb_id, $sold, $snew]) {
+                $sync = applyPricingEngineChangeToOpenOrders($sv_id, $sb_id, $sold, $snew, (int)($user_id ?? 0), $engine_user);
+                $sync_orders += $sync['applied_orders'];
+                $sync_items  += $sync['applied_items'];
+            }
 
             $parts = [];
             if ($grades_changed) $parts[] = implode(', ', $grades_changed);
             if ($custom_changed) $parts[] = count($custom_changed) . ' custom-weight product(s)';
             $flash_success = "✓ Pricing applied — {$total_updated} price records updated" .
                              ($parts ? " for: " . implode('; ', $parts) : '') . ".";
+            if ($sync_orders > 0) {
+                $flash_success .= " Also auto-applied to {$sync_orders} open order(s) ({$sync_items} line item(s)).";
+            }
 
         } catch (Exception $e) {
             if ($pdo->inTransaction()) $pdo->rollBack();

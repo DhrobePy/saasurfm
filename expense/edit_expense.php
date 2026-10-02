@@ -124,13 +124,14 @@ try {
     
     // Get bank accounts
     $bankStmt = $dbInstance->getPdo()->prepare("
-        SELECT id, CONCAT(bank_name, ' - ', account_name) as account_display 
-        FROM bank_accounts 
-        WHERE status = 'active' 
+        SELECT id, bank_name, account_name, account_number, current_balance
+        FROM bank_accounts
+        WHERE status = 'active'
         ORDER BY bank_name
     ");
     $bankStmt->execute();
     $bankAccounts = $bankStmt->fetchAll(PDO::FETCH_OBJ);
+    $canSeeBalance = canViewBankBalances();
     
     // Get cash accounts
     $cashStmt = $dbInstance->getPdo()->prepare("
@@ -283,9 +284,9 @@ include '../templates/header.php';
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
                             <option value="">Select Bank Account</option>
                             <?php foreach ($bankAccounts as $bank): ?>
-                                <option value="<?php echo $bank->id; ?>" 
+                                <option value="<?php echo $bank->id; ?>"
                                         <?php echo ($bank->id == $expense->bank_account_id) ? 'selected' : ''; ?>>
-                                    <?php echo htmlspecialchars($bank->account_display); ?>
+                                    <?php echo htmlspecialchars(bankAccountOptionLabel($bank->bank_name, $bank->account_name, $bank->account_number, (float)$bank->current_balance, $canSeeBalance)); ?>
                                 </option>
                             <?php endforeach; ?>
                         </select>

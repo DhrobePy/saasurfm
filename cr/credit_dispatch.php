@@ -33,11 +33,44 @@ try {
     }
 } catch (\Throwable $e) { /* migration is best-effort; the board still renders */ }
 
+// 12 Sep 2026: dispatcher-entered additional discount, applied at dispatch —
+// PROBE FIRST, same reasoning as the ENUM migration above (ALTER implicitly
+// commits and locks; only run it once, the first time it's actually missing).
+try {
+    $col = $db->query(
+        "SELECT COLUMN_NAME FROM information_schema.COLUMNS
+         WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'credit_order_shipping' AND COLUMN_NAME = 'extra_discount_amount'"
+    )->first();
+    if (!$col) {
+        $db->getPdo()->exec("ALTER TABLE `credit_order_shipping`
+            ADD COLUMN `extra_discount_amount` DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+            ADD COLUMN `extra_discount_reason` TEXT NULL,
+            ADD COLUMN `extra_discount_by_user_id` BIGINT UNSIGNED NULL,
+            ADD COLUMN `extra_discount_at` TIMESTAMP NULL");
+    }
+} catch (\Throwable $e) { /* migration is best-effort; the board still renders */ }
+
+// 21 Sep 2026: dispatcher-entered bags boarded + bag size (kg/bag), purely
+// informational, printed on the Delivery Receipt remarks — e.g. a 16,000 kg
+// bulk load that went out as 320 bags of 50 kg. Probe first (same convention).
+try {
+    $col = $db->query(
+        "SELECT COLUMN_NAME FROM information_schema.COLUMNS
+         WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'credit_order_shipping' AND COLUMN_NAME = 'bags_boarded'"
+    )->first();
+    if (!$col) {
+        $db->getPdo()->exec("ALTER TABLE `credit_order_shipping`
+            ADD COLUMN `bags_boarded` INT UNSIGNED NULL,
+            ADD COLUMN `bag_size_kg` DECIMAL(8,2) NULL");
+    }
+} catch (\Throwable $e) { /* migration is best-effort; the board still renders */ }
+
 // Feature #5: provision default dispatch holds so every order on the board
 // reflects the global hold and appears in Payment Watch for clearance. Idempotent.
 provisionDefaultDispatchHolds();
 
 ensureOtherSalesColumns();
+ensureDeliverySlipNumbering();
 
 // ── Ensure adhoc log table exists ─────────────────────────────────────────────
 try {
@@ -94,22 +127,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['fleet_action'])) {
 
 $is_admin = in_array($user_role, ['Superadmin', 'admin']);
 
-// Get user's branch
-$user_branch = null;
-if (!$is_admin && $user_id) {
-    $emp = $db->query("SELECT branch_id FROM employees WHERE user_id = ?", [$user_id])->first();
-    if ($emp && $emp->branch_id) {
-        $user_branch = $emp->branch_id;
-    } 
-}
-
-// Build branch filter
-$branch_filter = "";
-$branch_params = [];
-if (!$is_admin && $user_branch) {
-    $branch_filter = "AND co.assigned_branch_id = ?";
-    $branch_params[] = $user_branch;
-}
+// Branch filter — Access-Manager-aware (was: hardcoded to the user's own
+// employees.branch_id for every non-admin, so an explicit "All Branches" or
+// "specific branches" data_scope grant in Access Manager had no effect at
+// all — see resolveBranchFilterUI()/getUserBranchScope() in helpers.php).
+// This page is classified under 'production' per the module comment above.
+$bf = resolveBranchFilterUI('production', 'co.assigned_branch_id');
+$branch_filter = $bf['filter_sql'];
+$branch_params = $bf['filter_params'];
 
 // Fetch necessary accounts
 $ar_account_q = $db->query("SELECT id FROM chart_of_accounts WHERE account_type = 'Accounts Receivable' LIMIT 1");
@@ -195,6 +220,81 @@ $orders = $db->query(
     array_merge([$from_date, $to_date], $branch_params)
 )->results();
 
+/**
+ * Renders the Deliver button for a goods_on_board/shipped order, OR — if it's
+ * blocked — a badge explaining WHY instead of a button that will just error on
+ * click. Added 2 Sep 2026: previously this page's Deliver button had no visible
+ * hold/shortfall indicator at all (unlike the ready_to_ship row's HELD badge),
+ * so a dispatch-role user could click it, fill the modal, and only find out it
+ * was blocked after submitting — or, for the shortfall case, it wasn't checked
+ * server-side at all yet and would silently close a short-shipped order.
+ */
+function renderDeliverButtonOrReason(object $order, bool $is_admin): void {
+    global $db;
+    $gate = getOrderGateState((int)$order->id);
+    // Added 2 Sep 2026: the HELD path only applies when the dispatch-stage
+    // re-check is explicitly turned on — off by default, per instruction that
+    // credit_production.php's Ready-to-Ship check is the sole required payment/
+    // dispatch hold gate. See dispatchStageHoldRecheckEnabled(). The quantity-
+    // shortfall check below this is unrelated and always applies.
+    if (dispatchStageHoldRecheckEnabled() && !in_array($gate['dispatch'], ['open', 'cleared'])) {
+        ?>
+        <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-red-100 text-red-700 rounded font-semibold"
+              title="<?php echo htmlspecialchars($gate['row']->accounts_note ?? 'Awaiting payment clearance from Accounts'); ?>">
+            <i class="fas fa-lock text-xs"></i> HELD
+            <?php if ($gate['shortfall'] !== null && $gate['shortfall'] > 0): ?>
+            <span class="font-normal">· ৳<?php echo number_format($gate['shortfall'], 0); ?> to go</span>
+            <?php elseif ($gate['dispatch'] === 'condition_met'): ?>
+            <span class="font-normal">· condition met, awaiting clearance</span>
+            <?php endif; ?>
+        </span>
+        <?php
+        return;
+    }
+
+    $qty = getOrderDeliveryShortfall($db, (int)$order->id);
+
+    // A non-admin can't override a shortfall at all (see the server-side check
+    // in the 'delivered' handler) — show them why and point at the real tool
+    // instead of a Deliver button that will only error after they fill the modal.
+    if ($qty['has_shortfall'] && !$is_admin) {
+        ?>
+        <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-amber-100 text-amber-800 rounded font-semibold"
+              title="<?php echo number_format($qty['total_delivered'], 2, '.', ''); ?> of <?php echo number_format($qty['total_ordered'], 2, '.', ''); ?> units recorded delivered so far. Only Superadmin/admin can close an order with a shortfall.">
+            <i class="fas fa-exclamation-triangle text-xs"></i> <?php echo number_format($qty['shortfall'], 0); ?> units short
+        </span>
+        <a href="partial_delivery.php?order_id=<?php echo (int)$order->id; ?>"
+           class="inline-flex items-center px-2 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition-colors" title="Record remaining units via Partial Delivery">
+            <i class="fas fa-dolly text-xs"></i>
+        </a>
+        <?php
+        return;
+    }
+
+    $shortfall_attr = $qty['has_shortfall'] ? number_format($qty['shortfall'], 2, '.', '') : '0';
+    $ordered_attr   = number_format($qty['total_ordered'], 2, '.', '');
+    ?>
+    <button type="button"
+            data-action="deliver"
+            data-id="<?php echo $order->id; ?>"
+            data-order="<?php echo htmlspecialchars($order->order_number, ENT_QUOTES); ?>"
+            data-customer="<?php echo htmlspecialchars($order->customer_name, ENT_QUOTES); ?>"
+            data-truck="<?php echo htmlspecialchars($order->truck_number ?? '', ENT_QUOTES); ?>"
+            data-driver="<?php echo htmlspecialchars($order->driver_name ?? '', ENT_QUOTES); ?>"
+            data-shortfall="<?php echo $shortfall_attr; ?>"
+            data-ordered-qty="<?php echo $ordered_attr; ?>"
+            data-balance-due="<?php echo number_format((float)$order->balance_due, 2, '.', ''); ?>"
+            class="dispatch-btn inline-flex items-center gap-1 px-2.5 py-1 <?php echo $qty['has_shortfall'] ? 'bg-amber-500 hover:bg-amber-600' : 'bg-green-600 hover:bg-green-700'; ?> text-white rounded font-semibold transition-colors cursor-pointer"
+            title="<?php echo $qty['has_shortfall'] ? 'Only ' . number_format($qty['total_delivered'], 2, '.', '') . ' of ' . $ordered_attr . ' units recorded delivered — click for details' : 'Manually mark delivered'; ?>">
+        <i class="fas fa-<?php echo $qty['has_shortfall'] ? 'exclamation-triangle' : 'check'; ?> text-xs"></i>
+        Deliver<?php echo $qty['has_shortfall'] ? ' ⚠' : ''; ?>
+    </button>
+    <?php if ($qty['has_shortfall']): ?>
+    <span class="text-[10px] text-amber-600 block w-full mt-0.5"><?php echo number_format($qty['shortfall'], 0); ?> units not yet recorded</span>
+    <?php endif; ?>
+    <?php
+}
+
 // Handle shipping action
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'ship' && !$error) {
     $order_id         = (int)($_POST['order_id'] ?? 0);
@@ -203,12 +303,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'ship' && !$er
     $driver_contact   = trim($_POST['driver_contact']   ?? '');
     $fleet_driver_id  = (int)($_POST['fleet_driver_id']  ?? 0);
     $fleet_vehicle_id = (int)($_POST['fleet_vehicle_id'] ?? 0);
+    // 12 Sep 2026: dispatcher-entered additional discount, applied on top of
+    // whatever discount the order already carries. Mandatory reason, shown
+    // on the invoice — see credit_invoice_print.php.
+    $extra_discount_amount = round((float)($_POST['extra_discount_amount'] ?? 0), 2);
+    $extra_discount_reason = trim($_POST['extra_discount_reason'] ?? '');
+    // 21 Sep 2026: optional manual entries — blank/0 => NULL (not recorded).
+    $bags_boarded = (int)($_POST['bags_boarded'] ?? 0);   if ($bags_boarded <= 0) $bags_boarded = null;
+    $bag_size_kg  = round((float)($_POST['bag_size_kg'] ?? 0), 2); if ($bag_size_kg <= 0) $bag_size_kg = null;
 
     if ($truck_number === '' || $driver_name === '') {
         $error = "Driver name and truck number are required.";
-    } elseif (!orderDispatchAllowed($order_id)) {
+    } elseif ($extra_discount_amount > 0 && $extra_discount_reason === '') {
+        $error = "Please enter a reason for the additional discount.";
+    } elseif ($extra_discount_amount < 0) {
+        $error = "Discount amount cannot be negative.";
+    } elseif (dispatchStageHoldRecheckEnabled() && !orderDispatchAllowed($order_id)) {
         // Server-side gate: admin placed a dispatch hold pending payment clearance.
         // Checked here (not only at render) so a direct POST cannot bypass it.
+        // Added 2 Sep 2026: OFF by default per instruction — credit_production.php's
+        // Ready-to-Ship check is the sole required hold gate; this page no longer
+        // re-verifies it unless dispatch_stage_hold_recheck is explicitly turned
+        // back on in Admin Settings. See dispatchStageHoldRecheckEnabled().
         $gate  = getOrderGateState($order_id);
         $error = "Dispatch is HELD for this order — awaiting payment clearance from Accounts.";
         if ($gate['shortfall'] !== null && $gate['shortfall'] > 0) {
@@ -230,24 +346,81 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'ship' && !$er
             $order = $db->query("SELECT * FROM credit_orders WHERE id = ?", [$order_id])->first();
             if (!$order) throw new Exception("Order not found");
 
-            // 1. Shipping record
-            $shipping_exists = $db->query("SELECT id FROM credit_order_shipping WHERE order_id = ?", [$order_id])->first();
-            if ($shipping_exists) {
+            // Apply the additional discount BEFORE postCreditOrderDispatchAccounting()
+            // runs below — that helper re-queries credit_orders fresh and posts
+            // total_amount verbatim to the ledger/journal/invoice_snapshots, so
+            // updating it here means the invoice is correct from the first post,
+            // not patched after the fact.
+            if ($extra_discount_amount > 0) {
+                if ($extra_discount_amount > (float)$order->subtotal) {
+                    throw new Exception("Discount (৳" . number_format($extra_discount_amount, 2) . ") cannot exceed the order's subtotal (৳" . number_format($order->subtotal, 2) . ").");
+                }
+                // MySQL evaluates SET clauses left-to-right, so `discount_amount`
+                // in the later expressions already sees the value the first
+                // clause just set — do NOT add $extra_discount_amount again there
+                // (an earlier version of this query did, silently doubling the
+                // discount; caught via live testing before this ever shipped).
                 $db->query(
-                    "UPDATE credit_order_shipping
-                     SET truck_number=?, driver_name=?, driver_contact=?, shipped_date=NOW(), shipped_by_user_id=?
-                     WHERE order_id=?",
-                    [$truck_number, $driver_name, $driver_contact ?: null, $user_id, $order_id]
+                    "UPDATE credit_orders
+                     SET discount_amount = discount_amount + ?,
+                         total_amount = subtotal - discount_amount + tax_amount,
+                         balance_due = GREATEST(0, (subtotal - discount_amount + tax_amount) - advance_paid - amount_paid),
+                         updated_at = NOW()
+                     WHERE id = ?",
+                    [$extra_discount_amount, $order_id]
                 );
+                // Refresh $order so the rest of this handler (and the accounting
+                // helper below) sees the already-discounted total/balance.
+                $order = $db->query("SELECT * FROM credit_orders WHERE id = ?", [$order_id])->first();
+            }
+
+            // 1. Shipping record
+            $shipping_exists = $db->query("SELECT id, delivery_slip_number FROM credit_order_shipping WHERE order_id = ?", [$order_id])->first();
+            // 1 Oct 2026: branch-coded delivery slip serial — assigned once per
+            // shipping row and preserved on a later correction/re-dispatch of the
+            // SAME row (e.g. wrong-truck fix), never regenerated, so a correction
+            // doesn't burn an extra number out of the monthly series.
+            $delivery_slip_number = ($shipping_exists && !empty($shipping_exists->delivery_slip_number))
+                ? $shipping_exists->delivery_slip_number
+                : generateDeliverySlipNumber($db, (int)$order->assigned_branch_id);
+            if ($shipping_exists) {
+                if ($extra_discount_amount > 0) {
+                    $db->query(
+                        "UPDATE credit_order_shipping
+                         SET truck_number=?, driver_name=?, driver_contact=?, shipped_date=NOW(), shipped_by_user_id=?,
+                             bags_boarded=?, bag_size_kg=?, delivery_slip_number=?,
+                             extra_discount_amount=?, extra_discount_reason=?, extra_discount_by_user_id=?, extra_discount_at=NOW()
+                         WHERE order_id=?",
+                        [$truck_number, $driver_name, $driver_contact ?: null, $user_id,
+                         $bags_boarded, $bag_size_kg, $delivery_slip_number,
+                         $extra_discount_amount, $extra_discount_reason, $user_id, $order_id]
+                    );
+                } else {
+                    $db->query(
+                        "UPDATE credit_order_shipping
+                         SET truck_number=?, driver_name=?, driver_contact=?, shipped_date=NOW(), shipped_by_user_id=?,
+                             bags_boarded=?, bag_size_kg=?, delivery_slip_number=?
+                         WHERE order_id=?",
+                        [$truck_number, $driver_name, $driver_contact ?: null, $user_id, $bags_boarded, $bag_size_kg, $delivery_slip_number, $order_id]
+                    );
+                }
             } else {
-                $db->insert('credit_order_shipping', [
+                $db->insert('credit_order_shipping', array_merge([
                     'order_id'           => $order_id,
                     'truck_number'       => $truck_number,
                     'driver_name'        => $driver_name,
                     'driver_contact'     => $driver_contact ?: null,
                     'shipped_date'       => date('Y-m-d H:i:s'),
                     'shipped_by_user_id' => $user_id,
-                ]);
+                    'bags_boarded'       => $bags_boarded,
+                    'bag_size_kg'        => $bag_size_kg,
+                    'delivery_slip_number' => $delivery_slip_number,
+                ], $extra_discount_amount > 0 ? [
+                    'extra_discount_amount'     => $extra_discount_amount,
+                    'extra_discount_reason'     => $extra_discount_reason,
+                    'extra_discount_by_user_id' => $user_id,
+                    'extra_discount_at'         => date('Y-m-d H:i:s'),
+                ] : []));
             }
 
             // 2. Update order status — Feature #8: dispatcher marks "Goods on Board"
@@ -394,12 +567,68 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'ship' && !$er
 }
 
 // Handle delivery confirmation
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'delivered') {
-    $order_id = (int)$_POST['order_id'];
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'delivered' && !$error) {
+    $order_id = (int)($_POST['order_id'] ?? 0);
     $delivery_notes = trim($_POST['delivery_notes'] ?? '');
-    
+
+    // Confirmed live 2 Sep 2026 (CR-20260831-0015, credit_limit ৳10, held on
+    // payment): this action had ZERO checks at all — no status precondition
+    // (didn't even verify the order was actually shipped first), no payment
+    // hold check, and didn't even fetch the order row until after the status
+    // update had already committed. A direct POST of action=delivered for
+    // any order_id jumped it straight to 'delivered', skipping goods_on_board/
+    // shipped entirely and completely bypassing the same dispatch hold that
+    // already (correctly) blocks this page's own 'ship' action just above.
+    $deliver_order = $db->query("SELECT * FROM credit_orders WHERE id = ?", [$order_id])->first();
+    if (!$deliver_order) {
+        $error = 'Order not found.';
+    } elseif (!in_array($deliver_order->status, ['goods_on_board', 'shipped'], true)) {
+        $error = "Cannot mark as delivered — this order is '"
+            . str_replace('_', ' ', $deliver_order->status) . "', not out for delivery yet.";
+    } elseif (dispatchStageHoldRecheckEnabled() && !orderDispatchAllowed($order_id)) {
+        // Added 2 Sep 2026: OFF by default, same as the 'ship' action above — see
+        // dispatchStageHoldRecheckEnabled(). The quantity-shortfall check just
+        // below is a SEPARATE, always-on concern (units delivered vs. ordered,
+        // not payment) and is never affected by this toggle.
+        $gate = getOrderGateState($order_id);
+        $error = "Delivery is HELD for this order — awaiting payment clearance from Accounts.";
+        if ($gate['shortfall'] !== null && $gate['shortfall'] > 0) {
+            $error .= " Shortfall: ৳" . number_format($gate['shortfall'], 0) . ".";
+        }
+    } else {
+        // Quantity-completeness check — added 2 Sep 2026 after CR-20260823-0014
+        // was force-closed with 1,444 of 2,000 units never delivered, because
+        // this action never checked quantity at all. Not an unconditional block:
+        // a Superadmin/admin ("allowed user") may still close it out early, but
+        // only with the customer fully paid ("proper confirmation of payment")
+        // and an explicit on-screen confirmation — never silently.
+        $qty = getOrderDeliveryShortfall($db, $order_id);
+        if ($qty['has_shortfall']) {
+            $can_override_shortfall = $is_admin;
+            $confirm_shortfall = !empty($_POST['confirm_shortfall']);
+            $short_txt = rtrim(rtrim(number_format($qty['shortfall'], 2), '0'), '.');
+            $ordered_txt = rtrim(rtrim(number_format($qty['total_ordered'], 2), '0'), '.');
+            $delivered_txt = rtrim(rtrim(number_format($qty['total_delivered'], 2), '0'), '.');
+            if (!$can_override_shortfall) {
+                $error = "Cannot mark delivered — {$short_txt} of {$ordered_txt} units have not been recorded as delivered "
+                    . "({$delivered_txt} recorded so far). Use Partial Delivery to record the remainder, or ask a Superadmin/admin to close this order out.";
+            } elseif ((float)$deliver_order->balance_due > 0.01) {
+                $error = "Cannot close this order with {$short_txt} units outstanding while the customer still owes ৳"
+                    . number_format((float)$deliver_order->balance_due, 0) . ". Settle payment first, or use Partial Delivery to record the remainder.";
+            } elseif (!$confirm_shortfall) {
+                $error = "This order has {$short_txt} of {$ordered_txt} units not yet delivered ({$delivered_txt} recorded so far). "
+                    . "Check the confirmation box to close it out anyway — customer is fully paid.";
+            }
+            // else: allowed user, fully paid, explicitly confirmed — fall through.
+        }
+    }
+}
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'delivered' && !$error) {
+    $order_id = (int)($_POST['order_id'] ?? 0);
+    $delivery_notes = trim($_POST['delivery_notes'] ?? '');
     try {
         $db->getPdo()->beginTransaction();
+        // (validated above — $deliver_order confirmed eligible, dispatch allowed)
         
         // Get trip_id from shipping
         $shipping = $db->query("SELECT trip_id FROM credit_order_shipping WHERE order_id = ?", [$order_id])->first();
@@ -444,7 +673,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'delivered') {
         
         // Update order status
         $db->query("UPDATE credit_orders SET status = 'delivered' WHERE id = ?", [$order_id]);
-        
+
+        // Note if this closed out over a genuine quantity shortfall (admin/Superadmin
+        // override, only reachable once fully paid — see validation block above).
+        $shortfall_note = '';
+        $qty_final = getOrderDeliveryShortfall($db, $order_id);
+        if ($qty_final['has_shortfall']) {
+            $shortfall_note = ' [Closed with ' . rtrim(rtrim(number_format($qty_final['shortfall'], 2), '0'), '.')
+                . ' of ' . rtrim(rtrim(number_format($qty_final['total_ordered'], 2), '0'), '.')
+                . ' units outstanding — override by ' . $user_role . ', customer fully paid, explicitly confirmed]';
+        }
+
         // Log workflow
         $db->insert('credit_order_workflow', [
             'order_id' => $order_id,
@@ -452,7 +691,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'delivered') {
             'to_status' => 'delivered',
             'action' => 'deliver',
             'performed_by_user_id' => $user_id,
-            'comments' => 'Order delivered to customer' . ($delivery_notes ? ': ' . $delivery_notes : '')
+            'comments' => 'Order delivered to customer' . ($delivery_notes ? ': ' . $delivery_notes : '') . $shortfall_note
         ]);
         
         $db->getPdo()->commit();
@@ -758,7 +997,10 @@ require_once '../templates/header.php';
                 <div class="flex items-center justify-center gap-1">
                 <?php if ($order->status === 'ready_to_ship'): ?>
                     <?php $gate = getOrderGateState((int)$order->id); ?>
-                    <?php if (!in_array($gate['dispatch'], ['open', 'cleared'])): ?>
+                    <?php // Added 2 Sep 2026: HELD badge only shown when the dispatch-stage
+                          // re-check is explicitly turned on — off by default, credit_production.php's
+                          // Ready-to-Ship check is the sole required gate. See dispatchStageHoldRecheckEnabled(). ?>
+                    <?php if (dispatchStageHoldRecheckEnabled() && !in_array($gate['dispatch'], ['open', 'cleared'])): ?>
                     <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-red-100 text-red-700 rounded font-semibold"
                           title="<?php echo htmlspecialchars($gate['row']->accounts_note ?? 'Awaiting payment clearance from Accounts'); ?>">
                         <i class="fas fa-lock text-xs"></i> HELD
@@ -791,32 +1033,14 @@ require_once '../templates/header.php';
                        class="inline-flex items-center px-2 py-1 bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors" title="Print Invoice">
                         <i class="fas fa-print text-xs"></i>
                     </a>
-                    <button type="button"
-                            data-action="deliver"
-                            data-id="<?php echo $order->id; ?>"
-                            data-order="<?php echo htmlspecialchars($order->order_number, ENT_QUOTES); ?>"
-                            data-customer="<?php echo htmlspecialchars($order->customer_name, ENT_QUOTES); ?>"
-                            data-truck="<?php echo htmlspecialchars($order->truck_number ?? '', ENT_QUOTES); ?>"
-                            data-driver="<?php echo htmlspecialchars($order->driver_name ?? '', ENT_QUOTES); ?>"
-                            class="dispatch-btn inline-flex items-center gap-1 px-2.5 py-1 bg-green-600 text-white rounded hover:bg-green-700 font-semibold transition-colors cursor-pointer" title="Manually mark delivered">
-                        <i class="fas fa-check text-xs"></i> Deliver
-                    </button>
+                    <?php renderDeliverButtonOrReason($order, $is_admin); ?>
                     <a href="credit_order_view.php?id=<?php echo $order->id; ?>"
                        class="inline-flex items-center px-2 py-1 border border-gray-300 text-gray-600 rounded hover:bg-gray-100 transition-colors" title="View">
                         <i class="fas fa-eye text-xs"></i>
                     </a>
                     <span class="text-[10px] text-indigo-500 ml-1 self-center">on board — scan gate QR to mark Shipped</span>
                 <?php elseif ($order->status === 'shipped'): ?>
-                    <button type="button"
-                            data-action="deliver"
-                            data-id="<?php echo $order->id; ?>"
-                            data-order="<?php echo htmlspecialchars($order->order_number, ENT_QUOTES); ?>"
-                            data-customer="<?php echo htmlspecialchars($order->customer_name, ENT_QUOTES); ?>"
-                            data-truck="<?php echo htmlspecialchars($order->truck_number ?? '', ENT_QUOTES); ?>"
-                            data-driver="<?php echo htmlspecialchars($order->driver_name ?? '', ENT_QUOTES); ?>"
-                            class="dispatch-btn inline-flex items-center gap-1 px-2.5 py-1 bg-green-600 text-white rounded hover:bg-green-700 font-semibold transition-colors cursor-pointer">
-                        <i class="fas fa-check text-xs"></i> Deliver
-                    </button>
+                    <?php renderDeliverButtonOrReason($order, $is_admin); ?>
                     <a href="credit_invoice_print.php?id=<?php echo $order->id; ?>" target="_blank"
                        class="inline-flex items-center px-2 py-1 bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors" title="Print Invoice">
                         <i class="fas fa-print text-xs"></i>
@@ -922,6 +1146,38 @@ require_once '../templates/header.php';
                            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm
                                   focus:ring-2 focus:ring-green-500">
                 </div>
+                <!-- Bags boarded (manual, optional) — printed on the Delivery Receipt -->
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Bags Boarded</label>
+                        <input type="number" name="bags_boarded" id="ship_bags_boarded" min="0" step="1"
+                               placeholder="e.g. 320"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-green-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Bag Size (kg/bag)</label>
+                        <input type="number" name="bag_size_kg" id="ship_bag_size_kg" min="0" step="0.01"
+                               placeholder="e.g. 50"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-green-500">
+                    </div>
+                    <p class="col-span-2 text-[11px] text-gray-400 -mt-1">Optional, manual — e.g. 16,000 kg bulk loaded as 320 bags of 50 kg. Shown in the Delivery Receipt remarks.</p>
+                </div>
+                <!-- Additional Discount -->
+                <div class="pt-2 border-t border-gray-100">
+                    <label class="block text-xs font-medium text-gray-700 mb-1">Additional Discount (৳)</label>
+                    <input type="number" name="extra_discount_amount" id="ship_extra_discount_amount"
+                           min="0" step="0.01" value="0" placeholder="0.00"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm
+                                  focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
+                    <p class="text-[11px] text-gray-400 mt-1">Optional — extra discount applied at dispatch, on top of any existing order discount. Reason required if used.</p>
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-700 mb-1">Reason for Additional Discount</label>
+                    <input type="text" name="extra_discount_reason" id="ship_extra_discount_reason" maxlength="500"
+                           placeholder="e.g. Goodwill gesture for late delivery"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm
+                                  focus:ring-2 focus:ring-amber-500">
+                </div>
             </div>
             <div class="px-5 py-3 border-t border-gray-200 bg-gray-50 rounded-b-xl flex gap-2">
                 <button type="submit"
@@ -958,6 +1214,24 @@ require_once '../templates/header.php';
         <form method="POST" id="deliverForm">
             <input type="hidden" name="action"    value="delivered">
             <input type="hidden" name="order_id"  id="deliver_order_id">
+            <!-- Shortfall confirmation — only shown/required when the order has
+                 units not yet recorded as delivered (see renderDeliverButtonOrReason()
+                 in PHP). Only reachable by admin/Superadmin; server re-checks
+                 balance_due and this checkbox independently, so nothing here is
+                 trust-the-client. -->
+            <div id="deliverShortfallBox" class="mx-5 mt-4 px-3 py-2.5 bg-amber-50 border border-amber-300 rounded-lg hidden">
+                <p class="text-xs text-amber-800 font-semibold flex items-center gap-1.5">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span id="deliverShortfallText"></span>
+                </p>
+                <p id="deliverBalanceWarning" class="text-xs text-red-700 font-semibold mt-1 hidden">
+                    <i class="fas fa-ban mr-1"></i>Customer still owes money — settle payment before this can be closed.
+                </p>
+                <label id="deliverShortfallConfirmLabel" class="flex items-start gap-2 mt-2 text-xs text-amber-900 cursor-pointer">
+                    <input type="checkbox" name="confirm_shortfall" id="deliverShortfallCheckbox" value="1" class="mt-0.5">
+                    <span>I confirm this order should be closed as delivered despite units outstanding — customer is fully paid.</span>
+                </label>
+            </div>
             <div class="px-5 py-4">
                 <label class="block text-xs font-medium text-gray-700 mb-1">
                     Delivery Notes <span class="text-gray-400">(optional)</span>
@@ -968,8 +1242,8 @@ require_once '../templates/header.php';
                           placeholder="Any notes about the delivery…"></textarea>
             </div>
             <div class="px-5 py-3 border-t border-gray-200 bg-gray-50 rounded-b-xl flex gap-2">
-                <button type="submit"
-                        onclick="return confirm('Confirm that this order has been delivered to customer?')"
+                <button type="submit" id="deliverSubmitBtn"
+                        onclick="return confirmDeliverSubmit()"
                         class="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700
                                text-sm font-semibold transition-colors cursor-pointer">
                     <i class="fas fa-check-circle mr-2"></i>Confirm Delivered
@@ -1048,14 +1322,15 @@ document.addEventListener('click', function(e) {
     if (action === 'ship') {
         openShipModal(id, order, customer);
     } else if (action === 'deliver') {
-        openDeliverModal(id, order, customer, btn.dataset.truck || '', btn.dataset.driver || '');
+        openDeliverModal(id, order, customer, btn.dataset.truck || '', btn.dataset.driver || '',
+            parseFloat(btn.dataset.shortfall || '0'), parseFloat(btn.dataset.orderedQty || '0'), parseFloat(btn.dataset.balanceDue || '0'));
     }
 });
 
 // ── Ship Modal ─────────────────────────────────────────────────────────
 function openShipModal(orderId, orderNumber, customer) {
     document.getElementById('ship_order_id').value = orderId;
-    ['ship_truck_input','ship_driver_input','ship_driver_contact'].forEach(id => document.getElementById(id).value = '');
+    ['ship_truck_input','ship_driver_input','ship_driver_contact','ship_bags_boarded','ship_bag_size_kg'].forEach(id => document.getElementById(id).value = '');
     ['ship_fleet_driver_id','ship_fleet_vehicle_id'].forEach(id => document.getElementById(id).value = '0');
     ['ship_truck_badge','ship_driver_badge'].forEach(id => document.getElementById(id).innerHTML = '');
     ['ship_truck_dropdown','ship_driver_dropdown'].forEach(id => document.getElementById(id).classList.add('hidden'));
@@ -1066,15 +1341,58 @@ function openShipModal(orderId, orderNumber, customer) {
 function closeShipModal() { document.getElementById('shipModal').classList.add('hidden'); }
 
 // ── Deliver Modal ──────────────────────────────────────────────────────
-function openDeliverModal(orderId, orderNumber, customer, truck, driver) {
+let _deliverShortfallActive = false;
+function openDeliverModal(orderId, orderNumber, customer, truck, driver, shortfall, orderedQty, balanceDue) {
     document.getElementById('deliver_order_id').value = orderId;
     document.getElementById('deliverForm').querySelector('textarea').value = '';
     document.getElementById('deliverOrderInfo').innerHTML =
         orderNumber + ' — ' + customer +
         (truck ? '<br><span class="font-mono text-gray-700">' + truck + '</span>' + (driver ? ' · ' + driver : '') : '');
+
+    const box = document.getElementById('deliverShortfallBox');
+    const checkbox = document.getElementById('deliverShortfallCheckbox');
+    _deliverShortfallActive = shortfall > 0.001;
+    if (_deliverShortfallActive) {
+        document.getElementById('deliverShortfallText').textContent =
+            shortfall.toLocaleString(undefined, {maximumFractionDigits: 2}) + ' of ' +
+            orderedQty.toLocaleString(undefined, {maximumFractionDigits: 2}) + ' units have not been recorded as delivered.';
+        const balanceWarn = document.getElementById('deliverBalanceWarning');
+        const confirmLabel = document.getElementById('deliverShortfallConfirmLabel');
+        if (balanceDue > 0.01) {
+            balanceWarn.classList.remove('hidden');
+            confirmLabel.classList.add('hidden');
+            checkbox.checked = false;
+            checkbox.disabled = true;
+        } else {
+            balanceWarn.classList.add('hidden');
+            confirmLabel.classList.remove('hidden');
+            checkbox.disabled = false;
+            checkbox.checked = false;
+        }
+        box.classList.remove('hidden');
+    } else {
+        box.classList.add('hidden');
+        checkbox.checked = false;
+        checkbox.disabled = false;
+    }
     document.getElementById('deliverModal').classList.remove('hidden');
 }
 function closeDeliverModal() { document.getElementById('deliverModal').classList.add('hidden'); }
+function confirmDeliverSubmit() {
+    if (_deliverShortfallActive) {
+        const checkbox = document.getElementById('deliverShortfallCheckbox');
+        if (checkbox.disabled) {
+            alert('This order still has a balance due — settle payment first, or use Partial Delivery to record the remaining units.');
+            return false;
+        }
+        if (!checkbox.checked) {
+            alert('Please check the confirmation box to close this order out despite units outstanding.');
+            return false;
+        }
+        return confirm('This will mark the order fully delivered even though units remain outstanding. Continue?');
+    }
+    return confirm('Confirm that this order has been delivered to customer?');
+}
 
 // ── Items Modal ────────────────────────────────────────────────────────
 function openItemsModal(orderId) {

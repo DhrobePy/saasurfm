@@ -26,6 +26,7 @@ $is_admin    = in_array($user_role, ['Superadmin', 'admin']);
 $payment_manager = new Purchasepaymentadnanmanager();
 $bank_accounts   = $payment_manager->getAllBankAccounts();
 $cash_accounts   = $payment_manager->getAllCashAccounts();
+$canSeeBalance   = canViewBankBalances();
 
 // ─── Supplier ID ──────────────────────────────────────────────────────────────
 $supplier_id = isset($_GET['supplier_id']) ? (int)$_GET['supplier_id'] : 0;
@@ -1262,8 +1263,7 @@ include '../templates/header.php';
                         <option value="">-- Select Bank Account --</option>
                         <?php foreach ($bank_accounts as $ba): ?>
                         <option value="<?php echo $ba->id; ?>">
-                            <?php echo htmlspecialchars($ba->bank_name . ' — ' . $ba->account_name); ?>
-                            (<?php echo htmlspecialchars($ba->account_number ?? ''); ?>)
+                            <?php echo htmlspecialchars(bankAccountOptionLabel($ba->bank_name, $ba->account_name, $ba->account_number ?? '', (float)($ba->current_balance ?? 0), $canSeeBalance)); ?>
                         </option>
                         <?php endforeach; ?>
                     </select>

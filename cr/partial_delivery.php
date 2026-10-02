@@ -57,6 +57,41 @@ $db->getPdo()->exec("
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
 ");
 
+// 12 Sep 2026: dispatcher-entered additional discount for this delivery —
+// PROBE FIRST, ALTER implicitly commits/locks so only run it once, the first
+// time it's actually missing (same convention as credit_dispatch.php).
+try {
+    $col = $db->query(
+        "SELECT COLUMN_NAME FROM information_schema.COLUMNS
+         WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'credit_order_deliveries' AND COLUMN_NAME = 'extra_discount_amount'"
+    )->first();
+    if (!$col) {
+        $db->getPdo()->exec("ALTER TABLE `credit_order_deliveries`
+            ADD COLUMN `extra_discount_amount` DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+            ADD COLUMN `extra_discount_reason` TEXT NULL,
+            ADD COLUMN `extra_discount_by_user_id` BIGINT UNSIGNED NULL,
+            ADD COLUMN `extra_discount_at` TIMESTAMP NULL");
+    }
+} catch (\Throwable $e) { /* migration is best-effort */ }
+
+// 21 Sep 2026: dispatcher-entered bags boarded + bag size (kg/bag) for THIS
+// delivery — informational, printed on the delivery receipt remarks. Probe first.
+try {
+    $col = $db->query(
+        "SELECT COLUMN_NAME FROM information_schema.COLUMNS
+         WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'credit_order_deliveries' AND COLUMN_NAME = 'bags_boarded'"
+    )->first();
+    if (!$col) {
+        $db->getPdo()->exec("ALTER TABLE `credit_order_deliveries`
+            ADD COLUMN `bags_boarded` INT UNSIGNED NULL,
+            ADD COLUMN `bag_size_kg` DECIMAL(8,2) NULL");
+    }
+} catch (\Throwable $e) { /* migration is best-effort */ }
+
+// 1 Oct 2026: branch-coded delivery slip numbering (DEM-2026-10-001 etc.) —
+// shared schema/sequence with credit_dispatch.php's full-dispatch path.
+ensureDeliverySlipNumbering();
+
 $error   = null;
 $success = null;
 
@@ -78,6 +113,19 @@ if ($selected_order_id) {
          WHERE co.id = ? AND co.status IN ({$status_placeholders})",
         array_merge([$selected_order_id], $eligible_statuses)
     )->first();
+
+    // Branch scope — this page previously let any allowed role load ANY order
+    // by URL id regardless of branch. Every status reachable here is
+    // post-approval, so co.assigned_branch_id is always populated (unlike the
+    // pending-approval queue) — a direct scope check is enough, no fallback
+    // needed. Superadmin/admin and a data_scope='all' grant are unrestricted.
+    if ($selected_order && !$is_admin) {
+        $pd_scope = getUserBranchScope('production');
+        if ($pd_scope !== null && !in_array((int)$selected_order->assigned_branch_id, $pd_scope, true)) {
+            $_SESSION['error_flash'] = "You don't have access to this order — it belongs to a different branch.";
+            $selected_order = null;
+        }
+    }
 
     if ($selected_order) {
         $order_items = $db->query(
@@ -171,6 +219,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'recor
         $is_final      = (int)(($_POST['is_final'] ?? '0') === '1');
         $notes         = trim($_POST['notes'] ?? '');
         $del_qtys      = $_POST['delivery_qty'] ?? [];   // [item_id => qty]
+        // 12 Sep 2026: dispatcher-entered additional discount for THIS delivery
+        // only — mandatory reason, shown on the delivery-scoped invoice print.
+        $extra_discount_amount = round((float)($_POST['extra_discount_amount'] ?? 0), 2);
+        $extra_discount_reason = trim($_POST['extra_discount_reason'] ?? '');
+        $bags_boarded = (int)($_POST['bags_boarded'] ?? 0);   if ($bags_boarded <= 0) $bags_boarded = null;
+        $bag_size_kg  = round((float)($_POST['bag_size_kg'] ?? 0), 2); if ($bag_size_kg <= 0) $bag_size_kg = null;
+        if ($extra_discount_amount < 0) throw new Exception("Discount amount cannot be negative.");
+        if ($extra_discount_amount > 0 && $extra_discount_reason === '') {
+            throw new Exception("Please enter a reason for the additional discount.");
+        }
 
         // Re-fetch order with write-lock approach
         $status_placeholders = implode(',', array_fill(0, count($eligible_statuses), '?'));
@@ -181,6 +239,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'recor
             array_merge([$order_id], $eligible_statuses)
         )->first();
         if (!$order) throw new Exception("Order not found or not eligible for delivery recording.");
+
+        // Defense in depth: the GET-load path above already hides out-of-scope
+        // orders, but a branch-scoped user could still POST an arbitrary
+        // order_id directly. Every status reachable here is post-approval, so
+        // assigned_branch_id is always populated.
+        if (!$is_admin) {
+            $pd_scope_check = getUserBranchScope('production');
+            if ($pd_scope_check !== null && !in_array((int)$order->assigned_branch_id, $pd_scope_check, true)) {
+                throw new Exception("This order is outside your assigned branch scope.");
+            }
+        }
 
         // Build delivery lines
         $lines = [];
@@ -227,6 +296,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'recor
 
         if (empty($lines)) throw new Exception("No delivery quantities entered.");
 
+        if ($extra_discount_amount > $this_delivery_amount) {
+            throw new Exception("Discount (৳" . number_format($extra_discount_amount, 2) . ") cannot exceed this delivery's amount (৳" . number_format($this_delivery_amount, 2) . ").");
+        }
+        // Net the discount out of this delivery's own amount BEFORE the
+        // delivery-cap check below (a discount can correctly bring a delivery
+        // under the cap) and before it's stored as total_amount_delivered —
+        // updateOrderDeliveryStatus() sums that column for balance_due, so
+        // netting it here is the only place this needs to happen.
+        $this_delivery_amount = round($this_delivery_amount - $extra_discount_amount, 2);
+
         // Per-user delivery ceiling (admin/privileges.php → Action Limits).
         // No legacy fallback: only an explicit partial_delivery limit applies.
         // Over the cap → parked as a pending request (maker/checker); nothing is
@@ -249,6 +328,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'recor
                     'is_final'       => $is_final,
                     'notes'          => $notes,
                     'delivery_qty'   => $del_qtys,
+                    'extra_discount_amount' => $extra_discount_amount,
+                    'extra_discount_reason' => $extra_discount_reason,
+                    'bags_boarded'  => $bags_boarded,
+                    'bag_size_kg'   => $bag_size_kg,
                 ], [
                     'order_id'    => $order_id,
                     'customer_id' => (int)$order->customer_id,
@@ -278,12 +361,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'recor
         $seq    = $last ? (int)substr($last->delivery_number, -4) + 1 : 1;
         $delivery_number = sprintf("DEL-%s-%04d", $dn_date, $seq);
 
+        // 1 Oct 2026: branch-coded delivery slip serial — each partial delivery
+        // is its own truck leaving the gate, so it always gets a fresh number
+        // (unlike the full-dispatch path, which preserves one across corrections).
+        $delivery_slip_number = generateDeliverySlipNumber($db, (int)$order->assigned_branch_id, $delivery_date);
+
         $pdo = $db->getPdo();
         $pdo->beginTransaction();
 
         // Insert delivery header
-        $delivery_id = $db->insert('credit_order_deliveries', [
+        $delivery_id = $db->insert('credit_order_deliveries', array_merge([
             'delivery_number'        => $delivery_number,
+            'delivery_slip_number'   => $delivery_slip_number,
             'order_id'               => $order_id,
             'customer_id'            => $order->customer_id,
             'delivery_date'          => $delivery_date,
@@ -294,11 +383,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'recor
             'total_amount_delivered' => $this_delivery_amount,
             'is_final'               => $is_final,
             'notes'                  => $notes,
+            'bags_boarded'           => $bags_boarded,
+            'bag_size_kg'            => $bag_size_kg,
             'created_by_user_id'     => $user_id,
-        ]);
+        ], $extra_discount_amount > 0 ? [
+            'extra_discount_amount'     => $extra_discount_amount,
+            'extra_discount_reason'     => $extra_discount_reason,
+            'extra_discount_by_user_id' => $user_id,
+            'extra_discount_at'         => date('Y-m-d H:i:s'),
+        ] : []));
 
         foreach ($lines as $l) {
             $db->insert('credit_order_delivery_items', array_merge(['delivery_id' => $delivery_id], $l));
+        }
+
+        // Order-level discount_amount/total_amount kept in sync for the
+        // full-order view/print (balance_due is NOT touched here —
+        // updateOrderDeliveryStatus() below sets that from its own
+        // cumulative-delivered-amount formula and would just overwrite it).
+        if ($extra_discount_amount > 0) {
+            // MySQL evaluates SET clauses left-to-right, so `discount_amount`
+            // in the total_amount expression already sees the value the first
+            // clause just set — don't add $extra_discount_amount a second time.
+            $db->query(
+                "UPDATE credit_orders
+                 SET discount_amount = discount_amount + ?,
+                     total_amount = subtotal - discount_amount + tax_amount,
+                     updated_at = NOW()
+                 WHERE id = ?",
+                [$extra_discount_amount, $order_id]
+            );
         }
 
         // "Is this order now fully delivered?" is the single shared decision
@@ -340,45 +454,85 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'recor
             );
         }
 
-        // Adjust customer current_balance by the delta in balance_due
-        $balance_delta = $new_balance_due - $old_balance_due;
-        if (abs($balance_delta) > 0.001) {
-            $db->query(
-                "UPDATE customers SET current_balance = GREATEST(0, current_balance + ?) WHERE id = ?",
-                [$balance_delta, $order->customer_id]
-            );
+        // Post the invoice to the customer ledger / GL if this order was never
+        // dispatched through credit_dispatch.php (the only other caller of
+        // postCreditOrderDispatchAccounting()). Eligible statuses for THIS page
+        // include pre-dispatch ones (approved/in_production/produced/ready_to_ship
+        // — see $eligible_statuses above), so a delivery can legitimately be the
+        // very first fulfillment event an order ever gets, with no prior dispatch
+        // step to have posted it. Confirmed live: orders recorded straight through
+        // Partial Delivery (skipping the truck-dispatch flow) had ৳0 posted to
+        // customer_ledger — their full invoice amount was simply never on the
+        // books. postCreditOrderDispatchAccounting() is idempotent (checks for an
+        // existing journal_entries row for this order first), so calling it here
+        // unconditionally on every delivery is safe — it only actually posts once,
+        // whichever entry point (dispatch or delivery) gets there first, and is a
+        // silent no-op every other time. This is also why the incremental
+        // "$balance_delta > 0" ledger insert just below almost never fires: once
+        // the invoice is posted at first fulfillment, balance_due no longer moves
+        // due to delivery progress, only due to payments.
+        $accounting_result = postCreditOrderDispatchAccounting($db, $order_id, $user_id, [
+            'transaction_date' => $delivery_date,
+            'snapshot_trigger' => 'partial_delivery',
+            'truck_number'     => $truck,
+            'driver_name'      => $driver,
+            'driver_contact'   => $contact,
+            'shipped_date'     => date('Y-m-d H:i:s'),
+        ]);
 
-            // Add ledger entry only for the incremental delivered amount (if increasing)
-            if ($balance_delta > 0) {
-                // Compute prev_bal from aggregate — immune to balance_after chain drift.
-                // OB ledger entry already encodes initial_due as a debit, so SUM(debit)-SUM(credit)
-                // is correct when entries exist. Fallback to initial_due when no entries exist yet.
-                $cust_init = $db->query("SELECT initial_due FROM customers WHERE id = ?", [$order->customer_id])->first();
-                $agg_pd = $db->query(
-                    "SELECT COALESCE(SUM(debit_amount), 0)  AS td,
-                            COALESCE(SUM(credit_amount), 0) AS tc
-                     FROM customer_ledger WHERE customer_id = ?",
-                    [$order->customer_id]
-                )->first();
-                $agg_pd_td = (float)($agg_pd->td ?? 0);
-                $agg_pd_tc = (float)($agg_pd->tc ?? 0);
-                $prev_bal = ($agg_pd_td > 0 || $agg_pd_tc > 0)
-                    ? $agg_pd_td - $agg_pd_tc
-                    : (float)($cust_init->initial_due ?? 0);
+        // Adjust customer current_balance by the delta in balance_due — but ONLY
+        // when the invoice was already posted before this call ('posted' === false).
+        // $old_balance_due above is an anchor from a stable, already-posted
+        // balance_due, and this delta is what keeps current_balance in sync with
+        // it. When postCreditOrderDispatchAccounting() just posted the invoice for
+        // the FIRST time just now ('posted' === true — this delivery is the
+        // order's very first fulfillment event, a real case since $eligible_statuses
+        // includes pre-dispatch statuses), it already set customers.current_balance
+        // correctly from a live ledger aggregate moments ago. $old_balance_due in
+        // that case predates the invoice existing at all, so it isn't a meaningful
+        // anchor — applying a delta on top of the value just set would silently
+        // corrupt it. Found 12 Sep 2026: this understated a real customer's balance
+        // by ৳596,400 on an order's first partial delivery.
+        if (!$accounting_result['posted']) {
+            $balance_delta = $new_balance_due - $old_balance_due;
+            if (abs($balance_delta) > 0.001) {
+                $db->query(
+                    "UPDATE customers SET current_balance = GREATEST(0, current_balance + ?) WHERE id = ?",
+                    [$balance_delta, $order->customer_id]
+                );
 
-                $db->insert('customer_ledger', [
-                    'customer_id'        => $order->customer_id,
-                    'transaction_date'   => $delivery_date,
-                    'transaction_type'   => 'sale',
-                    'reference_type'     => 'credit_order_deliveries',
-                    'reference_id'       => $delivery_id,
-                    'invoice_number'     => $delivery_number,
-                    'description'        => "Partial delivery {$delivery_number} — order {$order->order_number} (" . number_format($this_delivery_qty, 2) . " units)",
-                    'debit_amount'       => $balance_delta,
-                    'credit_amount'      => 0,
-                    'balance_after'      => $prev_bal + $balance_delta,
-                    'created_by_user_id' => $user_id,
-                ]);
+                // Add ledger entry only for the incremental delivered amount (if increasing)
+                if ($balance_delta > 0) {
+                    // Compute prev_bal from aggregate — immune to balance_after chain drift.
+                    // OB ledger entry already encodes initial_due as a debit, so SUM(debit)-SUM(credit)
+                    // is correct when entries exist. Fallback to initial_due when no entries exist yet.
+                    $cust_init = $db->query("SELECT initial_due FROM customers WHERE id = ?", [$order->customer_id])->first();
+                    $agg_pd = $db->query(
+                        "SELECT COALESCE(SUM(debit_amount), 0)  AS td,
+                                COALESCE(SUM(credit_amount), 0) AS tc
+                         FROM customer_ledger WHERE customer_id = ?",
+                        [$order->customer_id]
+                    )->first();
+                    $agg_pd_td = (float)($agg_pd->td ?? 0);
+                    $agg_pd_tc = (float)($agg_pd->tc ?? 0);
+                    $prev_bal = ($agg_pd_td > 0 || $agg_pd_tc > 0)
+                        ? $agg_pd_td - $agg_pd_tc
+                        : (float)($cust_init->initial_due ?? 0);
+
+                    $db->insert('customer_ledger', [
+                        'customer_id'        => $order->customer_id,
+                        'transaction_date'   => $delivery_date,
+                        'transaction_type'   => 'sale',
+                        'reference_type'     => 'credit_order_deliveries',
+                        'reference_id'       => $delivery_id,
+                        'invoice_number'     => $delivery_number,
+                        'description'        => "Partial delivery {$delivery_number} — order {$order->order_number} (" . number_format($this_delivery_qty, 2) . " units)",
+                        'debit_amount'       => $balance_delta,
+                        'credit_amount'      => 0,
+                        'balance_after'      => $prev_bal + $balance_delta,
+                        'created_by_user_id' => $user_id,
+                    ]);
+                }
             }
         }
 
@@ -608,8 +762,19 @@ require_once '../templates/header.php';
                            class="px-3 py-1 bg-indigo-600 text-white rounded-md text-xs font-medium hover:bg-indigo-700 whitespace-nowrap">
                             <i class="fas fa-truck mr-1"></i>Record Delivery
                         </a>
-                        <?php else: ?>
-                        <span class="text-xs text-gray-400 italic">Not eligible</span>
+                        <?php else:
+                            // Added 2 Sep 2026: name the reason instead of a bare "Not
+                            // eligible" — the row's own Status column already shows
+                            // what it is, but not why that disqualifies it here.
+                            $not_eligible_reason = match ($r->status) {
+                                'delivered'  => 'Already fully delivered',
+                                'cancelled'  => 'Order cancelled',
+                                'rejected'   => 'Order rejected',
+                                'draft', 'pending_approval', 'escalated' => 'Not yet approved for production',
+                                default      => 'Not out for delivery yet',
+                            };
+                        ?>
+                        <span class="text-xs text-gray-400 italic" title="<?php echo htmlspecialchars($not_eligible_reason); ?>">Not eligible — <?php echo htmlspecialchars($not_eligible_reason); ?></span>
                         <?php endif; ?>
                     </td>
                 </tr>
@@ -803,10 +968,32 @@ require_once '../templates/header.php';
                         <input type="text" name="driver_contact" placeholder="+880…"
                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
                     </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Bags Boarded</label>
+                        <input type="number" name="bags_boarded" min="0" step="1" placeholder="e.g. 320"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Bag Size (kg/bag)</label>
+                        <input type="number" name="bag_size_kg" min="0" step="0.01" placeholder="e.g. 50"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                        <p class="text-[11px] text-gray-400 mt-1">Optional, manual — shown in the Delivery Receipt remarks.</p>
+                    </div>
                     <div class="md:col-span-2">
                         <label class="block text-sm font-medium text-gray-700 mb-1">Notes</label>
                         <textarea name="notes" rows="2" placeholder="Any notes about this delivery…"
                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Additional Discount (৳) — this delivery only</label>
+                        <input type="number" name="extra_discount_amount" min="0" step="0.01" value="0" placeholder="0.00"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
+                        <p class="text-[11px] text-gray-400 mt-1">Optional. Reason required if used — shown on this shipment's invoice.</p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Reason for Additional Discount</label>
+                        <input type="text" name="extra_discount_reason" maxlength="500" placeholder="e.g. Short-weight adjustment"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500">
                     </div>
                 </div>
 
@@ -1165,7 +1352,11 @@ document.addEventListener('DOMContentLoaded', () => {
     set('input[name="truck_number"]',    <?php echo json_encode($pp['truck_number'] ?? ''); ?>);
     set('input[name="driver_name"]',     <?php echo json_encode($pp['driver_name'] ?? ''); ?>);
     set('input[name="driver_contact"]',  <?php echo json_encode($pp['driver_contact'] ?? ''); ?>);
+    set('input[name="bags_boarded"]',    <?php echo json_encode($pp['bags_boarded'] ?? ''); ?>);
+    set('input[name="bag_size_kg"]',     <?php echo json_encode($pp['bag_size_kg'] ?? ''); ?>);
     set('textarea[name="notes"]',        <?php echo json_encode($pp['notes'] ?? ''); ?>);
+    set('input[name="extra_discount_amount"]', <?php echo json_encode($pp['extra_discount_amount'] ?? 0); ?>);
+    set('input[name="extra_discount_reason"]', <?php echo json_encode($pp['extra_discount_reason'] ?? ''); ?>);
     <?php if (!empty($pp['is_final'])): ?>
     const fin = document.getElementById('isFinal'); if (fin) fin.checked = true;
     <?php endif; ?>

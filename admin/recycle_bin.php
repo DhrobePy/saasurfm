@@ -172,14 +172,17 @@ $badge = [
                     <td colspan="7" class="px-6 py-3">
                         <p class="text-xs font-semibold text-gray-500 mb-2">Archived rows (<?php echo count($detail_rows); ?>):</p>
                         <div class="flex flex-wrap gap-1.5">
-                            <?php foreach ($detail_rows as $dr): ?>
-                            <span class="px-2 py-0.5 rounded text-[11px] <?php echo $dr->op === 'update' ? 'bg-blue-100 text-blue-700' : 'bg-gray-200 text-gray-600'; ?>">
-                                <?php echo $dr->op === 'update' ? '↺' : '×'; ?>
+                            <?php foreach ($detail_rows as $dr):
+                                $op_cls = $dr->op === 'update' ? 'bg-blue-100 text-blue-700' : ($dr->op === 'insert' ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-600');
+                                $op_glyph = $dr->op === 'update' ? '↺' : ($dr->op === 'insert' ? '+' : '×');
+                            ?>
+                            <span class="px-2 py-0.5 rounded text-[11px] <?php echo $op_cls; ?>">
+                                <?php echo $op_glyph; ?>
                                 <?php echo htmlspecialchars($dr->source_table); ?>#<?php echo htmlspecialchars($dr->source_pk); ?>
                             </span>
                             <?php endforeach; ?>
                         </div>
-                        <p class="text-[10px] text-gray-400 mt-2">× = deleted row (re-inserted on restore) · ↺ = value change (reverted on restore)</p>
+                        <p class="text-[10px] text-gray-400 mt-2">× = deleted row (re-inserted on restore) · ↺ = value change (reverted on restore) · + = row a fix script added (deleted on restore)</p>
                     </td>
                 </tr>
                 <?php endif; ?>

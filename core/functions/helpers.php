@@ -147,7 +147,7 @@ function getModuleRegistry(): array {
             'page_actions' => [
                 'all_sales'                  => ['can_export' => 'Export CSV', 'can_delete' => 'Delete Orders', 'can_edit' => 'Edit Orders'],
                 'credit_order_approval'      => ['can_approve' => 'Approve Orders', 'can_reject' => 'Reject Orders', 'can_escalate_override' => 'Override 80% Credit Escalation'],
-                'customer_payment'           => ['can_collect' => 'Collect Payment', 'can_override' => 'Override Amount'],
+                'customer_payment'           => ['can_collect' => 'Collect Payment', 'can_override' => 'Override Amount', 'can_hide_invoice' => 'Hide/Recall Invoices from Collection'],
                 'create_order'               => ['can_create' => 'Create Orders'],
                 'customer_ledger'            => ['can_export' => 'Export Ledger'],
                 'payment_history'            => ['can_edit' => 'Edit Posted Payment', 'can_delete' => 'Delete / Reverse Payment', 'can_export' => 'Export Payment History'],
@@ -163,7 +163,7 @@ function getModuleRegistry(): array {
                 'approval_requests'          => ['can_decide' => 'Reject Requests (posting needs own ৳ limit)'],
                 'over_delivery'              => ['can_record' => 'Record Over-Delivery', 'can_approve' => 'Approve Over-Delivery (not own)'],
                 'customer_credit_management' => ['can_update' => 'Update Credit Limits'],
-                'order_amendment'            => ['can_request' => 'Request Order Amendments', 'can_approve' => 'Approve Order Amendments'],
+                'order_amendment'            => ['can_request' => 'Request Order Amendments', 'can_approve' => 'Approve Order Amendments', 'can_change_products' => 'Correct Product/Quantity on Delivered Orders'],
                 'sales_hub' => [
                     // Stage 1 — Order Creation
                     'can_create_order'     => 'Hub 1: Create New Order',
@@ -198,7 +198,7 @@ function getModuleRegistry(): array {
             'label'        => 'Production',
             'icon'         => 'fa-industry',
             'color'        => 'amber',
-            'active_files' => ['credit_production', 'credit_dispatch', 'partial_delivery', 'order_status', 'sales_report', 'production_requirement', 'delivery_schedule', 'dispatch_report'],
+            'active_files' => ['credit_production', 'credit_dispatch', 'partial_delivery', 'order_status', 'sales_report', 'production_requirement', 'delivery_schedule', 'dispatch_report', 'daily_activity_report'],
             'nav' => [
                 ['file' => 'credit_production',      'page_key' => 'credit_production',      'label' => 'Production',                 'icon' => 'fa-industry'],
                 ['file' => 'production_requirement', 'page_key' => 'production_requirement', 'label' => "Today's Requirement",        'icon' => 'fa-list-check'],
@@ -208,6 +208,7 @@ function getModuleRegistry(): array {
                 ['file' => 'order_status',           'page_key' => 'order_status',           'label' => 'Track Order',                'icon' => 'fa-map-marker-alt'],
                 ['file' => 'sales_report',           'page_key' => 'sales_report',           'label' => 'Sales Report',               'icon' => 'fa-chart-bar'],
                 ['file' => 'dispatch_report',        'page_key' => 'dispatch_report',        'label' => 'Dispatch Report',            'icon' => 'fa-truck-loading'],
+                ['file' => 'daily_activity_report',  'page_key' => 'daily_activity_report',  'label' => 'Daily Activity Report',      'icon' => 'fa-clipboard-list'],
             ],
             'page_actions' => [
                 'credit_production' => [
@@ -219,12 +220,15 @@ function getModuleRegistry(): array {
                     'can_partial_delivery'  => 'Partial Delivery',
                     'can_return'            => 'Process Returns',
                     'can_production_report' => 'Production Totals Report',
+                    'can_change_priority'   => 'Change Production Queue Priority',
                 ],
                 'production_requirement' => ['can_update' => 'Update On-Hand / Produced Quantities'],
                 'credit_dispatch'   => ['can_dispatch' => 'Mark as Dispatched', 'can_export' => 'Export Dispatch Report'],
                 'partial_delivery'  => ['can_update' => 'Record Partial Delivery'],
                 'sales_report'      => ['can_export' => 'Export Sales Report'],
                 'dispatch_report'   => ['can_export' => 'Export Dispatch Report'],
+                'daily_activity_report' => ['can_export' => 'Export Daily Activity Report'],
+                'delivery_schedule' => ['can_change_priority' => 'Reorder / Reschedule Delivery Priority', 'can_edit' => 'Edit Truck Type / Required Date / Branch'],
             ],
         ],
         'customers' => [
@@ -318,7 +322,7 @@ function getModuleRegistry(): array {
                 'transfer'           => ['can_transfer' => 'Transfer Funds'],
                 'statement'          => ['can_export' => 'Export Statement'],
                 'view_transaction'   => ['can_view' => 'View Transaction Detail'],
-                'manage_accounts'    => ['can_create' => 'Add Bank Account', 'can_edit' => 'Edit Bank Account'],
+                'manage_accounts'    => ['can_create' => 'Add Bank Account', 'can_edit' => 'Edit Bank Account', 'can_view_balance' => 'See Account Balances in Dropdowns/Pickers'],
                 'manage_types'       => ['can_create' => 'Add Transaction Type', 'can_edit' => 'Edit Transaction Type'],
                 'bulk_manage'        => ['can_update' => 'Bulk Update', 'can_delete' => 'Bulk Delete'],
                 'central_statement'  => ['can_export' => 'Export Central Statement', 'can_delete' => 'Delete Entries'],
@@ -575,11 +579,13 @@ function getModuleRegistry(): array {
                 ['file' => 'drivers_trucks',      'page_key' => 'drivers_trucks',      'label' => 'Drivers & Trucks',   'icon' => 'fa-truck'],
                 ['file' => 'settings',           'page_key' => 'settings',           'label' => 'Settings',           'icon' => 'fa-cog'],
                 ['file' => 'privileges',         'page_key' => 'privileges',         'label' => 'User Privileges',    'icon' => 'fa-shield-alt'],
+                ['file' => 'access_manager',     'page_key' => 'access_manager',     'label' => 'Access Manager',     'icon' => 'fa-user-shield'],
                 ['file' => 'role_matrix',        'page_key' => 'role_matrix',        'label' => 'Role Access Matrix', 'icon' => 'fa-table-cells', 'admin_only' => true],
                 ['file' => 'db_viewer',          'page_key' => 'db_viewer',          'label' => 'DB Viewer',          'icon' => 'fa-database',      'admin_only' => true],
                 ['file' => 'drive_manager',      'page_key' => 'drive_manager',      'label' => 'Drive & Backups',    'icon' => 'fa-cloud-arrow-up',   'admin_only' => true],
                 ['file' => 'recycle_bin',        'page_key' => 'recycle_bin',        'label' => 'Recycle Bin',        'icon' => 'fa-trash-restore', 'admin_only' => true],
                 ['file' => 'telegram_ai_users',  'page_key' => 'telegram_ai_users',  'label' => 'AI Query Access',    'icon' => 'fa-shield-halved', 'admin_only' => true],
+                ['file' => 'chairman_reports',   'page_key' => 'chairman_reports',   'label' => "Chairman's Reports", 'icon' => 'fa-file-invoice'],
             ],
             'page_actions' => [
                 'users'               => ['can_create' => 'Create Users', 'can_edit' => 'Edit Users', 'can_delete' => 'Delete Users'],
@@ -597,6 +603,7 @@ function getModuleRegistry(): array {
                 'balance_sheet'       => ['can_export' => 'Export Balance Sheet'],
                 'accounting'          => ['can_export' => 'Export Accounting Data'],
                 'drive_manager'       => ['can_backup' => 'Run Backup', 'can_restore' => 'Restore / Manage Backups'],
+                'chairman_reports'    => ['can_export' => 'Download PDF/CSV Reports'],
             ],
         ],
     ];
@@ -829,6 +836,148 @@ function userCanPageAction(string $module, string $page_key, string $action): bo
 }
 
 /**
+ * Added 3 Sep 2026, per a live codebase sweep: getModuleRegistry()'s
+ * page_actions declares ~62 distinct action checkboxes across every module's
+ * Privileges/Access Manager grid, but only ~30 of them are ever actually read
+ * by a userCanPageAction() call anywhere in the live app — the rest are
+ * declared-but-unwired: checking or unchecking them saves fine, but no page's
+ * code looks at that value, so it has zero effect on what the user can do.
+ * (Page-level `allowed_pages` grants are a different, separately-verified
+ * mechanism and are NOT affected by this — see restrict_access(), which DOES
+ * honor a page-level grant even when the page's own hardcoded $allowed_roles
+ * fallback is narrow, as confirmed by tracing that function directly.)
+ *
+ * This is the confirmed-enforced allowlist, built by cross-referencing every
+ * userCanPageAction() call site in the app (excluding admin/privileges.php
+ * and admin/access_manager.php themselves) against the full page_actions
+ * registry. `sales_hub`'s own actions are all real — cr/sales_hub.php checks
+ * userCanPageAction('credit_sales','sales_hub', $action) dynamically, once
+ * per hub tile, rather than one static call per key.
+ *
+ * Used by admin/privileges.php and admin/access_manager.php to flag
+ * not-yet-enforced action checkboxes in the UI, so an admin isn't misled into
+ * thinking a checked box does something it doesn't. When a page is later
+ * wired up with a real userCanPageAction() check for one of these, delete its
+ * entry here (or the flag will incorrectly keep calling it cosmetic).
+ */
+function isActionEnforced(string $module, string $page_key, string $action): bool {
+    static $enforced = [
+        'loans'        => ['loan' => ['can_delete']],
+        'credit_sales' => [
+            'customer_payment'      => ['can_collect', 'can_hide_invoice'],
+            'credit_order_approval' => ['can_approve', 'can_escalate_override'],
+            'order_amendment'       => ['can_request', 'can_approve', 'can_change_products'],
+            'returns'                => ['can_approve'],
+            'payment_history'        => ['can_edit', 'can_delete'],
+            'stock_adjustment'       => ['can_approve'],
+            'over_delivery'          => ['can_record', 'can_approve'],
+            'payment_watch'          => ['can_grant_clearance', 'can_revoke_clearance'],
+            'approval_requests'      => ['can_decide'],
+            'sales_hub'              => null, // null = every declared action on this page is real (dynamic check)
+        ],
+        'production' => [
+            'credit_production'      => [
+                'can_update_status', 'can_view_orders', 'can_collect_payment', 'can_view_payments',
+                'can_edit_orders', 'can_partial_delivery', 'can_return', 'can_production_report', 'can_change_priority',
+            ],
+            'production_requirement' => ['can_update'],
+            'delivery_schedule'      => ['can_change_priority', 'can_edit'],
+        ],
+        'purchase' => ['purchase_adnan_supplier_summary' => ['can_create']],
+        'trading'  => ['commodity_sale' => ['can_edit', 'can_delete']],
+        'bank'     => ['manage_accounts' => ['can_view_balance']],
+    ];
+
+    if (!array_key_exists($module, $enforced) || !array_key_exists($page_key, $enforced[$module])) {
+        return false;
+    }
+    $page_list = $enforced[$module][$page_key];
+    return $page_list === null || in_array($action, $page_list, true);
+}
+
+/**
+ * Whether the current user may see bank account BALANCES in any dropdown or
+ * picker across the app (bank/accounts/expenses/purchase/loans/trading — every
+ * place someone chooses a bank account to attribute money to/from). Added
+ * 5 Sep 2026 per explicit request: every such picker should show bank name,
+ * account name, account number, and — for this check — balance.
+ *
+ * Before this, two different files each rolled their own hardcoded,
+ * MUTUALLY INCONSISTENT role check for the exact same concept
+ * (`bank/transfer.php` used ['Superadmin','admin'], `purchase_adnan_record_payment.php`
+ * used ['Superadmin','Accounts']) and neither was delegable via Access
+ * Manager — same "hardcoded instead of configurable" bug class fixed
+ * repeatedly elsewhere this session. Now one function, one real Access
+ * Manager action (`bank` module → `manage_accounts` page → `can_view_balance`).
+ */
+function canViewBankBalances(): bool {
+    if (in_array($_SESSION['user_role'] ?? '', ['Superadmin', 'admin'], true)) return true;
+    return userCanPageAction('bank', 'manage_accounts', 'can_view_balance');
+}
+
+/**
+ * One consistent "Bank Name — Account Name — Account Number [ — Bal: ৳X]"
+ * label for every bank-account dropdown/picker in the app, added 5 Sep 2026.
+ * $balance is null to omit the balance segment entirely regardless of
+ * $showBalance (e.g. bank_tx_accounts/chart_of_accounts rows that genuinely
+ * have no meaningful balance figure to show).
+ */
+function bankAccountOptionLabel(string $bankName, string $accountName, string $accountNumber, ?float $balance, bool $showBalance): string {
+    $label = trim($bankName) . ' — ' . trim($accountName);
+    if ($accountNumber !== '') $label .= ' — ' . $accountNumber;
+    if ($showBalance && $balance !== null) $label .= ' — Bal: ৳' . number_format($balance, 2);
+    return $label;
+}
+
+/**
+ * Standing pattern established 2 Sep 2026 (user: "make this habit in
+ * everywhere, if any action gets stuck for an user, let him know why this is
+ * not his eligibility and how to solve this... let the message say how to
+ * enable that function for the user, with step by step guide, like — in
+ * access management pages, under which module, in which action this action
+ * toggle is at"). Whenever a page/button hides or blocks something because the
+ * user lacks a module/page/action grant, call this instead of a bare "you
+ * don't have permission" — it names the exact module/page/action label from
+ * getModuleRegistry() and spells out the admin/privileges.php path to grant it,
+ * so a user (or the admin they screenshot this to) doesn't have to guess.
+ *
+ * @param string      $module      module key, e.g. 'production'
+ * @param string      $page_key    page key within that module, e.g. 'credit_dispatch'
+ * @param string|null $action_key  action key within that page, e.g. 'can_dispatch';
+ *                                 null = explain page-level access (not a specific action)
+ * @param string|null $what        override for "You don't have permission to ___"
+ *                                 (defaults to the registry's own action/page label)
+ */
+function permissionDenialReason(string $module, string $page_key, ?string $action_key = null, ?string $what = null): string {
+    $registry = getModuleRegistry();
+    $mod = $registry[$module] ?? null;
+    $module_label = $mod['label'] ?? ucfirst(str_replace('_', ' ', $module));
+
+    $page_label = ucfirst(str_replace('_', ' ', $page_key));
+    if ($mod) {
+        foreach ($mod['nav'] ?? [] as $nav_item) {
+            if (($nav_item['page_key'] ?? null) === $page_key) { $page_label = $nav_item['label']; break; }
+        }
+    }
+
+    $action_label = $action_key ? ucfirst(str_replace('_', ' ', $action_key)) : null;
+    if ($mod && $action_key) {
+        $action_label = $mod['page_actions'][$page_key][$action_key] ?? $action_label;
+    }
+
+    $subject = $what ?? ($action_key ? $action_label : ('access ' . $page_label));
+
+    $steps = 'To enable this: Admin → Access Management (admin/privileges.php) → select this user'
+        . ' → module "' . $module_label . '"';
+    $steps .= $action_key
+        ? (' → page "' . $page_label . '" → check the action "' . $action_label . '"')
+        : (' → check the page "' . $page_label . '"');
+    $steps .= ' → Save.';
+
+    return "You don't have permission to {$subject}. {$steps}";
+}
+
+/**
  * Load the current user's custom permissions from DB, session-cached for 300 s.
  * Returns an empty array for Superadmin (no restrictions apply) and for users
  * who have no custom entries in user_custom_permissions.
@@ -861,7 +1010,7 @@ function getUserCustomPerms(): array {
     try {
         global $db;
         $rows = $db->query(
-            "SELECT module, is_module_enabled, allowed_pages, allowed_actions, data_scope
+            "SELECT module, is_module_enabled, allowed_pages, allowed_actions, data_scope, data_scope_branches
                FROM user_custom_permissions
               WHERE user_id = ?",
             [$userId]
@@ -876,6 +1025,11 @@ function getUserCustomPerms(): array {
                 'allowed_actions' => !empty($row->allowed_actions)
                     ? json_decode($row->allowed_actions, true) : [],
                 'data_scope'      => $row->data_scope ?? 'all',
+                // CSV of branch ids ('2' or '2,5') per admin/access_manager.php's
+                // save code — parsed here once so callers never touch the raw CSV.
+                'data_scope_branches' => !empty($row->data_scope_branches)
+                    ? array_values(array_filter(array_map('intval', explode(',', $row->data_scope_branches))))
+                    : [],
             ];
         }
 
@@ -887,6 +1041,165 @@ function getUserCustomPerms(): array {
         error_log('getUserCustomPerms failed: ' . $e->getMessage());
         return [];
     }
+}
+
+/**
+ * Resolve which branch ids the current user may see $module's data for.
+ *
+ * Added 4 Sep 2026 — before this, "which branches can this user see" was
+ * decided independently, ad hoc, on ~20 different pages: most hardcoded a
+ * forced lookup of the user's own employees.branch_id with no way for an
+ * Access Manager grant to ever widen it (so granting a user "All Branches"
+ * data_scope for a module had NO effect — confirmed by grep, data_scope was
+ * saved but never read anywhere outside the two admin config pages), and
+ * several pages (payment_watch, all_sales, outstanding_invoices, purchase
+ * orders/GRN, credit_order_approval, ...) had no branch restriction AT ALL,
+ * meaning a branch-named role like accounts-demra could see every branch's
+ * data through them. This is now the ONE place that decides it, and every
+ * page listed above was updated to call it instead of its own copy.
+ *
+ * Returns:
+ *   null       — no restriction at all (Superadmin/admin, or this user has
+ *                an explicit data_scope='all' grant for $module).
+ *   int[]      — the exact branch ids the user may see. Empty array means
+ *                "resolved to zero branches" (a 'branch' grant with nothing
+ *                picked, or an 'own'/default lookup that found no employee
+ *                record) — callers must treat empty as "show nothing", not
+ *                as unrestricted, or the fail-closed default silently opens up.
+ *
+ * Precedence: Superadmin/admin bypass > this user's explicit
+ * user_custom_permissions row for $module (data_scope all/own/branch) > no
+ * row at all falls back to 'own' (their own employees.branch_id).
+ *
+ * Fails OPEN (returns null, unrestricted) — not closed — specifically when
+ * there is NO SIGNAL AT ALL: no custom-perm row for $module and no
+ * employees.branch_id link either. Confirmed live necessary before this
+ * shipped: several real, active users (branch-named roles like
+ * accounts-demra, dispatchpos-srg) have no employees row and no explicit
+ * grant, and had NO restriction whatsoever before this function existed —
+ * failing closed for them would silently have cut off their access the
+ * moment this deployed, a worse outcome than the bug being fixed. Contrast
+ * with an explicit data_scope='branch' grant that resolves to ZERO picked
+ * branches — that IS a deliberate admin action (chose 'branch' scope,
+ * selected none) and stays fail-closed, since silently opening that up would
+ * defeat the point of picking 'branch' scope in the first place.
+ */
+function getUserBranchScope(string $module): ?array {
+    static $ownBranchResolved = false;
+    static $ownBranchValue = null;
+
+    $role = $_SESSION['user_role'] ?? '';
+    if (in_array($role, ['Superadmin', 'admin'], true)) return null;
+
+    $userId = $_SESSION['user_id'] ?? 0;
+    if (!$userId) return [];
+
+    $resolveOwnBranch = function () use ($userId, &$ownBranchResolved, &$ownBranchValue) {
+        if ($ownBranchResolved) return $ownBranchValue;
+        global $db;
+        $emp = $db->query("SELECT branch_id FROM employees WHERE user_id = ?", [$userId])->first();
+        $ownBranchValue = ($emp && $emp->branch_id) ? [(int)$emp->branch_id] : null;
+        $ownBranchResolved = true;
+        return $ownBranchValue;
+    };
+
+    $mod = getUserCustomPerms()[$module] ?? null;
+    if (!$mod) return $resolveOwnBranch();
+
+    switch ($mod['data_scope'] ?? 'own') {
+        case 'all':
+            return null;
+        case 'branch':
+            return $mod['data_scope_branches'] ?? [];
+        case 'own':
+        default:
+            return $resolveOwnBranch();
+    }
+}
+
+/**
+ * Ready-to-splice "AND <column> IN (...)" SQL + params for the current
+ * user's branch scope within $module — pass $column already table-qualified
+ * (e.g. 'co.assigned_branch_id'). Fail-closed: a scope that resolves to zero
+ * branches produces a filter matching no rows, not an unrestricted query.
+ *
+ * @return array{0:string,1:array} [$sql, $params] — $sql is '' when unrestricted.
+ */
+function branchScopeSql(string $module, string $column): array {
+    $scope = getUserBranchScope($module);
+    if ($scope === null) return ['', []];
+    if (empty($scope)) return [" AND 0=1", []];
+    $placeholders = implode(',', array_fill(0, count($scope), '?'));
+    return [" AND {$column} IN ({$placeholders})", $scope];
+}
+
+/**
+ * One-call replacement for the "branch detection + optional admin branch
+ * picker" block that used to be hand-duplicated (with subtly different bugs
+ * each time) across ~15 pages — and, critically, every copy of it ignored
+ * any Access Manager data_scope grant since it always hardcoded the lookup
+ * to the user's own employees.branch_id. Every page that filters
+ * credit_orders (or similar) by branch, and optionally offers a `?branch_id=`
+ * picker to broader-scoped viewers, should call this once instead.
+ *
+ * @return array{
+ *   filter_sql: string,          '' or 'AND <column> = ?' / 'AND <column> IN (...)' — ready to splice into a WHERE clause
+ *   filter_params: array,        matches filter_sql's placeholder count
+ *   show_picker: bool,           true when the viewer may choose among 2+ branches
+ *   picker_branches: array,      branch rows {id,name} the picker should offer (only set when show_picker)
+ *   selected_branch_id: int,     0 = viewing the whole allowed set, else one specific branch
+ *   selected_branch_name: string,
+ * }
+ */
+function resolveBranchFilterUI(string $module, string $column): array {
+    global $db;
+    $scope = getUserBranchScope($module);
+
+    $pickerBranches = [];
+    if ($scope === null) {
+        $pickerBranches = $db->query("SELECT id, name FROM branches WHERE status='active' ORDER BY name")->results();
+    } elseif (count($scope) > 1) {
+        $ph = implode(',', array_fill(0, count($scope), '?'));
+        $pickerBranches = $db->query("SELECT id, name FROM branches WHERE status='active' AND id IN ({$ph}) ORDER BY name", $scope)->results();
+    }
+    $showPicker = $scope === null || count($scope) > 1;
+
+    $selectedId = 0; $selectedName = '';
+    $filterSql = ''; $filterParams = [];
+
+    if ($showPicker) {
+        $requested = (int)($_GET['branch_id'] ?? 0);
+        if ($requested > 0 && ($scope === null || in_array($requested, $scope, true))) {
+            $selectedId = $requested;
+            $filterSql = "AND {$column} = ?";
+            $filterParams = [$requested];
+            foreach ($pickerBranches as $br) { if ((int)$br->id === $requested) { $selectedName = $br->name; break; } }
+        } elseif ($scope !== null) {
+            // Multi-branch grant, nothing picked yet — still must not leak
+            // branches outside the grant, so filter to the whole allowed set.
+            $ph = implode(',', array_fill(0, count($scope), '?'));
+            $filterSql = "AND {$column} IN ({$ph})";
+            $filterParams = $scope;
+        }
+        // $scope === null and nothing picked -> no filter, see every branch.
+    } elseif (empty($scope)) {
+        $filterSql = "AND 0=1"; // fail closed: resolved to zero branches
+    } else {
+        $selectedId = $scope[0];
+        $filterSql = "AND {$column} = ?";
+        $filterParams = [$scope[0]];
+        $br = $db->query("SELECT name FROM branches WHERE id = ?", [$scope[0]])->first();
+        $selectedName = $br->name ?? '';
+    }
+
+    return [
+        'filter_sql' => $filterSql,
+        'filter_params' => $filterParams,
+        'show_picker' => $showPicker,
+        'picker_branches' => $pickerBranches,
+        'selected_branch_id' => $selectedId,
+        'selected_branch_name' => $selectedName,
+    ];
 }
 
 /**
@@ -1007,14 +1320,19 @@ function restrict_access(array $allowed_roles = [], ?string $module = null, ?str
             if (!empty($allowed_roles) && in_array($user_role, $allowed_roles)) {
                 return; // role-based grant: no custom-perm entry needed
             }
-            $_SESSION['error_flash'] = 'You do not have permission to access that page.';
+            $_SESSION['error_flash'] = $page_key !== null
+                ? permissionDenialReason($module, $page_key)
+                : 'You do not have permission to access that page.';
             header('Location: ' . url('index.php'));
             exit();
         }
 
         // Module explicitly disabled → deny
         if (!$mod['enabled']) {
-            $_SESSION['error_flash'] = 'You do not have permission to access that page.';
+            $_SESSION['error_flash'] = ($page_key !== null
+                ? permissionDenialReason($module, $page_key)
+                : 'You do not have permission to access that page.')
+                . ' (Module access is currently switched off for your account.)';
             header('Location: ' . url('index.php'));
             exit();
         }
@@ -1034,7 +1352,7 @@ function restrict_access(array $allowed_roles = [], ?string $module = null, ?str
                     return;
                 }
             }
-            $_SESSION['error_flash'] = 'You do not have permission to access that page.';
+            $_SESSION['error_flash'] = permissionDenialReason($module, $page_key);
             header('Location: ' . url('index.php'));
             exit();
         }
@@ -1047,7 +1365,9 @@ function restrict_access(array $allowed_roles = [], ?string $module = null, ?str
     // Any authenticated user may access pages not tied to a module,
     // unless an explicit $allowed_roles gate is provided by the caller.
     if (!empty($allowed_roles) && !in_array($user_role, $allowed_roles)) {
-        $_SESSION['error_flash'] = 'You do not have permission to access that page.';
+        $_SESSION['error_flash'] = "You don't have permission to access this page — it requires one of these roles: "
+            . implode(', ', $allowed_roles) . '. Ask a Superadmin/admin to change your role (admin/users.php), '
+            . 'or, if this page later gets added to a module, to grant it via Admin → Access Management (admin/privileges.php).';
         header('Location: ' . url('index.php'));
         exit();
     }
@@ -1674,7 +1994,23 @@ function ensureRecycleBinTables(): void {
     // (purchase module, managers) reassign the global to a raw PDO.
     $db = Database::getInstance();
     // Probe first — DDL implicit-commits open transactions.
-    try { $db->getPdo()->query("SELECT 1 FROM `cr_recycle_bin_rows` LIMIT 1"); return; } catch (Exception $e) {}
+    try {
+        $db->getPdo()->query("SELECT 1 FROM `cr_recycle_bin_rows` LIMIT 1");
+        // Table already exists from before 'insert' op support was added —
+        // widen the enum in place (idempotent, checked every call but only
+        // ALTERs once). Needed because CREATE TABLE IF NOT EXISTS below never
+        // touches an existing table's column definitions.
+        try {
+            $col = $db->getPdo()->query(
+                "SELECT COLUMN_TYPE AS t FROM information_schema.COLUMNS
+                 WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'cr_recycle_bin_rows' AND COLUMN_NAME = 'op'"
+            )->fetch(PDO::FETCH_OBJ);
+            if ($col && strpos($col->t ?? '', "'insert'") === false) {
+                $db->getPdo()->exec("ALTER TABLE `cr_recycle_bin_rows` MODIFY `op` enum('delete','update','insert') NOT NULL DEFAULT 'delete'");
+            }
+        } catch (\Throwable $e) { error_log('cr_recycle_bin_rows op-enum widen: ' . $e->getMessage()); }
+        return;
+    } catch (Exception $e) {}
     try {
         $db->getPdo()->exec("
             CREATE TABLE IF NOT EXISTS `cr_recycle_bin` (
@@ -1698,7 +2034,7 @@ function ensureRecycleBinTables(): void {
             CREATE TABLE IF NOT EXISTS `cr_recycle_bin_rows` (
               `id`           bigint UNSIGNED NOT NULL AUTO_INCREMENT,
               `batch_id`     bigint UNSIGNED NOT NULL,
-              `op`           enum('delete','update') NOT NULL DEFAULT 'delete',
+              `op`           enum('delete','update','insert') NOT NULL DEFAULT 'delete',
               `source_table` varchar(64) NOT NULL,
               `source_pk`    varchar(64) DEFAULT NULL,
               `pk_col`       varchar(64) NOT NULL DEFAULT 'id',
@@ -1777,6 +2113,33 @@ function recycleArchiveDelete(int $batch, string $table, string $whereCol, $wher
         }
     }
     return $n;
+}
+
+/**
+ * Record that a fix/backfill script just INSERTED a row that didn't exist
+ * before — the mirror image of recycleArchiveDelete(): there, the batch's
+ * "before" state is the row's data and "after" is gone; here, "before" is
+ * nothing and "after" is this row, so reverting means deleting it. Call
+ * AFTER the real INSERT has happened, passing the new row's primary key.
+ * Capture parents (e.g. journal_entries) before children (e.g. its
+ * transaction_lines) — restoreRecycleBatch() deletes 'insert' rows in
+ * reverse capture order, so children are always removed before parents.
+ */
+function recycleSnapshotInsert(int $batch, string $table, string $pkCol, $pkVal): void {
+    $db = Database::getInstance();
+    try {
+        $row = $db->query("SELECT * FROM `{$table}` WHERE `{$pkCol}` = ?", [$pkVal])->first();
+        $db->insert('cr_recycle_bin_rows', [
+            'batch_id'     => $batch,
+            'op'           => 'insert',
+            'source_table' => $table,
+            'source_pk'    => (string)$pkVal,
+            'pk_col'       => $pkCol,
+            'row_json'     => json_encode($row ? (array)$row : [], JSON_UNESCAPED_UNICODE),
+        ]);
+    } catch (Exception $e) {
+        error_log('recycleSnapshotInsert: ' . $e->getMessage());
+    }
 }
 
 /**
@@ -1879,6 +2242,25 @@ function restoreRecycleBatch(int $batch): array {
         if ($head->status !== 'deleted') return [false, 'This batch has already been ' . $head->status . '.'];
 
         if ($ownTx) $pdo->beginTransaction();
+
+        // Remove rows a fix script INSERTED (the opposite of the 'delete' op —
+        // this batch's "before" state had no row here at all, so reverting means
+        // deleting it). Same DESC-capture-id convention as the 'delete' op below:
+        // rows captured later in the batch (children, e.g. transaction_lines
+        // captured after their parent journal_entries) are deleted first, so a
+        // parent row's FK children are always gone before the parent itself.
+        $insRows = $db->query(
+            "SELECT * FROM cr_recycle_bin_rows WHERE batch_id = ? AND op = 'insert' ORDER BY id DESC",
+            [$batch]
+        )->results() ?: [];
+        foreach ($insRows as $r) {
+            $pkCol = $r->pk_col ?: 'id';
+            try {
+                $db->query("DELETE FROM `{$r->source_table}` WHERE `{$pkCol}` = ?", [$r->source_pk]);
+            } catch (Exception $e) {
+                error_log("restore insert-revert delete {$r->source_table}: " . $e->getMessage());
+            }
+        }
 
         // Re-insert deleted rows, parents first (DESC capture id = reverse of delete order)
         $delRows = $db->query(
@@ -2103,6 +2485,68 @@ function updateOrderDeliveryStatus($db, int $order_id): string {
     );
 
     return $new_status;
+}
+
+/**
+ * How much of an order's quantity has NOT been recorded as delivered via the
+ * tracked mechanism (credit_order_deliveries), regardless of the order's own
+ * status flag. Added 2 Sep 2026 after CR-20260823-0014 was force-marked
+ * 'delivered' via credit_dispatch.php's untracked 'delivered' action with 1,444
+ * of 2,000 units (72%) never actually recorded — that action had no quantity
+ * check at all. Used to gate/warn on that action and to explain disabled
+ * delivery buttons in the UI instead of leaving them unexplained.
+ * Same is_final override semantics as updateOrderDeliveryStatus(): a deliberate
+ * "close it out early" delivery row can zero the shortfall even if quantity
+ * is short (legitimate accepted-shortfall close-out).
+ *
+ * IMPORTANT: an order with ZERO credit_order_deliveries rows is NOT treated as
+ * 100% short. Confirmed live 2 Sep 2026 — essentially all "shipped" orders go
+ * out as one untracked full-quantity truckload and never touch this table at
+ * all (partial_delivery.php's tracked mechanism is the exception, not the
+ * norm); the absence of tracking rows just means nobody used that tool, not
+ * that units are missing. Only orders that DO have at least one tracked
+ * delivery row — meaning partial_delivery.php was genuinely used on this
+ * order — can show a real, known shortfall here. Getting this backwards would
+ * have put every routine full-truck delivery behind an admin-only override.
+ */
+function getOrderDeliveryShortfall($db, int $order_id): array {
+    $tracked_row_count = (int)($db->query(
+        "SELECT COUNT(*) AS c FROM credit_order_deliveries WHERE order_id = ?", [$order_id]
+    )->first()->c ?? 0);
+
+    $total_ordered_qty = (float)($db->query(
+        "SELECT COALESCE(SUM(quantity), 0) AS total FROM credit_order_items WHERE order_id = ?",
+        [$order_id]
+    )->first()->total ?? 0);
+
+    if ($tracked_row_count === 0) {
+        return [
+            'total_ordered'   => $total_ordered_qty,
+            'total_delivered' => 0.0,
+            'has_final'       => false,
+            'shortfall'       => 0.0,
+            'has_shortfall'   => false,
+        ];
+    }
+
+    $total_delivered_qty = (float)($db->query(
+        "SELECT COALESCE(SUM(total_qty_delivered), 0) AS total FROM credit_order_deliveries WHERE order_id = ?",
+        [$order_id]
+    )->first()->total ?? 0);
+
+    $has_final = (int)($db->query(
+        "SELECT COUNT(*) AS c FROM credit_order_deliveries WHERE order_id = ? AND is_final = 1", [$order_id]
+    )->first()->c ?? 0) > 0;
+
+    $shortfall = $has_final ? 0.0 : max(0.0, $total_ordered_qty - $total_delivered_qty);
+
+    return [
+        'total_ordered'   => $total_ordered_qty,
+        'total_delivered' => $total_delivered_qty,
+        'has_final'       => $has_final,
+        'shortfall'       => $shortfall,
+        'has_shortfall'   => $shortfall > 0.001,
+    ];
 }
 
 /**
@@ -3160,6 +3604,13 @@ function ensureProcurementCatalogTables(): void {
     catch (Exception $e) { try { $pdo->exec("ALTER TABLE `purchase_orders_adnan` ADD COLUMN `commodity_id` BIGINT UNSIGNED NULL"); } catch (Exception $e2) {} }
     try { $pdo->query("SELECT unit FROM purchase_orders_adnan LIMIT 1"); }
     catch (Exception $e) { try { $pdo->exec("ALTER TABLE `purchase_orders_adnan` ADD COLUMN `unit` VARCHAR(20) NOT NULL DEFAULT 'KG'"); } catch (Exception $e2) {} }
+    // 15 Sep 2026: service purchases (zero-value product, e.g. inspection/freight
+    // fee) — a display/reporting flag only. The real invoice value still flows
+    // through the existing qty*unit_price_per_kg math via a derived unit price
+    // (see PurchaseAdnanManager::createPurchaseOrder()), so GRN/payment/GL need
+    // no changes at all; this column exists purely so the UI can label the PO.
+    try { $pdo->query("SELECT is_service_purchase FROM purchase_orders_adnan LIMIT 1"); }
+    catch (Exception $e) { try { $pdo->exec("ALTER TABLE `purchase_orders_adnan` ADD COLUMN `is_service_purchase` TINYINT(1) NOT NULL DEFAULT 0"); } catch (Exception $e2) {} }
 
     // Seed the Wheat commodity + its legacy origins.
     $wheat = $db->query("SELECT id FROM purchase_commodities WHERE name = 'Wheat'")->first();
@@ -3998,6 +4449,209 @@ function dispatchGlobalHoldEnabled(): bool {
 }
 
 /**
+ * Master switch for the "full order amendment" capability in
+ * cr/order_amendment.php — correcting WHICH product/variant a line item
+ * actually was on an already-dispatched (delivered/paid) order, not just its
+ * qty/price. Off by default; Superadmin turns it on in admin/settings.php,
+ * then delegates the 'can_change_products' action (credit_sales /
+ * order_amendment) to specific users via Privileges — this toggle only
+ * controls whether the capability exists at all (applies to every role,
+ * Superadmin/admin included, same convention as dispatchGlobalHoldEnabled()).
+ * Toggle via settings.order_full_amendment_enabled ('1' to enable).
+ */
+function orderFullAmendmentEnabled(): bool {
+    static $cached = null;
+    if ($cached !== null) return $cached;
+    $db = Database::getInstance();
+    try {
+        $row = $db->query("SELECT value FROM settings WHERE name = 'order_full_amendment_enabled'")->first();
+        $cached = $row !== null && $row !== false && (string)$row->value === '1';
+    } catch (Exception $e) {
+        $cached = false; // fail safe: feature stays off
+    }
+    return $cached;
+}
+
+/**
+ * Master switch for hiding/recalling specific outstanding invoices from the
+ * Collect Payment outstanding-invoice list (cr/customer_payment.php +
+ * cr/ajax_handler.php's get_outstanding_orders). Off by default; Superadmin
+ * turns it on in admin/settings.php, then delegates the 'can_hide_invoice'
+ * action (credit_sales / customer_payment) to specific users via Privileges
+ * — same convention as orderFullAmendmentEnabled(). Purely a visibility
+ * control: never touches money/ledger. Toggle via
+ * settings.hide_invoice_from_collection_enabled ('1' to enable).
+ */
+function hideInvoiceFromCollectionEnabled(): bool {
+    static $cached = null;
+    if ($cached !== null) return $cached;
+    $db = Database::getInstance();
+    try {
+        $row = $db->query("SELECT value FROM settings WHERE name = 'hide_invoice_from_collection_enabled'")->first();
+        $cached = $row !== null && $row !== false && (string)$row->value === '1';
+    } catch (Exception $e) {
+        $cached = false; // fail safe: feature stays off
+    }
+    return $cached;
+}
+
+/**
+ * Added 2 Sep 2026 per explicit instruction: "every payment-dispatch held type
+ * conditions will be on credit_production page, for now, credit_dispatch will
+ * not require any second level or third level approval." credit_production.php's
+ * 'ready' action (Ready to Ship) already checks orderDispatchAllowed() and is
+ * NOT affected by this setting — it stays the one required gate. This setting
+ * only controls whether cr/credit_dispatch.php's 'ship' and 'delivered' actions
+ * ALSO re-check the same hold a second/third time before letting an order move
+ * further (goods-on-board, then delivered). Does NOT affect the separate
+ * quantity-shortfall check on the 'delivered' action (getOrderDeliveryShortfall())
+ * — that's a physical units-delivered concern, unrelated to payment holds, and
+ * always applies regardless of this toggle.
+ * Default OFF (no re-check) per the instruction above — opposite default from
+ * dispatchGlobalHoldEnabled(). Toggle via settings.dispatch_stage_hold_recheck
+ * ('1' to re-enable), admin/settings.php → "Dispatch Page — Hold Re-check".
+ */
+function dispatchStageHoldRecheckEnabled(): bool {
+    static $cached = null;
+    if ($cached !== null) return $cached;
+    $db = Database::getInstance();
+    try {
+        $row = $db->query("SELECT value FROM settings WHERE name = 'dispatch_stage_hold_recheck'")->first();
+        // Default OFF when the setting has never been saved — credit_production.php's
+        // Ready-to-Ship check is the sole required gate unless explicitly turned back on.
+        $cached = $row !== false && $row !== null && $row->value !== null && (string)$row->value === '1';
+    } catch (Exception $e) {
+        $cached = false;
+    }
+    return $cached;
+}
+
+/**
+ * Added 2 Sep 2026 after a live sweep found 16 of 202 customers' stored
+ * `customers.current_balance` diverging from the mathematically correct
+ * ledger-truth balance (up to ৳159M on one account) — root cause: a customer
+ * onboarded with a NEGATIVE initial_due never gets an opening-balance row in
+ * customer_ledger (customers/manage.php only creates one when initial_due>0),
+ * and customer_ledger.balance_after is a separately-known-unreliable stored
+ * chain (confirmed live chain breaks) that at least one sync path elsewhere
+ * blindly copies into current_balance. 11 of the 16 were fixed directly that
+ * day; this pair of functions backs the ongoing reconciliation tool
+ * (admin/customer_balance_reconciliation.php) and the dashboard pill that
+ * surfaces new ones as they occur, using the SAME trusted formula
+ * cr/customer_ledger.php and cr/customer_ledger_export.php already use.
+ *
+ * One aggregate query across all customers (not N+1) — cheap enough to call
+ * from the dashboard on every load.
+ *
+ * @param int[] $exclude_ids Customer ids to leave out entirely — e.g. internal
+ *                            HQ/mill consolidation pseudo-accounts that aren't
+ *                            real customers and need individual judgment, not
+ *                            a one-click reconcile (Ujjal Flour Mill's,
+ *                            Sirajganj Mills — hardcoded by the calling pages,
+ *                            not here, since this helper has no way to know
+ *                            which accounts are "internal").
+ */
+function getCustomerBalanceMismatches(array $exclude_ids = []): array {
+    $db = Database::getInstance();
+    $exclude_sql = '';
+    $params = [];
+    if (!empty($exclude_ids)) {
+        $placeholders = implode(',', array_fill(0, count($exclude_ids), '?'));
+        $exclude_sql = "AND c.id NOT IN ({$placeholders})";
+        $params = array_map('intval', $exclude_ids);
+    }
+    $rows = $db->query(
+        "SELECT c.id, c.name, c.business_name, c.initial_due, c.current_balance,
+                (c.initial_due + COALESCE(cl.td, 0) - COALESCE(cl.tc, 0)) AS true_balance
+         FROM customers c
+         LEFT JOIN (
+             SELECT customer_id, SUM(debit_amount) AS td, SUM(credit_amount) AS tc
+             FROM customer_ledger
+             WHERE reference_type != 'initial_due'
+             GROUP BY customer_id
+         ) cl ON cl.customer_id = c.id
+         WHERE c.status = 'active' $exclude_sql
+         HAVING ABS(true_balance - c.current_balance) > 0.5
+         ORDER BY ABS(true_balance - c.current_balance) DESC",
+        $params
+    )->results();
+    foreach ($rows as $r) {
+        $r->initial_due     = (float)$r->initial_due;
+        $r->current_balance = (float)$r->current_balance;
+        $r->true_balance    = round((float)$r->true_balance, 2);
+        $r->diff             = round($r->true_balance - $r->current_balance, 2);
+    }
+    return $rows;
+}
+
+/**
+ * Human-readable diagnosis for one customer's balance mismatch — identifies,
+ * where possible, the specific transaction the drift traces back to, for the
+ * reconciliation tool's "reason" column. Two cases:
+ *  1. The clean, well-understood pattern (see getCustomerBalanceMismatches()
+ *     doc above): negative initial_due, no opening-balance ledger row, diff
+ *     magnitude matches initial_due magnitude.
+ *  2. Anything else: walk the customer's FULL ledger in chronological order,
+ *     recomputing the running balance from initial_due and comparing it to
+ *     each row's stored balance_after, and report the FIRST point they
+ *     diverge — that transaction is where the drift actually originates,
+ *     even though it then shows up as a difference on every row after it.
+ */
+function diagnoseCustomerBalanceMismatch($db, int $customer_id, float $initial_due, float $diff): array {
+    $has_ob_row = $db->query(
+        "SELECT 1 FROM customer_ledger WHERE customer_id = ? AND reference_type = 'initial_due' LIMIT 1",
+        [$customer_id]
+    )->first();
+
+    if (!$has_ob_row && $initial_due < 0 && abs(abs($diff) - abs($initial_due)) < 0.5) {
+        return [
+            'reason' => 'Negative opening balance never included',
+            'detail' => 'This customer started with a negative opening balance (৳' . number_format(abs($initial_due), 2)
+                . ' credit) when onboarded. No opening-balance entry gets created in the ledger for a negative amount '
+                . '(only positive ones do) — so nothing was wrong with the ledger itself, but a later balance sync '
+                . 'elsewhere copied a stale figure into the stored balance that never subtracted this opening credit.',
+        ];
+    }
+
+    $rows = $db->query(
+        "SELECT id, transaction_date, transaction_type, reference_type, description, debit_amount, credit_amount, balance_after
+         FROM customer_ledger WHERE customer_id = ? ORDER BY transaction_date ASC, id ASC",
+        [$customer_id]
+    )->results();
+    // Same convention used elsewhere in this codebase (e.g. the delete-payment
+    // reversal in this file): when a real opening-balance ledger row exists,
+    // start the walk from 0 and let that row's own delta carry initial_due —
+    // starting from initial_due AGAIN here would double-count it and flag a
+    // false "break" on the very first row.
+    $running = $has_ob_row ? 0.0 : $initial_due;
+    foreach ($rows as $row) {
+        $running += (float)$row->debit_amount - (float)$row->credit_amount;
+        if (abs($running - (float)$row->balance_after) > 0.5) {
+            return [
+                'reason' => 'Stored balance drifted from a specific transaction',
+                'detail' => 'The running total first breaks away from the correctly-calculated figure at transaction #'
+                    . $row->id . ' (' . $row->transaction_date . ', ' . ucwords(str_replace('_', ' ', $row->transaction_type))
+                    . ($row->description ? ' — ' . $row->description : '') . '): the stored balance jumped by ৳'
+                    . number_format((float)$row->balance_after - $running, 2) . ' more than this transaction\'s own amount '
+                    . 'accounts for — most likely a historical edit, deletion, or backdated entry whose effect on the '
+                    . 'stored running balance was never fully recalculated forward from that point.',
+            ];
+        }
+        // Keep the chain consistent with what's actually stored, so later
+        // rows are compared against the real (possibly already-drifted)
+        // baseline rather than re-flagging the same original break repeatedly.
+        $running = (float)$row->balance_after;
+    }
+
+    return [
+        'reason' => 'Cause not isolated to one transaction',
+        'detail' => 'The ledger\'s own running balance chain is internally consistent from the opening balance all the '
+            . 'way through — the stored account balance itself was set to a different figure by something outside the '
+            . 'normal ledger-posting flow (a direct correction, a migration, or a manual adjustment not recorded here).',
+    ];
+}
+
+/**
  * Whether the printed credit invoice shows the "Previous Due" and "Total Due"
  * (total outstanding) lines. ON (shown) by default — matches current behavior
  * until admin explicitly turns it off. Toggle via settings.show_invoice_outstanding.
@@ -4033,6 +4687,225 @@ function paymentApprovalRequiredForAll(): bool {
         $cached = true; // fail safe: require approval rather than post unreviewed
     }
     return $cached;
+}
+
+/**
+ * 8 Sep 2026 — whether a Pricing Engine catalog price change (product/pricing.php,
+ * product/pricing_engine.php) automatically propagates to every currently-open
+ * order (not yet goods_on_board/shipped/delivered/cancelled/rejected). OFF by
+ * default — this preserves the deliberate 19 Aug 2026 decision (see
+ * implementation-backlog.md) to keep price changes on placed orders human-reviewed
+ * (admin_edit.php's manual re-price + mandatory-reason flow) rather than silently
+ * changing what a customer already agreed to pay. Toggle via
+ * settings.pricing_engine_auto_apply_to_orders (admin/settings.php).
+ */
+function pricingEngineAutoApplyEnabled(): bool {
+    static $cached = null;
+    if ($cached !== null) return $cached;
+    $db = Database::getInstance();
+    try {
+        $row = $db->query("SELECT value FROM settings WHERE name = 'pricing_engine_auto_apply_to_orders'")->first();
+        $cached = $row === false || $row === null || $row->value === null ? false : ((string)$row->value === '1');
+    } catch (Exception $e) {
+        $cached = false; // fail safe: keep the pre-existing human-reviewed behavior
+    }
+    return $cached;
+}
+
+/**
+ * Propagate a single variant+branch catalog price change to every currently-open
+ * order's matching line item(s) — no-op unless pricingEngineAutoApplyEnabled().
+ *
+ * Applies the DELTA (new - old), never overwrites unit_price outright:
+ * credit_order_items.unit_price is NOT a pure mirror of the catalog price — it
+ * may already include a flat mini-truck surcharge baked in on top of the base
+ * catalog price at order-creation time (see cr/create_order.php's
+ * effectivePrice = basePrice + miniSurcharge), or a manual admin_edit.php
+ * override. A delta shift preserves either correctly; an absolute overwrite
+ * would silently erase them.
+ *
+ * Only touches orders whose status is NOT IN
+ * ('goods_on_board','shipped','delivered','cancelled','rejected') — i.e. not
+ * yet shipped/delivered (and dead orders are left alone). Matches
+ * order_amendment.php's "pre" (pre-dispatch) mode: the invoice has not been
+ * posted yet, so no customer_ledger / customers.current_balance touch is
+ * needed or done here — only credit_order_items + credit_orders' own
+ * subtotal/total_amount/balance_due (same invariant order_amendment.php uses:
+ * balance_due = GREATEST(0, total_amount - advance_paid - amount_paid)).
+ *
+ * Every touched line gets a row in credit_order_price_revisions — the same
+ * table admin_edit.php's manual price changes use — so it shows up on that
+ * order's own "Price Revision History" (credit_order_view.php) for
+ * after-the-fact visibility even though this path has no per-order approval gate.
+ *
+ * Deliberately runs with NO explicit PDO transaction (matches
+ * order_amendment.php's own _applyAmendment() convention for this exact
+ * pre-dispatch case) — auditLogOrder() can run its own DDL internally
+ * (AuditLogger::ensureTable()), and MySQL DDL forces an implicit commit that
+ * would silently corrupt an open transaction (a known, already-documented app-wide
+ * gotcha). Callers in the Pricing Engine must call this AFTER their own
+ * transaction commits, never from inside one.
+ *
+ * @return array{applied_orders:int, applied_items:int, skipped:bool}
+ */
+function applyPricingEngineChangeToOpenOrders(int $variant_id, int $branch_id, ?float $old_price, ?float $new_price, int $changed_by_user_id, string $changed_by_label): array {
+    $result = ['applied_orders' => 0, 'applied_items' => 0, 'skipped' => false];
+    if (!pricingEngineAutoApplyEnabled()) { $result['skipped'] = true; return $result; }
+    if ($old_price === null || $new_price === null) { $result['skipped'] = true; return $result; }
+    $delta = round($new_price - $old_price, 2);
+    if (abs($delta) < 0.005) { $result['skipped'] = true; return $result; }
+
+    $db = Database::getInstance();
+
+    try { $db->getPdo()->exec("
+        CREATE TABLE IF NOT EXISTS `credit_order_price_revisions` (
+          `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+          `order_id` bigint UNSIGNED NOT NULL,
+          `order_item_id` bigint UNSIGNED DEFAULT NULL,
+          `product_id` bigint UNSIGNED NOT NULL,
+          `variant_id` bigint UNSIGNED DEFAULT NULL,
+          `quantity` decimal(10,2) NOT NULL,
+          `old_unit_price` decimal(12,2) NOT NULL,
+          `new_unit_price` decimal(12,2) NOT NULL,
+          `reason` text NOT NULL,
+          `changed_by_user_id` bigint UNSIGNED NOT NULL,
+          `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+          PRIMARY KEY (`id`),
+          KEY `idx_order_id` (`order_id`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    "); } catch (\Throwable $e) {}
+
+    $items = $db->query(
+        "SELECT coi.id AS item_id, coi.order_id, coi.product_id, coi.variant_id, coi.quantity,
+                coi.unit_price, coi.discount_amount, co.order_number
+         FROM credit_order_items coi
+         JOIN credit_orders co ON co.id = coi.order_id
+         WHERE coi.variant_id = ?
+           AND co.assigned_branch_id = ?
+           AND co.status NOT IN ('goods_on_board','shipped','delivered','cancelled','rejected')",
+        [$variant_id, $branch_id]
+    )->results();
+
+    if (empty($items)) return $result;
+
+    $reason = "Auto-applied: Pricing Engine changed the catalog price from ৳" . number_format($old_price, 2)
+             . " to ৳" . number_format($new_price, 2) . " (change made by {$changed_by_label}).";
+
+    $touched_orders = [];
+    foreach ($items as $it) {
+        $old_unit_price = (float)$it->unit_price;
+        $new_unit_price = max(0, round($old_unit_price + $delta, 2));
+        $new_line_total = round((float)$it->quantity * $new_unit_price - (float)$it->discount_amount, 2);
+
+        $db->query("UPDATE credit_order_items SET unit_price = ?, line_total = ? WHERE id = ?",
+            [$new_unit_price, $new_line_total, $it->item_id]);
+
+        $db->insert('credit_order_price_revisions', [
+            'order_id'           => $it->order_id,
+            'order_item_id'      => $it->item_id,
+            'product_id'         => $it->product_id,
+            'variant_id'         => $it->variant_id,
+            'quantity'           => $it->quantity,
+            'old_unit_price'     => $old_unit_price,
+            'new_unit_price'     => $new_unit_price,
+            'reason'             => $reason,
+            'changed_by_user_id' => $changed_by_user_id,
+        ]);
+
+        $touched_orders[$it->order_id] = $it->order_number;
+        $result['applied_items']++;
+    }
+
+    foreach ($touched_orders as $order_id => $order_number) {
+        $agg = $db->query("SELECT SUM(line_total) AS new_subtotal FROM credit_order_items WHERE order_id = ?", [$order_id])->first();
+        $new_subtotal = round((float)($agg->new_subtotal ?? 0), 2);
+        $ord = $db->query("SELECT discount_amount, tax_amount, advance_paid, amount_paid FROM credit_orders WHERE id = ?", [$order_id])->first();
+        $new_total = round($new_subtotal - (float)$ord->discount_amount + (float)$ord->tax_amount, 2);
+        $new_balance_due = max(0, round($new_total - (float)$ord->advance_paid - (float)$ord->amount_paid, 2));
+
+        $db->query(
+            "UPDATE credit_orders SET subtotal = ?, total_amount = ?, balance_due = ?, updated_at = NOW() WHERE id = ?",
+            [$new_subtotal, $new_total, $new_balance_due, $order_id]
+        );
+        $result['applied_orders']++;
+
+        auditLogOrder('price_auto_synced', $order_id, $order_number,
+            "Pricing Engine price change auto-applied to this order (৳" . number_format($old_price, 2)
+            . " → ৳" . number_format($new_price, 2) . " per unit) by {$changed_by_label}.");
+    }
+
+    return $result;
+}
+
+/**
+ * 8 Sep 2026 — refresh an order's invoice_snapshots row after a post-dispatch
+ * item-level amendment (cr/order_amendment.php) changes credit_order_items.
+ * invoice_snapshots is otherwise write-once (frozen at first dispatch, never
+ * updated anywhere else in the app) — cr/credit_invoice_print.php prefers the
+ * snapshot's items_json over live credit_order_items whenever a snapshot
+ * exists, so without this a reprinted invoice would keep showing stale,
+ * pre-amendment line items forever.
+ *
+ * Deliberately touches ONLY this order's own item/total fields — never
+ * `invoice_date`, `order_date`, or customer-wide fields (`previous_due`,
+ * `total_outstanding`), which are point-in-time figures unrelated to this
+ * order's own correction and must stay exactly as originally posted.
+ *
+ * items_json shape matches the ORIGINAL writer exactly (see the invoice-
+ * posting function above and cr/credit_invoice_print.php's reader) —
+ * product_name/variant_detail/sku/unit/quantity/unit_price/discount_amount/
+ * tax_amount/line_total — so the print page's existing decode logic needs no
+ * changes to pick up the refreshed data.
+ *
+ * No-op if the order has no snapshot row yet (nothing to refresh — the print
+ * page falls back to live items in that case anyway).
+ */
+function refreshInvoiceSnapshotItems(int $orderId): void {
+    $db = Database::getInstance();
+    try {
+        $snap = $db->query("SELECT id FROM invoice_snapshots WHERE order_id = ? LIMIT 1", [$orderId])->first();
+        if (!$snap) return;
+
+        $order = $db->query(
+            "SELECT subtotal, discount_amount, tax_amount, total_amount, balance_due FROM credit_orders WHERE id = ?",
+            [$orderId]
+        )->first();
+        if (!$order) return;
+
+        $snap_items = $db->query(
+            "SELECT coi.product_id, coi.variant_id, coi.quantity, coi.unit_price, coi.discount_amount, coi.tax_amount, coi.line_total,
+                    p.base_name AS product_name, pv.grade, pv.weight_variant, pv.unit_of_measure, pv.sku AS variant_sku
+             FROM credit_order_items coi JOIN products p ON coi.product_id = p.id
+             LEFT JOIN product_variants pv ON coi.variant_id = pv.id WHERE coi.order_id = ? ORDER BY coi.id ASC",
+            [$orderId]
+        )->results();
+
+        $items_arr = [];
+        foreach ($snap_items as $si) {
+            $vd = [];
+            if ($si->grade) $vd[] = 'Grade ' . $si->grade;
+            if ($si->weight_variant) $vd[] = $si->weight_variant;
+            $items_arr[] = [
+                'product_id' => (int)$si->product_id, 'variant_id' => $si->variant_id ? (int)$si->variant_id : null,
+                'product_name' => $si->product_name, 'variant_detail' => implode(' · ', $vd), 'sku' => $si->variant_sku,
+                'unit' => $si->unit_of_measure, 'quantity' => (float)$si->quantity, 'unit_price' => (float)$si->unit_price,
+                'discount_amount' => (float)$si->discount_amount, 'tax_amount' => (float)$si->tax_amount, 'line_total' => (float)$si->line_total,
+            ];
+        }
+
+        $db->query(
+            "UPDATE invoice_snapshots
+             SET items_json = ?, subtotal = ?, discount_amount = ?, tax_amount = ?, total_amount = ?, balance_due = ?
+             WHERE order_id = ?",
+            [
+                json_encode($items_arr, JSON_UNESCAPED_UNICODE),
+                $order->subtotal, $order->discount_amount, $order->tax_amount, $order->total_amount, $order->balance_due,
+                $orderId,
+            ]
+        );
+    } catch (\Throwable $e) {
+        error_log('refreshInvoiceSnapshotItems failed for order ' . $orderId . ': ' . $e->getMessage());
+    }
 }
 
 /**
@@ -4680,6 +5553,15 @@ function postCreditOrderDispatchAccounting(Database $db, int $order_id, int $use
         'balance_after' => $balance_after, 'created_by_user_id' => $user_id, 'journal_entry_id' => $journal_id,
     ]);
 
+    // Keep customers.current_balance from silently going stale the moment this
+    // posts — confirmed live 27 Aug 2026 that nothing else did this: 80/199
+    // active customers had current_balance drifted from the true ledger sum,
+    // in every case traced back to an invoice posted here with no resync
+    // after. $balance_after above is already prev_balance + this invoice via
+    // the same live aggregate this function just used, so it's re-used
+    // directly rather than re-querying.
+    $db->query("UPDATE customers SET current_balance = ? WHERE id = ?", [$balance_after, $order->customer_id]);
+
     $snap_exists = $db->query("SELECT id FROM invoice_snapshots WHERE order_id = ? LIMIT 1", [$order_id])->first();
     if (!$snap_exists) {
         $snap_items = $db->query(
@@ -4727,6 +5609,243 @@ function postCreditOrderDispatchAccounting(Database $db, int $order_id, int $use
     }
 
     return ['journal_id' => (int)$journal_id, 'posted' => true];
+}
+
+/**
+ * Reverse the accounting posted by postCreditOrderDispatchAccounting() and put a
+ * goods_on_board order back at ready_to_ship, so it can be re-dispatched (e.g.
+ * with a dispatcher discount, which can only take effect BEFORE the once-only
+ * invoice posting). Admin-only at the call site. 26 Sep 2026 — first done as a
+ * one-off script for CR-20260925-0019; this is the proper, guarded version.
+ *
+ * Refuses (changes nothing) unless the reversal is provably clean:
+ *   - order is goods_on_board, not an Other-Sales/commodity order (COGS + stock
+ *     drawdown are not reversed here), not on a trip;
+ *   - exactly one posted invoice ledger row + journal for it;
+ *   - that ledger row is the customer's LATEST ledger row (nothing built on it);
+ *   - no payment/advance allocated, no gate scan, no delivery, no return.
+ * Everything removed is archived to the Recycle Bin (one restorable batch),
+ * customers.current_balance is recomputed exactly as the posting computed it,
+ * and a workflow row + audit log record who did it and why.
+ *
+ * @return array ['success'=>bool, 'message'=>string, 'batch'=>int, 'new_balance'=>float]
+ */
+function reverseOrderDispatch(Database $db, int $order_id, int $user_id, string $reason): array {
+    $reason = trim($reason);
+    if (mb_strlen($reason) < 5) return ['success' => false, 'message' => 'A reason (at least 5 characters) is required to reverse a dispatch.'];
+
+    $order = $db->query("SELECT * FROM credit_orders WHERE id = ?", [$order_id])->first();
+    if (!$order) return ['success' => false, 'message' => 'Order not found.'];
+    if ($order->status !== 'goods_on_board') {
+        return ['success' => false, 'message' => "Only an order that is Goods on Board can be reversed (this one is '{$order->status}')."];
+    }
+    if (!empty($order->is_other_sales)) {
+        return ['success' => false, 'message' => 'Other-Sales (commodity) orders post COGS and stock drawdown at dispatch, which this reversal does not undo — contact the developer.'];
+    }
+    if ((float)$order->amount_paid > 0.005 || (float)$order->advance_paid > 0.005) {
+        return ['success' => false, 'message' => 'A payment/advance is recorded against this order — reversing the invoice would leave that payment orphaned.'];
+    }
+
+    $cnt = function (string $sql, array $p) use ($db): int {
+        try { return (int)($db->query($sql, $p)->first()->c ?? 0); } catch (\Throwable $e) { return 0; }
+    };
+    if ($cnt("SELECT COUNT(*) c FROM payment_allocations WHERE order_id = ?", [$order_id]) > 0) return ['success' => false, 'message' => 'Payments are allocated to this order.'];
+    if ($cnt("SELECT COUNT(*) c FROM cr_delivery_confirmations WHERE order_id = ?", [$order_id]) > 0) return ['success' => false, 'message' => 'A gate scan/delivery confirmation exists — the truck may already have left.'];
+    if ($cnt("SELECT COUNT(*) c FROM credit_order_deliveries WHERE order_id = ?", [$order_id]) > 0) return ['success' => false, 'message' => 'Partial deliveries exist for this order.'];
+    if ($cnt("SELECT COUNT(*) c FROM credit_order_returns WHERE order_id = ?", [$order_id]) > 0) return ['success' => false, 'message' => 'A return exists for this order.'];
+    $ship = $db->query("SELECT trip_id FROM credit_order_shipping WHERE order_id = ?", [$order_id])->first();
+    if ($ship && !empty($ship->trip_id)) return ['success' => false, 'message' => 'This order is assigned to a trip — remove it from the trip first.'];
+
+    $journal = $db->query("SELECT id FROM journal_entries WHERE related_document_type = 'credit_orders' AND related_document_id = ?", [$order_id])->results();
+    if (count($journal) !== 1) return ['success' => false, 'message' => 'Expected exactly one posted invoice journal for this order (found ' . count($journal) . ') — not safe to reverse automatically.'];
+    $journal_id = (int)$journal[0]->id;
+
+    $ledger = $db->query("SELECT * FROM customer_ledger WHERE reference_type = 'credit_orders' AND reference_id = ? AND transaction_type = 'invoice'", [$order_id])->results();
+    if (count($ledger) !== 1) return ['success' => false, 'message' => 'Expected exactly one invoice ledger row for this order (found ' . count($ledger) . ').'];
+    $ledger_id = (int)$ledger[0]->id;
+    $latest = $db->query("SELECT MAX(id) AS m FROM customer_ledger WHERE customer_id = ?", [$order->customer_id])->first();
+    if ((int)($latest->m ?? 0) !== $ledger_id) {
+        return ['success' => false, 'message' => 'Later ledger entries exist for this customer after this invoice (payments, other invoices or adjustments). Reversing it would corrupt their running balance — use an Order Amendment credit note instead.'];
+    }
+
+    ensureRecycleBinTables();                     // DDL before any transaction
+    $pdo = $db->getPdo();
+    $pdo->beginTransaction();
+    try {
+        $label = "Dispatch invoice reversal — {$order->order_number} (order #{$order_id})";
+        $batch = recycleBegin('dispatch_reversal', $label, (int)$order->customer_id);
+        // children first, parents last (restore replays parents before children)
+        recycleArchiveDelete($batch, 'customer_ledger', 'id', $ledger_id);
+        recycleArchiveDelete($batch, 'transaction_lines', 'journal_entry_id', $journal_id);
+        recycleArchiveDelete($batch, 'journal_entries', 'id', $journal_id);
+        recycleArchiveDelete($batch, 'invoice_snapshots', 'order_id', $order_id);
+        recycleArchiveDelete($batch, 'dispatch_adhoc_fleet', 'order_id', $order_id);   // re-created when re-shipped
+        recycleSnapshotBefore($batch, 'customers', 'id', (int)$order->customer_id);
+        recycleSnapshotBefore($batch, 'credit_orders', 'id', $order_id);
+
+        // Same balance rule the posting used: aggregate of the ledger (initial_due if no rows).
+        $agg = $db->query("SELECT COALESCE(SUM(debit_amount),0) td, COALESCE(SUM(credit_amount),0) tc FROM customer_ledger WHERE customer_id = ?", [$order->customer_id])->first();
+        $cust = $db->query("SELECT initial_due FROM customers WHERE id = ?", [$order->customer_id])->first();
+        $td = (float)$agg->td; $tc = (float)$agg->tc;
+        $new_balance = ($td > 0 || $tc > 0) ? $td - $tc : (float)($cust->initial_due ?? 0);
+        $db->query("UPDATE customers SET current_balance = ? WHERE id = ?", [$new_balance, $order->customer_id]);
+        if ($db->error()) throw new Exception('Failed to restore the customer balance.');
+
+        $db->query("UPDATE credit_orders SET status = 'ready_to_ship', updated_at = NOW() WHERE id = ?", [$order_id]);
+        $chk = $db->query("SELECT status FROM credit_orders WHERE id = ?", [$order_id])->first();
+        if (!$chk || $chk->status !== 'ready_to_ship') throw new Exception('Failed to set the order back to Ready to Ship.');
+
+        $db->insert('credit_order_workflow', [
+            'order_id' => $order_id, 'from_status' => 'goods_on_board', 'to_status' => 'ready_to_ship',
+            'action' => 'dispatch_reversed', 'performed_by_user_id' => $user_id,
+            'comments' => "Dispatch reversed — reason: {$reason}. Invoice ledger row #{$ledger_id}, journal #{$journal_id} and snapshot archived in Recycle Bin batch #{$batch}; customer balance now ৳" . number_format($new_balance, 2) . '. Order returned to Ready to Ship.',
+        ]);
+        recycleFinalize($batch);
+        $pdo->commit();
+    } catch (\Throwable $e) {
+        if ($pdo->inTransaction()) $pdo->rollBack();
+        return ['success' => false, 'message' => 'Reversal failed and was rolled back: ' . $e->getMessage()];
+    }
+
+    // After commit (audit/notification must never run inside the transaction).
+    try {
+        auditLog('credit_orders', 'status_changed',
+            "Dispatch of {$order->order_number} REVERSED and returned to Ready to Ship (Recycle Bin batch #{$batch}) — reason: {$reason}",
+            ['order_id' => $order_id, 'batch' => $batch, 'severity' => 'critical']);
+    } catch (\Throwable $e) {}
+    try {
+        if (defined('TELEGRAM_BOT_TOKEN') && defined('TELEGRAM_NOTIFICATIONS_ENABLED') && TELEGRAM_NOTIFICATIONS_ENABLED) {
+            require_once __DIR__ . '/../classes/TelegramNotifier.php';
+            (new TelegramNotifier(TELEGRAM_BOT_TOKEN, getTelegramChatId('orders')))->sendMessage(
+                "<b>↩️ DISPATCH REVERSED</b>\n<b>Order:</b> " . htmlspecialchars($order->order_number)
+                . "\n<b>Reason:</b> " . htmlspecialchars($reason)
+                . "\n<b>By:</b> " . htmlspecialchars($_SESSION['user_display_name'] ?? 'Admin')
+                . "\n<i>Invoice reversed; back at Ready to Ship.</i>");
+        }
+    } catch (\Throwable $e) {}
+
+    return ['success' => true, 'message' => 'Dispatch reversed — the order is back at Ready to Ship and can be re-shipped.', 'batch' => $batch, 'new_balance' => $new_balance];
+}
+
+/**
+ * Self-migrate the schema for branch-coded delivery slip numbers — 1 Oct 2026
+ * owner instruction: every truck leaving a branch carries a serial of the form
+ * {BranchCode}-{Year}-{Month}-{Seq}, e.g. "DEM-2026-10-001", where Seq restarts
+ * at 001 on the 1st of each month (per branch). Adds:
+ *   - branches.delivery_slip_prefix VARCHAR(3) NULL — seeded for the known
+ *     branches below; generateDeliverySlipNumber() self-heals a fallback for
+ *     any branch that's missing one (new branches added later).
+ *   - credit_order_shipping.delivery_slip_number VARCHAR(30) NULL (full dispatch)
+ *   - credit_order_deliveries.delivery_slip_number VARCHAR(30) NULL (partial dispatch)
+ * PROBE FIRST, same convention as every other ensure*() helper — ALTER implicitly
+ * commits and would silently end an open transaction.
+ */
+function ensureDeliverySlipNumbering(): void {
+    static $done = false;
+    if ($done) return;
+    $done = true;
+    $db  = Database::getInstance();
+    $pdo = $db->getPdo();
+
+    try {
+        $col = $db->query(
+            "SELECT COLUMN_NAME FROM information_schema.COLUMNS
+             WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'branches' AND COLUMN_NAME = 'delivery_slip_prefix'"
+        )->first();
+        if (!$col) {
+            $pdo->exec("ALTER TABLE `branches` ADD COLUMN `delivery_slip_prefix` VARCHAR(3) NULL");
+        }
+    } catch (\Throwable $e) {}
+
+    try {
+        $col = $db->query(
+            "SELECT COLUMN_NAME FROM information_schema.COLUMNS
+             WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'credit_order_shipping' AND COLUMN_NAME = 'delivery_slip_number'"
+        )->first();
+        if (!$col) {
+            $pdo->exec("ALTER TABLE `credit_order_shipping` ADD COLUMN `delivery_slip_number` VARCHAR(30) NULL");
+        }
+    } catch (\Throwable $e) {}
+
+    try {
+        $col = $db->query(
+            "SELECT COLUMN_NAME FROM information_schema.COLUMNS
+             WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'credit_order_deliveries' AND COLUMN_NAME = 'delivery_slip_number'"
+        )->first();
+        if (!$col) {
+            $pdo->exec("ALTER TABLE `credit_order_deliveries` ADD COLUMN `delivery_slip_number` VARCHAR(30) NULL");
+        }
+    } catch (\Throwable $e) {}
+
+    // Seed known branches' codes once — explicit owner instruction gave DEM
+    // (Demra) and SRG (Sirajgonj); the rest derived sensibly (26 Sep 2026
+    // branch list). Never overwrites a prefix someone's already set.
+    $known = [
+        'Sirajgonj'   => 'SRG',
+        'Demra'       => 'DEM',
+        'Rampura'     => 'RAM',
+        'Head Office' => 'HOF',
+        'Chittagong'  => 'CTG',
+        'COX Bazar'   => 'COX',
+        'Mymensing'   => 'MYM',
+        'Sylhet'      => 'SYL',
+    ];
+    foreach ($known as $name => $code) {
+        try {
+            $db->query(
+                "UPDATE branches SET delivery_slip_prefix = ? WHERE name = ? AND (delivery_slip_prefix IS NULL OR delivery_slip_prefix = '')",
+                [$code, $name]
+            );
+        } catch (\Throwable $e) {}
+    }
+}
+
+/**
+ * Generate the next branch-coded delivery slip number for a truck leaving
+ * $branch_id on $date (default today): "{Code}-{Year}-{Month}-{Seq}", Seq
+ * zero-padded to 3 digits and restarting at 001 on the 1st of each month —
+ * Month is a bare number (1..12, no zero-pad), per explicit owner wording.
+ * The sequence is shared across BOTH dispatch paths for the same
+ * branch+month (credit_order_shipping = full dispatch, credit_order_deliveries
+ * = partial dispatch), since both represent a real truck leaving the gate.
+ * Call ensureDeliverySlipNumbering() before this (DDL-before-transaction rule)
+ * — this function only reads/writes rows, never alters schema.
+ */
+function generateDeliverySlipNumber(Database $db, int $branch_id, ?string $date = null): string {
+    $date = $date ?: date('Y-m-d');
+    $ts   = strtotime($date) ?: time();
+    $year  = date('Y', $ts);
+    $month = (int)date('n', $ts);   // numeric, unpadded (e.g. "1" not "01")
+
+    $branch = $db->query("SELECT name, delivery_slip_prefix FROM branches WHERE id = ?", [$branch_id])->first();
+    $code   = $branch->delivery_slip_prefix ?? null;
+    if (!$code) {
+        // Self-heal: derive a 3-letter code for a branch that predates the
+        // seed list or was added since, and persist it so it's stable from
+        // here on (same branch never silently changes its code mid-series).
+        $letters = preg_replace('/[^A-Za-z]/', '', $branch->name ?? 'BRN');
+        $code    = strtoupper(substr($letters !== '' ? $letters : 'BRN', 0, 3));
+        try {
+            $db->query(
+                "UPDATE branches SET delivery_slip_prefix = ? WHERE id = ? AND (delivery_slip_prefix IS NULL OR delivery_slip_prefix = '')",
+                [$code, $branch_id]
+            );
+        } catch (\Throwable $e) {}
+    }
+
+    $prefix = "{$code}-{$year}-{$month}-";
+    $like   = $prefix . '%';
+    $max_a  = $db->query(
+        "SELECT MAX(CAST(SUBSTRING_INDEX(delivery_slip_number, '-', -1) AS UNSIGNED)) m
+         FROM credit_order_shipping WHERE delivery_slip_number LIKE ?", [$like]
+    )->first();
+    $max_b  = $db->query(
+        "SELECT MAX(CAST(SUBSTRING_INDEX(delivery_slip_number, '-', -1) AS UNSIGNED)) m
+         FROM credit_order_deliveries WHERE delivery_slip_number LIKE ?", [$like]
+    )->first();
+    $seq = max((int)($max_a->m ?? 0), (int)($max_b->m ?? 0)) + 1;
+
+    return $prefix . sprintf('%03d', $seq);
 }
 
 /**

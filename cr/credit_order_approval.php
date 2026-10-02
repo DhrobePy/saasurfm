@@ -49,6 +49,34 @@ $branches = $db->query("SELECT id, name FROM branches WHERE status = 'active' OR
 // Get pending and escalated orders
 $status_filter = $is_admin ? "('pending_approval', 'escalated')" : "('pending_approval')";
 
+// Branch scope — approving an order is literally the step that ASSIGNS its
+// production branch (co.assigned_branch_id is confirmed NULL for every
+// pre-approval order), so there is no direct column to filter the queue by.
+// The best available real signal: Other Sales orders already carry a real
+// assigned_branch_id at insert time; regular orders don't, so this falls
+// back to the creating sales rep's own branch (employees.branch_id via
+// created_by_user_id) — the only other place branch intent exists at all
+// (confirmed via schema/data audit — customers carry no branch field, and
+// users.branch_id doesn't exist as a column). An order whose branch can't
+// be resolved either way (the creator has no employees row) is shown ONLY
+// to unrestricted approvers — never silently hidden from everyone, but
+// never leaked to the wrong branch's approver either.
+$order_branch_expr = "COALESCE(co.assigned_branch_id, (SELECT e.branch_id FROM employees e WHERE e.user_id = co.created_by_user_id))";
+$approval_branch_sql = '';
+$approval_branch_params = [];
+if (!$is_role_admin) {
+    $approval_branch_scope = getUserBranchScope('credit_sales');
+    if ($approval_branch_scope !== null) {
+        if (empty($approval_branch_scope)) {
+            $approval_branch_sql = "AND 0=1";
+        } else {
+            $ph = implode(',', array_fill(0, count($approval_branch_scope), '?'));
+            $approval_branch_sql = "AND {$order_branch_expr} IN ({$ph})";
+            $approval_branch_params = $approval_branch_scope;
+        }
+    }
+}
+
 // True balance = initial_due + net ledger (customers.current_balance is unreliable —
 // same formula as create_order.php / customer_ledger.php).
 // credit_usage_percent: 999 when the customer is already AT/OVER limit so the UI
@@ -78,12 +106,14 @@ $orders = $db->query(
      ) tb ON tb.customer_id = c.id
      LEFT JOIN users u ON co.created_by_user_id = u.id
      WHERE co.status IN $status_filter
+        {$approval_branch_sql}
      ORDER BY
         CASE co.status
             WHEN 'escalated' THEN 1
             WHEN 'pending_approval' THEN 2
         END,
-        co.order_date ASC"
+        co.order_date ASC",
+    $approval_branch_params
 )->results();
 
 // Bug 6 fix: CSRF verification for all POST actions (approve/reject)
@@ -111,6 +141,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'appro
 
             $order = $db->query("SELECT * FROM credit_orders WHERE id = ?", [$order_id])->first();
             if (!$order) throw new Exception("Order not found");
+
+            // Defense in depth: the queue above already hides out-of-scope orders,
+            // but a branch-scoped approver could still POST an arbitrary order_id
+            // directly. Re-check server-side using the same resolved-branch logic
+            // (Other Sales orders' own assigned_branch_id, else the creating rep's
+            // employees.branch_id) — and also that the production branch they're
+            // ASSIGNING is one they're actually permitted to assign to.
+            if (!$is_role_admin) {
+                $approval_scope_check = getUserBranchScope('credit_sales');
+                if ($approval_scope_check !== null) {
+                    $resolved_branch = $db->query(
+                        "SELECT {$order_branch_expr} AS b FROM credit_orders co WHERE co.id = ?",
+                        [$order_id]
+                    )->first();
+                    $resolved_branch_id = $resolved_branch ? $resolved_branch->b : null;
+                    if ($resolved_branch_id === null || !in_array((int)$resolved_branch_id, $approval_scope_check, true)) {
+                        throw new Exception("This order is outside your assigned branch scope.");
+                    }
+                    if (!in_array($branch_id, $approval_scope_check, true)) {
+                        throw new Exception("You may only assign production to a branch within your own scope.");
+                    }
+                }
+            }
 
             // Guard against double-submit / stale tabs: only these states are approvable.
             // Escalated orders are admin territory — non-admins act on pending only.
@@ -571,19 +624,22 @@ unset($_SESSION['success_flash'], $_SESSION['error_flash']);
 $stat_pending = $db->query(
     "SELECT COUNT(*) AS c FROM credit_orders co
      INNER JOIN customers c ON co.customer_id = c.id
-     WHERE co.status = 'pending_approval'"
+     WHERE co.status = 'pending_approval' {$approval_branch_sql}",
+    $approval_branch_params
 )->first()->c;
 
 $stat_escalated = $is_admin ? $db->query(
     "SELECT COUNT(*) AS c FROM credit_orders co
      INNER JOIN customers c ON co.customer_id = c.id
-     WHERE co.status = 'escalated'"
+     WHERE co.status = 'escalated' {$approval_branch_sql}",
+    $approval_branch_params
 )->first()->c : 0;
 
 $stat_approved_today = $db->query(
     "SELECT COUNT(*) AS c FROM credit_orders co
      INNER JOIN customers c ON co.customer_id = c.id
-     WHERE co.status = 'approved' AND DATE(co.updated_at) = CURDATE()"
+     WHERE co.status = 'approved' AND DATE(co.updated_at) = CURDATE() {$approval_branch_sql}",
+    $approval_branch_params
 )->first()->c;
 ?>
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">

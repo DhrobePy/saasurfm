@@ -177,6 +177,16 @@ if ($f_customer > 0)  { $where[] = "co.customer_id = ?";            $params[] = 
 if ($f_order !== '')  { $where[] = "co.order_number LIKE ?";        $params[] = '%' . $f_order . '%'; }
 if ($f_from  !== '')  { $where[] = "DATE(oac.approved_at) >= ?";    $params[] = $f_from; }
 if ($f_to    !== '')  { $where[] = "DATE(oac.approved_at) <= ?";    $params[] = $f_to; }
+
+// Branch scope — this page had NO branch restriction at all: accounts-srg and
+// accounts-demra (branch-named roles, same naming convention as every other
+// branch-scoped role in this app) could see every branch's dispatch-clearance
+// queue. Plain 'Accounts' (no branch suffix) stays company-wide, matching its
+// more senior naming; admin is unrestricted as always.
+if (!$is_admin && $user_role !== 'Accounts') {
+    [$branch_sql, $branch_params] = branchScopeSql('credit_sales', 'co.assigned_branch_id');
+    if ($branch_sql !== '') { $where[] = substr($branch_sql, 4); array_push($params, ...$branch_params); }
+}
 $where_sql = implode(' AND ', $where);
 
 // Count for pagination

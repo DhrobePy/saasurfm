@@ -30,13 +30,19 @@ try {
                 b.address         AS branch_address,
                 b.phone_number    AS branch_phone,
                 cos.truck_number, cos.driver_name, cos.driver_contact,
+                cos.bags_boarded, cos.bag_size_kg, cos.delivery_slip_number,
                 cos.shipped_date,  cos.delivered_date,
+                cos.extra_discount_amount AS ship_extra_discount_amount,
+                cos.extra_discount_reason AS ship_extra_discount_reason,
+                cos.extra_discount_at     AS ship_extra_discount_at,
+                du.display_name  AS ship_extra_discount_by_name,
                 u.display_name    AS created_by_name
          FROM credit_orders co
          JOIN   customers c          ON co.customer_id        = c.id
          LEFT JOIN branches b        ON co.assigned_branch_id = b.id
          LEFT JOIN credit_order_shipping cos ON co.id         = cos.order_id
          LEFT JOIN users u           ON co.created_by_user_id = u.id
+         LEFT JOIN users du          ON cos.extra_discount_by_user_id = du.id
          WHERE co.id = ?", [$order_id]
     )->first();
     if (!$order) die("Could not load order details.");
@@ -57,7 +63,13 @@ try {
     $delivery = null;
     $delivery_items_raw = [];
     if ($delivery_id > 0) {
-        $delivery = $db->query("SELECT * FROM credit_order_deliveries WHERE id = ? AND order_id = ?", [$delivery_id, $order_id])->first();
+        $delivery = $db->query(
+            "SELECT cod.*, ddu.display_name AS extra_discount_by_name
+             FROM credit_order_deliveries cod
+             LEFT JOIN users ddu ON cod.extra_discount_by_user_id = ddu.id
+             WHERE cod.id = ? AND cod.order_id = ?",
+            [$delivery_id, $order_id]
+        )->first();
         if (!$delivery) die("Delivery record not found for this order.<br><a href='javascript:history.back()'>← Back</a>");
         $delivery_items_raw = $db->query(
             "SELECT di.*, p.base_name AS product_name, pv.grade, pv.weight_variant, pv.unit_of_measure, pv.sku AS variant_sku,
@@ -79,7 +91,8 @@ try {
 $order_amendments = [];
 try {
     $order_amendments = $db->query(
-        "SELECT a.amd_number, a.amendment_type, a.reason, a.delta_amount, a.approved_at, a.mode,
+        "SELECT a.amd_number, a.amendment_type, a.reason, a.customer_consent_note, a.delta_amount,
+                a.old_values, a.new_values, a.approved_at, a.mode,
                 u.display_name AS approved_by_name
          FROM order_amendments a
          LEFT JOIN users u ON a.approved_by_user_id = u.id
@@ -87,6 +100,29 @@ try {
          ORDER BY a.approved_at ASC", [$order_id]
     )->results();
 } catch (Exception $e) { /* table may not exist yet on older orders — treat as no amendments */ }
+
+// Resolve product/variant names for any item-level amendment diff (old_values/
+// new_values only store item_id per line) so the invoice can show
+// "Product — old qty/price → new qty/price", not just a lump-sum ৳ delta.
+$amd_product_names = [];
+foreach ($order_amendments as $amd_row) {
+    $nv = json_decode($amd_row->new_values ?? 'null', true) ?: [];
+    foreach (($nv['items'] ?? []) as $it) {
+        $iid = (int)($it['item_id'] ?? 0);
+        if (!$iid || isset($amd_product_names[$iid])) continue;
+        $row = $db->query(
+            "SELECT p.base_name, pv.grade, pv.weight_variant
+             FROM credit_order_items coi
+             JOIN products p ON coi.product_id = p.id
+             LEFT JOIN product_variants pv ON coi.variant_id = pv.id
+             WHERE coi.id = ?", [$iid]
+        )->first();
+        if ($row) {
+            $vd = trim(($row->grade ? 'Grade ' . $row->grade : '') . ' ' . ($row->weight_variant ?? ''));
+            $amd_product_names[$iid] = trim($row->base_name . ($vd ? ' (' . $vd . ')' : ''));
+        }
+    }
+}
 
 $snap = $db->query("SELECT * FROM invoice_snapshots WHERE order_id = ? LIMIT 1", [$order_id])->first();
 
@@ -183,6 +219,7 @@ if ($is_delivery_print) {
         $obj->product_name    = $it->product_name;
         $obj->variant_detail  = implode(' · ', $vd);
         $obj->variant_sku     = $it->variant_sku;
+        $obj->variant_id      = $it->variant_id ?? null;
         $obj->quantity        = $it->qty_delivered;
         $obj->unit_price      = $it->unit_price;
         // Discounts are recorded per order-item, not per delivery — prorate the
@@ -201,6 +238,7 @@ if ($is_delivery_print) {
         $obj->product_name    = $si['product_name'];
         $obj->variant_detail  = $si['variant_detail'] ?? '';
         $obj->variant_sku     = $si['sku'];
+        $obj->variant_id      = $si['variant_id'] ?? null;
         $obj->quantity        = $si['quantity'];
         $obj->unit_price      = $si['unit_price'];
         $obj->discount_amount = $si['discount_amount'];
@@ -216,6 +254,7 @@ if ($is_delivery_print) {
         $obj->product_name    = $it->product_name;
         $obj->variant_detail  = implode(' · ', $vd);
         $obj->variant_sku     = $it->variant_sku;
+        $obj->variant_id      = $it->variant_id ?? null;
         $obj->quantity        = $it->quantity;
         $obj->unit_price      = $it->unit_price;
         $obj->discount_amount = $it->discount_amount;
@@ -225,11 +264,64 @@ if ($is_delivery_print) {
 }
 $total_qty = array_sum(array_map(fn($i) => (float)$i->quantity, $render_items));
 
+// Delivery-receipt weight summary (15/21 Sep 2026): bagged variants (weight_variant
+// numeric, e.g. 50/74 kg) => qty is BAGS, weight = qty x kg/bag. Bulk variants
+// (weight_variant non-numeric e.g. "Bulk", unit kg) => qty is already KG.
+// Anything else => weight unknown (flagged, never guessed).
+$total_bags = 0.0; $total_bulk_kg = 0.0; $total_weight_kg = 0.0; $weight_incomplete = false;
+$variant_ids = array_values(array_unique(array_filter(array_map(fn($i) => (int)($i->variant_id ?? 0), $render_items))));
+$variant_wt = [];
+if ($variant_ids) {
+    $ph = implode(',', array_fill(0, count($variant_ids), '?'));
+    foreach ($db->query("SELECT id, weight_variant, unit_of_measure FROM product_variants WHERE id IN ($ph)", $variant_ids)->results() as $vr) {
+        $variant_wt[(int)$vr->id] = $vr;
+    }
+}
+foreach ($render_items as $ri_obj) {
+    $q  = (float)$ri_obj->quantity;
+    $vr = $variant_wt[(int)($ri_obj->variant_id ?? 0)] ?? null;
+    $wv = $vr ? trim((string)$vr->weight_variant) : '';
+    $uom = $vr ? strtolower(trim((string)$vr->unit_of_measure)) : '';
+    if ($wv !== '' && is_numeric($wv) && $uom === 'kg') {
+        $total_bags      += $q;
+        $total_weight_kg += $q * (float)$wv;
+    } elseif ($vr && $uom === 'kg' && !is_numeric($wv)) {
+        $total_bulk_kg   += $q;
+        $total_weight_kg += $q;
+    } else {
+        $weight_incomplete = true;
+        $total_bags += $q;
+    }
+}
+$fmt_num = fn($n) => rtrim(rtrim(number_format($n, 2), '0'), '.');
+$qty_total_label = $total_bulk_kg > 0 && $total_bags <= 0 ? $fmt_num($total_bulk_kg) . ' kg'
+    : ($total_bulk_kg > 0 ? $fmt_num($total_bags) . ' bags + ' . $fmt_num($total_bulk_kg) . ' kg' : $fmt_num($total_bags) . ' bags');
+$receipt_remarks = ($total_bulk_kg > 0 && $total_bags <= 0)
+    ? 'Bulk: ' . $fmt_num($total_bulk_kg) . ' kg'
+    : 'Total Bags: ' . $fmt_num($total_bags) . ($total_bulk_kg > 0 ? ' + Bulk: ' . $fmt_num($total_bulk_kg) . ' kg' : '');
+// Dispatcher-entered (manual) bags boarded / bag size — from THIS delivery for a
+// partial-delivery print, else from the order's shipping record.
+$boarded_src  = $is_delivery_print ? $delivery : $order;
+$bags_boarded = (int)($boarded_src->bags_boarded ?? 0);
+$bag_size_kg  = (float)($boarded_src->bag_size_kg ?? 0);
+if ($bags_boarded > 0 || $bag_size_kg > 0) {
+    $receipt_remarks .= ' &nbsp;·&nbsp; Bags Boarded: ' . ($bags_boarded > 0 ? number_format($bags_boarded) : '—')
+                      . ($bag_size_kg > 0 ? ' (' . $fmt_num($bag_size_kg) . ' kg/bag)' : '');
+}
+$receipt_remarks .= $weight_incomplete
+    ? ' &nbsp;·&nbsp; Total Weight: n/a (pack weight not set for some items)'
+    : ' &nbsp;·&nbsp; Total Weight: ' . number_format($total_weight_kg / 1000, 3) . ' MT';
+
 // Delivery-scoped totals — the items table subtotal and grand total must
 // reflect only THIS shipment, never the order's full subtotal/total_amount.
 // Footer "subtotal" is gross (pre-discount), matching the full-order layout
 // below, where a separate Discount row bridges subtotal down to the grand total.
-$render_discount_total = $is_delivery_print ? array_sum(array_map(fn($i) => (float)$i->discount_amount, $render_items)) : 0.0;
+// 12 Sep 2026: folds in any dispatcher-entered extra discount for THIS
+// delivery (credit_order_deliveries.extra_discount_amount) on top of the
+// existing per-item proration — see the note box below for the reason.
+$render_discount_total = $is_delivery_print
+    ? array_sum(array_map(fn($i) => (float)$i->discount_amount, $render_items)) + (float)($delivery->extra_discount_amount ?? 0)
+    : 0.0;
 $render_subtotal    = $is_delivery_print
     ? array_sum(array_map(fn($i) => (float)$i->quantity * (float)$i->unit_price, $render_items))
     : (float)$order->subtotal;
@@ -404,6 +496,13 @@ body{
 }
 .strip-head.dr-head{background:none;}
 .strip-head.gp-head{background:none;}
+.dr-co{display:flex;align-items:center;justify-content:center;text-align:center;gap:10px;padding:6px 16px 5px;border-bottom:1px solid var(--line);}
+.dr-co img{max-height:38px;max-width:38px;object-fit:contain;display:block;}
+.dr-co .dr-co-name{font-size:15px;font-weight:800;color:var(--ink);line-height:1.1;}
+.dr-co .dr-co-en{font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:1px;}
+.dr-co .dr-co-meta{font-size:9px;color:var(--ink2);margin-top:1px;}
+.strip-remarks{padding:5px 16px;border-top:1px solid var(--line);font-size:11px;color:var(--ink);}
+.strip-remarks b{font-weight:800;text-transform:uppercase;font-size:9px;letter-spacing:.4px;color:var(--muted);margin-right:6px;}
 
 .sh-left .sh-title{font-size:15px;font-weight:900;color:var(--ink);letter-spacing:3px;text-transform:uppercase;line-height:1;}
 .sh-left .sh-sub  {font-size:9.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-top:2px;}
@@ -462,7 +561,7 @@ body{
   .a4-page{width:100% !important;box-shadow:none !important;border-width:1.5px !important;}
 
   /* Keep each block whole; the whole document must land on one sheet */
-  .inv-header,.info-row,.bot-row,.sig-row,.strip-head,.strip-info,.strip-sig,.gp-footer,
+  .inv-header,.info-row,.bot-row,.sig-row,.strip-head,.strip-info,.strip-sig,.gp-footer,.dr-co,.strip-remarks,
   .itbl tr,.q-tbl tr{page-break-inside:avoid;}
 
   /* Invoice header */
@@ -525,6 +624,13 @@ body{
   .si-cell{padding:4px 9px !important;}
   .si-lbl {font-size:8px !important;}
   .si-val {font-size:10.5px !important;}
+  .dr-co{padding:3px 11px 3px !important;gap:8px !important;}
+  .dr-co img{max-height:30px !important;max-width:30px !important;}
+  .dr-co .dr-co-name{font-size:12.5px !important;}
+  .dr-co .dr-co-en{font-size:7.5px !important;}
+  .dr-co .dr-co-meta{font-size:7.5px !important;}
+  .strip-remarks{padding:3px 11px !important;font-size:9.5px !important;}
+  .strip-remarks b{font-size:8px !important;}
 
   .q-tbl th{padding:3px 6px !important;font-size:8px !important;}
   .q-tbl td{padding:3px 6px !important;font-size:10.5px !important;}
@@ -624,7 +730,10 @@ body{
             'transport_change' => 'Transport Change', 'price_revision' => 'Price Revision',
             'qty_change' => 'Quantity Change', 'freight_charge' => 'Freight / Delivery Charge',
             'rebate' => 'Rebate / Discount', 'correction' => 'Entry Correction',
-        ]; ?>
+        ];
+        $amd_old = json_decode($amd->old_values ?? 'null', true) ?: [];
+        $amd_new = json_decode($amd->new_values ?? 'null', true) ?: [];
+        ?>
     <div style="font-size:10.5px;line-height:1.5">
       <strong><?php echo htmlspecialchars($amd->amd_number); ?></strong>
       — <?php echo htmlspecialchars($amd_type_labels[$amd->amendment_type] ?? $amd->amendment_type); ?><?php if ((float)$amd->delta_amount != 0): ?>
@@ -632,6 +741,28 @@ body{
       <?php endif; ?>
       <?php if ($amd->approved_at): ?>on <?php echo date('d M Y', strtotime($amd->approved_at)); ?><?php endif; ?>
       — <?php echo htmlspecialchars($amd->reason); ?>
+      <?php if (!empty($amd->customer_consent_note)): ?>
+      <div style="font-size:9.5px;color:#7a5b00">Customer consent: <?php echo htmlspecialchars($amd->customer_consent_note); ?></div>
+      <?php endif; ?>
+      <?php if (!empty($amd_new['items'])): ?>
+      <ul style="margin:2px 0 2px 16px;padding:0;font-size:9.5px;color:#444">
+        <?php foreach ($amd_new['items'] as $idx => $ni):
+            $oi = $amd_old['items'][$idx] ?? null;
+            if (!$oi) continue;
+            $qty_changed   = abs((float)$oi['qty']   - (float)$ni['qty'])   > 0.001;
+            $price_changed = abs((float)$oi['price'] - (float)$ni['price']) > 0.005;
+            if (!$qty_changed && !$price_changed) continue;
+            $pname = $amd_product_names[$ni['item_id']] ?? ('Item #' . $ni['item_id']);
+            ?>
+        <li>
+          <?php echo htmlspecialchars($pname); ?>:
+          <?php if ($qty_changed): ?>Qty <?php echo number_format($oi['qty'], 0); ?> → <?php echo number_format($ni['qty'], 0); ?><?php endif; ?>
+          <?php if ($qty_changed && $price_changed): ?>, <?php endif; ?>
+          <?php if ($price_changed): ?>Price ৳<?php echo number_format($oi['price'], 2); ?> → ৳<?php echo number_format($ni['price'], 2); ?><?php endif; ?>
+        </li>
+        <?php endforeach; ?>
+      </ul>
+      <?php endif; ?>
     </div>
     <?php endforeach; ?>
   </div>
@@ -691,6 +822,9 @@ body{
   $ship_contact     = $is_delivery_print ? $delivery->driver_contact : ($order->driver_contact ?? null);
   $ship_date        = $is_delivery_print ? $delivery->delivery_date  : ($order->shipped_date ?? null);
   $ship_date_label  = $is_delivery_print ? 'Delivery Date' : 'Shipped';
+  // 1 Oct 2026: branch-coded delivery slip serial (DEM-2026-10-001 etc.) —
+  // null for orders dispatched before this feature shipped.
+  $delivery_slip_no = $is_delivery_print ? ($delivery->delivery_slip_number ?? null) : ($order->delivery_slip_number ?? null);
   ?>
   <div class="bot-row">
     <div class="bot-left">
@@ -708,6 +842,28 @@ body{
         <div style="margin-top:7px">
           <div class="ship-ttl">Notes</div>
           <p style="font-size:11px;color:var(--ink2)"><?php echo nl2br(htmlspecialchars($order->special_instructions)); ?></p>
+        </div>
+      <?php endif; ?>
+      <?php if (!$is_delivery_print && (float)($order->ship_extra_discount_amount ?? 0) > 0): ?>
+        <div style="margin-top:7px;border:1px solid var(--ink);border-radius:4px;padding:6px 9px">
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.02em">Additional Discount Applied at Dispatch</div>
+          <div style="font-size:11px;color:var(--ink2);margin-top:2px">
+            −৳<?php echo number_format($order->ship_extra_discount_amount, 2); ?>
+            <?php if (!empty($order->ship_extra_discount_at)): ?>on <?php echo date('d M Y', strtotime($order->ship_extra_discount_at)); ?><?php endif; ?>
+            <?php if (!empty($order->ship_extra_discount_by_name)): ?>by <?php echo htmlspecialchars($order->ship_extra_discount_by_name); ?><?php endif; ?>
+            <?php if (!empty($order->ship_extra_discount_reason)): ?> — <?php echo htmlspecialchars($order->ship_extra_discount_reason); ?><?php endif; ?>
+          </div>
+        </div>
+      <?php endif; ?>
+      <?php if ($is_delivery_print && (float)($delivery->extra_discount_amount ?? 0) > 0): ?>
+        <div style="margin-top:7px;border:1px solid var(--ink);border-radius:4px;padding:6px 9px">
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.02em">Additional Discount — This Shipment</div>
+          <div style="font-size:11px;color:var(--ink2);margin-top:2px">
+            −৳<?php echo number_format($delivery->extra_discount_amount, 2); ?>
+            <?php if (!empty($delivery->extra_discount_at)): ?>on <?php echo date('d M Y', strtotime($delivery->extra_discount_at)); ?><?php endif; ?>
+            <?php if (!empty($delivery->extra_discount_by_name)): ?>by <?php echo htmlspecialchars($delivery->extra_discount_by_name); ?><?php endif; ?>
+            <?php if (!empty($delivery->extra_discount_reason)): ?> — <?php echo htmlspecialchars($delivery->extra_discount_reason); ?><?php endif; ?>
+          </div>
         </div>
       <?php endif; ?>
       <div style="margin-top:8px;font-size:10px;color:var(--muted)">
@@ -801,6 +957,15 @@ body{
      DELIVERY RECEIPT
 ══════════════════════════════════════════════════════════ -->
 
+  <div class="dr-co">
+    <?php if ($logo_base64): ?><img src="<?php echo $logo_base64; ?>" alt="Logo"><?php endif; ?>
+    <div>
+      <div class="dr-co-name"><?php echo htmlspecialchars($company['name']); ?></div>
+      <div class="dr-co-en"><?php echo htmlspecialchars($company['en_name']); ?></div>
+      <div class="dr-co-meta"><?php echo htmlspecialchars($company['address']); ?> &nbsp;|&nbsp; Phone: <?php echo htmlspecialchars($company['phone']); ?> &nbsp;|&nbsp; <?php echo htmlspecialchars($company['email']); ?></div>
+    </div>
+  </div>
+
   <div class="strip-head dr-head">
     <div class="sh-left">
       <div class="sh-title">DELIVERY RECEIPT</div>
@@ -813,6 +978,10 @@ body{
   </div>
 
   <div class="strip-info">
+    <div class="si-cell" style="flex:1.3">
+      <div class="si-lbl">Slip No.</div>
+      <div class="si-val"><?php echo htmlspecialchars($delivery_slip_no ?: '—'); ?></div>
+    </div>
     <div class="si-cell" style="flex:1.4">
       <div class="si-lbl"><?php echo $is_delivery_print ? 'Delivery No.' : 'Invoice No.'; ?></div>
       <div class="si-val"><?php echo htmlspecialchars($is_delivery_print ? $delivery->delivery_number : $order->order_number); ?></div>
@@ -821,7 +990,7 @@ body{
       <div class="si-lbl">Customer Name</div>
       <div class="si-val"><?php echo htmlspecialchars($order->customer_name); ?></div>
     </div>
-    <div class="si-cell" style="flex:2.5">
+    <div class="si-cell" style="flex:2.2">
       <div class="si-lbl">Delivery Address</div>
       <div class="si-val"><?php echo htmlspecialchars($deliver_to ?: $bill_address ?: '—'); ?></div>
     </div>
@@ -854,10 +1023,12 @@ body{
     <tfoot>
       <tr>
         <td colspan="3" style="text-align:right;font-size:9px;color:var(--muted);letter-spacing:.5px">TOTAL QTY</td>
-        <td class="r"><?php echo rtrim(rtrim(number_format($total_qty, 2), '0'), '.'); ?> bags</td>
+        <td class="r"><?php echo htmlspecialchars($qty_total_label); ?></td>
       </tr>
     </tfoot>
   </table>
+
+  <div class="strip-remarks"><b>Remarks</b><?php echo $receipt_remarks; ?></div>
 
   <div class="strip-sig">
     <div class="ss-box" style="flex:1.5">
@@ -875,7 +1046,9 @@ body{
     <div class="ss-box">
       <div class="ss-line">
         <div class="ss-lbl">Goods Verified</div>
-        <div class="ss-sub">Bags: _______ / <?php echo rtrim(rtrim(number_format($total_qty, 2), '0'), '.'); ?> &nbsp; ☐ OK &nbsp; ☐ Short</div>
+        <?php $gv_bulk = ($total_bulk_kg > 0 && $total_bags <= 0);
+              $gv_by_bags = $gv_bulk && $bags_boarded > 0; ?>
+        <div class="ss-sub"><?php echo ($gv_bulk && !$gv_by_bags) ? 'Kg' : 'Bags'; ?>: _______ / <?php echo $gv_by_bags ? number_format($bags_boarded) : rtrim(rtrim(number_format($gv_bulk ? $total_bulk_kg : $total_qty, 2), '0'), '.'); ?> &nbsp; ☐ OK &nbsp; ☐ Short</div>
       </div>
     </div>
   </div>

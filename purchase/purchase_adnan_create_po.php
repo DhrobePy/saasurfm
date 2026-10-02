@@ -35,10 +35,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $currentUser = getCurrentUser();
                 $user_name = $currentUser['display_name'] ?? 'System User';
                 
+                $is_service_audit = !empty($_POST['is_service']);
+                $audit_desc = $is_service_audit
+                    ? "Purchase Order {$result['po_number']} created — SERVICE PURCHASE, ৳" . number_format($result['total_value'], 2) . " — " . trim($_POST['remarks'] ?? '')
+                    : "Purchase Order {$result['po_number']} created - {$_POST['quantity_kg']} KG {$_POST['wheat_origin']} wheat @ ৳{$_POST['unit_price_per_kg']}/KG = ৳" . number_format($result['total_value'], 2);
                 auditLog(
                     'purchase',  // ✓ Valid ENUM value
                     'created',   // ✓ Valid ENUM value (was 'po_created')
-                    "Purchase Order {$result['po_number']} created - {$_POST['quantity_kg']} KG {$_POST['wheat_origin']} wheat @ ৳{$_POST['unit_price_per_kg']}/KG = ৳" . number_format($result['total_value'], 2),
+                    $audit_desc,
                     [
                         'record_type' => 'purchase_order',
                         'record_id' => $result['po_id'],
@@ -50,6 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         'quantity_kg' => $_POST['quantity_kg'],
                         'unit_price_per_kg' => $_POST['unit_price_per_kg'],
                         'total_order_value' => $result['total_value'],
+                        'is_service_purchase' => $is_service_audit,
                         'expected_delivery_date' => $_POST['expected_delivery_date'] ?? null,
                         'manual_po_number' => !empty($_POST['po_number']),
                         'created_by' => $user_name
@@ -274,12 +279,25 @@ include '../templates/header.php';
                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
                 </div>
 
+                <!-- Service Purchase toggle -->
+                <div class="md:col-span-2">
+                    <label class="flex items-start gap-2 cursor-pointer p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                        <input type="checkbox" name="is_service" id="is_service" value="1"
+                               class="mt-0.5 w-4 h-4 accent-amber-600">
+                        <span class="text-sm text-amber-900">
+                            <span class="font-semibold">This is a service purchase</span> — no physical commodity
+                            (inspection, freight, a fee, etc.). Unit price will be recorded as 0; you'll enter
+                            the real invoice total directly instead.
+                        </span>
+                    </label>
+                </div>
+
                 <!-- Quantity -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">
                         Quantity (<span class="unit-label">KG</span>) <span class="text-red-500">*</span>
                     </label>
-                    <input type="number" name="quantity_kg" required step="any" min="0.001" id="quantity"
+                    <input type="number" name="quantity_kg" required step="any" min="0.001" id="quantity" value="1"
                            placeholder="Enter quantity"
                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
                     <p class="mt-1 text-sm text-gray-500">
@@ -301,6 +319,20 @@ include '../templates/header.php';
                         Price per <span class="unit-label">KG</span> in Taka (৳)
                     </p>
                 </div>
+
+                <!-- Service Total Invoice Value (shown only in service mode) -->
+                <div id="service_total_wrap" class="hidden md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Total Invoice Value (৳) <span class="text-red-500">*</span>
+                    </label>
+                    <input type="number" name="service_total_value" step="any" min="0.01" id="service_total_value"
+                           placeholder="Enter the real invoice amount for this service"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
+                    <p class="mt-1 text-sm text-gray-500">
+                        <i class="fas fa-receipt text-gray-400"></i>
+                        The actual amount this invoice is for — this becomes the PO's total order value.
+                    </p>
+                </div>
             </div>
         </div>
 
@@ -310,7 +342,8 @@ include '../templates/header.php';
                 <div>
                     <span class="text-lg font-semibold text-gray-900">Total Order Value:</span>
                     <p class="text-xs text-gray-600 mt-1">
-                        <span id="quantity_display">0</span> <span class="unit-label">KG</span> × ৳<span id="price_display">0.00</span>
+                        <span id="total_breakdown_qty"><span id="quantity_display">0</span> <span class="unit-label">KG</span> × ৳<span id="price_display">0.00</span></span>
+                        <span id="total_breakdown_service" class="hidden">Service purchase — total entered directly</span>
                     </p>
                 </div>
                 <div class="text-right">
@@ -328,11 +361,14 @@ include '../templates/header.php';
             
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">
-                    Remarks / Notes
+                    Remarks / Notes <span class="text-red-500" id="remarks_required_mark" style="display:none;">*</span>
                 </label>
-                <textarea name="remarks" rows="4"
+                <textarea name="remarks" rows="4" id="remarks"
                           placeholder="Enter any additional notes, terms, or special conditions for this order..."
                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"></textarea>
+                <p class="mt-1 text-xs text-amber-600" id="remarks_service_hint" style="display:none;">
+                    Required for a service purchase — explain what this invoice is for.
+                </p>
             </div>
         </div>
 
@@ -357,6 +393,34 @@ document.addEventListener('DOMContentLoaded', function() {
     const quantityDisplay = document.getElementById('quantity_display');
     const priceDisplay = document.getElementById('price_display');
     const totalInMillions = document.getElementById('total_in_millions');
+    const isServiceCheckbox = document.getElementById('is_service');
+    const serviceTotalWrap = document.getElementById('service_total_wrap');
+    const serviceTotalInput = document.getElementById('service_total_value');
+    const totalBreakdownQty = document.getElementById('total_breakdown_qty');
+    const totalBreakdownService = document.getElementById('total_breakdown_service');
+    const remarksInput = document.getElementById('remarks');
+    const remarksRequiredMark = document.getElementById('remarks_required_mark');
+    const remarksServiceHint = document.getElementById('remarks_service_hint');
+
+    function toggleServiceMode() {
+        const on = isServiceCheckbox.checked;
+        serviceTotalWrap.classList.toggle('hidden', !on);
+        serviceTotalInput.required = on;
+        unitPriceInput.readOnly = on;
+        unitPriceInput.required = !on;
+        unitPriceInput.min = on ? '0' : '0.001'; // HTML5 min still applies even when not required
+        unitPriceInput.classList.toggle('bg-gray-100', on);
+        if (on) { unitPriceInput.value = '0'; }
+        remarksInput.required = on;
+        remarksRequiredMark.style.display = on ? '' : 'none';
+        remarksServiceHint.style.display = on ? '' : 'none';
+        applyCommodity(true); // rebuilds the origin list, adding/removing the N/A option
+        if (on) { originSelect.value = 'N/A'; }
+        calculateTotal();
+    }
+    isServiceCheckbox.addEventListener('change', toggleServiceMode);
+    serviceTotalInput.addEventListener('input', calculateTotal);
+
     const supplierSelect = document.getElementById('supplier_select');
     const supplierInfo = document.getElementById('supplier_info');
     const supplierContact = document.getElementById('supplier_contact');
@@ -379,12 +443,21 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function calculateTotal() {
-        const quantity  = parseFloat(quantityInput.value)  || 0;
-        const unitPrice = parseFloat(unitPriceInput.value) || 0;
-        const total     = quantity * unitPrice;   // full float — never rounded here
-
-        quantityDisplay.innerHTML = fmtDisplay(quantity);
-        priceDisplay.innerHTML    = fmtDisplay(unitPrice);
+        let total;
+        const isService = isServiceCheckbox.checked;
+        totalBreakdownQty.classList.toggle('hidden', isService);
+        totalBreakdownService.classList.toggle('hidden', !isService);
+        if (isService) {
+            // Service purchase: the shown total IS the manually-entered invoice
+            // amount — never qty*price (unit price always reads 0 in this mode).
+            total = parseFloat(serviceTotalInput.value) || 0;
+        } else {
+            const quantity  = parseFloat(quantityInput.value)  || 0;
+            const unitPrice = parseFloat(unitPriceInput.value) || 0;
+            total = quantity * unitPrice;   // full float — never rounded here
+            quantityDisplay.innerHTML = fmtDisplay(quantity);
+            priceDisplay.innerHTML    = fmtDisplay(unitPrice);
+        }
         totalValueSpan.innerHTML  = '৳' + fmtDisplay(total);
 
         // Show in millions if over 1M
@@ -436,9 +509,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const prev = preserveOrigin ? originSelect.value : '';
         const origins = (cid && COMMODITY_ORIGINS[cid]) ? COMMODITY_ORIGINS[cid] : [];
-        if (!cid) {
+        const isService = isServiceCheckbox && isServiceCheckbox.checked;
+        if (!cid && !isService) {
             originSelect.innerHTML = '<option value="">Select a commodity first</option>';
-        } else if (origins.length === 0) {
+        } else if (origins.length === 0 && !isService) {
             originSelect.innerHTML = '<option value="">No origins — add them in Procurement Catalog</option>';
         } else {
             originSelect.innerHTML = '<option value="">Select Origin</option>';
@@ -448,6 +522,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (o === prev) op.selected = true;
                 originSelect.appendChild(op);
             });
+            // Service purchase: no real origin applies — offer N/A, and default
+            // to it so the required field doesn't block submission.
+            if (isService) {
+                const naOp = document.createElement('option');
+                naOp.value = 'N/A'; naOp.textContent = 'N/A (service — no physical origin)';
+                if (prev === 'N/A' || prev === '') naOp.selected = true;
+                originSelect.appendChild(naOp);
+            }
         }
 
         // Filter suppliers to those who supply this commodity (unless none are tagged).

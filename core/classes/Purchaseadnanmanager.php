@@ -29,6 +29,12 @@ class PurchaseAdnanManager {
      * @return array Result with success status and PO ID
      */
     public function createPurchaseOrder($data) {
+        // Must run before beginTransaction() (DDL implicit-commits) — also
+        // guarantees is_service_purchase exists even if the caller page's own
+        // ensureProcurementCatalogTables() call happens to run after this method
+        // (purchase_adnan_create_po.php currently calls createPurchaseOrder()
+        // before its own migration call further down the file).
+        ensureProcurementCatalogTables();
         try {
             $this->db->beginTransaction();
             
@@ -36,15 +42,34 @@ class PurchaseAdnanManager {
             $current_user = getCurrentUser();
             $user_id = $current_user['id'] ?? null;
             
+            // 15 Sep 2026: service purchase (zero-value product, e.g. inspection/
+            // freight fee) — unit_price_per_kg is allowed to be 0/blank, but a real
+            // total + a remark explaining it are required instead.
+            $is_service = !empty($data['is_service']);
+
             // Validate required fields
-            $required = ['po_date', 'supplier_id', 'wheat_origin', 'quantity_kg', 'unit_price_per_kg'];
+            $required = ['po_date', 'supplier_id', 'wheat_origin', 'quantity_kg'];
+            if (!$is_service) {
+                $required[] = 'unit_price_per_kg';
+            }
             foreach ($required as $field) {
                 if (empty($data[$field])) {
                     $this->db->rollBack();
                     return ['success' => false, 'message' => ucfirst(str_replace('_', ' ', $field)) . ' is required'];
                 }
             }
-            
+            if ($is_service) {
+                $service_total_value = floatval($data['service_total_value'] ?? 0);
+                if ($service_total_value <= 0) {
+                    $this->db->rollBack();
+                    return ['success' => false, 'message' => 'Total Invoice Value is required for a service purchase'];
+                }
+                if (trim($data['remarks'] ?? '') === '') {
+                    $this->db->rollBack();
+                    return ['success' => false, 'message' => 'Remarks are required for a service purchase — explain what this invoice is for'];
+                }
+            }
+
             // Handle PO number - manual or auto-generate
             $po_number = trim($data['po_number'] ?? '');
             
@@ -76,10 +101,24 @@ class PurchaseAdnanManager {
                 return ['success' => false, 'message' => 'Invalid supplier selected'];
             }
             
-            // Calculate totals
-            $quantity_kg = floatval($data['quantity_kg']);
-            $unit_price_per_kg = floatval($data['unit_price_per_kg']);
-            $total_order_value = $quantity_kg * $unit_price_per_kg;
+            // Calculate totals. Service purchase: the user enters 0 as the
+            // per-unit product value (there isn't a real one — it's a fee, not a
+            // commodity) plus the actual invoice total separately. We derive an
+            // internal unit_price_per_kg = total / qty so qty*price still equals
+            // the real invoice total — every downstream consumer (GRN receiving,
+            // weight-variance, the GL inventory journal entry, balance_payable,
+            // payment status) already computes qty*unit_price_per_kg fresh from
+            // the row, so this is the only place that needs to know about
+            // service purchases at all; nothing downstream needs to change.
+            $quantity_kg = floatval($data['quantity_kg']) ?: 1.0;
+            if ($is_service) {
+                $total_order_value = $service_total_value;
+                $unit_price_per_kg = round($total_order_value / $quantity_kg, 4);
+                $total_order_value = $quantity_kg * $unit_price_per_kg; // rounding-safe, matches what actually gets stored
+            } else {
+                $unit_price_per_kg = floatval($data['unit_price_per_kg']);
+                $total_order_value = $quantity_kg * $unit_price_per_kg;
+            }
 
             // Phase 2: multi-commodity. commodity_id + unit come from the form; if a
             // legacy caller omits them, fall back to the seeded Wheat commodity / KG.
@@ -97,12 +136,14 @@ class PurchaseAdnanManager {
                 INSERT INTO purchase_orders_adnan (
                     po_number, po_date, supplier_id, supplier_name, branch_id,
                     wheat_origin, commodity_id, unit, quantity_kg, unit_price_per_kg, total_order_value,
+                    is_service_purchase,
                     expected_delivery_date, remarks,
                     po_status, delivery_status, payment_status,
                     created_by_user_id, created_at
                 ) VALUES (
                     ?, ?, ?, ?, ?,
                     ?, ?, ?, ?, ?, ?,
+                    ?,
                     ?, ?,
                     'approved', 'pending', 'unpaid',
                     ?, NOW()
@@ -122,6 +163,7 @@ class PurchaseAdnanManager {
                 $quantity_kg,
                 $unit_price_per_kg,
                 $total_order_value,
+                $is_service ? 1 : 0,
                 $data['expected_delivery_date'] ?? null,
                 $data['remarks'] ?? null,
                 $user_id

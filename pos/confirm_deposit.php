@@ -29,6 +29,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'confi
     if (!$eod) { $error = 'EOD record not found or already confirmed.'; }
     elseif (!$bank_account_id) { $error = 'Select a bank account.'; }
     else {
+        // $bank_account_id (POST) is a bank_accounts.id — resolve the linked
+        // chart_of_accounts row for the actual GL posting; the two are different
+        // id spaces (bank_accounts.chart_of_account_id is the FK between them).
+        $selected_bank_acct = $db->query("SELECT chart_of_account_id FROM bank_accounts WHERE id = ?", [$bank_account_id])->first();
+        if (!$selected_bank_acct || !$selected_bank_acct->chart_of_account_id) {
+            $error = 'Selected bank account has no linked ledger account. Please contact admin.';
+        }
+        if (!$error) {
+        $bank_coa_id = (int)$selected_bank_acct->chart_of_account_id;
         $db->beginTransaction();
         try {
             $petty_cash_account_id = getBranchPettyCashAccountId((int)$eod->branch_id);
@@ -44,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'confi
             $journal_id = $db->getPdo()->lastInsertId();
 
             $db->query("INSERT INTO transaction_lines (journal_entry_id, account_id, debit_amount, credit_amount, description) VALUES (?, ?, ?, 0, ?)",
-                [$journal_id, $bank_account_id, $amount, "Bank deposit - EOD #{$eod_id}"]);
+                [$journal_id, $bank_coa_id, $amount, "Bank deposit - EOD #{$eod_id}"]);
             if ($db->error()) throw new Exception('Failed to post bank debit line: ' . ($db->errorInfo()[2] ?? ''));
 
             $db->query("INSERT INTO transaction_lines (journal_entry_id, account_id, debit_amount, credit_amount, description) VALUES (?, ?, 0, ?, ?)",
@@ -74,6 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'confi
             if ($db->getPdo()->inTransaction()) $db->rollback();
             $error = 'Could not confirm deposit: ' . $e->getMessage();
         }
+        }
     }
 }
 
@@ -85,13 +95,17 @@ $pending = $db->query(
      ORDER BY e.eod_date ASC"
 )->results();
 
-$bank_accounts = $db->query("SELECT id, name FROM chart_of_accounts WHERE account_type = 'Bank' AND is_active = 1 ORDER BY name")->results();
+// bank_accounts is canonical (has account_number + a live balance); the id
+// selected here is stored straight into eod_summary.deposit_bank_account_id
+// and resolved to its chart_of_accounts row only at posting time (above).
+$canSeeBalance = canViewBankBalances();
+$bank_accounts = $db->query("SELECT id, bank_name, account_name, account_number, current_balance FROM bank_accounts WHERE status = 'active' ORDER BY bank_name")->results();
 
 $recent_deposits = $db->query(
-    "SELECT e.*, b.name AS branch_name, c.name AS bank_name
+    "SELECT e.*, b.name AS branch_name, ba.bank_name AS bank_name
      FROM eod_summary e
      JOIN branches b ON b.id = e.branch_id
-     LEFT JOIN chart_of_accounts c ON c.id = e.deposit_bank_account_id
+     LEFT JOIN bank_accounts ba ON ba.id = e.deposit_bank_account_id
      WHERE e.deposited_at IS NOT NULL
      ORDER BY e.deposited_at DESC LIMIT 20"
 )->results();
@@ -133,7 +147,7 @@ require_once '../templates/header.php';
                     <select name="bank_account_id" required class="w-full px-3 py-2 border-2 border-gray-300 rounded-lg text-sm">
                         <option value="">— Select —</option>
                         <?php foreach ($bank_accounts as $ba): ?>
-                        <option value="<?php echo $ba->id; ?>"><?php echo htmlspecialchars($ba->name); ?></option>
+                        <option value="<?php echo $ba->id; ?>"><?php echo htmlspecialchars(bankAccountOptionLabel($ba->bank_name, $ba->account_name, $ba->account_number, (float)$ba->current_balance, $canSeeBalance)); ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>

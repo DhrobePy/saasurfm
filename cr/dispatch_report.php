@@ -19,12 +19,11 @@ $pageTitle   = 'Dispatch Report';
 
 $is_admin = in_array($user_role, ['Superadmin', 'admin']);
 
-// ── User branch (non-admin sees their factory only) ──────────────────────────
-$user_branch = null;
-if (!$is_admin && $user_id) {
-    $emp = $db->query("SELECT branch_id FROM employees WHERE user_id = ?", [$user_id])->first();
-    if ($emp && $emp->branch_id) $user_branch = (int)$emp->branch_id;
-}
+// ── User branch — Access-Manager-aware (was: hardcoded to the user's own
+// employees.branch_id for every non-admin — a real, forced restriction, just
+// never configurable via Access Manager). See resolveBranchFilterUI() /
+// getUserBranchScope() in helpers.php.
+$bf_scope = resolveBranchFilterUI('production', 'co.assigned_branch_id');
 
 // ── Date range ───────────────────────────────────────────────────────────────
 $date_from = !empty($_GET['date_from']) ? $_GET['date_from'] : date('Y-m-01');
@@ -38,21 +37,35 @@ if ($date_from > $date_to) [$date_from, $date_to] = [$date_to, $date_from];
 $drill_product_id = isset($_GET['pdid']) ? (int)$_GET['pdid'] : 0;
 $drill_variant_id = isset($_GET['pvid']) ? (int)$_GET['pvid'] : 0;
 
-$filter_branch = $is_admin
-    ? (isset($_GET['branch_id']) && (int)$_GET['branch_id'] > 0 ? (int)$_GET['branch_id'] : null)
-    : $user_branch;
+$filter_branch = $bf_scope['selected_branch_id'] ?: null;
 
-$branch_sql  = $filter_branch ? "AND co.assigned_branch_id = ?" : "";
-$base_params = $filter_branch ? [$date_from, $date_to, $filter_branch] : [$date_from, $date_to];
+$branch_sql  = $bf_scope['filter_sql'];
 
+// ── Status filter (multi-select; defaults to all three when nothing chosen,
+//    preserving the previously-hardcoded behavior) ────────────────────────────
+$status_labels_map = ['shipped' => 'Shipped', 'goods_on_board' => 'Goods on Board', 'delivered' => 'Delivered'];
+$status_valid_keys = array_keys($status_labels_map);
+$status_raw = $_GET['status'] ?? [];
+if (!is_array($status_raw)) $status_raw = $status_raw !== '' ? [$status_raw] : [];
+$filter_status = array_values(array_intersect(array_map('strval', $status_raw), $status_valid_keys));
+if (empty($filter_status)) $filter_status = $status_valid_keys;
+
+$base_params = $filter_status;
+$base_params[] = $date_from;
+$base_params[] = $date_to;
+array_push($base_params, ...$bf_scope['filter_params']);
+
+$status_qs = implode('&', array_map(fn($s) => 'status[]=' . urlencode($s), $filter_status));
 $filter_qs = 'date_from=' . urlencode($date_from) . '&date_to=' . urlencode($date_to)
-    . ($filter_branch ? '&branch_id=' . $filter_branch : '');
+    . ($filter_branch ? '&branch_id=' . $filter_branch : '')
+    . ($status_qs ? '&' . $status_qs : '');
 
 // "Dispatched from factory" = actually shipped, dated by the real shipping
 // record — not delivery date (that's what sales_report.php tracks) and not
 // order_date (that's when it was ordered, not shipped).
 $dispatch_date_expr = "DATE(cos.shipped_date)";
-$dispatch_where = "co.status IN ('shipped','goods_on_board','delivered') AND cos.shipped_date IS NOT NULL
+$status_placeholders = implode(',', array_fill(0, count($filter_status), '?'));
+$dispatch_where = "co.status IN ($status_placeholders) AND cos.shipped_date IS NOT NULL
       AND $dispatch_date_expr BETWEEN ? AND ?";
 
 // ── CSV Export ───────────────────────────────────────────────────────────────
@@ -96,10 +109,8 @@ if (isset($_GET['export']) && $_GET['export'] === 'csv') {
     exit();
 }
 
-// ── Branches (admin filter dropdown) ─────────────────────────────────────────
-$branches = $is_admin
-    ? $db->query("SELECT id, name FROM branches WHERE status='active' ORDER BY name")->results()
-    : [];
+// ── Branches (filter dropdown — admins, and any non-admin granted 2+ branches) ──
+$branches = $bf_scope['picker_branches'];
 
 // ── Product summary for period ────────────────────────────────────────────────
 $product_summary = $db->query("
@@ -204,16 +215,7 @@ $drill_qty = array_sum(array_map(fn($r) => (float)$r->quantity, $drill_rows));
 $period_orders = count($orders_grouped);
 $period_qty    = array_sum(array_column((array)$product_summary, 'total_qty'));
 $period_label  = date('d M Y', strtotime($date_from)) . ' to ' . date('d M Y', strtotime($date_to));
-$branch_label  = 'All Factories';
-if ($filter_branch) {
-    foreach ($branches as $br) {
-        if ((int)$br->id === (int)$filter_branch) { $branch_label = $br->name; break; }
-    }
-    if ($branch_label === 'All Factories' && $user_branch) {
-        $ub = $db->query("SELECT name FROM branches WHERE id = ?", [$filter_branch])->first();
-        if ($ub) $branch_label = $ub->name;
-    }
-}
+$branch_label  = $filter_branch ? ($bf_scope['selected_branch_name'] ?: 'All Factories') : 'All Factories';
 
 require_once '../templates/header.php';
 ?>
@@ -234,7 +236,7 @@ require_once '../templates/header.php';
         <span class="text-gray-300 text-xs">→</span>
         <input type="date" name="date_to" value="<?php echo $date_to; ?>"
                class="px-2.5 py-1.5 text-xs border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-300 outline-none shadow-sm">
-        <?php if ($is_admin && !empty($branches)): ?>
+        <?php if ($bf_scope['show_picker'] && !empty($branches)): ?>
         <select name="branch_id" class="px-2.5 py-1.5 text-xs border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-300 outline-none shadow-sm">
             <option value="">All Factories</option>
             <?php foreach ($branches as $br): ?>
@@ -244,11 +246,35 @@ require_once '../templates/header.php';
             <?php endforeach; ?>
         </select>
         <?php endif; ?>
+
+        <!-- Status multi-select -->
+        <div id="dispatchStatusMsWrap" class="relative">
+            <button type="button" onclick="toggleDispatchStatusMs()"
+                    class="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs border border-gray-200 rounded-lg bg-white hover:bg-gray-50 shadow-sm">
+                <i class="fas fa-truck text-[10px] text-gray-400"></i>
+                <span id="dispatchStatusMsLabel">All Statuses</span>
+                <i class="fas fa-chevron-down text-[9px] text-gray-400"></i>
+            </button>
+            <div id="dispatchStatusMsPanel" class="hidden absolute z-20 mt-1 w-44 bg-white border border-gray-200 rounded-lg shadow-lg p-2">
+                <div class="flex items-center justify-between mb-1.5 px-1">
+                    <button type="button" onclick="setAllDispatchStatusMs(true)" class="text-[10px] font-semibold text-primary-600 hover:underline">Select all</button>
+                    <button type="button" onclick="setAllDispatchStatusMs(false)" class="text-[10px] font-semibold text-gray-400 hover:underline">Clear</button>
+                </div>
+                <?php foreach ($status_labels_map as $skey => $slabel): ?>
+                <label class="flex items-center gap-2 px-1 py-1 text-xs text-gray-700 hover:bg-gray-50 rounded cursor-pointer">
+                    <input type="checkbox" name="status[]" value="<?php echo $skey; ?>" class="dispatch-status-ms-cb"
+                           <?php echo in_array($skey, $filter_status, true) ? 'checked' : ''; ?>>
+                    <?php echo htmlspecialchars($slabel); ?>
+                </label>
+                <?php endforeach; ?>
+            </div>
+        </div>
+
         <button type="submit"
                 class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors">
             <i class="fas fa-filter text-[10px]"></i> Apply
         </button>
-        <a href="dispatch_report.php?export=csv&date_from=<?php echo urlencode($date_from); ?>&date_to=<?php echo urlencode($date_to); ?><?php echo $filter_branch ? '&branch_id=' . $filter_branch : ''; ?>"
+        <a href="dispatch_report.php?export=csv&date_from=<?php echo urlencode($date_from); ?>&date_to=<?php echo urlencode($date_to); ?><?php echo $filter_branch ? '&branch_id=' . $filter_branch : ''; ?><?php echo $status_qs ? '&' . $status_qs : ''; ?>"
            class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"
            title="Detailed line-item CSV (every order/product row in range)">
             <i class="fas fa-file-csv text-[10px]"></i> Export CSV
@@ -263,7 +289,7 @@ require_once '../templates/header.php';
             'Last Month' => [date('Y-m-01', strtotime('first day of last month')), date('Y-m-t', strtotime('last month'))],
         ];
         foreach ($quick as $label => [$qf, $qt]): ?>
-        <a href="dispatch_report.php?date_from=<?php echo $qf; ?>&date_to=<?php echo $qt; ?><?php echo $filter_branch ? '&branch_id='.$filter_branch : ''; ?>"
+        <a href="dispatch_report.php?date_from=<?php echo $qf; ?>&date_to=<?php echo $qt; ?><?php echo $filter_branch ? '&branch_id='.$filter_branch : ''; ?><?php echo $status_qs ? '&' . $status_qs : ''; ?>"
            class="px-2.5 py-1.5 text-[10px] font-semibold border border-gray-200 text-gray-500 rounded-lg hover:bg-gray-50 transition-colors whitespace-nowrap
                   <?php echo ($date_from === $qf && $date_to === $qt) ? 'bg-gray-100 border-gray-300 text-gray-700' : ''; ?>">
             <?php echo $label; ?>
@@ -488,5 +514,28 @@ require_once '../templates/header.php';
     No dispatched orders found for this period/filter.
 </div>
 <?php endif; ?>
+
+<script>
+var DISPATCH_STATUS_LABELS = <?php echo json_encode($status_labels_map, JSON_UNESCAPED_UNICODE); ?>;
+function toggleDispatchStatusMs() { document.getElementById('dispatchStatusMsPanel').classList.toggle('hidden'); }
+function setAllDispatchStatusMs(checked) {
+    document.querySelectorAll('.dispatch-status-ms-cb').forEach(function (cb) { cb.checked = checked; });
+    updateDispatchStatusMsLabel();
+}
+function updateDispatchStatusMsLabel() {
+    var checked = Array.from(document.querySelectorAll('.dispatch-status-ms-cb:checked')).map(function (cb) { return cb.value; });
+    var total = document.querySelectorAll('.dispatch-status-ms-cb').length;
+    var label = document.getElementById('dispatchStatusMsLabel');
+    if (checked.length === 0 || checked.length === total) { label.textContent = 'All Statuses'; }
+    else if (checked.length <= 2) { label.textContent = checked.map(function (v) { return DISPATCH_STATUS_LABELS[v] || v; }).join(', '); }
+    else { label.textContent = checked.length + ' statuses selected'; }
+}
+document.querySelectorAll('.dispatch-status-ms-cb').forEach(function (cb) { cb.addEventListener('change', updateDispatchStatusMsLabel); });
+document.addEventListener('click', function (e) {
+    var wrap = document.getElementById('dispatchStatusMsWrap');
+    if (wrap && !wrap.contains(e.target)) { document.getElementById('dispatchStatusMsPanel').classList.add('hidden'); }
+});
+updateDispatchStatusMsLabel();
+</script>
 
 <?php require_once '../templates/footer.php'; ?>

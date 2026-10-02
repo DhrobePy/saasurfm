@@ -43,7 +43,30 @@ $order_by = $sort_map[$sort] . ' ' . $dir . ', co.id DESC';
 $where  = ["(co.total_amount - COALESCE(co.advance_paid,0) - COALESCE(co.amount_paid,0)) > 0.01"];
 $where[] = "co.status NOT IN ('rejected','cancelled')";
 $params = [];
-if ($branch_filter) { $where[] = "co.assigned_branch_id = ?"; $params[] = $branch_filter; }
+// Was a bare, unrestricted `?branch_id=` GET param for everyone on the
+// allowed-roles list — sales-srg/sales-demra/sales-other in particular had
+// no restriction at all (no branch filter, no own-orders filter), so any
+// sales role could see every branch's outstanding invoices company-wide.
+// Accounts/admin keep full access (existing, intended).
+if (!$is_accounts) {
+    $branch_scope = getUserBranchScope('credit_sales');
+    if ($branch_scope !== null) {
+        if ($branch_filter > 0 && !in_array($branch_filter, $branch_scope, true)) $branch_filter = 0;
+        if ($branch_filter > 0) {
+            $where[] = "co.assigned_branch_id = ?"; $params[] = $branch_filter;
+        } elseif (!empty($branch_scope)) {
+            $ph = implode(',', array_fill(0, count($branch_scope), '?'));
+            $where[] = "co.assigned_branch_id IN ({$ph})";
+            foreach ($branch_scope as $bid) $params[] = $bid;
+        } else {
+            $where[] = "0=1";
+        }
+    } elseif ($branch_filter) {
+        $where[] = "co.assigned_branch_id = ?"; $params[] = $branch_filter;
+    }
+} elseif ($branch_filter) {
+    $where[] = "co.assigned_branch_id = ?"; $params[] = $branch_filter;
+}
 if ($type_filter === 'opening') { $where[] = "co.order_number LIKE 'INV-INITIAL-%'"; }
 elseif ($type_filter === 'regular') { $where[] = "co.order_number NOT LIKE 'INV-INITIAL-%'"; }
 if ($min_due > 0) { $where[] = "(co.total_amount - COALESCE(co.advance_paid,0) - COALESCE(co.amount_paid,0)) >= ?"; $params[] = $min_due; }
@@ -80,7 +103,13 @@ $sum = $db->query(
     $params
 )->first();
 
-$branches = $db->query("SELECT id, name FROM branches WHERE status = 'active' ORDER BY name")->results();
+// Only offer branches this user can actually see (mirrors the WHERE above).
+$branches = (!$is_accounts && ($branch_scope ?? null) !== null)
+    ? (empty($branch_scope) ? [] : $db->query(
+        "SELECT id, name FROM branches WHERE status='active' AND id IN (" . implode(',', array_fill(0, count($branch_scope), '?')) . ") ORDER BY name",
+        $branch_scope
+      )->results())
+    : $db->query("SELECT id, name FROM branches WHERE status = 'active' ORDER BY name")->results();
 
 // Build a sortable-header link that preserves other filters
 function oi_sort_link(string $col, string $label, string $cur_sort, string $cur_dir): string {

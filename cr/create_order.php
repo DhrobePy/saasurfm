@@ -312,10 +312,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                     'line_total'                 => $item['line_total']
                 ]);
             } else {
+                // Guard added 2 Sep 2026 after a live incident: order CR-20260902-0019
+                // saved a line item with variant_id NULL for a product that DOES have a
+                // variant — the product ("Ruti Special Moyda") and its variant/price row
+                // were created only ~2 minutes apart, right around when this same item was
+                // being added, so the most likely cause is a race between the dropdown's
+                // page-load-embedded product list ($product_variants, built once at the
+                // top of this file) and the variant/price being added moments later —
+                // leaving only the "no variant" base option available at that instant.
+                // Whatever the exact trigger, a NULL variant_id for a product that HAS
+                // variants is never correct here (every real product in this app has at
+                // least one), and it silently breaks downstream per-variant aggregation
+                // (production_requirement.php's INNER JOIN on variant_id excludes NULL
+                // rows entirely — a whole line item's quantity vanishes from Today's
+                // Requirement with no error). Fail loudly at creation instead.
+                $item_variant_id = !empty($item['variant_id']) ? (int)$item['variant_id'] : null;
+                if ($item_variant_id === null) {
+                    $has_variants = $db->query(
+                        "SELECT COUNT(*) c FROM product_variants WHERE product_id = ?",
+                        [(int)($item['product_id'] ?? 0)]
+                    )->first();
+                    if ($has_variants && (int)$has_variants->c > 0) {
+                        $p_name = $db->query("SELECT base_name FROM products WHERE id = ?", [(int)($item['product_id'] ?? 0)])->first();
+                        throw new Exception('"' . ($p_name->base_name ?? 'This product')
+                            . '" requires a variant to be selected, but none was chosen for one of the items. '
+                            . 'Please re-select the specific variant (grade/weight) for that line, then try again — '
+                            . 'if the variant was only just added, refresh this page first so the new option loads.');
+                    }
+                }
                 $db->insert('credit_order_items', [
                     'order_id' => $order_id,
                     'product_id' => $item['product_id'],
-                    'variant_id' => $item['variant_id'] ?? null,
+                    'variant_id' => $item_variant_id,
                     'quantity' => $item['quantity'],
                     'unit_price' => $item['unit_price'],
                     'discount_amount' => $item['discount'] ?? 0,

@@ -16,6 +16,14 @@ $can_request = $is_admin || userCanPageAction('credit_sales', 'order_amendment',
 $has_approve_toggle = userCanPageAction('credit_sales', 'order_amendment', 'can_approve');
 $my_limit    = $is_admin ? null : getUserActionLimit((int)$user_id, 'amend_order', true);
 
+// Product/quantity correction — master toggle (admin/settings.php) AND
+// per-user delegation both required; admin/Superadmin still need the
+// toggle ON (same "toggle applies to everyone" convention as
+// dispatchGlobalHoldEnabled()), matching the explicit ask for a
+// Superadmin-activated, then-delegable capability.
+$can_change_products = orderFullAmendmentEnabled()
+    && ($is_admin || userCanPageAction('credit_sales', 'order_amendment', 'can_change_products'));
+
 /* ─── Self-migrating schema (CREATE TABLE IF NOT EXISTS only) ─────────────── */
 $pdo = $db->getPdo();
 $pdo->exec("
@@ -39,6 +47,25 @@ $pdo->exec("
       KEY `idx_amd_order` (`order_id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
 ");
+// 8 Sep 2026: customer-consent attestation, required for post-dispatch
+// (already-delivered/shipped) amendments — see the mandatory-checkbox +
+// note in the form below. Nullable so it never affects pre-mode rows.
+try { $pdo->exec("ALTER TABLE `order_amendments` ADD COLUMN `customer_consent_note` TEXT NULL AFTER `reason`"); } catch (\Throwable $e) {}
+// 12 Sep 2026: `amendment_type` is a STRICT MySQL ENUM — a bare INSERT with a
+// value outside it is caught and silently swallowed by Database::query()
+// (this codebase's well-documented ENUM-swallow bug class), so the new
+// 'product_correction' type MUST be added to the enum itself, not just to
+// $type_labels in PHP. Probe first (information_schema), never a bare ALTER.
+try {
+    $col = $db->query(
+        "SELECT COLUMN_TYPE FROM information_schema.COLUMNS
+         WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'order_amendments' AND COLUMN_NAME = 'amendment_type'"
+    )->first();
+    if ($col && strpos((string)$col->COLUMN_TYPE, 'product_correction') === false) {
+        $pdo->exec("ALTER TABLE `order_amendments` MODIFY COLUMN `amendment_type`
+            ENUM('transport_change','price_revision','qty_change','freight_charge','rebate','correction','product_correction') NOT NULL");
+    }
+} catch (\Throwable $e) {}
 
 $error   = null;
 $success = null;
@@ -51,6 +78,13 @@ $type_labels = [
     'rebate'           => 'Rebate / Discount (no goods returned)',
     'correction'       => 'Entry Correction',
 ];
+// Only offered when $can_change_products is true (master toggle + delegated
+// action) — kept out of $type_labels' base list so it never appears in the
+// dropdown for anyone without the capability.
+$product_correction_label = 'Product/Quantity Correction (wrong product entered)';
+if ($can_change_products) {
+    $type_labels['product_correction'] = $product_correction_label;
+}
 
 /* ─── Authority: who may approve an amendment right now? ──────────────────
    Admin: anything. Delegated officer (approval limit set + can_approve toggle):
@@ -68,18 +102,40 @@ function amendmentAuthority(float $delta, float $new_total): bool {
 function _applyAmendment($db, $order, $amd, int $user_id): void {
     $delta = (float)$amd->delta_amount;
     $newv  = json_decode($amd->new_values ?? 'null', true) ?: [];
+    $has_item_changes = !empty($newv['items']);
+
+    // Item-level change (qty/price grid) — now available for BOTH modes
+    // (8 Sep 2026). Updating the rows themselves is identical either way;
+    // what differs is how the resulting total gets reconciled below.
+    // Product/variant correction (12 Sep 2026): when a line's entry also
+    // carries a product_id (only present for amendment_type
+    // 'product_correction'), also rewrite WHICH product/variant the line
+    // refers to — same plain UPDATE-by-row-id shape, no schema change
+    // needed (credit_order_items.product_id has no unique constraint).
+    if ($has_item_changes) {
+        foreach ($newv['items'] as $it) {
+            if (isset($it['product_id'])) {
+                $db->query(
+                    "UPDATE credit_order_items
+                     SET product_id = ?, variant_id = ?, quantity = ?, unit_price = ?, line_total = ?
+                     WHERE id = ? AND order_id = ?",
+                    [(int)$it['product_id'], $it['variant_id'] !== null ? (int)$it['variant_id'] : null,
+                     $it['qty'], $it['price'], $it['line_total'], (int)$it['item_id'], $order->id]
+                );
+            } else {
+                $db->query(
+                    "UPDATE credit_order_items
+                     SET quantity = ?, unit_price = ?, line_total = ?
+                     WHERE id = ? AND order_id = ?",
+                    [$it['qty'], $it['price'], $it['line_total'], (int)$it['item_id'], $order->id]
+                );
+            }
+        }
+    }
 
     if ($amd->mode === 'pre') {
         // Invoice not posted yet — reshape the order itself.
         // Dispatch will later post the corrected total to the ledger.
-        foreach (($newv['items'] ?? []) as $it) {
-            $db->query(
-                "UPDATE credit_order_items
-                 SET quantity = ?, unit_price = ?, line_total = ?
-                 WHERE id = ? AND order_id = ?",
-                [$it['qty'], $it['price'], $it['line_total'], (int)$it['item_id'], $order->id]
-            );
-        }
         // Balance invariant: balance_due = total − advance_paid − amount_paid
         // (advance is NOT part of amount_paid — see create_order / advance page)
         if (isset($newv['new_subtotal'])) {
@@ -106,6 +162,10 @@ function _applyAmendment($db, $order, $amd, int $user_id): void {
     } else {
         // Post-dispatch — the invoice is posted. Adjust via ledger note,
         // exactly like returns (credit) / over-delivery billing (debit).
+        // Ledger-safe regardless of whether $delta came from a flat entry
+        // (freight/rebate/correction) or from real per-line qty/price edits
+        // (items already updated above, 8 Sep 2026) — the ledger doesn't care
+        // which; $delta already correctly reflects the net money effect either way.
         $prev = $db->query(
             "SELECT balance_after FROM customer_ledger WHERE customer_id = ? ORDER BY id DESC LIMIT 1",
             [$order->customer_id]
@@ -131,14 +191,36 @@ function _applyAmendment($db, $order, $amd, int $user_id): void {
         );
         // Self-healing balance honoring the full invariant:
         // balance_due = total − advance_paid − amount_paid
-        $db->query(
-            "UPDATE credit_orders
-             SET total_amount = total_amount + ?,
-                 balance_due  = GREATEST(0, total_amount - advance_paid - amount_paid),
-                 updated_at   = NOW()
-             WHERE id = ?",
-            [$delta, $order->id]
-        );
+        if (isset($newv['new_subtotal'])) {
+            // Item-level change: subtotal is the (already-computed) absolute
+            // new figure — sum of the now-updated line totals — mirroring
+            // exactly how the 'pre' branch above handles its own subtotal.
+            $db->query(
+                "UPDATE credit_orders
+                 SET subtotal = ?, total_amount = total_amount + ?,
+                     balance_due = GREATEST(0, total_amount - advance_paid - amount_paid),
+                     updated_at = NOW()
+                 WHERE id = ?",
+                [$newv['new_subtotal'], $delta, $order->id]
+            );
+        } else {
+            // Flat delta only (no line-item change) — subtotal untouched, exactly as before.
+            $db->query(
+                "UPDATE credit_orders
+                 SET total_amount = total_amount + ?,
+                     balance_due  = GREATEST(0, total_amount - advance_paid - amount_paid),
+                     updated_at   = NOW()
+                 WHERE id = ?",
+                [$delta, $order->id]
+            );
+        }
+
+        if ($has_item_changes) {
+            // Keep the frozen invoice snapshot (if the invoice has already
+            // been printed/posted once) in sync so a reprint shows the
+            // corrected items — invoice_date/order_date are never touched.
+            refreshInvoiceSnapshotItems((int)$order->id);
+        }
     }
 
     // Timeline / audit trail
@@ -184,6 +266,20 @@ $amendable_pre  = $order && in_array($order->status, ['approved', 'in_production
 $amendable_post = $order && in_array($order->status, ['shipped', 'delivered']);
 $mode           = $amendable_pre ? 'pre' : ($amendable_post ? 'post' : null);
 
+// Product/variant catalog for the Product Correction picker — only loaded
+// when the capability is actually usable, same list shape create_order.php
+// uses (product_id/variant_id/grade/weight_variant/unit_of_measure).
+$product_catalog = [];
+if ($can_change_products && $order) {
+    $product_catalog = $db->query(
+        "SELECT p.id AS product_id, p.base_name, pv.id AS variant_id, pv.grade, pv.weight_variant, pv.unit_of_measure
+         FROM products p
+         LEFT JOIN product_variants pv ON pv.product_id = p.id AND pv.status = 'active'
+         WHERE p.status = 'active'
+         ORDER BY p.base_name ASC, pv.grade ASC, pv.weight_variant ASC"
+    )->results();
+}
+
 /* ─── POST: create amendment ─────────────────────────────────────────────── */
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'create_amendment') {
     if (!$can_request) {
@@ -194,30 +290,96 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'creat
         try {
             $atype  = $_POST['amendment_type'] ?? '';
             if (!isset($type_labels[$atype])) throw new Exception('Select a valid amendment type.');
+            if ($atype === 'product_correction' && !$can_change_products) {
+                throw new Exception('You do not have permission to correct products on an order — ask Superadmin to enable and delegate this capability.');
+            }
             $reason = trim($_POST['reason'] ?? '');
             if ($reason === '') throw new Exception('A reason is required for every amendment.');
+
+            // 8 Sep 2026: customer-consent attestation, required for any
+            // post-dispatch (already shipped/delivered) amendment — the
+            // customer's invoice is already posted, so changing it needs a
+            // recorded confirmation that they agreed, not just an internal reason.
+            $consent_confirmed = !empty($_POST['consent_confirmed']);
+            $consent_note      = trim($_POST['consent_note'] ?? '');
+            if ($mode === 'post') {
+                if (!$consent_confirmed) throw new Exception('Please confirm the customer has consented to this change before submitting.');
+                if ($consent_note === '') throw new Exception("Please note how/when the customer's consent was obtained.");
+            }
 
             $old_total = (float)$order->total_amount;
             $old_vals  = ['old_subtotal' => (float)$order->subtotal, 'old_total' => $old_total, 'items' => []];
             $new_vals  = [];
             $delta     = 0.0;
 
-            $use_grid = $mode === 'pre' && in_array($atype, ['transport_change', 'price_revision', 'qty_change', 'correction']);
+            $use_grid = in_array($mode, ['pre', 'post'], true) && in_array($atype, ['transport_change', 'price_revision', 'qty_change', 'correction', 'product_correction']);
             if ($use_grid) {
-                // Per-item new qty / unit price grid
+                // Per-item new qty / unit price grid (+ product/variant swap
+                // when amendment_type === 'product_correction')
+                $is_product_correction = $atype === 'product_correction';
+                $any_product_changed = false;
                 $new_items = [];
                 $new_subtotal = 0.0;
                 foreach ($items as $it) {
                     $q = (float)($_POST['new_qty'][$it->id]   ?? $it->quantity);
                     $p = (float)($_POST['new_price'][$it->id] ?? $it->unit_price);
                     if ($q < 0 || $p < 0) throw new Exception('Quantity and price cannot be negative.');
+
+                    $old_item = ['item_id' => $it->id, 'qty' => (float)$it->quantity, 'price' => (float)$it->unit_price, 'line_total' => (float)$it->line_total];
+                    $new_item = ['item_id' => $it->id, 'qty' => $q, 'price' => $p];
+
+                    if ($is_product_correction) {
+                        // Single composite dropdown per row, value "pid|vid" (vid blank
+                        // when the product has no variant) — see the amd-product-pick
+                        // <select> in the form below.
+                        $posted_combo = trim((string)($_POST['new_product_variant'][$it->id] ?? ''));
+                        if ($posted_combo === '' || strpos($posted_combo, '|') === false) {
+                            throw new Exception('Select a product for every line when correcting products.');
+                        }
+                        [$posted_pid_raw, $posted_vid_raw] = explode('|', $posted_combo, 2);
+                        $posted_pid = (int)$posted_pid_raw;
+                        $posted_vid = $posted_vid_raw === '' ? null : (int)$posted_vid_raw;
+                        if ($posted_pid <= 0) throw new Exception('Select a product for every line when correcting products.');
+                        $prod_row = $db->query("SELECT id, base_name FROM products WHERE id = ?", [$posted_pid])->first();
+                        if (!$prod_row) throw new Exception('Selected product not found.');
+                        if ($posted_vid !== null) {
+                            $var_row = $db->query("SELECT id FROM product_variants WHERE id = ? AND product_id = ?", [$posted_vid, $posted_pid])->first();
+                            if (!$var_row) throw new Exception('Selected variant does not belong to the selected product.');
+                        }
+                        // Guard: don't let a product swap silently orphan a
+                        // return/over-delivery/delivery record that already
+                        // references this specific line by id (all three
+                        // child tables have a hard order_item_id column).
+                        if ((int)$posted_pid !== (int)$it->product_id || $posted_vid !== ($it->variant_id !== null ? (int)$it->variant_id : null)) {
+                            $any_product_changed = true;
+                            foreach (['credit_order_return_items', 'credit_order_over_delivery_items', 'credit_order_delivery_items'] as $child_table) {
+                                $ref = $db->query("SELECT id FROM {$child_table} WHERE order_item_id = ? LIMIT 1", [$it->id])->first();
+                                if ($ref) {
+                                    throw new Exception("Line \"{$it->product_name}\" already has a return/delivery/over-delivery record against it — cannot change its product. Use a different line, or resolve that record first.");
+                                }
+                            }
+                            $old_item['product_id']   = (int)$it->product_id;
+                            $old_item['variant_id']   = $it->variant_id !== null ? (int)$it->variant_id : null;
+                            $old_item['product_name'] = $it->product_name . (trim(($it->grade ?? '') . ' ' . ($it->weight_variant ?? '')) !== '' ? ' — ' . trim(($it->grade ?? '') . ' ' . ($it->weight_variant ?? '')) : '');
+                            $new_item['product_id']   = $posted_pid;
+                            $new_item['variant_id']   = $posted_vid;
+                            $new_item['product_name'] = $prod_row->base_name;
+                        }
+                    }
+
                     $lt = round($q * $p, 2);
-                    $old_vals['items'][] = ['item_id' => $it->id, 'qty' => (float)$it->quantity, 'price' => (float)$it->unit_price, 'line_total' => (float)$it->line_total];
-                    $new_items[]         = ['item_id' => $it->id, 'qty' => $q, 'price' => $p, 'line_total' => $lt];
+                    $new_item['line_total'] = $lt;
+                    $old_vals['items'][] = $old_item;
+                    $new_items[]         = $new_item;
                     $new_subtotal += $lt;
                 }
                 $new_total = $new_subtotal - (float)$order->discount_amount + (float)$order->tax_amount;
-                if (abs($new_total - $old_total) < 0.01) throw new Exception('No change detected — totals are identical.');
+                // A same-price product swap is a real, meaningful correction even
+                // though the invoice total doesn't move — only reject "no change"
+                // when NEITHER the total NOR any line's product actually changed.
+                if (abs($new_total - $old_total) < 0.01 && !$any_product_changed) {
+                    throw new Exception('No change detected — totals are identical.');
+                }
                 $delta     = round($new_total - $old_total, 2);
                 $new_vals  = ['new_subtotal' => round($new_subtotal, 2), 'new_total' => round($new_total, 2), 'items' => $new_items];
             } else {
@@ -249,6 +411,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'creat
                 'mode'                 => $mode,
                 'amendment_type'       => $atype,
                 'reason'               => $reason,
+                'customer_consent_note' => $mode === 'post' ? $consent_note : null,
                 'delta_amount'         => $delta,
                 'old_values'           => json_encode($old_vals),
                 'new_values'           => json_encode($new_vals),
@@ -258,8 +421,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'creat
                 'approved_at'          => $auto ? date('Y-m-d H:i:s') : null,
             ]);
 
+            if (!$amd_id) {
+                throw new Exception('Failed to record the amendment (database write did not return an id) — nothing was applied.');
+            }
+
             if ($auto) {
                 $amd = $db->query("SELECT * FROM order_amendments WHERE id = ?", [$amd_id])->first();
+                if (!$amd) {
+                    throw new Exception('Failed to reload the amendment after saving it — nothing was applied.');
+                }
                 _applyAmendment($db, $order, $amd, (int)$user_id);
             } else {
                 $db->insert('credit_order_workflow', [
@@ -435,11 +605,12 @@ $st_meta = ['pending' => 'bg-yellow-100 text-yellow-800', 'approved' => 'bg-gree
     <?php if ($mode === 'post'): ?>
     <div class="mb-4 p-3 bg-purple-50 border border-purple-200 rounded-lg text-sm text-purple-900">
         <i class="fas fa-info-circle mr-1"></i>
-        <strong>This order is already dispatched</strong> — its invoice is posted to the customer ledger,
-        so line items can no longer be edited directly. Whatever the amendment type, enter its
-        <strong>money effect</strong> below: it posts as a debit note (+) or credit note (−).
-        Example: 5 bags short-accepted at ৳2,480 → Reduce invoice (−) ৳12,400.
-        Item-level editing is available only before dispatch.
+        <strong>This order is already dispatched</strong> — its invoice is already posted to the customer
+        ledger. You can still correct a specific line's quantity/price below (Transport Change, Price
+        Revision, Quantity Change, Entry Correction<?php echo $can_change_products ? ', Product/Quantity Correction' : ''; ?>), or enter a flat ৳ amount (Freight, Rebate). Either
+        way it posts as a debit note (+) or credit note (−) to the ledger, the corrected line items are
+        saved and reflected on the invoice, and — per the ledger integrity rule — the order's original
+        placing/invoice date never changes. <strong>Customer consent is required</strong> below.
     </div>
     <?php endif; ?>
 
@@ -463,8 +634,8 @@ $st_meta = ['pending' => 'bg-yellow-100 text-yellow-800', 'approved' => 'bg-gree
             </div>
         </div>
 
-        <?php $grid_allowed = $mode === 'pre'; ?>
-        <!-- Item grid (pre-dispatch: transport/price/qty types) -->
+        <?php $grid_allowed = in_array($mode, ['pre', 'post'], true); ?>
+        <!-- Item grid (transport/price/qty types — pre AND post-dispatch) -->
         <?php if ($grid_allowed): ?>
         <div id="amdGrid" class="mb-4">
             <p class="text-xs text-gray-500 mb-2">Adjust quantity and/or unit price per line — totals recalculate live.</p>
@@ -472,6 +643,9 @@ $st_meta = ['pending' => 'bg-yellow-100 text-yellow-800', 'approved' => 'bg-gree
                 <thead class="bg-gray-50 text-xs text-gray-500 uppercase">
                     <tr>
                         <th class="px-3 py-2 text-left">Product</th>
+                        <?php if ($can_change_products): ?>
+                        <th class="px-3 py-2 text-left amd-product-col" style="display:none;">New Product</th>
+                        <?php endif; ?>
                         <th class="px-3 py-2 text-right">Current Qty</th>
                         <th class="px-3 py-2 text-right">Current Price</th>
                         <th class="px-3 py-2 text-right w-28">New Qty</th>
@@ -487,6 +661,24 @@ $st_meta = ['pending' => 'bg-yellow-100 text-yellow-800', 'approved' => 'bg-gree
                             <div class="font-medium text-gray-900"><?php echo htmlspecialchars($it->product_name); ?></div>
                             <?php if ($variant): ?><div class="text-xs text-gray-400"><?php echo htmlspecialchars($variant); ?></div><?php endif; ?>
                         </td>
+                        <?php if ($can_change_products):
+                            $current_combo = (int)$it->product_id . '|' . ($it->variant_id !== null ? (int)$it->variant_id : ''); ?>
+                        <td class="px-3 py-2 amd-product-col" style="display:none;">
+                            <select name="new_product_variant[<?php echo $it->id; ?>]" class="amd-product-pick w-48 px-2 py-1 border rounded text-sm">
+                                <?php $cur_product_id = null; foreach ($product_catalog as $pc):
+                                    if ($cur_product_id !== (int)$pc->product_id) {
+                                        if ($cur_product_id !== null) echo '</optgroup>';
+                                        echo '<optgroup label="' . htmlspecialchars($pc->base_name) . '">';
+                                        $cur_product_id = (int)$pc->product_id;
+                                    }
+                                    $combo = (int)$pc->product_id . '|' . ($pc->variant_id !== null ? (int)$pc->variant_id : '');
+                                    $label = $pc->variant_id !== null ? trim(($pc->grade ?? '') . ' ' . ($pc->weight_variant ?? '')) : $pc->base_name;
+                                ?>
+                                <option value="<?php echo htmlspecialchars($combo); ?>" <?php echo $combo === $current_combo ? 'selected' : ''; ?>><?php echo htmlspecialchars($label); ?></option>
+                                <?php endforeach; if ($cur_product_id !== null) echo '</optgroup>'; ?>
+                            </select>
+                        </td>
+                        <?php endif; ?>
                         <td class="px-3 py-2 text-right text-gray-500"><?php echo number_format($it->quantity, 0); ?></td>
                         <td class="px-3 py-2 text-right text-gray-500">৳<?php echo number_format($it->unit_price, 2); ?></td>
                         <td class="px-3 py-2 text-right">
@@ -505,13 +697,13 @@ $st_meta = ['pending' => 'bg-yellow-100 text-yellow-800', 'approved' => 'bg-gree
                 </tbody>
                 <tfoot class="bg-gray-50 border-t-2 border-gray-300 text-sm">
                     <tr>
-                        <td colspan="5" class="px-3 py-2 text-right font-bold text-gray-700">
+                        <td colspan="<?php echo $can_change_products ? 6 : 5; ?>" class="px-3 py-2 text-right font-bold text-gray-700">
                             New Total (after discount ৳<?php echo number_format($order->discount_amount, 0); ?>)
                         </td>
                         <td class="px-3 py-2 text-right font-bold text-cyan-700" id="amdNewTotal">৳<?php echo number_format($order->total_amount, 2); ?></td>
                     </tr>
                     <tr>
-                        <td colspan="5" class="px-3 py-2 text-right font-bold text-gray-700">Change vs current</td>
+                        <td colspan="<?php echo $can_change_products ? 6 : 5; ?>" class="px-3 py-2 text-right font-bold text-gray-700">Change vs current</td>
                         <td class="px-3 py-2 text-right font-bold" id="amdDelta">৳0.00</td>
                     </tr>
                 </tfoot>
@@ -540,6 +732,21 @@ $st_meta = ['pending' => 'bg-yellow-100 text-yellow-800', 'approved' => 'bg-gree
                 </p>
             </div>
         </div>
+
+        <?php if ($mode === 'post'): ?>
+        <div class="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+            <label class="flex items-start gap-2 cursor-pointer mb-2">
+                <input type="checkbox" name="consent_confirmed" value="1" required
+                       class="mt-0.5 w-4 h-4 accent-amber-600">
+                <span class="text-sm font-medium text-amber-900">
+                    Customer has consented to this change *
+                </span>
+            </label>
+            <label class="block text-xs font-medium text-gray-600 mb-1">How / when was consent obtained? *</label>
+            <input type="text" name="consent_note" required maxlength="255" class="w-full px-3 py-2 border rounded-lg text-sm"
+                   placeholder="e.g. Phone call with customer on 8 Sep 2026, agreed to revised quantity">
+        </div>
+        <?php endif; ?>
 
         <div class="flex items-center gap-3">
             <button type="submit" onclick="return confirm('Submit this amendment?');"
@@ -581,7 +788,30 @@ $st_meta = ['pending' => 'bg-yellow-100 text-yellow-800', 'approved' => 'bg-gree
             <tr class="hover:bg-gray-50">
                 <td class="px-4 py-2.5 font-mono font-semibold text-cyan-700"><?php echo htmlspecialchars($a->amd_number); ?></td>
                 <td class="px-4 py-2.5 text-xs text-gray-600"><?php echo str_replace('_', ' ', $a->amendment_type); ?></td>
-                <td class="px-4 py-2.5 text-xs text-gray-600 max-w-[220px]"><?php echo htmlspecialchars($a->reason); ?></td>
+                <td class="px-4 py-2.5 text-xs text-gray-600 max-w-[220px]">
+                    <?php echo htmlspecialchars($a->reason); ?>
+                    <?php
+                        // Product-correction detail: pull item-level product changes
+                        // out of new_values (only present when this amendment actually
+                        // swapped a product/variant) and show "Old → New" per line.
+                        $a_newv = json_decode($a->new_values ?? 'null', true) ?: [];
+                        $a_oldv = json_decode($a->old_values ?? 'null', true) ?: [];
+                        $a_old_items_by_id = [];
+                        foreach (($a_oldv['items'] ?? []) as $oi) { $a_old_items_by_id[$oi['item_id']] = $oi; }
+                        $product_changes = [];
+                        foreach (($a_newv['items'] ?? []) as $ni) {
+                            if (isset($ni['product_name']) && isset($a_old_items_by_id[$ni['item_id']]['product_name'])) {
+                                $product_changes[] = $a_old_items_by_id[$ni['item_id']]['product_name'] . ' → ' . $ni['product_name'];
+                            }
+                        }
+                    ?>
+                    <?php foreach ($product_changes as $pc): ?>
+                    <div class="text-[10px] text-cyan-700 mt-0.5"><i class="fas fa-right-left mr-0.5"></i><?php echo htmlspecialchars($pc); ?></div>
+                    <?php endforeach; ?>
+                    <?php if (!empty($a->customer_consent_note)): ?>
+                    <div class="text-[10px] text-amber-700 mt-0.5"><i class="fas fa-user-check mr-0.5"></i>Consent: <?php echo htmlspecialchars($a->customer_consent_note); ?></div>
+                    <?php endif; ?>
+                </td>
                 <td class="px-4 py-2.5 text-right font-bold <?php echo $d >= 0 ? 'text-red-600' : 'text-green-700'; ?>">
                     <?php echo ($d >= 0 ? '+' : '−') . '৳' . number_format(abs($d), 2); ?>
                 </td>
@@ -623,8 +853,8 @@ $st_meta = ['pending' => 'bg-yellow-100 text-yellow-800', 'approved' => 'bg-gree
 const AMD_DISCOUNT = <?php echo (float)($order->discount_amount ?? 0); ?>;
 const AMD_TAX      = <?php echo (float)($order->tax_amount ?? 0); ?>;
 const AMD_OLDTOTAL = <?php echo (float)($order->total_amount ?? 0); ?>;
-const AMD_GRID_TYPES = ['transport_change', 'price_revision', 'qty_change', 'correction'];
-const AMD_HAS_GRID = <?php echo ($mode ?? '') === 'pre' ? 'true' : 'false'; ?>;
+const AMD_GRID_TYPES = ['transport_change', 'price_revision', 'qty_change', 'correction', 'product_correction'];
+const AMD_HAS_GRID = <?php echo in_array($mode ?? '', ['pre', 'post'], true) ? 'true' : 'false'; ?>;
 
 function amdModeSwitch() {
     if (!AMD_HAS_GRID) return;
@@ -634,6 +864,8 @@ function amdModeSwitch() {
     const useGrid = AMD_GRID_TYPES.includes(t);
     if (grid) grid.classList.toggle('hidden', !useGrid);
     if (flat) flat.classList.toggle('hidden', useGrid);
+    const showProductCol = t === 'product_correction';
+    document.querySelectorAll('.amd-product-col').forEach(el => { el.style.display = showProductCol ? '' : 'none'; });
 }
 
 function amdRecalc() {
