@@ -586,8 +586,10 @@ function getModuleRegistry(): array {
                 ['file' => 'recycle_bin',        'page_key' => 'recycle_bin',        'label' => 'Recycle Bin',        'icon' => 'fa-trash-restore', 'admin_only' => true],
                 ['file' => 'telegram_ai_users',  'page_key' => 'telegram_ai_users',  'label' => 'AI Query Access',    'icon' => 'fa-shield-halved', 'admin_only' => true],
                 ['file' => 'chairman_reports',   'page_key' => 'chairman_reports',   'label' => "Chairman's Reports", 'icon' => 'fa-file-invoice'],
+                ['file' => 'pos_store_access',   'page_key' => 'pos_store_access',   'label' => 'POS Zones & Stores',  'icon' => 'fa-store', 'admin_only' => true],
             ],
             'page_actions' => [
+                'pos_store_access'    => ['can_create' => 'Create Zones/Stores', 'can_edit' => 'Edit Zones/Stores', 'can_delete' => 'Deactivate Zones/Stores'],
                 'users'               => ['can_create' => 'Create Users', 'can_edit' => 'Edit Users', 'can_delete' => 'Delete Users'],
                 'manage_user'         => ['can_create' => 'Create Users', 'can_edit' => 'Edit Users', 'can_delete' => 'Delete Users'],
                 'employees'           => ['can_create' => 'Add Employees', 'can_edit' => 'Edit Employees', 'can_delete' => 'Delete Employees'],
@@ -5898,6 +5900,331 @@ function ensureSupplierLedgerAdjustmentBarterMethod(): void {
                 NOT NULL DEFAULT 'none'");
         }
     } catch (\Throwable $e) { error_log('ensureSupplierLedgerAdjustmentBarterMethod: ' . $e->getMessage()); }
+}
+
+/**
+ * ============================================================================
+ * POS STANDALONE SUBSYSTEM — Phase 1: Foundation (2 Oct 2026)
+ * ============================================================================
+ * Owner instruction: fork the Point of Sale module into a fully isolated
+ * multi-store retail subsystem — own stores/zones, own access control, own
+ * double-entry accounting, own customers — so that nothing POS does ever
+ * writes to a table Credit Sales/Purchase/Accounts also write to. Phase 1
+ * lays the tables/functions/admin page down only; no existing pos/*.php page
+ * is rewired yet (that's Phase 2, once purchasing/stock exist to actually
+ * stock a store before it can sell from it). See the approved plan.
+ *
+ * Mirrors, deliberately, the proven conventions already in this file:
+ *   - probe-then-CREATE/ALTER, DDL always before any beginTransaction()
+ *   - getUserBranchScope()/branchScopeSql()/resolveBranchFilterUI() (:1087-1203)
+ *     → getUserStoreScope()/storeScopeSql()/resolveStoreFilterUI() below
+ *   - postCreditOrderDispatchAccounting()'s journal/ledger shape (:5463-5612)
+ *     → postPosJournalEntry() below
+ * ============================================================================
+ */
+
+/**
+ * Self-migrate the Phase 1 foundation tables: pos_zones, pos_stores,
+ * pos_store_users (the new store-assignment table), pos_chart_of_accounts,
+ * pos_journal_entries, pos_transaction_lines, pos_customers — plus two new
+ * columns on the EXISTING pos_customer_ledger table (store_id, and a
+ * repointed-semantics journal_entry_id — see the plan's cutover note: old
+ * rows keep their old meaning, only new rows going forward use the new
+ * tables). PROBE FIRST, same convention as every other ensure*() helper.
+ */
+function ensurePosFoundationTables(): void {
+    static $done = false;
+    if ($done) return;
+    $done = true;
+    $db  = Database::getInstance();
+    $pdo = $db->getPdo();
+
+    try {
+        $pdo->exec("CREATE TABLE IF NOT EXISTS `pos_zones` (
+            `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+            `name` varchar(100) NOT NULL,
+            `description` varchar(255) NULL,
+            `status` enum('active','inactive') NOT NULL DEFAULT 'active',
+            `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+            PRIMARY KEY (`id`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+    } catch (\Throwable $e) { error_log('ensurePosFoundationTables (pos_zones): ' . $e->getMessage()); }
+
+    try {
+        $pdo->exec("CREATE TABLE IF NOT EXISTS `pos_stores` (
+            `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+            `zone_id` bigint UNSIGNED NULL,
+            `name` varchar(150) NOT NULL,
+            `code` varchar(20) NULL,
+            `address` varchar(255) NULL,
+            `phone_number` varchar(30) NULL,
+            `status` enum('active','inactive') NOT NULL DEFAULT 'active',
+            `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+            PRIMARY KEY (`id`),
+            KEY `idx_pos_stores_zone` (`zone_id`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+    } catch (\Throwable $e) { error_log('ensurePosFoundationTables (pos_stores): ' . $e->getMessage()); }
+
+    try {
+        $pdo->exec("CREATE TABLE IF NOT EXISTS `pos_store_users` (
+            `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+            `user_id` bigint UNSIGNED NOT NULL,
+            `store_id` bigint UNSIGNED NOT NULL,
+            `is_primary` tinyint(1) NOT NULL DEFAULT 0,
+            `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+            PRIMARY KEY (`id`),
+            UNIQUE KEY `uk_pos_store_user` (`user_id`,`store_id`),
+            KEY `idx_pos_store_users_store` (`store_id`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+    } catch (\Throwable $e) { error_log('ensurePosFoundationTables (pos_store_users): ' . $e->getMessage()); }
+
+    try {
+        $pdo->exec("CREATE TABLE IF NOT EXISTS `pos_chart_of_accounts` (
+            `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+            `name` varchar(150) NOT NULL,
+            `description` varchar(255) NULL,
+            `account_type` varchar(50) NOT NULL,
+            `account_type_group` varchar(20) NOT NULL,
+            `normal_balance` enum('debit','credit') NOT NULL,
+            `account_number` varchar(20) NULL,
+            `store_id` bigint UNSIGNED NULL COMMENT 'NULL = shared group-level account across all POS stores',
+            `is_active` tinyint(1) NOT NULL DEFAULT 1,
+            `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+            PRIMARY KEY (`id`),
+            KEY `idx_pos_coa_type` (`account_type`),
+            KEY `idx_pos_coa_store` (`store_id`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+    } catch (\Throwable $e) { error_log('ensurePosFoundationTables (pos_chart_of_accounts): ' . $e->getMessage()); }
+
+    try {
+        $pdo->exec("CREATE TABLE IF NOT EXISTS `pos_journal_entries` (
+            `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+            `transaction_date` date NOT NULL,
+            `description` varchar(255) NULL,
+            `related_document_type` varchar(50) NULL,
+            `related_document_id` bigint UNSIGNED NULL,
+            `created_by_user_id` bigint UNSIGNED NULL,
+            `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+            PRIMARY KEY (`id`),
+            KEY `idx_pos_je_related` (`related_document_type`,`related_document_id`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+    } catch (\Throwable $e) { error_log('ensurePosFoundationTables (pos_journal_entries): ' . $e->getMessage()); }
+
+    try {
+        $pdo->exec("CREATE TABLE IF NOT EXISTS `pos_transaction_lines` (
+            `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+            `journal_entry_id` bigint UNSIGNED NOT NULL,
+            `account_id` bigint UNSIGNED NOT NULL,
+            `debit_amount` decimal(15,2) NOT NULL DEFAULT 0.00,
+            `credit_amount` decimal(15,2) NOT NULL DEFAULT 0.00,
+            `description` varchar(255) NULL,
+            PRIMARY KEY (`id`),
+            KEY `idx_pos_tl_journal` (`journal_entry_id`),
+            KEY `idx_pos_tl_account` (`account_id`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+    } catch (\Throwable $e) { error_log('ensurePosFoundationTables (pos_transaction_lines): ' . $e->getMessage()); }
+
+    try {
+        $pdo->exec("CREATE TABLE IF NOT EXISTS `pos_customers` (
+            `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+            `store_id` bigint UNSIGNED NULL,
+            `name` varchar(150) NOT NULL,
+            `address` varchar(255) NULL,
+            `phone_number` varchar(30) NULL,
+            `mode_of_transport` varchar(50) NULL,
+            `credit_limit` decimal(15,2) NOT NULL DEFAULT 0.00,
+            `status` enum('active','inactive') NOT NULL DEFAULT 'active',
+            `created_by_user_id` bigint UNSIGNED NULL,
+            `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+            PRIMARY KEY (`id`),
+            KEY `idx_pos_customers_store` (`store_id`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+    } catch (\Throwable $e) { error_log('ensurePosFoundationTables (pos_customers): ' . $e->getMessage()); }
+
+    // pos_customer_ledger already exists (ensurePosLedgerTable(), repointed
+    // here for the new standalone era — old rows keep pointing at the old
+    // shared `customers`/`journal_entries` ids per the plan's cutover note;
+    // only NEW rows, once Phase 2 rewires pos/*.php, will use store_id and
+    // reference pos_customers/pos_journal_entries. Probe first.
+    try {
+        $col = $db->query(
+            "SELECT COLUMN_NAME FROM information_schema.COLUMNS
+             WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'pos_customer_ledger' AND COLUMN_NAME = 'store_id'"
+        )->first();
+        if (!$col) {
+            $pdo->exec("ALTER TABLE `pos_customer_ledger` ADD COLUMN `store_id` BIGINT UNSIGNED NULL AFTER `branch_id`");
+        }
+    } catch (\Throwable $e) { error_log('ensurePosFoundationTables (pos_customer_ledger.store_id): ' . $e->getMessage()); }
+
+    // Seed a minimal starter chart of accounts — same bootstrap role
+    // ensureCommodityTradingAccounts() (:3986) plays for commodity trading.
+    // Never overwrites; only inserts an account whose name is missing.
+    $starter = [
+        ['Cash',                 'Asset',     'Asset',     'debit',  '1000'],
+        ['Bank',                 'Asset',     'Asset',     'debit',  '1050'],
+        ['Accounts Receivable',  'Accounts Receivable', 'Asset', 'debit', '1100'],
+        ['Inventory',            'Asset',     'Asset',     'debit',  '1200'],
+        ['Accounts Payable',     'Accounts Payable', 'Liability', 'credit', '2000'],
+        ['Sales Revenue',        'Revenue',   'Revenue',   'credit', '4000'],
+        ['Sales Discount',       'Revenue',   'Revenue',   'debit',  '4100'],
+        ['Cost of Goods Sold',   'Cost of Goods Sold', 'Expense', 'debit', '5000'],
+    ];
+    foreach ($starter as [$name, $type, $group, $normal, $num]) {
+        try {
+            $exists = $db->query("SELECT id FROM pos_chart_of_accounts WHERE name = ?", [$name])->first();
+            if (!$exists) {
+                $db->insert('pos_chart_of_accounts', [
+                    'name' => $name, 'account_type' => $type, 'account_type_group' => $group,
+                    'normal_balance' => $normal, 'account_number' => $num, 'store_id' => null, 'is_active' => 1,
+                ]);
+            }
+        } catch (\Throwable $e) { error_log('ensurePosFoundationTables (seed ' . $name . '): ' . $e->getMessage()); }
+    }
+}
+
+/**
+ * Resolve which pos_stores ids the current user may see — the POS-scoped
+ * mirror of getUserBranchScope() (:1087). No data_scope/all-or-own nuance
+ * here (that's user_custom_permissions machinery, built for the pre-existing
+ * branch system); this is new and deliberately simpler: Superadmin/admin are
+ * unrestricted, everyone else sees exactly their pos_store_users rows.
+ *
+ * @return int[]|null null = unrestricted (Superadmin/admin); int[] = exact
+ *   allowed store ids (empty array = assigned to zero stores — callers MUST
+ *   treat that as "show nothing", not unrestricted).
+ */
+function getUserStoreScope(): ?array {
+    $role = $_SESSION['user_role'] ?? '';
+    if (in_array($role, ['Superadmin', 'admin'], true)) return null;
+
+    $userId = $_SESSION['user_id'] ?? 0;
+    if (!$userId) return [];
+
+    global $db;
+    $rows = $db->query("SELECT store_id FROM pos_store_users WHERE user_id = ?", [$userId])->results();
+    return array_map(fn($r) => (int)$r->store_id, $rows);
+}
+
+/**
+ * Ready-to-splice "AND <column> IN (...)" SQL + params for the current
+ * user's store scope — pass $column already table-qualified. Fail-closed:
+ * zero assigned stores produces a filter matching no rows.
+ *
+ * @return array{0:string,1:array} [$sql, $params] — $sql is '' when unrestricted.
+ */
+function storeScopeSql(string $column): array {
+    $scope = getUserStoreScope();
+    if ($scope === null) return ['', []];
+    if (empty($scope)) return [" AND 0=1", []];
+    $placeholders = implode(',', array_fill(0, count($scope), '?'));
+    return [" AND {$column} IN ({$placeholders})", $scope];
+}
+
+/**
+ * One-call "store detection + optional picker" block — the POS-scoped
+ * mirror of resolveBranchFilterUI() (:1154). See that function's docblock
+ * for the exact return-shape rationale; this is the identical shape, read
+ * against pos_stores instead of branches.
+ *
+ * @return array{
+ *   filter_sql: string, filter_params: array, show_picker: bool,
+ *   picker_stores: array, selected_store_id: int, selected_store_name: string,
+ * }
+ */
+function resolveStoreFilterUI(string $column): array {
+    global $db;
+    $scope = getUserStoreScope();
+
+    $pickerStores = [];
+    if ($scope === null) {
+        $pickerStores = $db->query("SELECT id, name FROM pos_stores WHERE status='active' ORDER BY name")->results();
+    } elseif (count($scope) > 1) {
+        $ph = implode(',', array_fill(0, count($scope), '?'));
+        $pickerStores = $db->query("SELECT id, name FROM pos_stores WHERE status='active' AND id IN ({$ph}) ORDER BY name", $scope)->results();
+    }
+    $showPicker = $scope === null || count($scope) > 1;
+
+    $selectedId = 0; $selectedName = '';
+    $filterSql = ''; $filterParams = [];
+
+    if ($showPicker) {
+        $requested = (int)($_GET['store_id'] ?? 0);
+        if ($requested > 0 && ($scope === null || in_array($requested, $scope, true))) {
+            $selectedId = $requested;
+            $filterSql = "AND {$column} = ?";
+            $filterParams = [$requested];
+            foreach ($pickerStores as $st) { if ((int)$st->id === $requested) { $selectedName = $st->name; break; } }
+        } elseif ($scope !== null) {
+            $ph = implode(',', array_fill(0, count($scope), '?'));
+            $filterSql = "AND {$column} IN ({$ph})";
+            $filterParams = $scope;
+        }
+    } elseif (empty($scope)) {
+        $filterSql = "AND 0=1";
+    } else {
+        $selectedId = $scope[0];
+        $filterSql = "AND {$column} = ?";
+        $filterParams = [$scope[0]];
+        $st = $db->query("SELECT name FROM pos_stores WHERE id = ?", [$scope[0]])->first();
+        $selectedName = $st->name ?? '';
+    }
+
+    return [
+        'filter_sql' => $filterSql,
+        'filter_params' => $filterParams,
+        'show_picker' => $showPicker,
+        'picker_stores' => $pickerStores,
+        'selected_store_id' => $selectedId,
+        'selected_store_name' => $selectedName,
+    ];
+}
+
+/**
+ * Post a balanced double-entry journal into the STANDALONE POS ledger
+ * (pos_journal_entries/pos_transaction_lines — never the shared
+ * journal_entries/transaction_lines). The one chokepoint every POS
+ * money-movement (sales, payments, purchases, expenses, EOD deposits) will
+ * post through from Phase 2 onward — mirrors postCreditOrderDispatchAccounting()'s
+ * shape (:5463) but takes pre-built lines rather than assuming a credit-sale.
+ *
+ * @param array $lines [['account_id'=>int,'debit'=>float,'credit'=>float,'description'=>?string], ...]
+ * @param array $meta ['transaction_date'=>?string, 'description'=>?string,
+ *   'related_document_type'=>?string, 'related_document_id'=>?int, 'created_by_user_id'=>int]
+ * @return int the new pos_journal_entries.id
+ * @throws Exception if the lines don't balance or fewer than 2 lines given.
+ */
+function postPosJournalEntry(Database $db, array $lines, array $meta = []): int {
+    if (count($lines) < 2) throw new Exception('A journal entry needs at least two lines.');
+
+    $total_debit = 0.0; $total_credit = 0.0;
+    foreach ($lines as $l) {
+        $total_debit  += (float)($l['debit']  ?? 0);
+        $total_credit += (float)($l['credit'] ?? 0);
+    }
+    if (abs($total_debit - $total_credit) > 0.01) {
+        throw new Exception(sprintf('Journal entry does not balance: debit %.2f vs credit %.2f.', $total_debit, $total_credit));
+    }
+
+    $journal_id = $db->insert('pos_journal_entries', [
+        'transaction_date'       => $meta['transaction_date'] ?? date('Y-m-d'),
+        'description'            => $meta['description'] ?? null,
+        'related_document_type'  => $meta['related_document_type'] ?? null,
+        'related_document_id'    => $meta['related_document_id'] ?? null,
+        'created_by_user_id'     => $meta['created_by_user_id'] ?? ($_SESSION['user_id'] ?? null),
+    ]);
+    if (!$journal_id) throw new Exception('Failed to create POS journal entry header.');
+
+    foreach ($lines as $l) {
+        $db->insert('pos_transaction_lines', [
+            'journal_entry_id' => $journal_id,
+            'account_id'       => (int)$l['account_id'],
+            'debit_amount'     => (float)($l['debit']  ?? 0),
+            'credit_amount'    => (float)($l['credit'] ?? 0),
+            'description'      => $l['description'] ?? ($meta['description'] ?? null),
+        ]);
+    }
+
+    return (int)$journal_id;
 }
 
 /**
