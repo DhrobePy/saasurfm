@@ -580,6 +580,7 @@ require_once dirname(__DIR__) . '/templates/header.php';
                     <tr class="bg-gray-50 border-b border-gray-200 text-[10px] text-gray-500 uppercase tracking-wide">
                         <th class="px-3 py-2.5 text-left w-24">Date</th>
                         <th class="px-3 py-2.5 text-left">Source</th>
+                        <th class="px-3 py-2.5 text-left">Bank</th>
                         <th class="px-3 py-2.5 text-left">Description</th>
                         <th class="px-3 py-2.5 text-left hidden md:table-cell">Reference</th>
                         <th class="px-3 py-2.5 text-left hidden lg:table-cell">Method</th>
@@ -599,7 +600,7 @@ require_once dirname(__DIR__) . '/templates/header.php';
                     <?php if ($accountId && $canSeeBalance && $page === 1): ?>
                     <tr class="bg-gray-50 border-b border-gray-200">
                         <td class="px-3 py-2 text-[11px] text-gray-500"><?= date('d M Y', strtotime($dateFrom)) ?></td>
-                        <td class="px-3 py-2" colspan="4">
+                        <td class="px-3 py-2" colspan="5">
                             <span class="text-xs font-semibold text-gray-500">Opening Balance</span>
                         </td>
                         <td class="px-3 py-2"></td>
@@ -613,7 +614,7 @@ require_once dirname(__DIR__) . '/templates/header.php';
 
                     <?php if (empty($txRows)): ?>
                     <tr>
-                        <td colspan="<?= 7 + ($canSeeBalance ? 1 : 0) + ($is_superadmin ? 1 : 0) ?>"
+                        <td colspan="<?= 8 + ($canSeeBalance ? 1 : 0) + ($is_superadmin ? 1 : 0) ?>"
                             class="px-4 py-10 text-center text-gray-400">
                             <i class="fas fa-inbox text-3xl mb-2 block text-gray-300"></i>
                             No transactions found for this period.
@@ -643,7 +644,7 @@ require_once dirname(__DIR__) . '/templates/header.php';
                     ?>
                     <?php if ($isRecon): ?>
                     <tr>
-                        <td colspan="<?= 7 + ($canSeeBalance ? 1 : 0) + ($is_superadmin ? 1 : 0) ?>"
+                        <td colspan="<?= 8 + ($canSeeBalance ? 1 : 0) + ($is_superadmin ? 1 : 0) ?>"
                             class="px-3 py-1 bg-violet-100 border-t border-violet-200">
                             <span class="text-[10px] font-semibold text-violet-700 flex items-center gap-1">
                                 <i class="fas fa-balance-scale text-[9px]"></i>
@@ -662,6 +663,18 @@ require_once dirname(__DIR__) . '/templates/header.php';
                                 <i class="fas <?= $meta['icon'] ?> text-[9px]"></i>
                                 <?= $meta['label'] ?>
                             </span>
+                        </td>
+                        <td class="px-3 py-2.5 text-[11px] text-gray-600 whitespace-nowrap">
+                            <?php
+                                // account_name isn't in v_bank_statement yet — the view needs a
+                                // CREATE OR REPLACE to add it (pending, see bank/ADD_ACCOUNT_NAME.sql).
+                                // Falls back to bank name + number alone until that's applied.
+                                $bankLabel = trim(($row->bank_name ?? '') . (!empty($row->account_name) ? ' — ' . $row->account_name : ''));
+                            ?>
+                            <?= htmlspecialchars($bankLabel ?: '—') ?>
+                            <?php if (!empty($row->account_number)): ?>
+                            <div class="text-[10px] text-gray-400"><?= htmlspecialchars($row->account_number) ?></div>
+                            <?php endif; ?>
                         </td>
                         <td class="px-3 py-2.5 text-gray-700 max-w-[200px] truncate"
                             title="<?= htmlspecialchars($row->description ?? '') ?>">
@@ -706,7 +719,7 @@ require_once dirname(__DIR__) . '/templates/header.php';
 
                     <!-- Totals row -->
                     <tr class="bg-gray-100 font-semibold border-t-2 border-gray-300 text-xs">
-                        <td colspan="<?= $accountId ? '4' : '4' ?>" class="px-3 py-2.5 text-right text-gray-500">
+                        <td colspan="5" class="px-3 py-2.5 text-right text-gray-500">
                             <?= number_format($totalRows) ?> rows
                             <?= $totalPages > 1 ? "(page $page of $totalPages)" : '' ?>
                         </td>

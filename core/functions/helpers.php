@@ -4777,6 +4777,16 @@ function applyPricingEngineChangeToOpenOrders(int $variant_id, int $branch_id, ?
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
     "); } catch (\Throwable $e) {}
 
+    // 11 Oct 2026: the status exclusion below is not a reliable "already
+    // dispatched" signal on its own — status can bounce back to
+    // ready_to_ship/produced mid-dispatch (a re-dispatch cycle, a correction,
+    // an admin override) and then this function would silently re-price an
+    // order whose invoice had ALREADY posted, leaving the posted invoice
+    // stale with no record of why (found live on CR-20261009-0015: a ৳3,000
+    // gap between the posted invoice and the order's current total, with the
+    // order bounced out of goods_on_board for a few minutes right when this
+    // ran). The one fact that can't be bounced back is whether an invoice
+    // journal exists — so exclude on THAT, in addition to status.
     $items = $db->query(
         "SELECT coi.id AS item_id, coi.order_id, coi.product_id, coi.variant_id, coi.quantity,
                 coi.unit_price, coi.discount_amount, co.order_number
@@ -4784,7 +4794,11 @@ function applyPricingEngineChangeToOpenOrders(int $variant_id, int $branch_id, ?
          JOIN credit_orders co ON co.id = coi.order_id
          WHERE coi.variant_id = ?
            AND co.assigned_branch_id = ?
-           AND co.status NOT IN ('goods_on_board','shipped','delivered','cancelled','rejected')",
+           AND co.status NOT IN ('goods_on_board','shipped','delivered','cancelled','rejected')
+           AND NOT EXISTS (
+               SELECT 1 FROM journal_entries je
+               WHERE je.related_document_type = 'credit_orders' AND je.related_document_id = co.id
+           )",
         [$variant_id, $branch_id]
     )->results();
 

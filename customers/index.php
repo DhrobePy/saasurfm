@@ -89,15 +89,14 @@ $where_sql = $where ? ('AND ' . implode(' AND ', $where)) : '';
 // Use true_balance from ledger (latest balance_after per customer) to avoid stale cache
 $summary = $db->query(
     "SELECT COUNT(*) AS total,
-            SUM(CASE WHEN COALESCE(tb.true_balance, c.initial_due, 0) >  0.01 THEN 1 ELSE 0 END) AS cnt_due,
-            SUM(CASE WHEN COALESCE(tb.true_balance, c.initial_due, 0) < -0.01 THEN 1 ELSE 0 END) AS cnt_advance,
-            COALESCE(SUM(CASE WHEN COALESCE(tb.true_balance, c.initial_due, 0) > 0 THEN COALESCE(tb.true_balance, c.initial_due, 0) ELSE 0 END), 0) AS total_due,
-            COALESCE(SUM(CASE WHEN COALESCE(tb.true_balance, c.initial_due, 0) < 0 THEN ABS(COALESCE(tb.true_balance, c.initial_due, 0)) ELSE 0 END), 0) AS total_advance
+            SUM(CASE WHEN (c.initial_due + COALESCE(tb.true_balance, 0)) >  0.01 THEN 1 ELSE 0 END) AS cnt_due,
+            SUM(CASE WHEN (c.initial_due + COALESCE(tb.true_balance, 0)) < -0.01 THEN 1 ELSE 0 END) AS cnt_advance,
+            COALESCE(SUM(CASE WHEN (c.initial_due + COALESCE(tb.true_balance, 0)) > 0 THEN (c.initial_due + COALESCE(tb.true_balance, 0)) ELSE 0 END), 0) AS total_due,
+            COALESCE(SUM(CASE WHEN (c.initial_due + COALESCE(tb.true_balance, 0)) < 0 THEN ABS((c.initial_due + COALESCE(tb.true_balance, 0))) ELSE 0 END), 0) AS total_advance
      FROM customers c
      LEFT JOIN (
-         SELECT customer_id, balance_after AS true_balance
-         FROM customer_ledger
-         WHERE id IN (SELECT MAX(id) FROM customer_ledger GROUP BY customer_id)
+         SELECT customer_id, COALESCE(SUM(debit_amount),0) - COALESCE(SUM(credit_amount),0) AS true_balance
+         FROM customer_ledger WHERE reference_type != 'initial_due' GROUP BY customer_id
      ) tb ON tb.customer_id = c.id
      WHERE 1=1 $where_sql",
     $params
@@ -121,19 +120,18 @@ $base_enriched_sql = "
         GROUP BY customer_id
     ) oo ON oo.customer_id = c.id
     LEFT JOIN (
-        SELECT customer_id, balance_after AS true_balance
-        FROM customer_ledger
-        WHERE id IN (SELECT MAX(id) FROM customer_ledger GROUP BY customer_id)
+        SELECT customer_id, COALESCE(SUM(debit_amount),0) - COALESCE(SUM(credit_amount),0) AS true_balance
+        FROM customer_ledger WHERE reference_type != 'initial_due' GROUP BY customer_id
     ) tb ON tb.customer_id = c.id
 ";
 
 // ── Customers with Due (balance > 0) ──────────────────────────────────────
 $customers_due = $db->query(
     "SELECT c.id, c.name, c.business_name, c.phone_number, c.credit_limit,
-            COALESCE(tb.true_balance, c.initial_due, 0) AS current_balance,
+            (c.initial_due + COALESCE(tb.true_balance, 0)) AS current_balance,
             lo.last_order_date, lp.last_payment_date, COALESCE(oo.open_orders, 0) AS open_orders
      $base_enriched_sql
-     WHERE COALESCE(tb.true_balance, c.initial_due, 0) > 0.01 $where_sql
+     WHERE (c.initial_due + COALESCE(tb.true_balance, 0)) > 0.01 $where_sql
      ORDER BY current_balance DESC LIMIT 500",
     $params
 )->results();
@@ -141,10 +139,10 @@ $customers_due = $db->query(
 // ── Customers in Advance (balance < 0) ────────────────────────────────────
 $customers_advance = $db->query(
     "SELECT c.id, c.name, c.business_name, c.phone_number, c.credit_limit,
-            COALESCE(tb.true_balance, c.initial_due, 0) AS current_balance,
+            (c.initial_due + COALESCE(tb.true_balance, 0)) AS current_balance,
             lo.last_order_date, lp.last_payment_date
      $base_enriched_sql
-     WHERE COALESCE(tb.true_balance, c.initial_due, 0) < -0.01 $where_sql
+     WHERE (c.initial_due + COALESCE(tb.true_balance, 0)) < -0.01 $where_sql
      ORDER BY current_balance ASC LIMIT 500",
     $params
 )->results();
@@ -152,10 +150,10 @@ $customers_advance = $db->query(
 // ── Customers with Zero Due (fully settled) ───────────────────────────────
 $customers_zero = $db->query(
     "SELECT c.id, c.name, c.business_name, c.phone_number, c.credit_limit,
-            COALESCE(tb.true_balance, c.initial_due, 0) AS current_balance,
+            (c.initial_due + COALESCE(tb.true_balance, 0)) AS current_balance,
             lo.last_order_date, COALESCE(oo.open_orders, 0) AS open_orders
      $base_enriched_sql
-     WHERE ABS(COALESCE(tb.true_balance, c.initial_due, 0)) <= 0.01 $where_sql
+     WHERE ABS((c.initial_due + COALESCE(tb.true_balance, 0))) <= 0.01 $where_sql
      ORDER BY c.name ASC LIMIT 500",
     $params
 )->results();
@@ -170,17 +168,16 @@ if ($search !== '') {
 }
 $movement = $db->query(
     "SELECT c.id, c.name,
-            COALESCE(tb.true_balance, c.initial_due, 0) AS current_balance,
+            (c.initial_due + COALESCE(tb.true_balance, 0)) AS current_balance,
             COALESCE(ord.orders_amount, 0)   AS orders_in_range,
             COALESCE(pay.payments_amount, 0) AS payments_in_range,
-            (COALESCE(tb.true_balance, c.initial_due, 0)
+            ((c.initial_due + COALESCE(tb.true_balance, 0))
                - COALESCE(ord.orders_amount,   0)
                + COALESCE(pay.payments_amount, 0)) AS opening_balance
      FROM customers c
      LEFT JOIN (
-         SELECT customer_id, balance_after AS true_balance
-         FROM customer_ledger
-         WHERE id IN (SELECT MAX(id) FROM customer_ledger GROUP BY customer_id)
+         SELECT customer_id, COALESCE(SUM(debit_amount),0) - COALESCE(SUM(credit_amount),0) AS true_balance
+         FROM customer_ledger WHERE reference_type != 'initial_due' GROUP BY customer_id
      ) tb ON tb.customer_id = c.id
      LEFT JOIN (
          SELECT customer_id, SUM(total_amount) AS orders_amount
